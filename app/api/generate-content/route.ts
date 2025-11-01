@@ -64,10 +64,11 @@ Brand Personality:
 - Emotional Tone: ${styleGuide.brandPersonality.emotionalTone}
 - Unique Aspects: ${styleGuide.brandPersonality.uniqueSellingPoints.join(', ')}
 
-Business Context:
-- Primary Business: Fashion Designer & Author (NOT photography services)
+Professional Context:
+- Identity: Fashion Model, Actor, Author, Cognitive Researcher, Student, AI Engineer
+- NOT selling: Photography services, modeling services, or any commercial services
 - Location: ${styleGuide.businessInfo.location}
-- Creative Specialties: ${styleGuide.businessInfo.specialties.join(', ')}
+- Creative/Academic Specialties: ${styleGuide.businessInfo.specialties.join(', ')}
 
 CRITICAL: Combine the custom brand voice directive above with these site-specific patterns. The therapeutic + renaissance gentleman voice takes priority.
 `
@@ -76,7 +77,9 @@ CRITICAL: Combine the custom brand voice directive above with these site-specifi
     }
 
     // Create the prompt for Claude
-    const prompt = `You are writing portfolio content for Brandon Mills—fashion designer, author, photographer, and AI engineer. This is NOT a photography business selling services.
+    const prompt = `You are writing portfolio content for Brandon Mills: fashion model, actor, author, cognitive researcher, student, and AI engineer.
+
+This is a CREATIVE AND INTELLECTUAL PORTFOLIO showcasing multifaceted work—NOT a business selling services.
 
 ${transcription ? `BRANDON'S VOICE NOTES:\n${transcription}\n\n` : ''}
 
@@ -85,8 +88,8 @@ You are creating content for ${photoUrls.length} photo${photoUrls.length > 1 ? '
 ${styleSection}
 
 CONTENT REQUIREMENTS:
-1. **Title** (40-55 characters): Evocative but not clickbait. Invites discovery. No generic photographer marketing.
-2. **Description** (2-3 sentences): Create atmosphere, invite feeling. Peer-to-peer tone, not selling services.
+1. **Title** (40-55 characters): Evocative but not clickbait. Invites discovery. No generic photographer/model marketing.
+2. **Description** (2-3 sentences): Create atmosphere, invite feeling. Peer-to-peer tone, sharing work not selling services.
 3. **Photo Captions** (1 thoughtful sentence each): Add context or invite deeper looking. Use voice notes if provided.
 4. **Alt Text**: Descriptive for accessibility but maintain sophistication.
 5. **Tags** (5-8 thoughtful tags): Specific and relevant, no keyword stuffing.
@@ -94,13 +97,15 @@ CONTENT REQUIREMENTS:
 7. **Category**: Choose from: Portrait, Fashion, Product, Editorial, Fine Art, Personal Work, Commercial, Other
 
 CRITICAL REMINDERS:
-- This is a creative portfolio for a fashion designer, NOT a photography service business
+- This is a creative/intellectual portfolio for a model, actor, researcher, student, author, AI engineer
+- NOT selling photography, modeling, or any commercial services
 - Therapeutic warmth + renaissance gentleman sophistication
-- Write like a thoughtful creative professional, not an AI or marketing agency
-- Zero tolerance for: "stunning", "amazing", "capture your story", "professional photographer" spam
+- Write like a thoughtful researcher/creative, not an AI or marketing agency
+- Zero tolerance for: "stunning", "amazing", "capture your story", "hire me" language
 - Quality over flash. Invitation over instruction. Depth over hype.
+- Balance performance (modeling/acting) with intellect (research/study) and creativity (writing/photography) and technology (AI)
 
-Generate content that feels authentically human and genuinely sophisticated.`
+Generate content that feels authentically human, intellectually curious, and genuinely sophisticated.`
 
     // Generate structured content using Claude
     const { object } = await generateObject({

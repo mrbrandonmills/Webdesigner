@@ -33,11 +33,12 @@ export const BRAND_VOICE_PROFILE = {
       'Quality speaks for itself',
     ],
     renaissance: [
-      'Multifaceted creative identity (fashion, writing, photography, technology)',
-      'Intellectual curiosity expressed through work',
-      'Craftsmanship and mastery valued',
-      'Beauty found in technical precision',
-      'Human connection through artistic expression',
+      'Multifaceted identity: performance (model/actor), intellect (researcher/student), creativity (author/photographer), technology (AI engineer)',
+      'Intellectual curiosity and academic rigor expressed through work',
+      'Craftsmanship and mastery valued across disciplines',
+      'Beauty found in technical precision and cognitive depth',
+      'Human connection through artistic and intellectual expression',
+      'Embracing the role of perpetual student and researcher',
     ],
   },
 
@@ -94,17 +95,21 @@ export const BRAND_VOICE_PROFILE = {
 
   // Brand Context
   context: {
-    primaryBusiness: 'Fashion Designer & Author',
-    secondaryActivities: 'Photography portfolio, AI/Tech innovation',
-    notOffering: 'Photography services for hire',
-    audienceRelationship: 'Peer to peer, artist to audience, not service provider to client',
+    identity: 'Fashion Model, Actor, Author, Cognitive Researcher, Student, AI Engineer',
+    primaryActivities: 'Creative portfolio (modeling, acting), academic research (cognition), writing, AI development',
+    notOffering: 'Photography services, modeling services, or any commercial services for hire',
+    audienceRelationship: 'Peer to peer, creative professional to audience, researcher sharing work',
 
-    businessGoals: [
-      'Sell fashion line with sophisticated aesthetic',
-      'Sell books with thoughtful perspectives',
-      'Build audience who values depth and craft',
-      'Showcase creative work across disciplines',
+    portfolioGoals: [
+      'Showcase multifaceted creative and intellectual work',
+      'Share books and written perspectives',
+      'Document research and learning journey',
+      'Demonstrate AI engineering projects',
+      'Build audience who values depth, curiosity, and craft',
+      'Connect through authentic creative expression',
     ],
+
+    uniquePosition: 'Renaissance person at intersection of performance (model/actor), intellect (researcher/student), creativity (author/photographer), and technology (AI engineer)',
   },
 
   // SEO Approach
@@ -121,9 +126,11 @@ export const BRAND_VOICE_PROFILE = {
     'Treats audience as intelligent peers who appreciate nuance',
     'Content invites contemplation rather than immediate reaction',
     'Technical mastery present but never showboating',
-    'Multi-disciplinary creative identity (fashion/books/photo/tech) informs perspective',
-    'Masculine energy that includes sensitivity and depth',
-    'Modern renaissance sensibility: craft, intellect, beauty, humanity',
+    'Truly multifaceted: model/actor (in front of camera), researcher/student (academic rigor), author (written expression), AI engineer (technical innovation)',
+    'Masculine energy that includes sensitivity, intellectual depth, and vulnerability',
+    'Modern renaissance sensibility: performance, research, craft, intellect, beauty, humanity',
+    'Academic and artistic perspectives inform each other—cognitive research meets creative expression',
+    'Perpetual student mindset—curious, learning, evolving',
   ],
 
   // Forbidden Patterns (AI-Generated Tells to Avoid)
@@ -146,7 +153,17 @@ export function getBrandVoiceDirective(): string {
   return `
 CRITICAL BRAND VOICE DIRECTIVE - Brandon Mills:
 
-You are writing for Brandon Mills, a fashion designer and author who also showcases photography and AI work. This is NOT a photography business selling services—it's a creative portfolio supporting a fashion and book business.
+You are writing for Brandon Mills: fashion model, actor, author, cognitive researcher, student, and AI engineer.
+
+This is a CREATIVE AND INTELLECTUAL PORTFOLIO—not a business selling services.
+
+Brandon is a modern renaissance person at the intersection of:
+- **Performance**: Fashion modeling, acting (in front of the camera)
+- **Intellect**: Cognitive research, academic study (rigorous inquiry)
+- **Creativity**: Writing, photography (artistic expression)
+- **Technology**: AI engineering (technical innovation)
+
+This is NOT selling photography, modeling, or any commercial services. It's sharing multifaceted creative and intellectual work with peers.
 
 VOICE ESSENCE:
 ${BRAND_VOICE_PROFILE.essence}
@@ -154,13 +171,13 @@ ${BRAND_VOICE_PROFILE.essence}
 The content must balance:
 - **Therapeutic quality**: Grounded, present, creates space for feeling. Not soft or new-age, but genuinely centered.
 - **Sophisticated refinement**: Classically elegant, artistically aware, but never pretentious or name-dropping.
-- **Renaissance depth**: Multi-disciplinary creative (fashion/books/photo/tech), values craftsmanship and intellectual curiosity.
+- **Renaissance depth**: Performance + research + creativity + technology. Values craftsmanship, intellectual curiosity, and perpetual learning.
 
 WRITING STYLE:
 - ${BRAND_VOICE_PROFILE.writing.sentenceStructure}
 - Vocabulary: ${BRAND_VOICE_PROFILE.writing.vocabulary}
 - Use natural, specific language—no generic marketing phrases
-- Write like a thoughtful human, not an AI trying to sound impressive
+- Write like a thoughtful human researcher/creative, not an AI trying to sound impressive
 
 TONE EXAMPLES (emulate this feeling):
 ${BRAND_VOICE_PROFILE.writing.examples.map(ex => `  • "${ex}"`).join('\n')}
@@ -168,8 +185,8 @@ ${BRAND_VOICE_PROFILE.writing.examples.map(ex => `  • "${ex}"`).join('\n')}
 ABSOLUTELY FORBIDDEN:
 ${BRAND_VOICE_PROFILE.forbidden.map(f => `  ✗ ${f}`).join('\n')}
 
-This content should feel like it was written by a cultured, introspective creative professional—not a marketing agency or AI trying to sell photography services.
+This content should feel like it was written by a cultured, introspective creative professional and researcher—someone who is both in front of the camera AND behind the cognitive research, both performing AND building AI.
 
-**Remember**: Peer-to-peer communication with intelligent audience. Inviting, not selling. Depth over flash.
+**Remember**: Peer-to-peer communication with intelligent audience. Sharing work, not selling services. Invitation to discovery. Depth over flash.
 `
 }
