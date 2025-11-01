@@ -54,12 +54,25 @@ export function ReviewInterface({ initialData }: ReviewInterfaceProps) {
     setPublishStep('Regenerating content...')
 
     try {
+      // Get style guide from localStorage (should have been saved during site audit)
+      let styleGuide = null
+      try {
+        const savedStyleGuide = localStorage.getItem('siteStyleGuide')
+        if (savedStyleGuide) {
+          styleGuide = JSON.parse(savedStyleGuide)
+          console.log('Using saved style guide for regeneration')
+        }
+      } catch (error) {
+        console.log('No style guide found, using default')
+      }
+
       const response = await fetch('/api/generate-content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           transcription: initialData.audio?.transcription || '',
           photoUrls: initialData.photos.map(p => p.url),
+          styleGuide, // FIXED: Now passes style guide for brand-consistent regeneration
         }),
       })
 
@@ -207,12 +220,11 @@ export function ReviewInterface({ initialData }: ReviewInterfaceProps) {
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
             >
               <option>Portrait</option>
-              <option>Wedding</option>
-              <option>Product</option>
-              <option>Event</option>
-              <option>Nature</option>
-              <option>Architecture</option>
               <option>Fashion</option>
+              <option>Product</option>
+              <option>Editorial</option>
+              <option>Fine Art</option>
+              <option>Personal Work</option>
               <option>Commercial</option>
               <option>Other</option>
             </select>

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { anthropic } from '@ai-sdk/anthropic'
 import { generateObject } from 'ai'
 import { z } from 'zod'
+import { getBrandVoiceDirective } from '@/lib/voice-profile'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -33,19 +34,23 @@ export async function POST(request: Request) {
       )
     }
 
-    // Build style-aware prompt
+    // Build style-aware prompt with custom voice profile
+    const brandVoiceDirective = getBrandVoiceDirective()
+
     let styleSection = ''
     if (styleGuide) {
       styleSection = `
-BRAND STYLE GUIDE (CRITICAL - FOLLOW EXACTLY):
-You MUST write in this photographer's unique voice and style. This is not generic content - it must sound authentically like them.
+${brandVoiceDirective}
+
+ADDITIONAL SITE-SPECIFIC STYLE GUIDE (from brandonmills.com analysis):
+You have been given a custom voice directive above. Use these specific patterns from the site analysis to enhance authenticity:
 
 Writing Style:
 - Tone: ${styleGuide.writingStyle.tone}
 - Voice: ${styleGuide.writingStyle.voice}
 - Sentence Structure: ${styleGuide.writingStyle.sentenceStructure}
-- Use vocabulary like: ${styleGuide.writingStyle.vocabulary.slice(0, 10).join(', ')}
-- Example phrases they use: ${styleGuide.writingStyle.examplePhrases.slice(0, 3).map((p: string) => `"${p}"`).join(', ')}
+- Vocabulary patterns: ${styleGuide.writingStyle.vocabulary.slice(0, 10).join(', ')}
+- Example phrases: ${styleGuide.writingStyle.examplePhrases.slice(0, 3).map((p: string) => `"${p}"`).join(', ')}
 
 Content Patterns:
 - Titles: ${styleGuide.contentPatterns.titleStyle}
@@ -57,45 +62,45 @@ Brand Personality:
 - Values: ${styleGuide.brandPersonality.values.join(', ')}
 - Target Audience: ${styleGuide.brandPersonality.targetAudience}
 - Emotional Tone: ${styleGuide.brandPersonality.emotionalTone}
-- Unique Selling Points: ${styleGuide.brandPersonality.uniqueSellingPoints.join(', ')}
+- Unique Aspects: ${styleGuide.brandPersonality.uniqueSellingPoints.join(', ')}
 
 Business Context:
-- Services: ${styleGuide.businessInfo.services.join(', ')}
+- Primary Business: Fashion Designer & Author (NOT photography services)
 - Location: ${styleGuide.businessInfo.location}
-- Specialties: ${styleGuide.businessInfo.specialties.join(', ')}
+- Creative Specialties: ${styleGuide.businessInfo.specialties.join(', ')}
 
-IMPORTANT: Match their existing style EXACTLY. Use their vocabulary, tone, and patterns. Don't be generic!
+CRITICAL: Combine the custom brand voice directive above with these site-specific patterns. The therapeutic + renaissance gentleman voice takes priority.
 `
     } else {
-      styleSection = `
-STYLE GUIDELINES (Generic - run site audit for better results):
-- Professional yet approachable tone
-- Focus on storytelling and emotion
-- Highlight unique aspects of the shoot
-- Use industry-standard photography terminology
-- Make it compelling for potential clients
-`
+      styleSection = brandVoiceDirective
     }
 
     // Create the prompt for Claude
-    const prompt = `You are a professional photography content creator and SEO expert. Generate compelling, SEO-optimized content for a photography gallery.
+    const prompt = `You are writing portfolio content for Brandon Mills—fashion designer, author, photographer, and AI engineer. This is NOT a photography business selling services.
 
-${transcription ? `PHOTOGRAPHER'S NOTES:\n${transcription}\n\n` : ''}
+${transcription ? `BRANDON'S VOICE NOTES:\n${transcription}\n\n` : ''}
 
-You are creating content for ${photoUrls.length} photo${photoUrls.length > 1 ? 's' : ''}.
+You are creating content for ${photoUrls.length} photo${photoUrls.length > 1 ? 's' : ''} to showcase in the portfolio section.
 
 ${styleSection}
 
-REQUIREMENTS:
-1. Title: Create an engaging, SEO-optimized title (50-60 characters)
-2. Description: Write a compelling 2-3 sentence description that captures the essence of the shoot
-3. Photo Captions: Write unique captions for each photo (if transcription mentions specific details, use them)
-4. Alt Text: Create descriptive, accessibility-friendly alt text for each image
-5. Tags: Generate 5-10 relevant tags/keywords
-6. SEO: Extract primary SEO keywords
-7. Category: Determine the most appropriate category
+CONTENT REQUIREMENTS:
+1. **Title** (40-55 characters): Evocative but not clickbait. Invites discovery. No generic photographer marketing.
+2. **Description** (2-3 sentences): Create atmosphere, invite feeling. Peer-to-peer tone, not selling services.
+3. **Photo Captions** (1 thoughtful sentence each): Add context or invite deeper looking. Use voice notes if provided.
+4. **Alt Text**: Descriptive for accessibility but maintain sophistication.
+5. **Tags** (5-8 thoughtful tags): Specific and relevant, no keyword stuffing.
+6. **SEO Keywords** (4-6 primary keywords): Organic from content, not forced.
+7. **Category**: Choose from: Portrait, Fashion, Product, Editorial, Fine Art, Personal Work, Commercial, Other
 
-Generate the content now. Remember to match the photographer's unique voice!`
+CRITICAL REMINDERS:
+- This is a creative portfolio for a fashion designer, NOT a photography service business
+- Therapeutic warmth + renaissance gentleman sophistication
+- Write like a thoughtful creative professional, not an AI or marketing agency
+- Zero tolerance for: "stunning", "amazing", "capture your story", "professional photographer" spam
+- Quality over flash. Invitation over instruction. Depth over hype.
+
+Generate content that feels authentically human and genuinely sophisticated.`
 
     // Generate structured content using Claude
     const { object } = await generateObject({
