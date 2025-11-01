@@ -121,14 +121,28 @@ export function UploadInterface() {
         return optimized ? { ...photo, optimizedUrl: optimized.optimizedUrl } : photo
       }))
 
-      // Step 4: Generate content with AI
+      // Step 4: Generate content with AI (using style guide if available)
       setProcessingStep('Generating content with AI...')
+
+      // Get style guide from localStorage if exists
+      let styleGuide = null
+      try {
+        const savedStyleGuide = localStorage.getItem('siteStyleGuide')
+        if (savedStyleGuide) {
+          styleGuide = JSON.parse(savedStyleGuide)
+          console.log('Using saved style guide for content generation')
+        }
+      } catch (error) {
+        console.log('No style guide found, using generic style')
+      }
+
       const contentResponse = await fetch('/api/generate-content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           transcription,
           photoUrls: photoUploads.map(p => p.url),
+          styleGuide, // Pass style guide to API
         }),
       })
 
