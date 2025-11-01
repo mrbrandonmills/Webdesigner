@@ -24,7 +24,7 @@ const ContentSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const { transcription, photoUrls } = await request.json()
+    const { transcription, photoUrls, styleGuide } = await request.json()
 
     if (!photoUrls || photoUrls.length === 0) {
       return NextResponse.json(
@@ -33,12 +33,58 @@ export async function POST(request: Request) {
       )
     }
 
+    // Build style-aware prompt
+    let styleSection = ''
+    if (styleGuide) {
+      styleSection = `
+BRAND STYLE GUIDE (CRITICAL - FOLLOW EXACTLY):
+You MUST write in this photographer's unique voice and style. This is not generic content - it must sound authentically like them.
+
+Writing Style:
+- Tone: ${styleGuide.writingStyle.tone}
+- Voice: ${styleGuide.writingStyle.voice}
+- Sentence Structure: ${styleGuide.writingStyle.sentenceStructure}
+- Use vocabulary like: ${styleGuide.writingStyle.vocabulary.slice(0, 10).join(', ')}
+- Example phrases they use: ${styleGuide.writingStyle.examplePhrases.slice(0, 3).map((p: string) => `"${p}"`).join(', ')}
+
+Content Patterns:
+- Titles: ${styleGuide.contentPatterns.titleStyle}
+- Descriptions: ${styleGuide.contentPatterns.descriptionStyle}
+- Captions: ${styleGuide.contentPatterns.captionStyle}
+- SEO: ${styleGuide.contentPatterns.seoApproach}
+
+Brand Personality:
+- Values: ${styleGuide.brandPersonality.values.join(', ')}
+- Target Audience: ${styleGuide.brandPersonality.targetAudience}
+- Emotional Tone: ${styleGuide.brandPersonality.emotionalTone}
+- Unique Selling Points: ${styleGuide.brandPersonality.uniqueSellingPoints.join(', ')}
+
+Business Context:
+- Services: ${styleGuide.businessInfo.services.join(', ')}
+- Location: ${styleGuide.businessInfo.location}
+- Specialties: ${styleGuide.businessInfo.specialties.join(', ')}
+
+IMPORTANT: Match their existing style EXACTLY. Use their vocabulary, tone, and patterns. Don't be generic!
+`
+    } else {
+      styleSection = `
+STYLE GUIDELINES (Generic - run site audit for better results):
+- Professional yet approachable tone
+- Focus on storytelling and emotion
+- Highlight unique aspects of the shoot
+- Use industry-standard photography terminology
+- Make it compelling for potential clients
+`
+    }
+
     // Create the prompt for Claude
     const prompt = `You are a professional photography content creator and SEO expert. Generate compelling, SEO-optimized content for a photography gallery.
 
 ${transcription ? `PHOTOGRAPHER'S NOTES:\n${transcription}\n\n` : ''}
 
 You are creating content for ${photoUrls.length} photo${photoUrls.length > 1 ? 's' : ''}.
+
+${styleSection}
 
 REQUIREMENTS:
 1. Title: Create an engaging, SEO-optimized title (50-60 characters)
@@ -49,14 +95,7 @@ REQUIREMENTS:
 6. SEO: Extract primary SEO keywords
 7. Category: Determine the most appropriate category
 
-STYLE GUIDELINES:
-- Professional yet approachable tone
-- Focus on storytelling and emotion
-- Highlight unique aspects of the shoot
-- Use industry-standard photography terminology
-- Make it compelling for potential clients
-
-Generate the content now.`
+Generate the content now. Remember to match the photographer's unique voice!`
 
     // Generate structured content using Claude
     const { object } = await generateObject({
