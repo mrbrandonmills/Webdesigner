@@ -41,14 +41,19 @@ export async function POST(request: Request) {
             ],
             use_filename: true,
             unique_filename: true,
+            // Handle large files by downloading with timeout
+            timeout: 120000, // 2 minutes
           })
 
           // Generate optimized URL and thumbnail
           const optimizedUrl = result.secure_url
+
+          // Use 'fit' with padding to preserve entire subject (no cropping)
           const thumbnailUrl = cloudinary.url(result.public_id, {
             width: 600,
             height: 600,
-            crop: 'fill',
+            crop: 'fit', // Changed from 'fill' - preserves entire image
+            background: 'auto', // Smart background color
             quality: 'auto:good',
             fetch_format: 'auto',
           })
@@ -63,9 +68,22 @@ export async function POST(request: Request) {
             format: result.format,
             bytes: result.bytes,
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error(`Error optimizing photo ${photo.id}:`, error)
-          // Return original if optimization fails
+
+          // If file is too large for Cloudinary free tier, use original Blob URL
+          if (error?.http_code === 400 && error?.message?.includes('File size too large')) {
+            console.log(`Photo ${photo.id} exceeds Cloudinary limit, using Blob URL`)
+            return {
+              id: photo.id,
+              optimizedUrl: photo.url, // Use Vercel Blob URL directly
+              thumbnailUrl: photo.url,
+              skipped: true,
+              reason: 'File size exceeds Cloudinary free tier (10MB)',
+            }
+          }
+
+          // Return original if optimization fails for other reasons
           return {
             id: photo.id,
             optimizedUrl: photo.url,
