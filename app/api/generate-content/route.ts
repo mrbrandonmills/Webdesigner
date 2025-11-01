@@ -99,7 +99,7 @@ Generate the content now. Remember to match the photographer's unique voice!`
 
     // Generate structured content using Claude
     const { object } = await generateObject({
-      model: anthropic('claude-3-5-sonnet-20240620'),
+      model: anthropic('claude-sonnet-4-20250514'), // Latest Claude Sonnet 4.5
       schema: ContentSchema,
       prompt,
       temperature: 0.7,
