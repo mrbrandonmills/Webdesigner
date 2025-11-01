@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { upload } from '@vercel/blob/client'
 import { PhotoUploader } from './photo-uploader'
 import { VoiceMemoRecorder } from './voice-memo-recorder'
 import { UploadedFilesPreview } from './uploaded-files-preview'
@@ -65,22 +66,17 @@ export function UploadInterface() {
     setIsProcessing(true)
 
     try {
-      // Step 1: Upload photos to Vercel Blob
+      // Step 1: Upload photos to Vercel Blob (client-side direct upload)
       setProcessingStep('Uploading photos...')
       const photoUploads = await Promise.all(
         photos.map(async (photo) => {
-          const formData = new FormData()
-          formData.append('file', photo.file)
-
-          const response = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData,
+          // Direct upload from browser to Blob storage (bypasses size limits)
+          const blob = await upload(photo.file.name, photo.file, {
+            access: 'public',
+            handleUploadUrl: '/api/upload',
           })
 
-          if (!response.ok) throw new Error('Photo upload failed')
-
-          const { url } = await response.json()
-          return { ...photo, url }
+          return { ...photo, url: blob.url }
         })
       )
 
