@@ -48,11 +48,9 @@ export async function POST(request: Request) {
       alt: content.photos[photos.indexOf(photo)]?.alt || '',
     }))
 
-    // Create CMS item in Webflow
-    // Note: Field names depend on your Webflow CMS collection structure
-    // You'll need to customize these to match your collection
+    // Create CMS item in Webflow API v2 format
     const cmsItemData = {
-      fields: {
+      fieldData: {
         name: content.title,
         slug: content.slug,
         description: content.description,
@@ -60,14 +58,13 @@ export async function POST(request: Request) {
         category: content.category,
         tags: content.tags.join(', '),
         'seo-keywords': content.seoKeywords.join(', '),
-        // Gallery images - this depends on your Webflow structure
-        // For a multi-image field, you might need multiple API calls
-        'gallery-images': imageAssets[0]?.url || '', // Main image
-        'post-body': content.description, // Rich text content
-        _archived: false,
-        _draft: draft,
+        'main-image': imageAssets[0]?.url || '', // Main image URL
       },
+      isDraft: draft,
+      isArchived: false,
     }
+
+    console.log('Creating Webflow item with data:', JSON.stringify(cmsItemData, null, 2))
 
     // Create the item via Webflow API v2
     const createResponse = await fetch(
