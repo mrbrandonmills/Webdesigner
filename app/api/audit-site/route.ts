@@ -161,7 +161,7 @@ Analyze:
 Be specific and actionable. Extract exact phrases they use. Identify their unique voice. This style guide will be used to generate new content that sounds authentically like them.`
 
     const { object: styleGuide } = await generateObject({
-      model: anthropic('claude-3-5-sonnet-20240620'),
+      model: anthropic('claude-sonnet-4-20250514'), // Latest Claude Sonnet 4.5
       schema: StyleGuideSchema,
       prompt,
       temperature: 0.3, // Lower temp for more consistent analysis
