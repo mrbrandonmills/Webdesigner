@@ -12,6 +12,9 @@ const config: Config = {
         background: 'var(--background)',
         foreground: 'var(--foreground)',
       },
+      fontFamily: {
+        serif: ['Cormorant Garamond', 'Playfair Display', 'Georgia', 'serif'],
+      },
       typography: {
         DEFAULT: {
           css: {

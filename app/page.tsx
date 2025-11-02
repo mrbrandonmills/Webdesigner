@@ -4,6 +4,24 @@ import Link from 'next/link'
 export default function Home() {
   return (
     <div className="space-y-6">
+      {/* Gallery Experience Banner */}
+      <div className="bg-gradient-to-r from-black via-gray-900 to-black rounded-2xl p-8 shadow-2xl border border-white/10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-white">
+            <h2 className="text-3xl font-bold mb-2">🎨 View Art Gallery Experience</h2>
+            <p className="text-gray-400 text-lg">
+              Immersive portfolio with cinematic animations and smooth interactions
+            </p>
+          </div>
+          <Link
+            href="/gallery"
+            className="bg-white text-black font-bold text-xl px-8 py-4 rounded-xl hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 whitespace-nowrap"
+          >
+            ✨ Enter Gallery
+          </Link>
+        </div>
+      </div>
+
       {/* Autonomous Import Banner */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 shadow-2xl border border-purple-400/30">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">

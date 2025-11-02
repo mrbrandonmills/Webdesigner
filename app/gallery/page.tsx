@@ -1,60 +1,53 @@
-export default function GalleryPage() {
+import { fetchProjects } from '@/lib/webflow-client'
+import { Hero } from '@/components/gallery/hero'
+import { ProjectGrid } from '@/components/gallery/project-grid'
+
+export const metadata = {
+  title: 'Portfolio | Brandon Mills',
+  description: 'Fashion model, actor, author, cognitive researcher, and AI engineer. Explore a multifaceted portfolio of creative work.',
+}
+
+export default async function GalleryPage() {
+  const projects = await fetchProjects()
+
   return (
-    <div className="text-center py-12">
-      <div className="text-6xl mb-4">🎉</div>
-      <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-        Success!
-      </h2>
-      <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-        Your gallery has been published to Webflow
-      </p>
+    <main className="min-h-screen bg-black">
+      <Hero />
 
-      <div className="flex gap-4 justify-center">
-        <a
-          href="/"
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Upload Another Shoot
-        </a>
-        <a
-          href={process.env.NEXT_PUBLIC_WEBFLOW_SITE_URL || '#'}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-        >
-          View on Website
-        </a>
+      {/* Section title */}
+      <div className="px-8 lg:px-16 py-16 border-t border-white/10">
+        <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white font-light text-center mb-4">
+          Selected Work
+        </h2>
+        <p className="text-center text-gray-500 text-sm tracking-wide">
+          {projects.length} Projects
+        </p>
       </div>
 
-      <div className="mt-12 max-w-2xl mx-auto">
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-          <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-            What's Next?
-          </h3>
-          <ul className="text-left space-y-3 text-gray-600 dark:text-gray-400">
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-1">✓</span>
-              <span>Your content is live on Webflow (or saved as draft)</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-1">✓</span>
-              <span>Images are optimized with Cloudinary for fast loading</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-green-500 mt-1">✓</span>
-              <span>SEO meta tags are configured automatically</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-500 mt-1">→</span>
-              <span>Share on social media to drive traffic</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-500 mt-1">→</span>
-              <span>Monitor analytics to track performance</span>
-            </li>
-          </ul>
+      <ProjectGrid projects={projects} />
+
+      {/* Footer */}
+      <footer className="border-t border-white/10 py-16 px-8 lg:px-16">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-sm text-gray-500">
+          <p>© {new Date().getFullYear()} Brandon Mills. All rights reserved.</p>
+          <div className="flex gap-8">
+            <a
+              href="mailto:brandon@brandonmills.com"
+              className="hover:text-white transition-colors"
+              data-cursor-hover
+            >
+              Contact
+            </a>
+            <a
+              href="/"
+              className="hover:text-white transition-colors"
+              data-cursor-hover
+            >
+              Dashboard
+            </a>
+          </div>
         </div>
-      </div>
-    </div>
+      </footer>
+    </main>
   )
 }
