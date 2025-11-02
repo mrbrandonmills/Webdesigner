@@ -3,12 +3,20 @@
 import { useState } from 'react'
 import { Upload, Mic, FileText, Image, Send, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import FileUploader from '@/components/file-uploader'
 
 export default function AdminPage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<'upload' | 'voice' | 'manage'>('upload')
   const [isRecording, setIsRecording] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+
+  // Upload form state
+  const [contentType, setContentType] = useState<'research' | 'essay' | 'modeling' | 'creative' | ''>('')
+  const [category, setCategory] = useState('')
+  const [title, setTitle] = useState('')
+  const [autoImage, setAutoImage] = useState(false)
+  const [autoPublish, setAutoPublish] = useState(true)
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
@@ -87,14 +95,19 @@ export default function AdminPage() {
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[
-                    { id: 'research', label: 'Research Paper', icon: '🧠', desc: 'Cognitive Science' },
-                    { id: 'essay', label: 'Essay', icon: '✍️', desc: 'Thought Leadership' },
-                    { id: 'modeling', label: 'Photo Shoot', icon: '📸', desc: 'Modeling Work' },
-                    { id: 'creative', label: 'Creative Work', icon: '🎭', desc: 'Acting/Projects' },
+                    { id: 'research' as const, label: 'Research Paper', icon: '🧠', desc: 'Cognitive Science' },
+                    { id: 'essay' as const, label: 'Essay', icon: '✍️', desc: 'Thought Leadership' },
+                    { id: 'modeling' as const, label: 'Photo Shoot', icon: '📸', desc: 'Modeling Work' },
+                    { id: 'creative' as const, label: 'Creative Work', icon: '🎭', desc: 'Acting/Projects' },
                   ].map((type) => (
                     <button
                       key={type.id}
-                      className="p-4 bg-white/5 border border-white/10 hover:border-accent-gold hover:bg-white/10 transition-all text-left"
+                      onClick={() => setContentType(type.id)}
+                      className={`p-4 border transition-all text-left ${
+                        contentType === type.id
+                          ? 'bg-accent-gold/10 border-accent-gold'
+                          : 'bg-white/5 border-white/10 hover:border-accent-gold hover:bg-white/10'
+                      }`}
                     >
                       <div className="text-2xl mb-2">{type.icon}</div>
                       <div className="font-medium text-sm mb-1">{type.label}</div>
@@ -104,23 +117,16 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Drag & Drop Zone */}
-              <div className="border-2 border-dashed border-white/20 rounded-lg p-12 text-center hover:border-accent-gold transition-colors cursor-pointer">
-                <Upload size={48} className="mx-auto mb-4 text-white/40" />
-                <p className="text-lg mb-2">Drop files here or click to browse</p>
-                <p className="text-sm text-white/40">
-                  PDFs, Word docs, photos, videos, or text files
-                </p>
-              </div>
-
               {/* Metadata Fields */}
-              <div className="mt-8 space-y-4">
+              <div className="mb-6 space-y-4">
                 <div>
                   <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
                     Title (optional - AI will suggest)
                   </label>
                   <input
                     type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                     placeholder="Leave blank for AI to generate"
                     className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-accent-gold transition-colors"
                   />
@@ -130,7 +136,11 @@ export default function AdminPage() {
                   <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
                     Category
                   </label>
-                  <select className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-accent-gold transition-colors">
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-accent-gold transition-colors"
+                  >
                     <option value="">Auto-categorize with AI</option>
                     <option value="mind">Mind (Cognitive Research)</option>
                     <option value="body">Body (Modeling)</option>
@@ -140,23 +150,40 @@ export default function AdminPage() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <input type="checkbox" id="auto-image" className="w-4 h-4" />
+                  <input
+                    type="checkbox"
+                    id="auto-image"
+                    checked={autoImage}
+                    onChange={(e) => setAutoImage(e.target.checked)}
+                    className="w-4 h-4"
+                  />
                   <label htmlFor="auto-image" className="text-sm text-white/60">
                     Generate visual theme image/video with AI
                   </label>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <input type="checkbox" id="auto-publish" className="w-4 h-4" defaultChecked />
+                  <input
+                    type="checkbox"
+                    id="auto-publish"
+                    checked={autoPublish}
+                    onChange={(e) => setAutoPublish(e.target.checked)}
+                    className="w-4 h-4"
+                  />
                   <label htmlFor="auto-publish" className="text-sm text-white/60">
                     Auto-publish to Medium, LinkedIn, Instagram
                   </label>
                 </div>
               </div>
 
-              <button className="w-full mt-6 px-6 py-4 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors">
-                Upload & Process
-              </button>
+              {/* File Uploader Component */}
+              <FileUploader
+                contentType={contentType}
+                category={category}
+                title={title}
+                autoImage={autoImage}
+                autoPublish={autoPublish}
+              />
             </div>
           </div>
         )}

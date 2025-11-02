@@ -15,7 +15,21 @@ export async function POST(request: Request): Promise<NextResponse> {
       onBeforeGenerateToken: async (pathname: string) => {
         // Validate file type (optional)
         return {
-          allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'audio/mpeg', 'audio/wav', 'audio/webm'],
+          allowedContentTypes: [
+            // Images
+            'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/heic',
+            // Audio (for voice memos)
+            'audio/mpeg', 'audio/wav', 'audio/webm', 'audio/mp4', 'audio/ogg',
+            // Video
+            'video/mp4', 'video/quicktime', 'video/webm', 'video/avi',
+            // Documents (essays, papers)
+            'application/pdf',
+            'application/msword', // .doc
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+            'text/plain', // .txt
+            'text/markdown', // .md
+            'application/rtf', // .rtf
+          ],
           tokenPayload: JSON.stringify({}),
         }
       },
