@@ -50,7 +50,7 @@ export default function AboutPage() {
             <br className="hidden md:block" />
             they are complete."
           </blockquote>
-          <div className="luxury-divider"></div
+          <div className="luxury-divider"></div>
         </div>
       </section>
 
