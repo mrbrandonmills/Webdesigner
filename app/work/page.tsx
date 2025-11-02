@@ -3,22 +3,64 @@ import Link from 'next/link'
 export default function WorkPage() {
   const categories = [
     {
-      title: 'Modeling',
-      description: 'Fashion editorial, commercial, and artistic modeling work',
-      link: '/gallery?category=modeling',
-      image: null, // Will add actual images later
+      title: 'Mind',
+      subtitle: 'Cognitive Science Research',
+      description: 'Exploring consciousness, embodied cognition, and the nature of experience through empirical research and philosophical inquiry',
+      link: '/work/mind',
+      icon: '🧠',
+      color: 'from-blue-500/20 to-purple-500/20',
     },
     {
-      title: 'Photography',
-      description: 'Portrait, fashion, and conceptual photography',
-      link: '/gallery?category=photography',
-      image: null,
+      title: 'Body',
+      subtitle: 'Modeling & Performance',
+      description: 'Fashion modeling, physical expression, and the embodiment of aesthetic presence through commercial and editorial work',
+      link: '/gallery?category=body',
+      icon: '💫',
+      color: 'from-pink-500/20 to-rose-500/20',
     },
     {
-      title: 'Creative Direction',
-      description: 'Art direction, styling, and conceptual projects',
-      link: '/gallery?category=creative',
-      image: null,
+      title: 'Creativity',
+      subtitle: 'Acting & Expression',
+      description: 'Performance art, theatrical work, and creative projects exploring character, narrative, and human emotion',
+      link: '/work/creativity',
+      icon: '🎭',
+      color: 'from-amber-500/20 to-orange-500/20',
+    },
+    {
+      title: 'Synthesis',
+      subtitle: 'Self-Actualization',
+      description: 'Integrating mind, body, and creativity into unified expression through writing, AI development, and personal experiments',
+      link: '/work/synthesis',
+      icon: '✨',
+      color: 'from-emerald-500/20 to-teal-500/20',
+    },
+  ]
+
+  const featuredWork = [
+    {
+      category: 'Mind',
+      title: 'Research in Embodied Consciousness',
+      description: 'Investigating how physical experience shapes cognitive processes',
+      status: 'In Progress',
+    },
+    {
+      category: 'Body',
+      title: 'Editorial Fashion Portfolio',
+      description: 'High-fashion and commercial modeling work',
+      status: 'View Gallery',
+      link: '/gallery',
+    },
+    {
+      category: 'Creativity',
+      title: 'Character Studies & Performance',
+      description: 'Theatrical and improvised performance work',
+      status: 'Coming Soon',
+    },
+    {
+      category: 'Synthesis',
+      title: 'Essay Collection',
+      description: 'Writing on consciousness, creativity, and integration',
+      status: 'Coming Soon',
     },
   ]
 
@@ -28,42 +70,47 @@ export default function WorkPage() {
       <section className="pt-32 pb-20 container-wide">
         <div className="max-w-4xl mx-auto text-center space-y-8 animate-fadeIn">
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-light font-serif leading-none">
-            Selected Work
+            Research & Creative Work
           </h1>
           <div className="luxury-divider"></div>
           <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed">
-            A multifaceted exploration of form, narrative, and aesthetic —
-            where therapeutic warmth meets renaissance sophistication
+            An integrated exploration of consciousness —
+            <br className="hidden md:block" />
+            where research, embodiment, and creative expression converge
           </p>
         </div>
       </section>
 
-      {/* Categories Grid */}
-      <section className="pb-32 container-wide">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+      {/* Four Pillars */}
+      <section className="pb-20 container-wide">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {categories.map((category, index) => (
             <Link
               key={category.title}
               href={category.link}
-              className="group relative aspect-[3/4] bg-white/5 border border-white/10 overflow-hidden hover:border-white/30 transition-all duration-500"
+              className="group relative bg-white/5 border border-white/10 p-8 md:p-12 overflow-hidden hover:border-white/30 transition-all duration-500"
               style={{
-                animation: `fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.2}s forwards`,
+                animation: `fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.15}s forwards`,
                 opacity: 0,
               }}
             >
-              {/* Placeholder for image */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+              {/* Background Gradient */}
+              <div className={`absolute inset-0 bg-gradient-to-br ${category.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
 
-              {/* Content Overlay */}
-              <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-t from-black via-black/50 to-transparent group-hover:from-black/80 transition-all duration-500">
-                <h3 className="text-3xl md:text-4xl font-light font-serif mb-3 transform group-hover:translate-y-[-8px] transition-transform duration-500">
+              {/* Content */}
+              <div className="relative space-y-4">
+                <div className="text-4xl md:text-5xl mb-4">{category.icon}</div>
+                <h3 className="text-3xl md:text-4xl font-light font-serif">
                   {category.title}
                 </h3>
-                <p className="text-white/70 text-sm md:text-base transform group-hover:translate-y-[-8px] transition-transform duration-500">
+                <p className="text-white/60 text-sm tracking-wider uppercase">
+                  {category.subtitle}
+                </p>
+                <p className="text-white/70 leading-relaxed">
                   {category.description}
                 </p>
-                <div className="mt-6 text-sm tracking-widest uppercase text-white/50 group-hover:text-white/80 transform group-hover:translate-y-[-8px] transition-all duration-500">
-                  View Work →
+                <div className="pt-4 text-sm tracking-widest uppercase text-white/50 group-hover:text-white/80 transition-colors">
+                  Explore →
                 </div>
               </div>
             </Link>
@@ -71,13 +118,69 @@ export default function WorkPage() {
         </div>
       </section>
 
-      {/* Featured Projects Section - Coming Soon */}
+      {/* Featured Work */}
       <section className="pb-32 container-wide">
-        <div className="text-center space-y-8">
-          <h2 className="text-3xl md:text-5xl font-light font-serif">Featured Projects</h2>
-          <p className="text-white/60 max-w-2xl mx-auto">
-            Highlighted collaborations and personal projects coming soon
-          </p>
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-5xl font-light font-serif text-center mb-16">
+            Featured Work
+          </h2>
+          <div className="space-y-6">
+            {featuredWork.map((work, index) => (
+              <div
+                key={work.title}
+                className="bg-white/5 border border-white/10 p-6 md:p-8 hover:border-white/30 transition-all duration-300"
+                style={{
+                  animation: `fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.1}s forwards`,
+                  opacity: 0,
+                }}
+              >
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <span className="text-xs tracking-wider uppercase text-accent-gold">
+                        {work.category}
+                      </span>
+                    </div>
+                    <h3 className="text-xl md:text-2xl font-serif mb-2">
+                      {work.title}
+                    </h3>
+                    <p className="text-white/60 text-sm md:text-base">
+                      {work.description}
+                    </p>
+                  </div>
+                  <div className="flex-shrink-0">
+                    {work.link ? (
+                      <Link
+                        href={work.link}
+                        className="inline-block px-6 py-3 bg-accent-gold text-black hover:bg-accent-hover transition-colors text-sm tracking-wider uppercase"
+                      >
+                        {work.status}
+                      </Link>
+                    ) : (
+                      <span className="inline-block px-6 py-3 bg-white/5 border border-white/10 text-white/40 text-sm tracking-wider uppercase">
+                        {work.status}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Philosophy */}
+      <section className="pb-32 container-wide">
+        <div className="max-w-3xl mx-auto text-center space-y-8">
+          <div className="luxury-divider"></div>
+          <blockquote className="text-2xl md:text-3xl font-light font-serif text-white/90 leading-relaxed py-8">
+            "To understand consciousness, one must inhabit it fully —
+            <br className="hidden md:block" />
+            through thought, through body, through creative expression,
+            <br className="hidden md:block" />
+            and through the synthesis of all three."
+          </blockquote>
+          <div className="luxury-divider"></div>
         </div>
       </section>
     </div>

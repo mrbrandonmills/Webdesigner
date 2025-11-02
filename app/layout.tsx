@@ -4,12 +4,12 @@ import Navigation from '@/components/navigation'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Brandon Mills | Model · Photographer · Creative',
-  description: 'Therapeutic warmth meets renaissance sophistication. Portfolio of modeling, photography, and creative work by Brandon Mills.',
-  keywords: 'Brandon Mills, modeling, photography, fashion, creative portfolio, Los Angeles, renaissance man',
+  title: 'Brandon Mills | Cognitive Science Researcher · Model · Actor',
+  description: 'Exploring the integration of mind, body, and creativity. Cognitive science research, modeling, acting, and self-actualization by Brandon Mills.',
+  keywords: 'Brandon Mills, cognitive science, researcher, model, actor, self-actualization, embodied cognition, consciousness, performance, philosophy',
   openGraph: {
-    title: 'Brandon Mills | Model · Photographer · Creative',
-    description: 'Therapeutic warmth meets renaissance sophistication',
+    title: 'Brandon Mills | Cognitive Science Researcher · Model · Actor',
+    description: 'Where mind, body, and creativity converge into unified self-expression',
     type: 'website',
     locale: 'en_US',
   },

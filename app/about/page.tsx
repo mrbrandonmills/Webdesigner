@@ -11,7 +11,7 @@ export default function AboutPage() {
           </h1>
           <div className="luxury-divider"></div>
           <p className="text-xl md:text-2xl text-white/80 leading-relaxed font-light">
-            Model · Photographer · Creative · Technologist
+            Cognitive Science Researcher · Model · Actor · Self-Actualization Mentor
           </p>
         </div>
       </section>
@@ -21,21 +21,22 @@ export default function AboutPage() {
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="space-y-6 text-lg text-white/70 leading-relaxed">
             <p className="animate-fadeIn">
-              A multifaceted creative exploring the intersection of art, technology, and human experience.
-              My work spans modeling, photography, fashion design, and AI-powered innovation —
-              each discipline informing and enriching the others.
+              A cognitive science researcher investigating the embodied nature of human consciousness,
+              where mind, body, and creativity converge into a unified expression of self.
+              My work explores how physical experience informs cognition, how performance shapes understanding,
+              and how self-actualization emerges from the synthesis of all dimensions of being.
             </p>
 
             <p className="animate-fadeIn" style={{ animationDelay: '0.2s', opacity: 0 }}>
-              Where therapeutic warmth meets renaissance sophistication. Not selling services,
-              but showcasing the continuous evolution of creative expression across multiple mediums.
+              Not compartmentalized, but integrated. Research informs performance. Modeling deepens
+              understanding of embodiment. Acting reveals the performative nature of consciousness.
+              Each facet illuminates the others in a continuous dance of discovery.
             </p>
 
             <p className="animate-fadeIn" style={{ animationDelay: '0.4s', opacity: 0 }}>
-              Currently building at the intersection of creativity and technology — developing AI systems
-              that amplify human creativity rather than replace it. From automated content generation
-              to intelligent training systems, the goal is to free creators to focus on what they do best:
-              creating.
+              Building AI systems that amplify human potential across domains — from automated research
+              synthesis to creative expression tools. The goal is to free humans to focus on what makes
+              us uniquely human: the integrated experience of being conscious, embodied, and creative.
             </p>
           </div>
         </div>
@@ -46,9 +47,9 @@ export default function AboutPage() {
         <div className="max-w-3xl mx-auto">
           <div className="luxury-divider"></div>
           <blockquote className="text-2xl md:text-3xl font-light font-serif text-center text-white/90 leading-relaxed py-12 animate-fadeIn">
-            "The multifaceted individual is not divided —
+            "The integrated self is not fragmented —
             <br className="hidden md:block" />
-            they are complete."
+            mind, body, and creativity emerge from a single source."
           </blockquote>
           <div className="luxury-divider"></div>
         </div>
@@ -80,20 +81,20 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {[
               {
-                title: 'Visual Arts',
-                areas: ['Fashion Modeling', 'Editorial Photography', 'Conceptual Art Direction', 'Fashion Design'],
+                title: 'Mind',
+                areas: ['Cognitive Science Research', 'Consciousness Studies', 'Embodied Cognition', 'Psychology & Philosophy'],
               },
               {
-                title: 'Technology',
-                areas: ['AI Systems Development', 'Creative Automation', 'Web Development', 'SaaS Products'],
+                title: 'Body',
+                areas: ['Fashion Modeling', 'Physical Performance', 'Embodiment Theory', 'Mind-Body Integration'],
               },
               {
-                title: 'Philosophy',
-                areas: ['Aesthetics', 'Human Experience', 'Creative Process', 'Renaissance Thinking'],
+                title: 'Creativity',
+                areas: ['Acting & Performance', 'Creative Expression', 'Artistic Practice', 'Improvisational Art'],
               },
               {
-                title: 'Entrepreneurship',
-                areas: ['Digital Products', 'Creative Consulting', 'E-commerce', 'Brand Building'],
+                title: 'Synthesis',
+                areas: ['Self-Actualization', 'AI Development', 'Systems Thinking', 'Personal Development'],
               },
             ].map((category, index) => (
               <div
