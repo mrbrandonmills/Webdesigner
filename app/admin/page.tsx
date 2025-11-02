@@ -4,12 +4,15 @@ import { useState } from 'react'
 import { Upload, Mic, FileText, Image, Send, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import FileUploader from '@/components/file-uploader'
+import VoiceRecorder from '@/components/voice-recorder'
+import { upload } from '@vercel/blob/client'
 
 export default function AdminPage() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<'upload' | 'voice' | 'manage'>('upload')
-  const [isRecording, setIsRecording] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [processingStatus, setProcessingStatus] = useState<string[]>([])
+  const [processedEssay, setProcessedEssay] = useState<any>(null)
 
   // Upload form state
   const [contentType, setContentType] = useState<'research' | 'essay' | 'modeling' | 'creative' | ''>('')
@@ -18,9 +21,88 @@ export default function AdminPage() {
   const [autoImage, setAutoImage] = useState(false)
   const [autoPublish, setAutoPublish] = useState(true)
 
+  // Voice memo form state
+  const [voiceCategory, setVoiceCategory] = useState('')
+  const [voiceAutoImage, setVoiceAutoImage] = useState(true)
+  const [voiceAutoPublish, setVoiceAutoPublish] = useState(true)
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
     router.push('/gallery')
+  }
+
+  const handleRecordingComplete = async (audioBlob: Blob, duration: number) => {
+    setIsProcessing(true)
+    setProcessingStatus([])
+    setProcessedEssay(null)
+
+    try {
+      // Status updates
+      const addStatus = (status: string) => {
+        setProcessingStatus((prev) => [...prev, status])
+      }
+
+      addStatus(`✓ Recorded ${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, '0')}`)
+
+      // Upload audio to Vercel Blob
+      addStatus('⏳ Uploading audio...')
+      const audioFile = new File([audioBlob], `voice-memo-${Date.now()}.webm`, {
+        type: 'audio/webm',
+      })
+
+      const blob = await upload(audioFile.name, audioFile, {
+        access: 'public',
+        handleUploadUrl: '/api/upload',
+      })
+
+      addStatus('✓ Audio uploaded')
+
+      // Process with AI
+      addStatus('⏳ Transcribing with Whisper AI...')
+
+      const formData = new FormData()
+      formData.append('audio', audioBlob, 'voice-memo.webm')
+      formData.append('category', voiceCategory)
+      formData.append('autoImage', voiceAutoImage.toString())
+      formData.append('autoPublish', voiceAutoPublish.toString())
+
+      const response = await fetch('/api/process-voice', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || 'Processing failed')
+      }
+
+      const result = await response.json()
+
+      addStatus('✓ Transcribed')
+      addStatus('✓ Formatted as essay')
+      addStatus('✓ Generated title & SEO')
+      addStatus('✓ Auto-categorized')
+
+      if (voiceAutoImage) {
+        addStatus('✓ Generated visual theme prompt')
+      }
+
+      if (voiceAutoPublish) {
+        addStatus('⏳ Publishing to platforms...')
+      }
+
+      setProcessedEssay(result.data)
+      addStatus(`✅ Complete: "${result.data.title}"`)
+
+      alert(`✅ Essay processed successfully!\n\nTitle: ${result.data.title}\nWords: ${result.data.wordCount}\nCategory: ${result.data.category}`)
+    } catch (error) {
+      console.error('Voice processing error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      setProcessingStatus((prev) => [...prev, `❌ Error: ${errorMessage}`])
+      alert(`Error processing voice memo: ${errorMessage}`)
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   return (
@@ -198,39 +280,117 @@ export default function AdminPage() {
                 optimize for SEO, and publish across platforms.
               </p>
 
-              {/* Recording Interface */}
-              <div className="text-center py-12">
-                <button
-                  onClick={() => setIsRecording(!isRecording)}
-                  className={`w-32 h-32 rounded-full flex items-center justify-center transition-all ${
-                    isRecording
-                      ? 'bg-red-500 hover:bg-red-600 animate-pulse'
-                      : 'bg-accent-gold hover:bg-accent-hover'
-                  }`}
-                >
-                  <Mic size={48} className={isRecording ? 'text-white' : 'text-black'} />
-                </button>
-                <p className="mt-4 text-lg">
-                  {isRecording ? 'Recording... Click to stop' : 'Click to start recording'}
-                </p>
-                {isRecording && (
-                  <p className="text-sm text-white/40 mt-2">00:00:00</p>
-                )}
+              {/* Settings */}
+              <div className="mb-6 space-y-4 bg-white/5 border border-white/10 rounded-lg p-6">
+                <h3 className="text-sm font-medium tracking-wider uppercase text-white/60">
+                  Processing Options
+                </h3>
+
+                <div>
+                  <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
+                    Category
+                  </label>
+                  <select
+                    value={voiceCategory}
+                    onChange={(e) => setVoiceCategory(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-accent-gold transition-colors"
+                    disabled={isProcessing}
+                  >
+                    <option value="">Auto-categorize with AI</option>
+                    <option value="mind">Mind (Cognitive Research)</option>
+                    <option value="body">Body (Modeling)</option>
+                    <option value="creativity">Creativity (Acting)</option>
+                    <option value="synthesis">Synthesis (Self-Actualization)</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="voice-auto-image"
+                    checked={voiceAutoImage}
+                    onChange={(e) => setVoiceAutoImage(e.target.checked)}
+                    className="w-4 h-4"
+                    disabled={isProcessing}
+                  />
+                  <label htmlFor="voice-auto-image" className="text-sm text-white/60">
+                    Generate visual theme image with AI
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    id="voice-auto-publish"
+                    checked={voiceAutoPublish}
+                    onChange={(e) => setVoiceAutoPublish(e.target.checked)}
+                    className="w-4 h-4"
+                    disabled={isProcessing}
+                  />
+                  <label htmlFor="voice-auto-publish" className="text-sm text-white/60">
+                    Auto-publish to Medium, LinkedIn, Instagram
+                  </label>
+                </div>
               </div>
 
-              {/* AI Processing Options */}
+              {/* Voice Recorder */}
+              <VoiceRecorder onRecordingComplete={handleRecordingComplete} />
+
+              {/* Processing Status */}
+              {isProcessing && (
+                <div className="mt-8 p-6 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                    <span className="text-blue-400">Processing your essay...</span>
+                  </div>
+                  <div className="space-y-2 text-sm text-white/60">
+                    {processingStatus.map((status, i) => (
+                      <div key={i}>{status}</div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Processed Essay Preview */}
+              {processedEssay && !isProcessing && (
+                <div className="mt-8 p-6 bg-green-500/10 border border-green-500/30 rounded-lg space-y-4">
+                  <h3 className="text-lg font-semibold text-green-400">
+                    ✅ Essay Processed Successfully!
+                  </h3>
+                  <div className="space-y-2 text-sm">
+                    <div>
+                      <span className="text-white/60">Title:</span>{' '}
+                      <span className="text-white">{processedEssay.title}</span>
+                    </div>
+                    <div>
+                      <span className="text-white/60">Category:</span>{' '}
+                      <span className="text-white capitalize">{processedEssay.category}</span>
+                    </div>
+                    <div>
+                      <span className="text-white/60">Word Count:</span>{' '}
+                      <span className="text-white">{processedEssay.wordCount}</span>
+                    </div>
+                    <div className="pt-4">
+                      <span className="text-white/60">Excerpt:</span>
+                      <p className="text-white/80 italic mt-2">{processedEssay.excerpt}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* AI Processing Info */}
               <div className="border-t border-white/10 pt-8 mt-8 space-y-4">
                 <h3 className="text-lg font-serif mb-4">AI Will Automatically:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {[
-                    { icon: '🎯', text: 'Transcribe & format as professional essay' },
-                    { icon: '🎨', text: 'Generate/find theme image or video' },
+                    { icon: '🎯', text: 'Transcribe with OpenAI Whisper' },
+                    { icon: '✍️', text: 'Format as professional essay with Claude' },
+                    { icon: '📖', text: 'Generate compelling title' },
                     { icon: '🏷️', text: 'Auto-categorize (Mind/Body/Creativity/Synthesis)' },
-                    { icon: '🔍', text: 'Optimize SEO & add meta tags' },
-                    { icon: '📝', text: 'Post to Medium with proper formatting' },
-                    { icon: '💼', text: 'Share story on LinkedIn' },
-                    { icon: '📱', text: 'Create Instagram post with excerpt' },
-                    { icon: '✅', text: 'Add to correct page section on your site' },
+                    { icon: '🔍', text: 'Create SEO meta description & keywords' },
+                    { icon: '📝', text: 'Generate social media excerpt' },
+                    { icon: '🎨', text: 'Create visual theme prompt (optional)' },
+                    { icon: '🚀', text: 'Publish to platforms (optional)' },
                   ].map((item, i) => (
                     <div key={i} className="flex items-start gap-3 text-sm text-white/80">
                       <span className="text-xl">{item.icon}</span>
@@ -239,22 +399,6 @@ export default function AdminPage() {
                   ))}
                 </div>
               </div>
-
-              {isProcessing && (
-                <div className="mt-8 p-6 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-                    <span className="text-blue-400">Processing your essay...</span>
-                  </div>
-                  <div className="space-y-2 text-sm text-white/60">
-                    <div>✓ Transcribed (2,847 words)</div>
-                    <div>✓ Formatted as essay</div>
-                    <div className="animate-pulse">⏳ Generating visual theme...</div>
-                    <div className="text-white/30">⏳ Optimizing SEO...</div>
-                    <div className="text-white/30">⏳ Publishing to platforms...</div>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         )}
