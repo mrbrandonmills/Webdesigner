@@ -6,8 +6,20 @@ import { BRAND_VOICE_PROFILE } from '@/lib/voice-profile'
 import fs from 'fs'
 import path from 'path'
 
+// Portfolio post interface
+interface PortfolioPost {
+  title: string
+  slug: string
+  date: string
+  status: string
+  description: string
+  imageCount: number
+  images: string[]
+  totalContent: number
+}
+
 // Read portfolio content dynamically
-function getPortfolioContent() {
+function getPortfolioContent(): PortfolioPost[] {
   const portfolioContentPath = path.join(process.cwd(), 'portfolio-content.json')
   return JSON.parse(fs.readFileSync(portfolioContentPath, 'utf-8'))
 }
