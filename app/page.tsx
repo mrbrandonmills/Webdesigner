@@ -1,8 +1,27 @@
 import { UploadInterface } from '@/components/upload-interface'
+import Link from 'next/link'
 
 export default function Home() {
   return (
     <div className="space-y-6">
+      {/* Autonomous Import Banner */}
+      <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 shadow-2xl border border-purple-400/30">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="text-white">
+            <h2 className="text-3xl font-bold mb-2">🤖 Build Complete Portfolio Site</h2>
+            <p className="text-purple-100 text-lg">
+              Import all 10 posts from Squarespace with AI-enhanced content
+            </p>
+          </div>
+          <Link
+            href="/admin/autonomous-import-all"
+            className="bg-white text-purple-600 font-bold text-xl px-8 py-4 rounded-xl hover:bg-purple-50 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 whitespace-nowrap"
+          >
+            🚀 Start Import
+          </Link>
+        </div>
+      </div>
+
       <div className="text-center space-y-2">
         <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
           Upload Your Latest Shoot

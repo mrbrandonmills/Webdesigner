@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 interface Post {
   index: number
@@ -93,6 +94,15 @@ export default function AutonomousImportAllPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 p-8">
       <div className="max-w-7xl mx-auto">
+        {/* Back Button */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 mb-6 text-white/80 hover:text-white transition-colors"
+        >
+          <span className="text-2xl">←</span>
+          <span className="text-lg">Back to Home</span>
+        </Link>
+
         {/* Header */}
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 mb-8 border border-white/20">
           <h1 className="text-4xl font-bold mb-3 text-white">
