@@ -34,7 +34,12 @@ export async function POST(request: Request) {
       const itemsArray = Array.isArray(items) ? items : [items]
 
       result.portfolioItems = itemsArray
-        .filter((item: any) => item) // Filter out empty items
+        .filter((item: any) => {
+          // CRITICAL: Only import actual posts, NOT attachments (images)
+          // Attachments show up as separate items and cause duplicates!
+          const postType = item['wp:post_type']
+          return item && postType === 'post'
+        })
         .map((item: any) => ({
           title: item.title || 'Untitled',
           description: item.description || item['content:encoded'] || '',
