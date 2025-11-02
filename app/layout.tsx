@@ -32,6 +32,9 @@ export default function RootLayout({
                   <a href="/admin" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">
                     Site Audit
                   </a>
+                  <a href="/admin/import" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">
+                    Import
+                  </a>
                   <a href="/gallery" className="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">
                     Gallery
                   </a>
