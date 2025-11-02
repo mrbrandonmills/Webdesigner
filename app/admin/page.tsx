@@ -1,422 +1,281 @@
 'use client'
 
 import { useState } from 'react'
+import { Upload, Mic, FileText, Image, Send, LogOut } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function AdminPage() {
-  const [url, setUrl] = useState('')
-  const [isAuditing, setIsAuditing] = useState(false)
-  const [styleGuide, setStyleGuide] = useState<any>(null)
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const [activeTab, setActiveTab] = useState<'upload' | 'voice' | 'manage'>('upload')
+  const [isRecording, setIsRecording] = useState(false)
+  const [isProcessing, setIsProcessing] = useState(false)
 
-  const handleAudit = async () => {
-    if (!url) {
-      alert('Please enter a website URL')
-      return
-    }
-
-    setIsAuditing(true)
-    setError(null)
-
-    try {
-      const response = await fetch('/api/audit-site', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Audit failed')
-      }
-
-      const result = await response.json()
-      setStyleGuide(result.styleGuide)
-
-      // Save to localStorage for future content generation
-      localStorage.setItem('siteStyleGuide', JSON.stringify(result.styleGuide))
-      localStorage.setItem('styleGuideUrl', url)
-      localStorage.setItem('styleGuideTimestamp', result.timestamp)
-
-      alert('✅ Site audit complete! Style guide saved. AI will now match your brand.')
-    } catch (error) {
-      console.error('Audit error:', error)
-      setError(error instanceof Error ? error.message : 'Unknown error')
-    } finally {
-      setIsAuditing(false)
-    }
-  }
-
-  const handleClearStyleGuide = () => {
-    if (confirm('Clear saved style guide? AI will use generic style until next audit.')) {
-      localStorage.removeItem('siteStyleGuide')
-      localStorage.removeItem('styleGuideUrl')
-      localStorage.removeItem('styleGuideTimestamp')
-      setStyleGuide(null)
-      alert('Style guide cleared')
-    }
+  const handleLogout = async () => {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    router.push('/gallery')
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
-      <div className="text-center space-y-2">
-        <h2 className="text-4xl font-bold text-gray-900 dark:text-white">
-          Site Audit & Style Learning
-        </h2>
-        <p className="text-lg text-gray-600 dark:text-gray-400">
-          Teach AI to write in your voice by analyzing your existing website
-        </p>
-      </div>
-
-      {/* Audit Form */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg p-8 shadow-sm border border-gray-200 dark:border-gray-700">
-        <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-          1. Analyze Your Current Website
-        </h3>
-
-        <div className="space-y-4">
+    <div className="min-h-screen bg-black text-white pt-24 pb-20">
+      <div className="container-wide max-w-6xl">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-12">
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Website URL (Squarespace, existing site, etc.)
-            </label>
-            <input
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://yourwebsite.com"
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500"
-              disabled={isAuditing}
-            />
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-              Enter your current website URL. AI will crawl and analyze your writing style, brand voice, and visual aesthetic.
+            <h1 className="text-4xl md:text-5xl font-light font-serif mb-2">
+              Content Studio
+            </h1>
+            <p className="text-white/60">
+              Mind · Body · Creativity · Synthesis
             </p>
           </div>
-
           <button
-            onClick={handleAudit}
-            disabled={isAuditing || !url}
-            className="w-full px-6 py-4 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg font-semibold text-lg hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+            onClick={handleLogout}
+            className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/20 hover:bg-white/10 transition-colors text-sm tracking-wider"
           >
-            {isAuditing ? (
-              <>
-                <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                <span>Analyzing website... (may take 2-3 minutes)</span>
-              </>
-            ) : (
-              <>
-                <span>🔍</span>
-                <span>Run Site Audit</span>
-              </>
-            )}
+            <LogOut size={16} />
+            Logout
           </button>
+        </div>
 
-          {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
-              <p className="text-red-800 dark:text-red-300 font-medium">Error:</p>
-              <p className="text-red-700 dark:text-red-400 text-sm mt-1">{error}</p>
+        {/* Tab Navigation */}
+        <div className="flex gap-4 mb-8 border-b border-white/10">
+          <button
+            onClick={() => setActiveTab('upload')}
+            className={`pb-4 px-6 text-sm tracking-wider uppercase transition-colors border-b-2 ${
+              activeTab === 'upload'
+                ? 'border-accent-gold text-white'
+                : 'border-transparent text-white/60 hover:text-white/80'
+            }`}
+          >
+            <Upload size={16} className="inline mr-2" />
+            File Upload
+          </button>
+          <button
+            onClick={() => setActiveTab('voice')}
+            className={`pb-4 px-6 text-sm tracking-wider uppercase transition-colors border-b-2 ${
+              activeTab === 'voice'
+                ? 'border-accent-gold text-white'
+                : 'border-transparent text-white/60 hover:text-white/80'
+            }`}
+          >
+            <Mic size={16} className="inline mr-2" />
+            Voice Memo
+          </button>
+          <button
+            onClick={() => setActiveTab('manage')}
+            className={`pb-4 px-6 text-sm tracking-wider uppercase transition-colors border-b-2 ${
+              activeTab === 'manage'
+                ? 'border-accent-gold text-white'
+                : 'border-transparent text-white/60 hover:text-white/80'
+            }`}
+          >
+            <FileText size={16} className="inline mr-2" />
+            Manage Content
+          </button>
+        </div>
+
+        {/* File Upload Tab */}
+        {activeTab === 'upload' && (
+          <div className="space-y-8">
+            <div className="bg-white/5 border border-white/10 rounded-lg p-8">
+              <h2 className="text-2xl font-serif mb-6">Upload Files</h2>
+
+              {/* Content Type Selector */}
+              <div className="mb-6">
+                <label className="block text-white/60 text-sm tracking-wider uppercase mb-3">
+                  Content Type
+                </label>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {[
+                    { id: 'research', label: 'Research Paper', icon: '🧠', desc: 'Cognitive Science' },
+                    { id: 'essay', label: 'Essay', icon: '✍️', desc: 'Thought Leadership' },
+                    { id: 'modeling', label: 'Photo Shoot', icon: '📸', desc: 'Modeling Work' },
+                    { id: 'creative', label: 'Creative Work', icon: '🎭', desc: 'Acting/Projects' },
+                  ].map((type) => (
+                    <button
+                      key={type.id}
+                      className="p-4 bg-white/5 border border-white/10 hover:border-accent-gold hover:bg-white/10 transition-all text-left"
+                    >
+                      <div className="text-2xl mb-2">{type.icon}</div>
+                      <div className="font-medium text-sm mb-1">{type.label}</div>
+                      <div className="text-xs text-white/40">{type.desc}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Drag & Drop Zone */}
+              <div className="border-2 border-dashed border-white/20 rounded-lg p-12 text-center hover:border-accent-gold transition-colors cursor-pointer">
+                <Upload size={48} className="mx-auto mb-4 text-white/40" />
+                <p className="text-lg mb-2">Drop files here or click to browse</p>
+                <p className="text-sm text-white/40">
+                  PDFs, Word docs, photos, videos, or text files
+                </p>
+              </div>
+
+              {/* Metadata Fields */}
+              <div className="mt-8 space-y-4">
+                <div>
+                  <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
+                    Title (optional - AI will suggest)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Leave blank for AI to generate"
+                    className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-accent-gold transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
+                    Category
+                  </label>
+                  <select className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-accent-gold transition-colors">
+                    <option value="">Auto-categorize with AI</option>
+                    <option value="mind">Mind (Cognitive Research)</option>
+                    <option value="body">Body (Modeling)</option>
+                    <option value="creativity">Creativity (Acting)</option>
+                    <option value="synthesis">Synthesis (Self-Actualization)</option>
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" id="auto-image" className="w-4 h-4" />
+                  <label htmlFor="auto-image" className="text-sm text-white/60">
+                    Generate visual theme image/video with AI
+                  </label>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <input type="checkbox" id="auto-publish" className="w-4 h-4" defaultChecked />
+                  <label htmlFor="auto-publish" className="text-sm text-white/60">
+                    Auto-publish to Medium, LinkedIn, Instagram
+                  </label>
+                </div>
+              </div>
+
+              <button className="w-full mt-6 px-6 py-4 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors">
+                Upload & Process
+              </button>
             </div>
-          )}
+          </div>
+        )}
+
+        {/* Voice Memo Tab */}
+        {activeTab === 'voice' && (
+          <div className="space-y-8">
+            <div className="bg-white/5 border border-white/10 rounded-lg p-8">
+              <h2 className="text-2xl font-serif mb-4">Voice Essay Dictation</h2>
+              <p className="text-white/60 mb-8">
+                Dictate your entire essay. AI will transcribe, format, add visuals,
+                optimize for SEO, and publish across platforms.
+              </p>
+
+              {/* Recording Interface */}
+              <div className="text-center py-12">
+                <button
+                  onClick={() => setIsRecording(!isRecording)}
+                  className={`w-32 h-32 rounded-full flex items-center justify-center transition-all ${
+                    isRecording
+                      ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+                      : 'bg-accent-gold hover:bg-accent-hover'
+                  }`}
+                >
+                  <Mic size={48} className={isRecording ? 'text-white' : 'text-black'} />
+                </button>
+                <p className="mt-4 text-lg">
+                  {isRecording ? 'Recording... Click to stop' : 'Click to start recording'}
+                </p>
+                {isRecording && (
+                  <p className="text-sm text-white/40 mt-2">00:00:00</p>
+                )}
+              </div>
+
+              {/* AI Processing Options */}
+              <div className="border-t border-white/10 pt-8 mt-8 space-y-4">
+                <h3 className="text-lg font-serif mb-4">AI Will Automatically:</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    { icon: '🎯', text: 'Transcribe & format as professional essay' },
+                    { icon: '🎨', text: 'Generate/find theme image or video' },
+                    { icon: '🏷️', text: 'Auto-categorize (Mind/Body/Creativity/Synthesis)' },
+                    { icon: '🔍', text: 'Optimize SEO & add meta tags' },
+                    { icon: '📝', text: 'Post to Medium with proper formatting' },
+                    { icon: '💼', text: 'Share story on LinkedIn' },
+                    { icon: '📱', text: 'Create Instagram post with excerpt' },
+                    { icon: '✅', text: 'Add to correct page section on your site' },
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-start gap-3 text-sm text-white/80">
+                      <span className="text-xl">{item.icon}</span>
+                      <span>{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {isProcessing && (
+                <div className="mt-8 p-6 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                    <span className="text-blue-400">Processing your essay...</span>
+                  </div>
+                  <div className="space-y-2 text-sm text-white/60">
+                    <div>✓ Transcribed (2,847 words)</div>
+                    <div>✓ Formatted as essay</div>
+                    <div className="animate-pulse">⏳ Generating visual theme...</div>
+                    <div className="text-white/30">⏳ Optimizing SEO...</div>
+                    <div className="text-white/30">⏳ Publishing to platforms...</div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Manage Content Tab */}
+        {activeTab === 'manage' && (
+          <div className="space-y-8">
+            <div className="bg-white/5 border border-white/10 rounded-lg p-8">
+              <h2 className="text-2xl font-serif mb-6">Content Manager</h2>
+
+              {/* Filter Tabs */}
+              <div className="flex gap-4 mb-6 overflow-x-auto">
+                {['All', 'Mind', 'Body', 'Creativity', 'Synthesis'].map((filter) => (
+                  <button
+                    key={filter}
+                    className="px-4 py-2 bg-white/5 border border-white/10 hover:border-accent-gold whitespace-nowrap text-sm"
+                  >
+                    {filter}
+                  </button>
+                ))}
+              </div>
+
+              {/* Content List */}
+              <div className="space-y-4">
+                <p className="text-white/40 text-center py-12">
+                  No content yet. Upload files or record a voice memo to get started.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+          {[
+            { label: 'Essays', count: 0, icon: '📝' },
+            { label: 'Research', count: 0, icon: '🧠' },
+            { label: 'Photo Shoots', count: 0, icon: '📸' },
+            { label: 'Projects', count: 0, icon: '🎭' },
+          ].map((stat) => (
+            <div key={stat.label} className="bg-white/5 border border-white/10 p-6 text-center">
+              <div className="text-3xl mb-2">{stat.icon}</div>
+              <div className="text-3xl font-light mb-1">{stat.count}</div>
+              <div className="text-sm text-white/60">{stat.label}</div>
+            </div>
+          ))}
         </div>
       </div>
-
-      {/* What Gets Analyzed */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-6 border border-blue-200 dark:border-blue-800">
-        <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-          🧠 What the AI Learns
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
-          <div>
-            <strong>Writing Style:</strong>
-            <ul className="list-disc list-inside mt-1 space-y-1">
-              <li>Tone and voice</li>
-              <li>Sentence structure</li>
-              <li>Vocabulary and phrases</li>
-              <li>How you describe your work</li>
-            </ul>
-          </div>
-          <div>
-            <strong>Brand Personality:</strong>
-            <ul className="list-disc list-inside mt-1 space-y-1">
-              <li>Your values and approach</li>
-              <li>Target audience</li>
-              <li>Unique selling points</li>
-              <li>Emotional tone</li>
-            </ul>
-          </div>
-          <div>
-            <strong>Content Patterns:</strong>
-            <ul className="list-disc list-inside mt-1 space-y-1">
-              <li>Title formatting</li>
-              <li>Description style</li>
-              <li>Caption approach</li>
-              <li>SEO strategy</li>
-            </ul>
-          </div>
-          <div>
-            <strong>Business Intelligence:</strong>
-            <ul className="list-disc list-inside mt-1 space-y-1">
-              <li>Services offered</li>
-              <li>Pricing positioning</li>
-              <li>Geographic focus</li>
-              <li>Specialties</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Style Guide Display */}
-      {styleGuide && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-semibold text-gray-900 dark:text-white">
-              ✨ Your Style Guide
-            </h3>
-            <button
-              onClick={handleClearStyleGuide}
-              className="px-4 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-            >
-              Clear Style Guide
-            </button>
-          </div>
-
-          {/* Writing Style */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-              ✍️ Writing Style
-            </h4>
-            <div className="space-y-3 text-gray-700 dark:text-gray-300">
-              <div>
-                <strong>Tone:</strong> {styleGuide.writingStyle.tone}
-              </div>
-              <div>
-                <strong>Voice:</strong> {styleGuide.writingStyle.voice}
-              </div>
-              <div>
-                <strong>Sentence Structure:</strong> {styleGuide.writingStyle.sentenceStructure}
-              </div>
-              <div>
-                <strong>Vocabulary:</strong>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {styleGuide.writingStyle.vocabulary.map((word: string, i: number) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
-                    >
-                      {word}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <strong>Example Phrases:</strong>
-                <ul className="list-disc list-inside mt-2 space-y-1 italic">
-                  {styleGuide.writingStyle.examplePhrases.map((phrase: string, i: number) => (
-                    <li key={i}>"{phrase}"</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Content Patterns */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-              📝 Content Patterns
-            </h4>
-            <div className="space-y-3 text-gray-700 dark:text-gray-300">
-              <div>
-                <strong>Title Style:</strong> {styleGuide.contentPatterns.titleStyle}
-              </div>
-              <div>
-                <strong>Description Style:</strong> {styleGuide.contentPatterns.descriptionStyle}
-              </div>
-              <div>
-                <strong>Caption Style:</strong> {styleGuide.contentPatterns.captionStyle}
-              </div>
-              <div>
-                <strong>SEO Approach:</strong> {styleGuide.contentPatterns.seoApproach}
-              </div>
-            </div>
-          </div>
-
-          {/* Brand Personality */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-              💎 Brand Personality
-            </h4>
-            <div className="space-y-3 text-gray-700 dark:text-gray-300">
-              <div>
-                <strong>Values:</strong>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {styleGuide.brandPersonality.values.map((value: string, i: number) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full text-sm"
-                    >
-                      {value}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <strong>Target Audience:</strong> {styleGuide.brandPersonality.targetAudience}
-              </div>
-              <div>
-                <strong>Unique Selling Points:</strong>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  {styleGuide.brandPersonality.uniqueSellingPoints.map((point: string, i: number) => (
-                    <li key={i}>{point}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <strong>Emotional Tone:</strong> {styleGuide.brandPersonality.emotionalTone}
-              </div>
-            </div>
-          </div>
-
-          {/* Business Info */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm border border-gray-200 dark:border-gray-700">
-            <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-              💼 Business Information
-            </h4>
-            <div className="space-y-3 text-gray-700 dark:text-gray-300">
-              <div>
-                <strong>Services:</strong>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {styleGuide.businessInfo.services.map((service: string, i: number) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full text-sm"
-                    >
-                      {service}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <strong>Price Positioning:</strong> {styleGuide.businessInfo.priceIndicators}
-              </div>
-              <div>
-                <strong>Location:</strong> {styleGuide.businessInfo.location}
-              </div>
-              <div>
-                <strong>Specialties:</strong>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {styleGuide.businessInfo.specialties.map((specialty: string, i: number) => (
-                    <span
-                      key={i}
-                      className="px-3 py-1 bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 rounded-full text-sm"
-                    >
-                      {specialty}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Recommendations */}
-          <div className="bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg p-6 border border-yellow-200 dark:border-yellow-800">
-            <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-              💡 AI Recommendations
-            </h4>
-            <div className="space-y-4 text-gray-700 dark:text-gray-300">
-              <div>
-                <strong>Content Improvements:</strong>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  {styleGuide.recommendations.contentImprovements.map((rec: string, i: number) => (
-                    <li key={i}>{rec}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <strong>SEO Opportunities:</strong>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  {styleGuide.recommendations.seoOpportunities.map((rec: string, i: number) => (
-                    <li key={i}>{rec}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <strong>Store Optimizations:</strong>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  {styleGuide.recommendations.storeOptimizations.map((rec: string, i: number) => (
-                    <li key={i}>{rec}</li>
-                  ))}
-                </ul>
-              </div>
-              <div>
-                <strong>Audience Growth:</strong>
-                <ul className="list-disc list-inside mt-2 space-y-1">
-                  {styleGuide.recommendations.audienceGrowth.map((rec: string, i: number) => (
-                    <li key={i}>{rec}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          {/* Next Steps */}
-          <div className="bg-green-50 dark:bg-green-900/20 rounded-lg p-6 border border-green-200 dark:border-green-800">
-            <h4 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-              ✅ Style Guide Saved!
-            </h4>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              Your style guide has been saved. When you upload new photos, the AI will automatically:
-            </p>
-            <ul className="list-disc list-inside space-y-2 text-gray-700 dark:text-gray-300">
-              <li>Write in your unique voice and tone</li>
-              <li>Match your existing content patterns</li>
-              <li>Use your vocabulary and phrases</li>
-              <li>Follow your SEO strategy</li>
-              <li>Maintain your brand personality</li>
-            </ul>
-            <div className="mt-6">
-              <a
-                href="/"
-                className="inline-block px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-semibold"
-              >
-                🚀 Go Upload Your Shoots!
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Instructions */}
-      {!styleGuide && !isAuditing && (
-        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6 border border-gray-200 dark:border-gray-700">
-          <h3 className="text-lg font-semibold mb-3 text-gray-900 dark:text-white">
-            📋 How It Works
-          </h3>
-          <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
-            <li>Enter your current website URL (Squarespace, or any site)</li>
-            <li>AI crawls your homepage + portfolio/gallery pages</li>
-            <li>Analyzes your writing style, brand voice, and business info</li>
-            <li>Creates a detailed style guide (takes 2-3 minutes)</li>
-            <li>Style guide is saved and used for all future content generation</li>
-            <li>Upload new shoots - AI writes in YOUR voice automatically!</li>
-          </ol>
-          <p className="mt-4 text-sm text-gray-600 dark:text-gray-400">
-            <strong>Note:</strong> Run this audit once when you first set up the system. Re-run anytime you want to update your style preferences or if your brand evolves.
-          </p>
-        </div>
-      )}
     </div>
   )
 }
