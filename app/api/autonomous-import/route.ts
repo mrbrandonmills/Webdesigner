@@ -3,7 +3,14 @@ import { anthropic } from '@ai-sdk/anthropic'
 import { generateObject } from 'ai'
 import { z } from 'zod'
 import { BRAND_VOICE_PROFILE } from '@/lib/voice-profile'
-import portfolioContent from '@/portfolio-content.json'
+import fs from 'fs'
+import path from 'path'
+
+// Read portfolio content dynamically
+function getPortfolioContent() {
+  const portfolioContentPath = path.join(process.cwd(), 'portfolio-content.json')
+  return JSON.parse(fs.readFileSync(portfolioContentPath, 'utf-8'))
+}
 
 const EnhancedContentSchema = z.object({
   title: z.string().describe('SEO-optimized title (keep original meaning, make compelling)'),
@@ -17,6 +24,7 @@ const EnhancedContentSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const { postIndex } = await req.json()
+    const portfolioContent = getPortfolioContent()
 
     if (postIndex === undefined || postIndex < 0 || postIndex >= portfolioContent.length) {
       return NextResponse.json(
@@ -49,7 +57,7 @@ Enhance this portfolio post with the following requirements:
    - Therapeutic warmth meets renaissance gentleman sophistication
    - Sensorial, present, embodied
    - Zero generic AI marketing language
-   - Avoid ALL forbidden patterns: ${BRAND_VOICE_PROFILE.forbiddenPatterns.join(', ')}
+   - Avoid ALL forbidden patterns: ${BRAND_VOICE_PROFILE.forbidden.join(', ')}
 
 2. CONTENT STRUCTURE:
    - Opening: Set the scene (location, atmosphere, sensory details)
@@ -167,6 +175,7 @@ ENHANCE this post while preserving its essence and elevating it with your unique
 
 // GET endpoint to show available posts
 export async function GET() {
+  const portfolioContent = getPortfolioContent()
   return NextResponse.json({
     availablePosts: portfolioContent.map((post, index) => ({
       index,
