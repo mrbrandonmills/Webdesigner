@@ -136,7 +136,7 @@ Generate content with category-specific voice applied throughout.`
     const { object } = await generateObject({
       model: anthropic('claude-sonnet-4-20250514'), // Latest Claude Sonnet 4.5
       schema: ContentSchema,
-      prompt,
+      prompt: initialPrompt,
       temperature: 0.7,
     })
 
