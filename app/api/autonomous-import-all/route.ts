@@ -31,7 +31,7 @@ function getAllPosts(): PortfolioPost[] {
 const EnhancedContentSchema = z.object({
   title: z.string().describe('SEO-optimized title (keep original meaning, make compelling)'),
   description: z.string().describe('Enhanced or generated 300-500 word description in therapeutic + renaissance voice'),
-  metaDescription: z.string().describe('SEO meta description, 150-160 characters'),
+  metaDescription: z.string().describe('SEO meta description, EXACTLY 150-160 characters, no more'),
   category: z.enum(['Fashion & Modeling', 'Editorial', 'Portrait', 'Fine Art', 'Personal Work', 'Product', 'Commercial']),
   tags: z.array(z.string()).describe('5-7 relevant tags'),
   seoKeywords: z.array(z.string()).describe('8-12 SEO keywords'),
@@ -148,23 +148,17 @@ CREATE original content that honors the title and images.`
     const mainImageUrl = post.images[0]
     const galleryImageUrls = post.images.slice(1)
 
-    // Create rich text description for Webflow
-    const richTextDescription = {
-      root: {
-        type: 'root',
-        children: enhanced.description.split('\n\n').map(paragraph => ({
-          type: 'paragraph',
-          children: [{ type: 'text', text: paragraph }]
-        }))
-      }
-    }
+    // Ensure meta description is exactly 160 chars or less
+    const metaDesc = enhanced.metaDescription.length > 160
+      ? enhanced.metaDescription.substring(0, 157) + '...'
+      : enhanced.metaDescription
 
     const cmsItemData = {
       fieldData: {
         name: enhanced.title,
         slug: post.slug,
-        description: richTextDescription,
-        'meta-description': enhanced.metaDescription,
+        description: enhanced.description, // Plain string, not rich text
+        'meta-description': metaDesc,
         category: enhanced.category,
         tags: enhanced.tags.join(', '),
         'seo-keywords': enhanced.seoKeywords.join(', '),
