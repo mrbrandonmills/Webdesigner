@@ -24,8 +24,25 @@ export interface WebflowProject {
   lastUpdated: string
 }
 
-export interface WebflowResponse {
-  items: WebflowProject[]
+interface WebflowAPIItem {
+  id: string
+  fieldData: {
+    name: string
+    slug: string
+    description: string
+    category: string
+    tags: string
+    'seo-keywords': string
+    'meta-description': string
+    'main-image': WebflowImage
+    'gallery-images'?: WebflowImage[]
+  }
+  createdOn: string
+  lastUpdated: string
+}
+
+interface WebflowAPIResponse {
+  items: WebflowAPIItem[]
 }
 
 const WEBFLOW_API_TOKEN = process.env.WEBFLOW_API_TOKEN
@@ -36,28 +53,50 @@ const WEBFLOW_COLLECTION_ID = process.env.WEBFLOW_COLLECTION_ID
  */
 export async function fetchProjects(): Promise<WebflowProject[]> {
   if (!WEBFLOW_API_TOKEN || !WEBFLOW_COLLECTION_ID) {
-    throw new Error('Missing Webflow credentials')
+    console.warn('Missing Webflow credentials - returning empty array for build')
+    return []
   }
 
-  const response = await fetch(
-    `https://api.webflow.com/v2/collections/${WEBFLOW_COLLECTION_ID}/items`,
-    {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${WEBFLOW_API_TOKEN}`,
-        'accept': 'application/json',
-      },
-      // Revalidate every hour
-      next: { revalidate: 3600 }
+  try {
+    const response = await fetch(
+      `https://api.webflow.com/v2/collections/${WEBFLOW_COLLECTION_ID}/items`,
+      {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${WEBFLOW_API_TOKEN}`,
+          'accept': 'application/json',
+        },
+        // Revalidate every hour
+        next: { revalidate: 3600 }
+      }
+    )
+
+    if (!response.ok) {
+      console.warn(`Webflow API error: ${response.statusText}`)
+      return []
     }
-  )
 
-  if (!response.ok) {
-    throw new Error(`Webflow API error: ${response.statusText}`)
+    const data: WebflowAPIResponse = await response.json()
+
+    // Map API response to our interface
+    return data.items.map(item => ({
+      id: item.id,
+      slug: item.fieldData.slug,
+      name: item.fieldData.name,
+      description: item.fieldData.description,
+      category: item.fieldData.category,
+      tags: item.fieldData.tags,
+      'seo-keywords': item.fieldData['seo-keywords'],
+      'meta-description': item.fieldData['meta-description'],
+      'main-image': item.fieldData['main-image'],
+      'gallery-images': item.fieldData['gallery-images'] || [],
+      createdOn: item.createdOn,
+      lastUpdated: item.lastUpdated,
+    }))
+  } catch (error) {
+    console.warn('Error fetching Webflow projects:', error)
+    return []
   }
-
-  const data: WebflowResponse = await response.json()
-  return data.items
 }
 
 /**
