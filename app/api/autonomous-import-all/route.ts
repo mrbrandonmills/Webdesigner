@@ -153,13 +153,24 @@ CREATE original content that honors the title and images.`
       ? enhanced.metaDescription.substring(0, 157) + '...'
       : enhanced.metaDescription
 
+    // Map category text to a safe default (skip category if mapping fails)
+    // This prevents import failures due to category mismatch
+    const categoryMapping: Record<string, string> = {
+      'Personal Work': 'ca43f6ee2a73e06c027d3cf0db27be3a', // Found in successful imports
+      'Editorial': '0d81fd326bf9222f21f2f78b2e9db807', // Found in successful imports
+      'Portrait': 'c7253afa691deb9e46aebd726db56a2a', // Found in successful imports
+    }
+
+    // Default to Personal Work if category not mapped
+    const webflowCategory = categoryMapping[enhanced.category] || categoryMapping['Personal Work']
+
     const cmsItemData = {
       fieldData: {
         name: enhanced.title,
         slug: post.slug,
         description: enhanced.description, // Plain string, not rich text
         'meta-description': metaDesc,
-        category: enhanced.category,
+        category: webflowCategory, // Use mapped ID instead of text
         tags: enhanced.tags.join(', '),
         'seo-keywords': enhanced.seoKeywords.join(', '),
         'main-image': mainImageUrl,
