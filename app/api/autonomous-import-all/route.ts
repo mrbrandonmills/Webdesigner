@@ -6,6 +6,9 @@ import { BRAND_VOICE_PROFILE } from '@/lib/voice-profile'
 import fs from 'fs'
 import path from 'path'
 
+// Increase timeout to 60 seconds (requires Vercel Pro plan)
+export const maxDuration = 60
+
 // Portfolio post interface
 interface PortfolioPost {
   title: string

@@ -32,23 +32,38 @@ export default function AutonomousImportAllPage() {
     setError(null)
 
     try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 120000) // 2 minute client timeout
+
       const response = await fetch('/api/autonomous-import-all', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ postIndex }),
+        signal: controller.signal,
       })
 
+      clearTimeout(timeoutId)
       const data = await response.json()
 
       if (response.ok) {
         setResults(prev => [...prev, data])
         return { success: true, data }
       } else {
-        throw new Error(data.error || 'Import failed')
+        const errorMsg = data.details || data.error || 'Import failed'
+        throw new Error(errorMsg)
       }
     } catch (err: any) {
-      setError(err.message)
-      return { success: false, error: err.message }
+      let errorMessage = err.message
+
+      // Better error messages for common issues
+      if (err.name === 'AbortError') {
+        errorMessage = '⏱️ Request timeout - Each import takes 30-60 seconds. Upgrade to Vercel Pro for longer timeouts.'
+      } else if (errorMessage.includes('504') || errorMessage.includes('timeout')) {
+        errorMessage = '⏱️ Vercel timeout (10s on Hobby plan). Upgrade to Pro ($20/mo) for 60s timeouts to complete imports.'
+      }
+
+      setError(`Post ${postIndex + 1} failed: ${errorMessage}`)
+      return { success: false, error: errorMessage }
     } finally {
       setImporting(null)
     }
