@@ -1,0 +1,123 @@
+{
+  "total_posts": 10,
+  "export_date": "2025-01-14",
+  "site": "brandonmills.com",
+  "posts": [
+    {
+      "title": "City of Apples",
+      "link": "/current-work/city-of-apples-kss5h",
+      "image_count": 2,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102915893-1LSJXMGGBNNZ486KTMOW/image-asset.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102915900-OEZX20SLSTESQH28LITR/image-asset.jpeg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\">Maecenas faucibus mollis interdum. Nullam quis risus eget ..."
+    },
+    {
+      "title": "Emphatic Design",
+      "link": "/current-work/emphatic-design-f3244",
+      "image_count": 2,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102916269-DB3QJAIQP0A877NWQQGG/2.jpg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102916260-0Y492J5UOTZXCC0Z22VM/1.jpg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\">Cum sociis natoque penatibus et magnis dis parturient mont..."
+    },
+    {
+      "title": "Everyday Beauty",
+      "link": "/current-work/everyday-beauty-tjmls",
+      "image_count": 3,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102915926-AFGDZC5J7PJBUTSV7L9Q/image-asset.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102915933-LLN6NPQS7VLJX9OACKUQ/image-asset.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102915917-99PZ98QQLN5779OKBAWD/image-asset.jpeg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\">Lorem ipsum dolor sit amet, consectetur adipiscing elit. A..."
+    },
+    {
+      "title": "Luxurious Ease",
+      "link": "/current-work/luxurious-ease-be7pt",
+      "image_count": 2,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102916305-WPMQ124NIS0YRXUUWI81/image-asset.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102916297-HFUNP2YVE9V0B4JY27B3/image-asset.jpeg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\">Donec sed odio dui. Morbi leo risus, porta ac consectetur ..."
+    },
+    {
+      "title": "Quiet Reflection",
+      "link": "/current-work/quiet-reflection-33knb",
+      "image_count": 2,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102916223-ZQN4B11NSD5GOS5SUFAS/image-asset.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/624b503c94afac3ceadc6fb7/1649102916229-014CGNTQ445NJLGDCVMM/image-asset.jpeg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\">Maecenas faucibus mollis interdum. Duis mollis, est non co..."
+    },
+    {
+      "title": "Reboot W/Esteban Bonilla",
+      "link": "/current-work/reboot",
+      "image_count": 9,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737481318265-9D09ER5042K2G54H5AKA/IMG_0383.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737481301476-OQF8CSQLCEVO432CO379/IMG_0381.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737481339007-K22SYAIHAMQQTLUE53ZV/3D2A9999.jpeg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\" data-rte-preserve-empty=\"true\"></p>..."
+    },
+    {
+      "title": "Good Company w/Emma &amp; Melida",
+      "link": "/current-work/reboot-f2rw5",
+      "image_count": 65,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737495885022-754PM2PW8HCXARFX5HO5/6W1A8251.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737494861181-DS0XI2CSR6LBRM0XN84E/6W1A8467.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737494147093-T4NBIZABBBNN66R84D2T/6W1A8625.jpeg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\" data-rte-preserve-empty=\"true\"></p>..."
+    },
+    {
+      "title": "Silver &amp; Gold w/AM REED",
+      "link": "/current-work/silver-gold",
+      "image_count": 26,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737478003979-3H714O4OI8ENUW9VAOZ9/IMG_1555.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737477707129-DGGBX4NFEVD81BROITQ7/IMG_2805-Edit+copy.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737477687616-3RQZ5Y7WZNF9IFL00FVA/IMG_2803-Edit+copy.jpeg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\" data-rte-preserve-empty=\"true\"></p>..."
+    },
+    {
+      "title": "Golden Touch w/ John Schell",
+      "link": "/current-work/silver-gold-lx7sh",
+      "image_count": 26,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737486833980-77RYCO5NV46S96PVWXQT/IMG_1102.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737486725134-XDB9AZ3QETK0PZU23KGD/IMG_1112.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737486833383-E297NHGTDA9XTVIP0LAC/IMG_1101.jpeg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\" data-rte-preserve-empty=\"true\"></p>..."
+    },
+    {
+      "title": "Top Shots of 2024",
+      "link": "/current-work/top-shots-of-2024",
+      "image_count": 11,
+      "images": [
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737486734309-56RNTDI0716PRXOAAGEG/IMG_1109.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/fdef2744-2dbf-494a-bda5-8087a11a003d/IMG_2263.jpeg?format=original",
+        "https://images.squarespace-cdn.com/content/v1/6786a71a8e66022d03e88bc4/1737477215709-9V0WUQGH9P9P87NIITF8/IMG_1619.jpeg?format=original"
+      ],
+      "has_content": true,
+      "excerpt": "<p class=\"\" style=\"white-space:pre-wrap;\">Cras justo odio, dapibus ac facilisis in, egestas eget qua..."
+    }
+  ]
+}
