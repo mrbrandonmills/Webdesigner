@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { convertToWebflowHTML } from '@/lib/webflow-richtext'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -48,21 +49,38 @@ export async function POST(request: Request) {
       alt: content.photos[photos.indexOf(photo)]?.alt || '',
     }))
 
+    // Convert description to rich text HTML format
+    const richTextDescription = convertToWebflowHTML(content.description)
+
+    // Prepare multi-image gallery URLs
+    const galleryImageUrls = imageAssets.map(img => img.url)
+
     // Create CMS item in Webflow API v2 format
     const cmsItemData = {
       fieldData: {
         name: content.title,
         slug: content.slug,
-        description: content.description,
+        // FEATURE 2: Rich text formatting for descriptions
+        description: richTextDescription,
         'meta-description': content.metaDescription,
         category: content.category,
         tags: content.tags.join(', '),
         'seo-keywords': content.seoKeywords.join(', '),
-        'main-image': imageAssets[0]?.url || '', // Main image URL
+        // Main hero image (first photo)
+        'main-image': imageAssets[0]?.url || '',
+        // FEATURE 1: Multiple image gallery support
+        'multi-gallery': galleryImageUrls.length > 1 ? galleryImageUrls : undefined,
       },
       isDraft: draft,
       isArchived: false,
     }
+
+    // Remove undefined fields
+    Object.keys(cmsItemData.fieldData).forEach(key => {
+      if (cmsItemData.fieldData[key as keyof typeof cmsItemData.fieldData] === undefined) {
+        delete cmsItemData.fieldData[key as keyof typeof cmsItemData.fieldData]
+      }
+    })
 
     console.log('Creating Webflow item with data:', JSON.stringify(cmsItemData, null, 2))
 
@@ -111,11 +129,50 @@ export async function POST(request: Request) {
       }
     }
 
+    // FEATURE 4: n8n Social Media Auto-Posting
+    // Trigger n8n workflow for social media distribution (if published live)
+    if (!draft && process.env.N8N_WEBHOOK_URL) {
+      try {
+        const n8nPayload = {
+          title: content.title,
+          description: content.description,
+          category: content.category,
+          tags: content.tags,
+          images: imageAssets.map(img => ({
+            url: img.url,
+            alt: img.alt,
+          })),
+          webflowUrl: `https://${WEBFLOW_SITE_ID}.webflow.io`, // Update with actual domain
+          itemId: createdItem.id,
+          timestamp: new Date().toISOString(),
+        }
+
+        console.log('Triggering n8n workflow for social media posting...')
+
+        const n8nResponse = await fetch(process.env.N8N_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(n8nPayload),
+        })
+
+        if (n8nResponse.ok) {
+          console.log('n8n workflow triggered successfully')
+        } else {
+          console.error('n8n webhook failed:', await n8nResponse.text())
+          // Don't fail the whole request if n8n fails
+        }
+      } catch (n8nError) {
+        console.error('Error triggering n8n webhook:', n8nError)
+        // Non-blocking - social media posting is optional
+      }
+    }
+
     return NextResponse.json({
       success: true,
       itemId: createdItem.id,
       draft,
       message: draft ? 'Draft saved successfully' : 'Published successfully',
+      socialMediaQueued: !draft && !!process.env.N8N_WEBHOOK_URL,
     })
   } catch (error) {
     console.error('Webflow publish error:', error)

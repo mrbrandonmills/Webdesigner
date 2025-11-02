@@ -3,6 +3,7 @@ import { anthropic } from '@ai-sdk/anthropic'
 import { generateObject } from 'ai'
 import { z } from 'zod'
 import { getBrandVoiceDirective } from '@/lib/voice-profile'
+import { getCategoryVoiceDirective } from '@/lib/category-prompts'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -76,8 +77,8 @@ CRITICAL: Combine the custom brand voice directive above with these site-specifi
       styleSection = brandVoiceDirective
     }
 
-    // Create the prompt for Claude
-    const prompt = `You are writing portfolio content for Brandon Mills: fashion model, actor, author, cognitive researcher, student, and AI engineer.
+    // Generate initial content to determine category
+    const initialPrompt = `You are writing portfolio content for Brandon Mills: fashion model, actor, author, cognitive researcher, student, and AI engineer.
 
 This is a CREATIVE AND INTELLECTUAL PORTFOLIO showcasing multifaceted work—NOT a business selling services.
 
@@ -87,25 +88,49 @@ You are creating content for ${photoUrls.length} photo${photoUrls.length > 1 ? '
 
 ${styleSection}
 
+STEP 1: First, determine the most appropriate category for this content based on the photos and voice notes:
+- Portrait (human presence, introspection)
+- Fashion (modeling, embodiment, aesthetics)
+- Product (object study, commercial)
+- Editorial (conceptual, narrative-driven)
+- Fine Art (experimental, research-based)
+- Personal Work (documentation, learning)
+- Commercial (client work, professional)
+- Other
+
+STEP 2: Then apply the category-specific voice adjustment below for your chosen category.
+
+CATEGORY-SPECIFIC VOICE ADJUSTMENTS:
+
+**Fashion & Modeling**: Focus on performance, embodiment, texture, movement. Vocabulary: texture, drape, presence, materiality. Tone: Refined, sensorial, felt. AVOID: trendy, fashionable, stylish.
+
+**Portrait & Personal**: Focus on introspection, vulnerability, complexity. Vocabulary: presence, stillness, depth, seeing/being seen. Tone: Contemplative, intimate, therapeutic. AVOID: candid, natural smile, genuine emotion.
+
+**Editorial & Creative**: Focus on concept, narrative, artistic vision. Vocabulary: concept, composition, vision, craft. Tone: Sophisticated, conceptual, balanced. AVOID: editorial shoot, fashion story.
+
+**Fine Art & Experimental**: Focus on artistic exploration, research. Vocabulary: exploration, inquiry, methodology, discovery. Tone: Intellectual, experimental, curious. AVOID: artistic, creative expression.
+
+**Personal Work**: Focus on learning, evolution, process. Vocabulary: learning, practice, evolution, curiosity. Tone: Honest, student mindset. AVOID: passion project, artistic journey.
+
+**Product & Commercial**: Focus on precision, craftsmanship, detail. Vocabulary: detail, clarity, refinement, quality. Tone: Clean, precise, technical meets aesthetic. AVOID: product photography, lifestyle imagery.
+
 CONTENT REQUIREMENTS:
-1. **Title** (40-55 characters): Evocative but not clickbait. Invites discovery. No generic photographer/model marketing.
-2. **Description** (2-3 sentences): Create atmosphere, invite feeling. Peer-to-peer tone, sharing work not selling services.
-3. **Photo Captions** (1 thoughtful sentence each): Add context or invite deeper looking. Use voice notes if provided.
+1. **Title** (40-55 characters): Evocative but not clickbait. Category-appropriate vocabulary.
+2. **Description** (2-3 sentences): Create atmosphere. Use category-specific tone and focus.
+3. **Photo Captions** (1 thoughtful sentence each): Add context using category vocabulary. Use voice notes if provided.
 4. **Alt Text**: Descriptive for accessibility but maintain sophistication.
-5. **Tags** (5-8 thoughtful tags): Specific and relevant, no keyword stuffing.
-6. **SEO Keywords** (4-6 primary keywords): Organic from content, not forced.
-7. **Category**: Choose from: Portrait, Fashion, Product, Editorial, Fine Art, Personal Work, Commercial, Other
+5. **Tags** (5-8 thoughtful tags): Specific and relevant to category.
+6. **SEO Keywords** (4-6 primary keywords): Organic from content, category-appropriate.
+7. **Category**: Choose the most appropriate category from the list above.
 
 CRITICAL REMINDERS:
-- This is a creative/intellectual portfolio for a model, actor, researcher, student, author, AI engineer
-- NOT selling photography, modeling, or any commercial services
-- Therapeutic warmth + renaissance gentleman sophistication
-- Write like a thoughtful researcher/creative, not an AI or marketing agency
-- Zero tolerance for: "stunning", "amazing", "capture your story", "hire me" language
+- Apply therapeutic warmth + renaissance gentleman sophistication through category-specific lens
+- Use category-appropriate vocabulary and avoid category-specific forbidden terms
+- Write like thoughtful researcher/creative with category-specific expertise
+- Zero tolerance for generic marketing language
 - Quality over flash. Invitation over instruction. Depth over hype.
-- Balance performance (modeling/acting) with intellect (research/study) and creativity (writing/photography) and technology (AI)
 
-Generate content that feels authentically human, intellectually curious, and genuinely sophisticated.`
+Generate content with category-specific voice applied throughout.`
 
     // Generate structured content using Claude
     const { object } = await generateObject({
