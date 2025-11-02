@@ -66,10 +66,10 @@ export async function POST(request: Request) {
         category: content.category,
         tags: content.tags.join(', '),
         'seo-keywords': content.seoKeywords.join(', '),
-        // Main hero image (first photo) - matches Webflow field "main image"
-        'main image': imageAssets[0]?.url || '',
-        // FEATURE 1: Multiple image gallery support - matches Webflow field "Gallery Images"
-        'Gallery Images': galleryImageUrls.length > 1 ? galleryImageUrls : undefined,
+        // Main hero image (first photo) - using field SLUG not display name
+        'main-image': imageAssets[0]?.url || '',
+        // FEATURE 1: Multiple image gallery support - using field SLUG not display name
+        'gallery-images': galleryImageUrls.length > 1 ? galleryImageUrls : undefined,
       },
       isDraft: draft,
       isArchived: false,
