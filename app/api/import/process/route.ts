@@ -32,29 +32,29 @@ export async function POST(request: Request) {
       for (const item of portfolioItems) {
         try {
           // Create CMS item in Webflow using SAME format as working publish route
+          const fieldData: Record<string, any> = {
+            name: item.title,
+            slug: item.slug,
+            description: stripHTML(item.content),
+            'meta-description': truncate(stripHTML(item.description || item.content), 160),
+            category: 'Fine Art', // Default category
+            tags: item.category || '',
+            'seo-keywords': item.category || '',
+          }
+
+          // Include Squarespace image URLs (they'll still work as external URLs)
+          if (item.images && item.images.length > 0) {
+            fieldData['main-image'] = item.images[0]
+          }
+          if (item.images && item.images.length > 1) {
+            fieldData['gallery-images'] = item.images
+          }
+
           const cmsItemData = {
-            fieldData: {
-              name: item.title,
-              slug: item.slug,
-              description: stripHTML(item.content),
-              'meta-description': truncate(stripHTML(item.description || item.content), 160),
-              category: 'Fine Art', // Default category
-              tags: item.category || '',
-              'seo-keywords': item.category || '',
-              // Include Squarespace image URLs (they'll still work as external URLs)
-              'main-image': item.images && item.images.length > 0 ? item.images[0] : undefined,
-              'gallery-images': item.images && item.images.length > 1 ? item.images : undefined,
-            },
+            fieldData,
             isDraft: true, // Import as drafts for review
             isArchived: false,
           }
-
-          // Remove undefined fields (Webflow doesn't like them)
-          Object.keys(cmsItemData.fieldData).forEach(key => {
-            if (cmsItemData.fieldData[key] === undefined) {
-              delete cmsItemData.fieldData[key]
-            }
-          })
 
           console.log(`Importing: ${item.title}`, {
             images: item.images?.length || 0,
