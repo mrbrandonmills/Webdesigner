@@ -31,7 +31,7 @@ export async function POST(request: Request) {
     if (portfolioItems && portfolioItems.length > 0) {
       for (const item of portfolioItems) {
         try {
-          // Create CMS item in Webflow
+          // Create CMS item in Webflow using SAME format as working publish route
           const cmsItemData = {
             fieldData: {
               name: item.title,
@@ -41,12 +41,26 @@ export async function POST(request: Request) {
               category: 'Fine Art', // Default category
               tags: item.category || '',
               'seo-keywords': item.category || '',
-              // Note: Images need to be re-uploaded or use existing Squarespace URLs
-              // For now, we'll skip image import - user can add manually or we enhance later
+              // Include Squarespace image URLs (they'll still work as external URLs)
+              'main-image': item.images && item.images.length > 0 ? item.images[0] : undefined,
+              'gallery-images': item.images && item.images.length > 1 ? item.images : undefined,
             },
             isDraft: true, // Import as drafts for review
             isArchived: false,
           }
+
+          // Remove undefined fields (Webflow doesn't like them)
+          Object.keys(cmsItemData.fieldData).forEach(key => {
+            if (cmsItemData.fieldData[key] === undefined) {
+              delete cmsItemData.fieldData[key]
+            }
+          })
+
+          console.log(`Importing: ${item.title}`, {
+            images: item.images?.length || 0,
+            hasMainImage: !!cmsItemData.fieldData['main-image'],
+            hasGallery: !!cmsItemData.fieldData['gallery-images'],
+          })
 
           const response = await fetch(
             `https://api.webflow.com/v2/collections/${collectionId}/items`,
@@ -62,10 +76,13 @@ export async function POST(request: Request) {
           )
 
           if (!response.ok) {
-            const error = await response.text()
-            throw new Error(`Webflow API error: ${response.status} - ${error}`)
+            const errorText = await response.text()
+            console.error(`Webflow API error for "${item.title}":`, errorText)
+            throw new Error(`Webflow API error: ${response.status} - ${errorText}`)
           }
 
+          const createdItem = await response.json()
+          console.log(`✓ Imported: ${item.title} (ID: ${createdItem.id})`)
           results.imported++
         } catch (error) {
           results.failed++
