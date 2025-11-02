@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Instagram } from 'lucide-react'
+import { Instagram, LogIn } from 'lucide-react'
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
@@ -69,6 +69,13 @@ export default function Navigation() {
               >
                 <Instagram size={20} />
               </a>
+              <Link
+                href="/admin/login"
+                className="text-white/40 hover:text-white/60 transition-colors"
+                title="Admin Login"
+              >
+                <LogIn size={18} />
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -133,6 +140,13 @@ export default function Navigation() {
           >
             <Instagram size={32} />
           </a>
+          <Link
+            href="/admin/login"
+            className="text-white/40 hover:text-white/60 transition-colors text-sm tracking-wider uppercase"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Admin Login
+          </Link>
         </div>
       </div>
     </>
