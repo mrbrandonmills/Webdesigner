@@ -89,6 +89,37 @@ export default function ImportPage() {
     }
   }
 
+  const handleCleanup = async () => {
+    if (!confirm('⚠️ DELETE ALL DRAFT ITEMS?\n\nThis will permanently delete all draft items from Webflow CMS.\n\nThis action cannot be undone.\n\nAre you sure?')) {
+      return
+    }
+
+    setIsProcessing(true)
+    setProgress([...progress, '🗑️ Deleting all draft items from Webflow...'])
+
+    try {
+      const response = await fetch('/api/import/cleanup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirm: true }),
+      })
+
+      if (!response.ok) throw new Error('Cleanup failed')
+
+      const data = await response.json()
+      setProgress([
+        ...progress,
+        `✓ Deleted ${data.deleted} draft items`,
+        data.failed > 0 ? `⚠️ ${data.failed} items failed to delete` : '',
+        `✓ Cleanup complete!`,
+      ].filter(Boolean))
+    } catch (error) {
+      setProgress([...progress, `❌ Error: ${error}`])
+    } finally {
+      setIsProcessing(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-8">
       <div className="max-w-4xl mx-auto">
@@ -145,7 +176,7 @@ export default function ImportPage() {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-4 mb-8">
+        <div className="flex gap-4 mb-8 flex-wrap">
           <button
             onClick={handlePreview}
             disabled={isProcessing || (!xmlFile && !csvFile)}
@@ -163,6 +194,14 @@ export default function ImportPage() {
               {isProcessing ? '🚀 Importing...' : '🚀 Import to Webflow'}
             </button>
           )}
+
+          <button
+            onClick={handleCleanup}
+            disabled={isProcessing}
+            className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors ml-auto"
+          >
+            {isProcessing ? '🗑️ Deleting...' : '🗑️ Delete All Drafts'}
+          </button>
         </div>
 
         {/* Preview Section */}
