@@ -4,6 +4,8 @@ import Navigation from '@/components/navigation'
 import { CustomCursor } from '@/components/custom-cursor'
 import SmoothScroll from '@/components/smooth-scroll'
 import PageTransition from '@/components/page-transition'
+import { CartProvider } from '@/contexts/cart-context'
+import CartSidebar from '@/components/cart-sidebar'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -26,16 +28,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <CustomCursor />
-        <SmoothScroll>
-          <Navigation />
-          <PageTransition>
-            <main className="min-h-screen">
-              {children}
-            </main>
-          </PageTransition>
-        </SmoothScroll>
-        <Analytics />
+        <CartProvider>
+          <CustomCursor />
+          <SmoothScroll>
+            <Navigation />
+            <PageTransition>
+              <main className="min-h-screen">
+                {children}
+              </main>
+            </PageTransition>
+          </SmoothScroll>
+          <CartSidebar />
+          <Analytics />
+        </CartProvider>
       </body>
     </html>
   )

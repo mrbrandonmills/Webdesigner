@@ -3,12 +3,14 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Instagram, LogIn } from 'lucide-react'
+import { Instagram, LogIn, ShoppingBag } from 'lucide-react'
+import { useCart } from '@/contexts/cart-context'
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
+  const { totalItems, openCart } = useCart()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,6 +71,18 @@ export default function Navigation() {
               >
                 <Instagram size={20} />
               </a>
+              <button
+                onClick={openCart}
+                className="text-white/60 hover:text-white transition-colors relative"
+                aria-label="Shopping cart"
+              >
+                <ShoppingBag size={20} />
+                {totalItems > 0 && (
+                  <span className="absolute -top-2 -right-2 w-5 h-5 bg-accent-gold text-black text-xs font-medium rounded-full flex items-center justify-center">
+                    {totalItems}
+                  </span>
+                )}
+              </button>
               <Link
                 href="/admin/login"
                 className="text-white/40 hover:text-white/60 transition-colors"
@@ -131,15 +145,32 @@ export default function Navigation() {
               {link.name}
             </Link>
           ))}
-          <a
-            href="https://www.instagram.com/mrbrandonmills/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-8 text-white/60 hover:text-white transition-colors"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <Instagram size={32} />
-          </a>
+          <div className="flex items-center gap-8 mt-8">
+            <a
+              href="https://www.instagram.com/mrbrandonmills/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/60 hover:text-white transition-colors"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Instagram size={32} />
+            </a>
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false)
+                openCart()
+              }}
+              className="text-white/60 hover:text-white transition-colors relative"
+              aria-label="Shopping cart"
+            >
+              <ShoppingBag size={32} />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 w-6 h-6 bg-accent-gold text-black text-sm font-medium rounded-full flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+          </div>
           <Link
             href="/admin/login"
             className="text-white/40 hover:text-white/60 transition-colors text-sm tracking-wider uppercase"

@@ -1,41 +1,54 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ShoppingCart, Filter, Search, ExternalLink } from 'lucide-react'
+import { ShoppingCart, Search } from 'lucide-react'
 import ScrollReveal from '@/components/scroll-reveal'
+import { useCart } from '@/contexts/cart-context'
 
 interface Product {
   id: number
-  external_id: string
-  name: string
-  thumbnail: string
+  title: string
+  brand: string
+  model: string
+  description: string
+  type: string
+  image: string | null
+  basePrice: string
+  currency: string
+  variantCount: number
   variants: {
     id: number
     name: string
-    price: string
-    currency: string
+    size: string
+    color: string
     image: string
-    thumbnail: string
   }[]
 }
 
 export default function StorePage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     fetchProducts()
-  }, [])
+  }, [selectedCategory])
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('/api/store/products')
+      setLoading(true)
+      const url = selectedCategory
+        ? `/api/store/products?category=${selectedCategory}`
+        : '/api/store/products'
+
+      const response = await fetch(url)
       const data = await response.json()
 
       if (data.success) {
         setProducts(data.products)
+      } else {
+        console.error('Failed to fetch products:', data.error)
       }
     } catch (error) {
       console.error('Failed to fetch products:', error)
@@ -45,34 +58,21 @@ export default function StorePage() {
   }
 
   const categories = [
-    { id: 'all', label: 'All Products', icon: '🎨' },
-    { id: 'prints', label: 'Gallery Prints', icon: '🖼️' },
-    { id: 'canvas', label: 'Canvas Art', icon: '🎭' },
-    { id: 'apparel', label: 'Apparel', icon: '👕' },
-    { id: 'home', label: 'Home & Living', icon: '🏠' },
+    { id: null, label: 'All Products', icon: '🎨', desc: 'Browse everything' },
+    { id: 'posters', label: 'Gallery Prints', icon: '🖼️', desc: 'Museum-quality posters' },
+    { id: 'canvas', label: 'Canvas Art', icon: '🎭', desc: 'Gallery-wrapped canvas' },
+    { id: 'apparel', label: 'Apparel', icon: '👕', desc: 'Premium clothing' },
+    { id: 'mugs', label: 'Lifestyle', icon: '☕', desc: 'Daily essentials' },
   ]
 
   const filteredProducts = products.filter(product => {
-    // Category filter
-    if (selectedCategory !== 'all') {
-      const categoryKeywords = {
-        prints: ['print', 'poster', 'photo'],
-        canvas: ['canvas'],
-        apparel: ['shirt', 'tee', 'hoodie', 'sweatshirt'],
-        home: ['mug', 'pillow', 'blanket', 'towel'],
-      }
-      const keywords = categoryKeywords[selectedCategory as keyof typeof categoryKeywords] || []
-      const matchesCategory = keywords.some(keyword =>
-        product.name.toLowerCase().includes(keyword)
-      )
-      if (!matchesCategory) return false
-    }
-
-    // Search filter
     if (searchQuery) {
-      return product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      return (
+        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     }
-
     return true
   })
 
@@ -86,28 +86,33 @@ export default function StorePage() {
           </h1>
           <div className="luxury-divider"></div>
           <p className="text-xl md:text-2xl text-white/80 leading-relaxed font-light">
-            Premium prints, apparel, and art — curated from editorial photography and creative work
+            Premium prints, apparel, and art — where philosophy meets performance
+          </p>
+          <p className="text-white/60 max-w-2xl mx-auto">
+            Each piece created on-demand with museum-quality materials.
+            Featuring work from editorial shoots, creative projects, and original designs.
           </p>
         </div>
       </section>
 
       {/* Category Filter */}
       <section className="pb-12 container-wide">
-        <div className="flex flex-wrap justify-center gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
           {categories.map((category) => (
             <button
-              key={category.id}
+              key={category.id || 'all'}
               onClick={() => setSelectedCategory(category.id)}
               className={`
-                px-6 py-3 border transition-all
+                p-6 border transition-all text-left
                 ${selectedCategory === category.id
-                  ? 'bg-accent-gold text-black border-accent-gold'
-                  : 'bg-white/5 text-white/60 border-white/10 hover:border-white/30'
+                  ? 'bg-accent-gold/10 border-accent-gold'
+                  : 'bg-white/5 border-white/10 hover:border-white/30'
                 }
               `}
             >
-              <span className="mr-2">{category.icon}</span>
-              {category.label}
+              <div className="text-3xl mb-2">{category.icon}</div>
+              <div className="font-medium mb-1">{category.label}</div>
+              <div className="text-xs text-white/40">{category.desc}</div>
             </button>
           ))}
         </div>
@@ -132,24 +137,62 @@ export default function StorePage() {
         {loading ? (
           <div className="text-center py-20">
             <div className="inline-block w-12 h-12 border-2 border-accent-gold border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-white/60">Loading collection...</p>
+            <p className="mt-4 text-white/60">Loading collection from Printful...</p>
           </div>
-        ) : filteredProducts.length === 0 && products.length > 0 ? (
+        ) : filteredProducts.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-2xl text-white/40">No products found</p>
-            <p className="mt-2 text-white/30">Try adjusting your filters</p>
-          </div>
-        ) : filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProducts.map((product, index) => (
-              <ScrollReveal key={product.id} direction="up" delay={index * 0.1}>
-                <ProductCard product={product} />
-              </ScrollReveal>
-            ))}
+            <p className="mt-2 text-white/30">Try adjusting your search or filters</p>
           </div>
         ) : (
-          <ComingSoonSection />
+          <>
+            <div className="text-center mb-12">
+              <p className="text-white/60">
+                Showing {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'}
+                {selectedCategory && ` in ${categories.find(c => c.id === selectedCategory)?.label}`}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredProducts.map((product, index) => (
+                <ScrollReveal key={product.id} direction="up" delay={index * 0.1}>
+                  <ProductCard product={product} />
+                </ScrollReveal>
+              ))}
+            </div>
+          </>
         )}
+      </section>
+
+      {/* Info Section */}
+      <section className="pb-32 container-wide">
+        <div className="max-w-4xl mx-auto">
+          <div className="luxury-divider mb-12"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div className="space-y-4">
+              <div className="text-4xl">🎨</div>
+              <h3 className="text-xl font-serif">Museum Quality</h3>
+              <p className="text-white/60 text-sm">
+                Premium materials and professional printing on every piece
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div className="text-4xl">🚚</div>
+              <h3 className="text-xl font-serif">Made to Order</h3>
+              <p className="text-white/60 text-sm">
+                Each item crafted when you order, reducing waste
+              </p>
+            </div>
+            <div className="space-y-4">
+              <div className="text-4xl">🌍</div>
+              <h3 className="text-xl font-serif">Global Shipping</h3>
+              <p className="text-white/60 text-sm">
+                Worldwide fulfillment from local facilities
+              </p>
+            </div>
+          </div>
+          <div className="luxury-divider mt-12"></div>
+        </div>
       </section>
     </div>
   )
@@ -158,190 +201,176 @@ export default function StorePage() {
 function ProductCard({ product }: { product: Product }) {
   const [selectedVariant, setSelectedVariant] = useState(0)
   const variant = product.variants[selectedVariant]
+  const { addItem } = useCart()
+
+  // Strategic pricing based on product type and positioning
+  const getStrategicPrice = (product: Product): string => {
+    const basePrice = parseFloat(product.basePrice)
+    const type = product.type.toLowerCase()
+
+    // Gallery Prints / Posters - Premium art pricing
+    if (type.includes('poster') || type.includes('print')) {
+      if (basePrice < 12) return '49.00'  // 18×24" and smaller
+      if (basePrice < 15) return '79.00'  // 24×36"
+      if (basePrice < 20) return '99.00'  // Large formats
+      return '149.00' // Extra large
+    }
+
+    // Canvas Art - Gallery-quality pricing
+    if (type.includes('canvas')) {
+      if (basePrice < 35) return '149.00' // 16×20" and smaller
+      if (basePrice < 50) return '179.00' // 24×36"
+      if (basePrice < 70) return '249.00' // Large canvas
+      return '349.00' // Premium large canvas
+    }
+
+    // T-Shirts - Premium casual wear
+    if (type.includes('shirt') || type.includes('tee') || type.includes('t-shirt')) {
+      return '35.00'
+    }
+
+    // Hoodies & Sweatshirts - Luxury streetwear
+    if (type.includes('hoodie') || type.includes('sweatshirt')) {
+      return '65.00'
+    }
+
+    // Mugs & Drinkware - Daily luxury items
+    if (type.includes('mug') || type.includes('cup')) {
+      return '22.00'
+    }
+
+    // Tank Tops - Premium activewear
+    if (type.includes('tank')) {
+      return '32.00'
+    }
+
+    // Long Sleeve - Premium casual
+    if (type.includes('long sleeve')) {
+      return '42.00'
+    }
+
+    // Phone Cases - Tech accessories
+    if (type.includes('case') || type.includes('phone')) {
+      return '29.00'
+    }
+
+    // Tote Bags - Lifestyle accessories
+    if (type.includes('tote') || type.includes('bag')) {
+      return '35.00'
+    }
+
+    // Default: Premium positioning with 3.5x markup
+    return (basePrice * 3.5).toFixed(2)
+  }
+
+  const suggestedPrice = getStrategicPrice(product)
+
+  const handleAddToCart = () => {
+    if (!variant) return
+
+    addItem({
+      productId: product.id,
+      variantId: variant.id,
+      productTitle: product.title,
+      variantName: variant.name,
+      image: variant.image || product.image || '',
+      price: suggestedPrice,
+      type: product.type,
+      brand: product.brand,
+    })
+  }
 
   return (
     <div className="luxury-card bg-white/5 border border-white/10 overflow-hidden group">
       {/* Product Image */}
       <div className="aspect-square overflow-hidden bg-white/5 relative">
-        <img
-          src={variant.image || product.thumbnail}
-          alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+        {variant?.image || product.image ? (
+          <img
+            src={variant?.image || product.image || ''}
+            alt={product.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-white/20">
+            <div className="text-center">
+              <div className="text-6xl mb-4">📦</div>
+              <p className="text-sm">Image coming soon</p>
+            </div>
+          </div>
+        )}
 
         {/* Quick Add Overlay */}
         <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-          <button className="px-6 py-3 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors">
+          <button
+            onClick={handleAddToCart}
+            className="px-6 py-3 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors"
+          >
             <ShoppingCart size={20} className="inline mr-2" />
             Add to Cart
           </button>
+        </div>
+
+        {/* Product Type Badge */}
+        <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 backdrop-blur-sm text-xs tracking-wider uppercase">
+          {product.type}
         </div>
       </div>
 
       {/* Product Info */}
       <div className="p-6 space-y-4">
         <div>
-          <h3 className="text-xl font-serif mb-1">{product.name}</h3>
-          <p className="text-white/60 text-sm">{variant.name}</p>
+          <div className="text-xs text-white/40 tracking-wider uppercase mb-1">
+            {product.brand}
+          </div>
+          <h3 className="text-xl font-serif mb-1">{product.title}</h3>
+          <p className="text-white/60 text-sm line-clamp-2">{product.description}</p>
         </div>
 
         {/* Variant Selector */}
         {product.variants.length > 1 && (
-          <div className="flex flex-wrap gap-2">
-            {product.variants.slice(0, 4).map((v, index) => (
-              <button
-                key={v.id}
-                onClick={() => setSelectedVariant(index)}
-                className={`
-                  w-12 h-12 border-2 rounded overflow-hidden transition-all
-                  ${selectedVariant === index
-                    ? 'border-accent-gold'
-                    : 'border-white/10 hover:border-white/30'
-                  }
-                `}
-              >
-                <img
-                  src={v.thumbnail}
-                  alt={v.name}
-                  className="w-full h-full object-cover"
-                />
-              </button>
-            ))}
-            {product.variants.length > 4 && (
-              <button className="w-12 h-12 border-2 border-white/10 hover:border-white/30 rounded flex items-center justify-center text-xs text-white/40">
-                +{product.variants.length - 4}
-              </button>
-            )}
+          <div>
+            <p className="text-xs text-white/40 mb-2 tracking-wider uppercase">
+              {product.variantCount} Options Available
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {product.variants.slice(0, 4).map((v, index) => (
+                <button
+                  key={v.id}
+                  onClick={() => setSelectedVariant(index)}
+                  className={`
+                    px-3 py-1 text-xs border transition-all
+                    ${selectedVariant === index
+                      ? 'border-accent-gold bg-accent-gold/10 text-accent-gold'
+                      : 'border-white/10 text-white/60 hover:border-white/30'
+                    }
+                  `}
+                >
+                  {v.size || v.color}
+                </button>
+              ))}
+              {product.variants.length > 4 && (
+                <button className="px-3 py-1 text-xs border border-white/10 text-white/40">
+                  +{product.variants.length - 4}
+                </button>
+              )}
+            </div>
           </div>
         )}
 
-        {/* Price */}
+        {/* Pricing */}
         <div className="flex items-center justify-between pt-4 border-t border-white/10">
-          <span className="text-2xl font-light">
-            {variant.currency === 'USD' ? '$' : variant.currency}
-            {variant.price}
-          </span>
+          <div>
+            <div className="text-2xl font-light">
+              ${suggestedPrice}
+            </div>
+            <div className="text-xs text-white/40">
+              Base: ${product.basePrice}
+            </div>
+          </div>
           <button className="text-accent-gold hover:text-accent-hover transition-colors text-sm tracking-wider uppercase">
-            View Details →
+            Details →
           </button>
         </div>
-      </div>
-    </div>
-  )
-}
-
-function ComingSoonSection() {
-  const placeholderCategories = [
-    {
-      title: 'Gallery Prints',
-      description: 'Museum-quality prints from editorial shoots and creative work',
-      products: [
-        {
-          name: 'Editorial Collection',
-          description: 'High-fashion photography on premium paper',
-          price: 'From $49',
-        },
-        {
-          name: 'Limited Editions',
-          description: 'Signed and numbered prints',
-          price: 'From $149',
-        },
-      ],
-    },
-    {
-      title: 'Canvas Art',
-      description: 'Curated images on gallery-wrapped canvas',
-      products: [
-        {
-          name: 'Large Format Canvas',
-          description: '24x36" gallery-wrapped canvas prints',
-          price: 'From $199',
-        },
-      ],
-    },
-    {
-      title: 'Apparel',
-      description: 'Signature photography on premium clothing',
-      products: [
-        {
-          name: 'Artist Tees',
-          description: 'Premium cotton with editorial imagery',
-          price: 'From $35',
-        },
-        {
-          name: 'Luxury Hoodies',
-          description: 'High-quality hoodies featuring best work',
-          price: 'From $65',
-        },
-      ],
-    },
-  ]
-
-  return (
-    <div className="space-y-24">
-      <div className="text-center space-y-8">
-        <div className="luxury-divider mx-auto"></div>
-        <h2 className="text-3xl md:text-5xl font-light font-serif">
-          Collection Launching Soon
-        </h2>
-        <p className="text-white/60 max-w-2xl mx-auto leading-relaxed">
-          Premium merchandise featuring work from editorial shoots, commercial campaigns,
-          and creative projects. Each piece is printed on-demand with museum-quality materials.
-        </p>
-        <div className="luxury-divider mx-auto"></div>
-      </div>
-
-      {/* Coming Soon Categories */}
-      {placeholderCategories.map((category, categoryIndex) => (
-        <div key={category.title} className="space-y-12">
-          <div className="text-center space-y-4">
-            <h3 className="text-2xl md:text-4xl font-light font-serif">{category.title}</h3>
-            <p className="text-white/60 max-w-2xl mx-auto">{category.description}</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {category.products.map((product, productIndex) => (
-              <div
-                key={product.name}
-                className="luxury-card bg-white/5 border border-white/10 p-8 opacity-60"
-              >
-                <div className="space-y-4">
-                  <div className="aspect-square bg-white/5 rounded flex items-center justify-center">
-                    <p className="text-white/40 text-sm">Preview Coming Soon</p>
-                  </div>
-                  <div>
-                    <h4 className="text-xl font-serif mb-1">{product.name}</h4>
-                    <p className="text-white/60 text-sm">{product.description}</p>
-                  </div>
-                  <div className="pt-4 border-t border-white/10">
-                    <p className="text-lg font-light tracking-wider text-white/60">{product.price}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-
-      {/* Email Signup */}
-      <div className="max-w-2xl mx-auto text-center space-y-6">
-        <h3 className="text-2xl font-serif">Get Notified</h3>
-        <p className="text-white/60">
-          Be the first to know when the collection launches
-        </p>
-        <form className="flex gap-4 max-w-md mx-auto">
-          <input
-            type="email"
-            placeholder="your@email.com"
-            className="flex-1 bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-accent-gold transition-colors"
-          />
-          <button
-            type="submit"
-            className="px-6 py-3 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors"
-          >
-            Notify Me
-          </button>
-        </form>
       </div>
     </div>
   )
