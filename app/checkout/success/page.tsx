@@ -1,11 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { CheckCircle, Package, Mail } from 'lucide-react'
 
-export default function CheckoutSuccess() {
+function SuccessContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   const [loading, setLoading] = useState(true)
@@ -114,5 +114,19 @@ export default function CheckoutSuccess() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function CheckoutSuccess() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-black text-white flex items-center justify-center">
+          <div className="animate-spin w-12 h-12 border-2 border-accent-gold border-t-transparent rounded-full"></div>
+        </div>
+      }
+    >
+      <SuccessContent />
+    </Suspense>
   )
 }
