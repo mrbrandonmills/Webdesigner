@@ -1,8 +1,8 @@
 'use client'
 
 import { useCart } from '@/contexts/cart-context'
-import { X, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react'
-import { useEffect } from 'react'
+import { X, Plus, Minus, ShoppingBag, ArrowRight, Loader2 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { RippleButton } from '@/components/ripple-button'
 
 export default function CartSidebar() {
@@ -15,6 +15,9 @@ export default function CartSidebar() {
     isOpen,
     closeCart,
   } = useCart()
+
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
+  const [checkoutError, setCheckoutError] = useState<string | null>(null)
 
   // Lock body scroll when cart is open
   useEffect(() => {
@@ -36,6 +39,43 @@ export default function CartSidebar() {
     document.addEventListener('keydown', handleEscape)
     return () => document.removeEventListener('keydown', handleEscape)
   }, [closeCart])
+
+  const handleCheckout = async () => {
+    setIsCheckingOut(true)
+    setCheckoutError(null)
+
+    try {
+      // Create Stripe checkout session
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: items.map(item => ({
+            productId: item.productId,
+            variantId: item.variantId,
+            productTitle: item.productTitle,
+            variantName: item.variantName,
+            image: item.image,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok || !data.url) {
+        throw new Error(data.error || 'Failed to create checkout session')
+      }
+
+      // Redirect to Stripe Checkout
+      window.location.href = data.url
+    } catch (error) {
+      console.error('Checkout error:', error)
+      setCheckoutError(error instanceof Error ? error.message : 'Failed to start checkout')
+      setIsCheckingOut(false)
+    }
+  }
 
   return (
     <>
@@ -181,19 +221,37 @@ export default function CartSidebar() {
               Shipping and taxes calculated at checkout
             </p>
 
+            {/* Error Message */}
+            {checkoutError && (
+              <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 text-center">
+                <p className="text-red-400 text-sm">{checkoutError}</p>
+              </div>
+            )}
+
             {/* Checkout Button */}
             <RippleButton
-              className="relative w-full py-5 bg-accent-gold text-black font-medium tracking-[0.2em] uppercase rounded-full group/btn shadow-xl shadow-accent-gold/30 hover:shadow-2xl hover:shadow-accent-gold/40 transition-all duration-300"
+              onClick={handleCheckout}
+              disabled={isCheckingOut}
+              className="relative w-full py-5 bg-accent-gold text-black font-medium tracking-[0.2em] uppercase rounded-full group/btn shadow-xl shadow-accent-gold/30 hover:shadow-2xl hover:shadow-accent-gold/40 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {/* Button shine effect */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700 pointer-events-none"></div>
 
               <span className="relative z-10 flex items-center justify-center gap-3">
-                Proceed to Checkout
-                <ArrowRight
-                  size={20}
-                  className="group-hover/btn:translate-x-1 transition-transform duration-300"
-                />
+                {isCheckingOut ? (
+                  <>
+                    <Loader2 className="animate-spin" size={20} />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Proceed to Checkout
+                    <ArrowRight
+                      size={20}
+                      className="group-hover/btn:translate-x-1 transition-transform duration-300"
+                    />
+                  </>
+                )}
               </span>
             </RippleButton>
 
