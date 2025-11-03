@@ -110,7 +110,7 @@ export default function GenerateProductsPage() {
     setSelectedProducts(prev =>
       prev.includes(productId)
         ? prev.filter(id => id !== productId)
-        : [...prev, themeId]
+        : [...prev, productId]
     )
   }
 
