@@ -4,19 +4,20 @@ import Stripe from 'stripe'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-// Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-})
-
 export async function POST(request: Request) {
   try {
+    // Check for Stripe key
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json(
         { error: 'Stripe is not configured. Add STRIPE_SECRET_KEY to environment variables.' },
         { status: 500 }
       )
     }
+
+    // Initialize Stripe inside the handler
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2025-10-29.clover',
+    })
 
     const { items, customerEmail } = await request.json()
 
