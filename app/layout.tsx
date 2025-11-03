@@ -4,9 +4,15 @@ import Navigation from '@/components/navigation'
 import { CustomCursor } from '@/components/custom-cursor'
 import SmoothScroll from '@/components/smooth-scroll'
 import PageTransition from '@/components/page-transition'
-import { CartProvider } from '@/contexts/cart-context'
+import { CartProvider, useCart } from '@/contexts/cart-context'
 import CartSidebar from '@/components/cart-sidebar'
+import { ToastContainer } from '@/components/toast'
 import './globals.css'
+
+function ToastWrapper() {
+  const { toasts, removeToast } = useCart()
+  return <ToastContainer toasts={toasts} onClose={removeToast} />
+}
 
 export const metadata: Metadata = {
   title: 'Brandon Mills | Model · Actor · Creative',
@@ -39,6 +45,7 @@ export default function RootLayout({
             </PageTransition>
           </SmoothScroll>
           <CartSidebar />
+          <ToastWrapper />
           <Analytics />
         </CartProvider>
       </body>

@@ -115,6 +115,34 @@ h1, h2, h3, h4, h5, h6 {
   animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Toast slide-in animation */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Ripple effect animation */
+@keyframes ripple {
+  from {
+    transform: scale(0);
+    opacity: 1;
+  }
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
 /* Smooth transitions */
 a, button {
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);

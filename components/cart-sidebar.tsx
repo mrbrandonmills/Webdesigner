@@ -3,6 +3,7 @@
 import { useCart } from '@/contexts/cart-context'
 import { X, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react'
 import { useEffect } from 'react'
+import { RippleButton } from '@/components/ripple-button'
 
 export default function CartSidebar() {
   const {
@@ -181,11 +182,11 @@ export default function CartSidebar() {
             </p>
 
             {/* Checkout Button */}
-            <button
-              className="relative w-full py-5 bg-accent-gold text-black font-medium tracking-[0.2em] uppercase rounded-full overflow-hidden group/btn shadow-xl shadow-accent-gold/30 hover:shadow-2xl hover:shadow-accent-gold/40 transition-all duration-300"
+            <RippleButton
+              className="relative w-full py-5 bg-accent-gold text-black font-medium tracking-[0.2em] uppercase rounded-full group/btn shadow-xl shadow-accent-gold/30 hover:shadow-2xl hover:shadow-accent-gold/40 transition-all duration-300"
             >
               {/* Button shine effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700 pointer-events-none"></div>
 
               <span className="relative z-10 flex items-center justify-center gap-3">
                 Proceed to Checkout
@@ -194,7 +195,7 @@ export default function CartSidebar() {
                   className="group-hover/btn:translate-x-1 transition-transform duration-300"
                 />
               </span>
-            </button>
+            </RippleButton>
 
             {/* Continue Shopping */}
             <button

@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { ShoppingCart, Search, Sparkles } from 'lucide-react'
 import ScrollReveal from '@/components/scroll-reveal'
 import { useCart } from '@/contexts/cart-context'
-import gsap from 'gsap'
+import { ProductGridSkeleton } from '@/components/product-skeleton'
+import { RippleButton } from '@/components/ripple-button'
 
 interface Product {
   id: number
@@ -187,17 +188,11 @@ export default function StorePage() {
       {/* Products Grid */}
       <section className="pb-32 container-wide">
         {loading ? (
-          <div className="text-center py-32">
-            <div className="relative inline-block">
-              {/* Outer ring */}
-              <div className="w-20 h-20 border-2 border-accent-gold/20 rounded-full"></div>
-              {/* Spinning ring */}
-              <div className="absolute inset-0 w-20 h-20 border-2 border-accent-gold border-t-transparent rounded-full animate-spin"></div>
-              {/* Glow effect */}
-              <div className="absolute inset-0 w-20 h-20 bg-accent-gold/20 rounded-full blur-xl animate-pulse"></div>
+          <div className="space-y-8">
+            <div className="text-center">
+              <p className="text-white/60 font-light tracking-wide">Curating your collection...</p>
             </div>
-            <p className="mt-8 text-white/60 font-light tracking-wide">Curating your collection...</p>
-            <p className="mt-2 text-white/30 text-sm">Loading premium products from Printful</p>
+            <ProductGridSkeleton count={9} />
           </div>
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-32">
@@ -279,8 +274,13 @@ export default function StorePage() {
 
 function ProductCard({ product }: { product: Product }) {
   const [selectedVariant, setSelectedVariant] = useState(0)
-  const variant = product.variants[selectedVariant]
+  const variant = product.variants?.[selectedVariant]
   const { addItem } = useCart()
+
+  // Return null if no variants
+  if (!product.variants || product.variants.length === 0) {
+    return null
+  }
 
   // Strategic pricing based on product type and positioning
   const getStrategicPrice = (product: Product): string => {
@@ -351,7 +351,7 @@ function ProductCard({ product }: { product: Product }) {
       productId: product.id,
       variantId: variant.id,
       productTitle: product.title,
-      variantName: variant.name,
+      variantName: variant.name || `${variant.size || ''} ${variant.color || ''}`.trim() || 'Default',
       image: variant.image || product.image || '',
       price: suggestedPrice,
       type: product.type,
@@ -388,18 +388,18 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* Quick Add Overlay */}
         <div className="absolute inset-0 bg-black/70 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
-          <button
+          <RippleButton
             onClick={handleAddToCart}
-            className="relative px-8 py-4 bg-accent-gold text-black font-medium tracking-[0.2em] uppercase rounded-full overflow-hidden group/btn transform hover:scale-105 transition-all duration-300 shadow-xl shadow-accent-gold/30"
+            className="relative px-8 py-4 bg-accent-gold text-black font-medium tracking-[0.2em] uppercase rounded-full group/btn transform hover:scale-105 transition-all duration-300 shadow-xl shadow-accent-gold/30"
           >
             {/* Button shine effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700 pointer-events-none"></div>
 
             <span className="relative z-10 flex items-center gap-3">
               <ShoppingCart size={20} className="group-hover/btn:rotate-12 transition-transform duration-300" />
               <span>Add to Cart</span>
             </span>
-          </button>
+          </RippleButton>
         </div>
 
         {/* Product Type Badge */}
