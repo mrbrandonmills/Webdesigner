@@ -1,4 +1,5 @@
 import { Instagram } from 'lucide-react'
+import ScrollReveal from '@/components/scroll-reveal'
 
 export default function AboutPage() {
   return (
@@ -20,24 +21,30 @@ export default function AboutPage() {
       <section className="pb-20 container-wide">
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="space-y-6 text-lg text-white/70 leading-relaxed">
-            <p className="animate-fadeIn">
-              A model and actor exploring the expressive possibilities of the human form —
-              where physical presence meets creative performance. My work spans high-fashion editorial,
-              commercial campaigns, theatrical performance, and character-driven storytelling,
-              all grounded in an understanding of embodiment and human experience.
-            </p>
+            <ScrollReveal direction="up">
+              <p>
+                A model and actor exploring the expressive possibilities of the human form —
+                where physical presence meets creative performance. My work spans high-fashion editorial,
+                commercial campaigns, theatrical performance, and character-driven storytelling,
+                all grounded in an understanding of embodiment and human experience.
+              </p>
+            </ScrollReveal>
 
-            <p className="animate-fadeIn" style={{ animationDelay: '0.2s', opacity: 0 }}>
-              Performance is my medium. Whether on camera, on stage, or in front of a lens,
-              the body becomes a canvas for expression. My background in cognitive science
-              informs this work — understanding how physicality shapes perception, emotion, and presence.
-            </p>
+            <ScrollReveal direction="up" delay={0.2}>
+              <p>
+                Performance is my medium. Whether on camera, on stage, or in front of a lens,
+                the body becomes a canvas for expression. My background in cognitive science
+                informs this work — understanding how physicality shapes perception, emotion, and presence.
+              </p>
+            </ScrollReveal>
 
-            <p className="animate-fadeIn" style={{ animationDelay: '0.4s', opacity: 0 }}>
-              Also developing AI tools for creatives — automating the technical so artists can focus
-              on what matters: the work itself. Because technology should amplify human creativity,
-              not replace it.
-            </p>
+            <ScrollReveal direction="up" delay={0.4}>
+              <p>
+                Also developing AI tools for creatives — automating the technical so artists can focus
+                on what matters: the work itself. Because technology should amplify human creativity,
+                not replace it.
+              </p>
+            </ScrollReveal>
           </div>
         </div>
       </section>
@@ -57,27 +64,31 @@ export default function AboutPage() {
 
       {/* Instagram Section */}
       <section className="pb-32 container-wide">
-        <div className="max-w-4xl mx-auto text-center space-y-8">
-          <h2 className="text-3xl md:text-5xl font-light font-serif">Follow the Journey</h2>
-          <p className="text-white/60 max-w-2xl mx-auto">
-            Daily insights, behind-the-scenes moments, and ongoing projects
-          </p>
-          <a
-            href="https://www.instagram.com/mrbrandonmills/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/20 hover:bg-white/10 hover:border-white/40 transition-all duration-300 group"
-          >
-            <Instagram size={24} className="group-hover:scale-110 transition-transform" />
-            <span className="tracking-wider text-sm">@MRBRANDONMILLS</span>
-          </a>
-        </div>
+        <ScrollReveal direction="up">
+          <div className="max-w-4xl mx-auto text-center space-y-8">
+            <h2 className="text-3xl md:text-5xl font-light font-serif">Follow the Journey</h2>
+            <p className="text-white/60 max-w-2xl mx-auto">
+              Daily insights, behind-the-scenes moments, and ongoing projects
+            </p>
+            <a
+              href="https://www.instagram.com/mrbrandonmills/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/20 hover:bg-white/10 hover:border-white/40 transition-all duration-300 group"
+            >
+              <Instagram size={24} className="group-hover:scale-110 transition-transform" />
+              <span className="tracking-wider text-sm">@MRBRANDONMILLS</span>
+            </a>
+          </div>
+        </ScrollReveal>
       </section>
 
       {/* Skills/Focus Areas */}
       <section className="pb-32 container-wide">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-5xl font-light font-serif text-center mb-16">Areas of Focus</h2>
+          <ScrollReveal direction="up">
+            <h2 className="text-3xl md:text-5xl font-light font-serif text-center mb-16">Areas of Focus</h2>
+          </ScrollReveal>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {[
               {
@@ -97,21 +108,16 @@ export default function AboutPage() {
                 areas: ['AI Development', 'Creative Automation', 'Content Systems', 'Digital Innovation'],
               },
             ].map((category, index) => (
-              <div
-                key={category.title}
-                className="space-y-4 animate-fadeIn"
-                style={{
-                  animationDelay: `${index * 0.1}s`,
-                  opacity: 0,
-                }}
-              >
-                <h3 className="text-xl font-serif text-accent-gold">{category.title}</h3>
-                <ul className="space-y-2 text-white/60">
-                  {category.areas.map((area) => (
-                    <li key={area} className="text-sm">• {area}</li>
-                  ))}
-                </ul>
-              </div>
+              <ScrollReveal key={category.title} direction="up" delay={index * 0.1}>
+                <div className="space-y-4">
+                  <h3 className="text-xl font-serif text-accent-gold">{category.title}</h3>
+                  <ul className="space-y-2 text-white/60">
+                    {category.areas.map((area) => (
+                      <li key={area} className="text-sm">• {area}</li>
+                    ))}
+                  </ul>
+                </div>
+              </ScrollReveal>
             ))}
           </div>
         </div>
