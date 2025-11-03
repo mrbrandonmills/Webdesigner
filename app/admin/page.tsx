@@ -1,113 +1,30 @@
 'use client'
 
-import { useState } from 'react'
-import { Upload, Mic, FileText, Image, Send, LogOut } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { Upload, Mic, FileText, Film, Camera, LogOut } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import FileUploader from '@/components/file-uploader'
-import VoiceRecorder from '@/components/voice-recorder'
-import { upload } from '@vercel/blob/client'
+import BatchUploader from '@/components/batch-uploader'
 
 export default function AdminPage() {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState<'upload' | 'voice' | 'manage'>('upload')
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [processingStatus, setProcessingStatus] = useState<string[]>([])
-  const [processedEssay, setProcessedEssay] = useState<any>(null)
-
-  // Upload form state
-  const [contentType, setContentType] = useState<'research' | 'essay' | 'modeling' | 'creative' | ''>('')
-  const [category, setCategory] = useState('')
-  const [title, setTitle] = useState('')
-  const [autoImage, setAutoImage] = useState(false)
-  const [autoPublish, setAutoPublish] = useState(true)
-
-  // Voice memo form state
-  const [voiceCategory, setVoiceCategory] = useState('')
-  const [voiceAutoImage, setVoiceAutoImage] = useState(true)
-  const [voiceAutoPublish, setVoiceAutoPublish] = useState(true)
+  const [activeZone, setActiveZone] = useState<'modeling' | 'acting' | 'videos' | 'essays' | 'manage'>('modeling')
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
     router.push('/gallery')
   }
 
-  const handleRecordingComplete = async (audioBlob: Blob, duration: number) => {
-    setIsProcessing(true)
-    setProcessingStatus([])
-    setProcessedEssay(null)
-
-    try {
-      // Status updates
-      const addStatus = (status: string) => {
-        setProcessingStatus((prev) => [...prev, status])
-      }
-
-      addStatus(`✓ Recorded ${Math.floor(duration / 60)}:${(duration % 60).toString().padStart(2, '0')}`)
-
-      // Upload audio to Vercel Blob
-      addStatus('⏳ Uploading audio...')
-      const audioFile = new File([audioBlob], `voice-memo-${Date.now()}.webm`, {
-        type: 'audio/webm',
-      })
-
-      const blob = await upload(audioFile.name, audioFile, {
-        access: 'public',
-        handleUploadUrl: '/api/upload',
-      })
-
-      addStatus('✓ Audio uploaded')
-
-      // Process with AI
-      addStatus('⏳ Transcribing with Whisper AI...')
-
-      const formData = new FormData()
-      formData.append('audio', audioBlob, 'voice-memo.webm')
-      formData.append('category', voiceCategory)
-      formData.append('autoImage', voiceAutoImage.toString())
-      formData.append('autoPublish', voiceAutoPublish.toString())
-
-      const response = await fetch('/api/process-voice', {
-        method: 'POST',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error || 'Processing failed')
-      }
-
-      const result = await response.json()
-
-      addStatus('✓ Transcribed')
-      addStatus('✓ Formatted as essay')
-      addStatus('✓ Generated title & SEO')
-      addStatus('✓ Auto-categorized')
-
-      if (voiceAutoImage) {
-        addStatus('✓ Generated visual theme prompt')
-      }
-
-      if (voiceAutoPublish) {
-        addStatus('⏳ Publishing to platforms...')
-      }
-
-      setProcessedEssay(result.data)
-      addStatus(`✅ Complete: "${result.data.title}"`)
-
-      alert(`✅ Essay processed successfully!\n\nTitle: ${result.data.title}\nWords: ${result.data.wordCount}\nCategory: ${result.data.category}`)
-    } catch (error) {
-      console.error('Voice processing error:', error)
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      setProcessingStatus((prev) => [...prev, `❌ Error: ${errorMessage}`])
-      alert(`Error processing voice memo: ${errorMessage}`)
-    } finally {
-      setIsProcessing(false)
-    }
-  }
+  const uploadZones = [
+    { id: 'modeling' as const, label: 'Modeling', icon: Camera, desc: 'Photo shoots with voice descriptions' },
+    { id: 'acting' as const, label: 'Acting', icon: Film, desc: 'Reels, clips, stills with context' },
+    { id: 'videos' as const, label: 'Web Videos', icon: Upload, desc: 'Site videos & background content' },
+    { id: 'essays' as const, label: 'Essays', icon: Mic, desc: 'Dictate or upload written work' },
+    { id: 'manage' as const, label: 'Manage', icon: FileText, desc: 'View all content' },
+  ]
 
   return (
     <div className="min-h-screen bg-black text-white pt-24 pb-20">
-      <div className="container-wide max-w-6xl">
+      <div className="container-wide max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-12">
           <div>
@@ -115,7 +32,7 @@ export default function AdminPage() {
               Content Studio
             </h1>
             <p className="text-white/60">
-              Mind · Body · Creativity · Synthesis
+              Modeling · Acting · Essays · Media
             </p>
           </div>
           <button
@@ -127,325 +44,388 @@ export default function AdminPage() {
           </button>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex gap-4 mb-8 border-b border-white/10">
-          <button
-            onClick={() => setActiveTab('upload')}
-            className={`pb-4 px-6 text-sm tracking-wider uppercase transition-colors border-b-2 ${
-              activeTab === 'upload'
-                ? 'border-accent-gold text-white'
-                : 'border-transparent text-white/60 hover:text-white/80'
-            }`}
-          >
-            <Upload size={16} className="inline mr-2" />
-            File Upload
-          </button>
-          <button
-            onClick={() => setActiveTab('voice')}
-            className={`pb-4 px-6 text-sm tracking-wider uppercase transition-colors border-b-2 ${
-              activeTab === 'voice'
-                ? 'border-accent-gold text-white'
-                : 'border-transparent text-white/60 hover:text-white/80'
-            }`}
-          >
-            <Mic size={16} className="inline mr-2" />
-            Voice Memo
-          </button>
-          <button
-            onClick={() => setActiveTab('manage')}
-            className={`pb-4 px-6 text-sm tracking-wider uppercase transition-colors border-b-2 ${
-              activeTab === 'manage'
-                ? 'border-accent-gold text-white'
-                : 'border-transparent text-white/60 hover:text-white/80'
-            }`}
-          >
-            <FileText size={16} className="inline mr-2" />
-            Manage Content
-          </button>
+        {/* Upload Zone Navigation */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
+          {uploadZones.map((zone) => {
+            const Icon = zone.icon
+            return (
+              <button
+                key={zone.id}
+                onClick={() => setActiveZone(zone.id)}
+                className={`p-6 border transition-all ${
+                  activeZone === zone.id
+                    ? 'bg-accent-gold/10 border-accent-gold'
+                    : 'bg-white/5 border-white/10 hover:border-white/30'
+                }`}
+              >
+                <Icon size={32} className={`mb-3 ${activeZone === zone.id ? 'text-accent-gold' : 'text-white/60'}`} />
+                <div className="text-left">
+                  <div className="font-medium mb-1">{zone.label}</div>
+                  <div className="text-xs text-white/40">{zone.desc}</div>
+                </div>
+              </button>
+            )
+          })}
         </div>
 
-        {/* File Upload Tab */}
-        {activeTab === 'upload' && (
-          <div className="space-y-8">
-            <div className="bg-white/5 border border-white/10 rounded-lg p-8">
-              <h2 className="text-2xl font-serif mb-6">Upload Files</h2>
-
-              {/* Content Type Selector */}
-              <div className="mb-6">
-                <label className="block text-white/60 text-sm tracking-wider uppercase mb-3">
-                  Content Type
-                </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {[
-                    { id: 'research' as const, label: 'Research Paper', icon: '🧠', desc: 'Cognitive Science' },
-                    { id: 'essay' as const, label: 'Essay', icon: '✍️', desc: 'Thought Leadership' },
-                    { id: 'modeling' as const, label: 'Photo Shoot', icon: '📸', desc: 'Modeling Work' },
-                    { id: 'creative' as const, label: 'Creative Work', icon: '🎭', desc: 'Acting/Projects' },
-                  ].map((type) => (
-                    <button
-                      key={type.id}
-                      onClick={() => setContentType(type.id)}
-                      className={`p-4 border transition-all text-left ${
-                        contentType === type.id
-                          ? 'bg-accent-gold/10 border-accent-gold'
-                          : 'bg-white/5 border-white/10 hover:border-accent-gold hover:bg-white/10'
-                      }`}
-                    >
-                      <div className="text-2xl mb-2">{type.icon}</div>
-                      <div className="font-medium text-sm mb-1">{type.label}</div>
-                      <div className="text-xs text-white/40">{type.desc}</div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Metadata Fields */}
-              <div className="mb-6 space-y-4">
-                <div>
-                  <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
-                    Title (optional - AI will suggest)
-                  </label>
-                  <input
-                    type="text"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                    placeholder="Leave blank for AI to generate"
-                    className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-accent-gold transition-colors"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
-                    Category
-                  </label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-accent-gold transition-colors"
-                  >
-                    <option value="">Auto-categorize with AI</option>
-                    <option value="mind">Mind (Cognitive Research)</option>
-                    <option value="body">Body (Modeling)</option>
-                    <option value="creativity">Creativity (Acting)</option>
-                    <option value="synthesis">Synthesis (Self-Actualization)</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    id="auto-image"
-                    checked={autoImage}
-                    onChange={(e) => setAutoImage(e.target.checked)}
-                    className="w-4 h-4"
-                  />
-                  <label htmlFor="auto-image" className="text-sm text-white/60">
-                    Generate visual theme image/video with AI
-                  </label>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    id="auto-publish"
-                    checked={autoPublish}
-                    onChange={(e) => setAutoPublish(e.target.checked)}
-                    className="w-4 h-4"
-                  />
-                  <label htmlFor="auto-publish" className="text-sm text-white/60">
-                    Auto-publish to Medium, LinkedIn, Instagram
-                  </label>
-                </div>
-              </div>
-
-              {/* File Uploader Component */}
-              <FileUploader
-                contentType={contentType}
-                category={category}
-                title={title}
-                autoImage={autoImage}
-                autoPublish={autoPublish}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Voice Memo Tab */}
-        {activeTab === 'voice' && (
-          <div className="space-y-8">
-            <div className="bg-white/5 border border-white/10 rounded-lg p-8">
-              <h2 className="text-2xl font-serif mb-4">Voice Essay Dictation</h2>
-              <p className="text-white/60 mb-8">
-                Dictate your entire essay. AI will transcribe, format, add visuals,
-                optimize for SEO, and publish across platforms.
-              </p>
-
-              {/* Settings */}
-              <div className="mb-6 space-y-4 bg-white/5 border border-white/10 rounded-lg p-6">
-                <h3 className="text-sm font-medium tracking-wider uppercase text-white/60">
-                  Processing Options
-                </h3>
-
-                <div>
-                  <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
-                    Category
-                  </label>
-                  <select
-                    value={voiceCategory}
-                    onChange={(e) => setVoiceCategory(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-accent-gold transition-colors"
-                    disabled={isProcessing}
-                  >
-                    <option value="">Auto-categorize with AI</option>
-                    <option value="mind">Mind (Cognitive Research)</option>
-                    <option value="body">Body (Modeling)</option>
-                    <option value="creativity">Creativity (Acting)</option>
-                    <option value="synthesis">Synthesis (Self-Actualization)</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    id="voice-auto-image"
-                    checked={voiceAutoImage}
-                    onChange={(e) => setVoiceAutoImage(e.target.checked)}
-                    className="w-4 h-4"
-                    disabled={isProcessing}
-                  />
-                  <label htmlFor="voice-auto-image" className="text-sm text-white/60">
-                    Generate visual theme image with AI
-                  </label>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <input
-                    type="checkbox"
-                    id="voice-auto-publish"
-                    checked={voiceAutoPublish}
-                    onChange={(e) => setVoiceAutoPublish(e.target.checked)}
-                    className="w-4 h-4"
-                    disabled={isProcessing}
-                  />
-                  <label htmlFor="voice-auto-publish" className="text-sm text-white/60">
-                    Auto-publish to Medium, LinkedIn, Instagram
-                  </label>
-                </div>
-              </div>
-
-              {/* Voice Recorder */}
-              <VoiceRecorder onRecordingComplete={handleRecordingComplete} />
-
-              {/* Processing Status */}
-              {isProcessing && (
-                <div className="mt-8 p-6 bg-blue-500/10 border border-blue-500/30 rounded-lg">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="animate-spin w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-                    <span className="text-blue-400">Processing your essay...</span>
-                  </div>
-                  <div className="space-y-2 text-sm text-white/60">
-                    {processingStatus.map((status, i) => (
-                      <div key={i}>{status}</div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Processed Essay Preview */}
-              {processedEssay && !isProcessing && (
-                <div className="mt-8 p-6 bg-green-500/10 border border-green-500/30 rounded-lg space-y-4">
-                  <h3 className="text-lg font-semibold text-green-400">
-                    ✅ Essay Processed Successfully!
-                  </h3>
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <span className="text-white/60">Title:</span>{' '}
-                      <span className="text-white">{processedEssay.title}</span>
-                    </div>
-                    <div>
-                      <span className="text-white/60">Category:</span>{' '}
-                      <span className="text-white capitalize">{processedEssay.category}</span>
-                    </div>
-                    <div>
-                      <span className="text-white/60">Word Count:</span>{' '}
-                      <span className="text-white">{processedEssay.wordCount}</span>
-                    </div>
-                    <div className="pt-4">
-                      <span className="text-white/60">Excerpt:</span>
-                      <p className="text-white/80 italic mt-2">{processedEssay.excerpt}</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* AI Processing Info */}
-              <div className="border-t border-white/10 pt-8 mt-8 space-y-4">
-                <h3 className="text-lg font-serif mb-4">AI Will Automatically:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    { icon: '🎯', text: 'Transcribe with OpenAI Whisper' },
-                    { icon: '✍️', text: 'Format as professional essay with Claude' },
-                    { icon: '📖', text: 'Generate compelling title' },
-                    { icon: '🏷️', text: 'Auto-categorize (Mind/Body/Creativity/Synthesis)' },
-                    { icon: '🔍', text: 'Create SEO meta description & keywords' },
-                    { icon: '📝', text: 'Generate social media excerpt' },
-                    { icon: '🎨', text: 'Create visual theme prompt (optional)' },
-                    { icon: '🚀', text: 'Publish to platforms (optional)' },
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-start gap-3 text-sm text-white/80">
-                      <span className="text-xl">{item.icon}</span>
-                      <span>{item.text}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Manage Content Tab */}
-        {activeTab === 'manage' && (
-          <div className="space-y-8">
-            <div className="bg-white/5 border border-white/10 rounded-lg p-8">
-              <h2 className="text-2xl font-serif mb-6">Content Manager</h2>
-
-              {/* Filter Tabs */}
-              <div className="flex gap-4 mb-6 overflow-x-auto">
-                {['All', 'Mind', 'Body', 'Creativity', 'Synthesis'].map((filter) => (
-                  <button
-                    key={filter}
-                    className="px-4 py-2 bg-white/5 border border-white/10 hover:border-accent-gold whitespace-nowrap text-sm"
-                  >
-                    {filter}
-                  </button>
-                ))}
-              </div>
-
-              {/* Content List */}
-              <div className="space-y-4">
-                <p className="text-white/40 text-center py-12">
-                  No content yet. Upload files or record a voice memo to get started.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Upload Zone Content */}
+        <div className="bg-white/5 border border-white/10 rounded-lg p-8">
+          {activeZone === 'modeling' && <ModelingUploadZone />}
+          {activeZone === 'acting' && <ActingUploadZone />}
+          {activeZone === 'videos' && <VideoUploadZone />}
+          {activeZone === 'essays' && <EssayZone />}
+          {activeZone === 'manage' && <ManageContent />}
+        </div>
 
         {/* Quick Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
           {[
+            { label: 'Collections', count: 0, icon: '📁' },
+            { label: 'Photos', count: 0, icon: '📸' },
+            { label: 'Videos', count: 0, icon: '🎬' },
             { label: 'Essays', count: 0, icon: '📝' },
-            { label: 'Research', count: 0, icon: '🧠' },
-            { label: 'Photo Shoots', count: 0, icon: '📸' },
-            { label: 'Projects', count: 0, icon: '🎭' },
           ].map((stat) => (
-            <div key={stat.label} className="bg-white/5 border border-white/10 p-6 text-center">
+            <div key={stat.label} className="luxury-card bg-white/5 border border-white/10 p-6 text-center">
               <div className="text-3xl mb-2">{stat.icon}</div>
               <div className="text-3xl font-light mb-1">{stat.count}</div>
               <div className="text-sm text-white/60">{stat.label}</div>
             </div>
           ))}
         </div>
+      </div>
+    </div>
+  )
+}
+
+// MODELING UPLOAD ZONE
+function ModelingUploadZone() {
+  const uploaderRef = useRef<any>(null)
+  const [collectionName, setCollectionName] = useState('')
+  const [isRecording, setIsRecording] = useState(false)
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadResult, setUploadResult] = useState<any>(null)
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const recorder = new MediaRecorder(stream)
+      const chunks: BlobPart[] = []
+
+      recorder.ondataavailable = (e) => chunks.push(e.data)
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' })
+        setAudioBlob(blob)
+        stream.getTracks().forEach(track => track.stop())
+      }
+
+      recorder.start()
+      setMediaRecorder(recorder)
+      setIsRecording(true)
+    } catch (error) {
+      console.error('Failed to start recording:', error)
+      alert('Microphone access denied')
+    }
+  }
+
+  const stopRecording = () => {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop()
+      setMediaRecorder(null)
+      setIsRecording(false)
+    }
+  }
+
+  const handleUpload = async (files: File[]) => {
+    if (files.length === 0) {
+      alert('Please select at least one photo')
+      return
+    }
+
+    setIsUploading(true)
+    setUploadResult(null)
+
+    try {
+      const formData = new FormData()
+      files.forEach(file => formData.append('files', file))
+      if (audioBlob) {
+        formData.append('audio', audioBlob, 'voice-memo.webm')
+      }
+      if (collectionName) {
+        formData.append('title', collectionName)
+      }
+      formData.append('type', 'modeling')
+
+      const response = await fetch('/api/upload-collection', {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setUploadResult(data)
+        setCollectionName('')
+        setAudioBlob(null)
+        // Reset files in uploader (would need to add this method to BatchUploader)
+      } else {
+        alert(`Upload failed: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Upload error:', error)
+      alert('Upload failed')
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-serif mb-2">📸 Modeling Upload</h2>
+        <p className="text-white/60 text-sm">
+          Upload a batch of photos from one shoot. Add a voice description to create a collection.
+        </p>
+      </div>
+
+      {uploadResult && (
+        <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-6">
+          <h3 className="text-green-400 font-medium mb-2">✅ Collection Created!</h3>
+          <p className="text-white/80 mb-2">"{uploadResult.data.title}"</p>
+          <p className="text-sm text-white/60">{uploadResult.message}</p>
+        </div>
+      )}
+
+      {/* Collection Name */}
+      <div>
+        <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
+          Collection Name (optional - AI will generate)
+        </label>
+        <input
+          type="text"
+          value={collectionName}
+          onChange={(e) => setCollectionName(e.target.value)}
+          placeholder="e.g., Vogue Fall Editorial 2024"
+          className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-accent-gold transition-colors"
+        />
+      </div>
+
+      {/* Photo Drop Zone */}
+      <BatchUploader
+        ref={uploaderRef}
+        type="modeling"
+        accept="image/*"
+        icon={Camera}
+        onUploadComplete={handleUpload}
+      />
+
+      {/* Voice Memo for Batch */}
+      <div className="border border-white/10 rounded-lg p-6">
+        <h3 className="text-lg font-serif mb-4">🎤 Voice Description (Recommended)</h3>
+        <p className="text-white/60 text-sm mb-4">
+          Describe the shoot vibe, location, style, mood. AI uses this for keywords and collection details.
+        </p>
+
+        <div className="flex gap-4">
+          <button
+            onClick={isRecording ? stopRecording : startRecording}
+            disabled={isUploading}
+            className={`flex-1 px-6 py-4 font-medium tracking-wider uppercase transition-colors ${
+              isRecording
+                ? 'bg-red-500 hover:bg-red-600 text-white'
+                : 'bg-white/10 border border-white/20 hover:bg-white/20'
+            } disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {isRecording ? '⏹ Stop Recording' : '🎤 Record Description'}
+          </button>
+
+          {audioBlob && (
+            <button
+              onClick={() => setAudioBlob(null)}
+              disabled={isUploading}
+              className="px-6 py-4 bg-white/5 border border-white/10 hover:bg-white/10 transition-colors disabled:opacity-50"
+            >
+              🗑️ Clear
+            </button>
+          )}
+        </div>
+
+        {audioBlob && (
+          <div className="mt-4 p-4 bg-green-500/10 border border-green-500/30 rounded">
+            ✓ Voice description recorded ({(audioBlob.size / 1024).toFixed(2)} KB)
+          </div>
+        )}
+      </div>
+
+      {/* Upload Button */}
+      <button
+        onClick={() => {
+          const filesInput = uploaderRef.current?.getFiles?.()
+          if (filesInput) handleUpload(filesInput)
+        }}
+        disabled={isUploading}
+        className="w-full px-6 py-4 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isUploading ? 'Uploading...' : 'Upload & Create Collection'}
+      </button>
+
+      {/* Info */}
+      <div className="bg-blue-500/10 border border-blue-500/30 rounded p-4 text-sm text-blue-300">
+        <p className="font-medium mb-2">💡 How it works:</p>
+        <ul className="space-y-1 text-blue-200/80 text-sm">
+          <li>• Photos grouped into one collection</li>
+          <li>• Voice memo transcribed for keywords & vibe</li>
+          <li>• AI generates collection title if not provided</li>
+          <li>• Each photo tagged with collection metadata</li>
+          <li>• Appears in Gallery with luxury hover effects</li>
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+// ACTING UPLOAD ZONE
+function ActingUploadZone() {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-serif mb-2">🎭 Acting Upload</h2>
+        <p className="text-white/60 text-sm">
+          Upload reels (2-3 min), clips (&lt;1 min), or stills. Add voice context about the role/performance.
+        </p>
+      </div>
+
+      <div className="border-2 border-dashed border-white/20 rounded-lg p-12 text-center">
+        <Film size={48} className="mx-auto mb-4 text-white/40" />
+        <p className="text-lg mb-2">Drop videos or photos</p>
+        <p className="text-sm text-white/40">
+          Reels, Instagram clips, headshots, stills
+        </p>
+      </div>
+
+      <div className="border border-white/10 rounded-lg p-6">
+        <h3 className="text-lg font-serif mb-4">🎤 Project Context</h3>
+        <p className="text-white/60 text-sm mb-4">
+          Describe the character, role, project, or performance
+        </p>
+        <button className="w-full px-6 py-4 bg-white/10 border border-white/20 hover:bg-white/20 transition-colors">
+          🎤 Record Context
+        </button>
+      </div>
+
+      <button className="w-full px-6 py-4 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors">
+        Upload & Create Collection
+      </button>
+    </div>
+  )
+}
+
+// WEB VIDEO UPLOAD ZONE
+function VideoUploadZone() {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-serif mb-2">🎥 Web Videos</h2>
+        <p className="text-white/60 text-sm">
+          Upload videos for site backgrounds, hero sections, or content. No voice memo needed.
+        </p>
+      </div>
+
+      <div>
+        <label className="block text-white/60 text-sm tracking-wider uppercase mb-2">
+          Video Purpose
+        </label>
+        <select className="w-full bg-white/5 border border-white/10 px-4 py-3 text-white focus:outline-none focus:border-accent-gold transition-colors">
+          <option value="hero">Hero Background Video</option>
+          <option value="portfolio">Portfolio Showcase</option>
+          <option value="broll">B-Roll / Content</option>
+        </select>
+      </div>
+
+      <div className="border-2 border-dashed border-white/20 rounded-lg p-12 text-center">
+        <Film size={48} className="mx-auto mb-4 text-white/40" />
+        <p className="text-lg mb-2">Drop video files</p>
+        <p className="text-sm text-white/40">
+          MP4, MOV, WebM formats
+        </p>
+      </div>
+
+      <button className="w-full px-6 py-4 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors">
+        Upload Videos
+      </button>
+    </div>
+  )
+}
+
+// ESSAY ZONE
+function EssayZone() {
+  return (
+    <div className="space-y-8">
+      <div>
+        <h2 className="text-2xl font-serif mb-2">✍️ Essay Creator</h2>
+        <p className="text-white/60 text-sm">
+          Dictate a full essay or upload written documents. AI formats, adds SEO, generates theme image.
+        </p>
+      </div>
+
+      {/* Dictation Option */}
+      <div className="border border-accent-gold/30 rounded-lg p-8 bg-accent-gold/5">
+        <h3 className="text-xl font-serif mb-4">🎤 Dictate Essay (Recommended)</h3>
+        <p className="text-white/60 mb-6">
+          Speak your essay naturally. Unlimited length. AI transcribes, formats, and publishes.
+        </p>
+
+        <div className="text-center py-8">
+          <button className="w-32 h-32 rounded-full bg-accent-gold hover:bg-accent-hover flex items-center justify-center transition-all shadow-lg mx-auto">
+            <Mic size={48} className="text-black" />
+          </button>
+          <p className="mt-4 text-lg">Click to start dictating</p>
+        </div>
+
+        <div className="mt-6 grid grid-cols-2 gap-4">
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" defaultChecked className="w-4 h-4" />
+            <span className="text-white/60">Generate theme image</span>
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" defaultChecked className="w-4 h-4" />
+            <span className="text-white/60">Auto-post to Medium</span>
+          </label>
+        </div>
+      </div>
+
+      {/* Document Upload Option */}
+      <div className="border border-white/10 rounded-lg p-6">
+        <h3 className="text-lg font-serif mb-4">📄 Upload Written Document</h3>
+        <div className="border-2 border-dashed border-white/20 rounded-lg p-8 text-center">
+          <FileText size={40} className="mx-auto mb-3 text-white/40" />
+          <p>Drop PDF, Word doc, or text file</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// MANAGE CONTENT
+function ManageContent() {
+  return (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-serif">📊 Content Manager</h2>
+
+      <div className="flex gap-4 overflow-x-auto">
+        {['All', 'Modeling', 'Acting', 'Essays', 'Videos'].map((filter) => (
+          <button
+            key={filter}
+            className="px-4 py-2 bg-white/5 border border-white/10 hover:border-accent-gold whitespace-nowrap text-sm"
+          >
+            {filter}
+          </button>
+        ))}
+      </div>
+
+      <div className="text-center py-20 text-white/40">
+        No content yet. Upload your first collection!
       </div>
     </div>
   )

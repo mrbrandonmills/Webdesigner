@@ -200,16 +200,45 @@ Respond with ONLY the image prompt, no explanation.
 
     console.log('Essay processed successfully:', title)
 
-    // Step 9: Auto-publish to platforms (if requested)
+    // Step 9: Auto-publish to Medium (if requested)
+    let publishedUrl: string | undefined
     if (autoPublish) {
-      // TODO: Implement Medium, LinkedIn, Instagram posting
-      console.log('Auto-publish requested - will implement Medium/LinkedIn/Instagram APIs')
+      console.log('Auto-publishing to Medium...')
+      try {
+        const mediumResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/publish/medium`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title,
+            content: formattedEssay,
+            tags: keywords.split(',').map(k => k.trim()).slice(0, 5),
+            publishStatus: 'draft', // Publish as draft first for review
+            canonicalUrl: `${process.env.NEXT_PUBLIC_BASE_URL}/essays/${essayData.id}`,
+          }),
+        })
+
+        if (mediumResponse.ok) {
+          const mediumData = await mediumResponse.json()
+          publishedUrl = mediumData.url
+          console.log('✅ Published to Medium:', publishedUrl)
+        } else {
+          console.error('Medium publish failed:', await mediumResponse.text())
+        }
+      } catch (error) {
+        console.error('Medium publish error:', error)
+        // Don't fail the whole request if Medium publish fails
+      }
     }
 
     return NextResponse.json({
       success: true,
-      data: essayData,
-      message: `Successfully processed essay: "${title}"`,
+      data: {
+        ...essayData,
+        publishedUrl,
+      },
+      message: `Successfully processed essay: "${title}"${publishedUrl ? ` and published to Medium: ${publishedUrl}` : ''}`,
     })
   } catch (error) {
     console.error('Voice processing error:', error)

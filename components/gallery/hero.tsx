@@ -2,10 +2,18 @@
 
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
+// import VideoHero from '@/components/video-hero'
 
 /**
  * Cinematic Hero Section
  * Full-screen intro with parallax and scroll-triggered reveals
+ *
+ * TODO: Replace gradient background with VideoHero when you upload modeling portfolio video
+ * Uncomment the VideoHero import above and wrap the content below:
+ *
+ * <VideoHero videoSrc="/portfolio-reel.mp4" posterSrc="/portfolio-poster.jpg" className="h-screen">
+ *   {content}
+ * </VideoHero>
  */
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -74,7 +82,7 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
               className="text-lg md:text-xl text-gray-400 font-light tracking-wide max-w-2xl mx-auto"
             >
-              Fashion Model • Actor • Author • Cognitive Researcher • AI Engineer
+              Model · Actor · Researcher · Creative
             </motion.p>
           </motion.div>
 

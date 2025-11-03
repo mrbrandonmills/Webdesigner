@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import VideoHero from '@/components/video-hero'
 
 export default function WorkPage() {
   const categories = [
@@ -66,9 +67,12 @@ export default function WorkPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 container-wide">
-        <div className="max-w-4xl mx-auto text-center space-y-8 animate-fadeIn">
+      {/* Hero Section - Ready for Video Background */}
+      {/* TODO: Replace with VideoHero when you upload a modeling/acting showreel */}
+      {/* <VideoHero videoSrc="/hero-reel.mp4" posterSrc="/hero-poster.jpg" className="h-screen"> */}
+      <section className="pt-32 pb-20 container-wide relative">
+        {/* Placeholder for future video background */}
+        <div className="max-w-4xl mx-auto text-center space-y-8 animate-fadeIn relative z-10">
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-light font-serif leading-none">
             Portfolio & Work
           </h1>
@@ -80,6 +84,7 @@ export default function WorkPage() {
           </p>
         </div>
       </section>
+      {/* </VideoHero> */}
 
       {/* Four Pillars */}
       <section className="pb-20 container-wide">
