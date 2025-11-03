@@ -40,6 +40,24 @@ interface GenerateRequest {
   products: string[]
 }
 
+interface GeneratedProduct {
+  id: string
+  title: string
+  description: string
+  price: string
+  themeId: string
+  productType: string
+  designUrl: string
+  mockupUrl: string
+  printfulProductId: number
+  tags: string[]
+  createdAt: string
+}
+
+interface ProductsData {
+  products: GeneratedProduct[]
+}
+
 export async function POST(request: Request) {
   try {
     // Check if OpenAI API key is configured
@@ -84,10 +102,10 @@ export async function POST(request: Request) {
     const filePath = path.join(process.cwd(), 'data', 'curated-products.json')
 
     // Read existing products
-    let existingData = { products: [] }
+    let existingData: ProductsData = { products: [] }
     try {
       const fileContent = await readFile(filePath, 'utf-8')
-      existingData = JSON.parse(fileContent)
+      existingData = JSON.parse(fileContent) as ProductsData
     } catch (error) {
       // File doesn't exist yet, use empty array
     }
@@ -144,7 +162,7 @@ export async function POST(request: Request) {
   }
 }
 
-async function generateProduct(themeId: string, productId: string, designUrl: string) {
+async function generateProduct(themeId: string, productId: string, designUrl: string): Promise<GeneratedProduct> {
   // Product configurations
   const productConfig: Record<string, any> = {
     'poster-small': { name: '12×16" Premium Poster', price: '49.00', printfulId: 1 },
