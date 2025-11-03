@@ -6,6 +6,7 @@ import ScrollReveal from '@/components/scroll-reveal'
 import { useCart } from '@/contexts/cart-context'
 import { ProductGridSkeleton } from '@/components/product-skeleton'
 import { RippleButton } from '@/components/ripple-button'
+import { ProductAnalytics } from '@/lib/product-analytics'
 
 interface Product {
   id: number
@@ -40,9 +41,9 @@ export default function StorePage() {
   const fetchProducts = async () => {
     try {
       setLoading(true)
-      const url = selectedCategory
-        ? `/api/store/products?category=${selectedCategory}`
-        : '/api/store/products'
+
+      // Use curated products API for FAST loading (no Printful API calls)
+      const url = '/api/store/curated-products'
 
       const response = await fetch(url)
 
@@ -220,10 +221,20 @@ export default function StorePage() {
         ) : filteredProducts.length === 0 ? (
           <div className="text-center py-32">
             <div className="inline-block p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl mb-6">
-              <Search size={64} className="text-white/20" />
+              <Sparkles size={64} className="text-accent-gold/40" />
             </div>
-            <h3 className="text-3xl font-serif text-white/60 mb-4">No products found</h3>
-            <p className="text-white/40 font-light">Try adjusting your search or browse all categories</p>
+            <h3 className="text-3xl font-serif text-white/60 mb-4">Collection Coming Soon</h3>
+            <p className="text-white/40 font-light mb-8">
+              Curated products with custom designs will appear here once generated
+            </p>
+            {typeof window !== 'undefined' && window.location.hostname === 'localhost' && (
+              <a
+                href="/admin/products/generate"
+                className="inline-block px-8 py-4 bg-accent-gold text-black rounded-full font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors"
+              >
+                Generate Products (Admin)
+              </a>
+            )}
           </div>
         ) : (
           <>
@@ -307,6 +318,11 @@ function ProductCard({ product }: { product: Product }) {
   const variant = product.variants?.[selectedVariant]
   const { addItem } = useCart()
 
+  // Track product view on mount
+  useEffect(() => {
+    ProductAnalytics.trackView(product.id.toString())
+  }, [product.id])
+
   // Return null if no variants
   if (!product.variants || product.variants.length === 0) {
     return null
@@ -376,6 +392,10 @@ function ProductCard({ product }: { product: Product }) {
 
   const handleAddToCart = () => {
     if (!variant) return
+
+    // Track analytics
+    ProductAnalytics.trackClick(product.id.toString())
+    ProductAnalytics.trackAddToCart(product.id.toString(), parseFloat(suggestedPrice))
 
     addItem({
       productId: product.id,
