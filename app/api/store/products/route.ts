@@ -56,10 +56,10 @@ export async function GET(request: Request) {
           return {
             id: product.id,
             title: product.title,
-            brand: product.brand,
-            model: product.model,
-            description: product.description,
-            type: product.type_name,
+            brand: product.brand || 'Unknown',
+            model: product.model || '',
+            description: product.description || '',
+            type: product.type_name || product.type || 'Product',
             image: variants[0]?.image || null,
             basePrice: firstVariantPrice?.price || '0',
             currency: firstVariantPrice?.currency || 'USD',
@@ -67,8 +67,8 @@ export async function GET(request: Request) {
             variants: variants.slice(0, 5).map(v => ({
               id: v.id,
               name: v.name,
-              size: v.size,
-              color: v.color,
+              size: v.size || '',
+              color: v.color || '',
               image: v.image,
             })),
           }

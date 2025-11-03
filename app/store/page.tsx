@@ -314,8 +314,8 @@ function ProductCard({ product }: { product: Product }) {
 
   // Strategic pricing based on product type and positioning
   const getStrategicPrice = (product: Product): string => {
-    const basePrice = parseFloat(product.basePrice)
-    const type = product.type.toLowerCase()
+    const basePrice = parseFloat(product.basePrice) || 0
+    const type = (product.type || '').toLowerCase()
 
     // Gallery Prints / Posters - Premium art pricing
     if (type.includes('poster') || type.includes('print')) {
