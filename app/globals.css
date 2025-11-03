@@ -200,3 +200,139 @@ img {
   image-rendering: -webkit-optimize-contrast;
   image-rendering: crisp-edges;
 }
+
+/* ===== LUXURY ENHANCEMENTS ===== */
+
+/* Image hover zoom effect */
+.image-hover-zoom {
+  overflow: hidden;
+  position: relative;
+}
+
+.image-hover-zoom img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+.image-hover-zoom:hover img {
+  transform: scale(1.05);
+}
+
+/* Image overlay on hover */
+.image-hover-overlay {
+  position: relative;
+  overflow: hidden;
+}
+
+.image-hover-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.image-hover-overlay:hover::before {
+  opacity: 1;
+}
+
+/* Link underline animation */
+.link-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background-color: currentColor;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* Button hover lift */
+button, .btn {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button:hover, .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+button:active, .btn:active {
+  transform: translateY(0);
+}
+
+/* Smooth color transitions */
+a {
+  transition: color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Gallery item hover effect */
+.gallery-item {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gallery-item img {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), filter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.08);
+}
+
+.gallery-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
+}
+
+.gallery-item:hover .gallery-item-overlay {
+  opacity: 1;
+}
+
+/* Luxury card hover */
+.luxury-card {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 20px 40px -10px rgba(201, 160, 80, 0.2);
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: auto; /* Let Lenis handle smooth scrolling */
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--accent);
+  color: var(--background);
+}
+
+::-moz-selection {
+  background-color: var(--accent);
+  color: var(--background);
+}

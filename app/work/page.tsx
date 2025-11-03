@@ -88,7 +88,7 @@ export default function WorkPage() {
             <Link
               key={category.title}
               href={category.link}
-              className="group relative bg-white/5 border border-white/10 p-8 md:p-12 overflow-hidden hover:border-white/30 transition-all duration-500"
+              className="luxury-card group relative bg-white/5 border border-white/10 p-8 md:p-12 overflow-hidden"
               style={{
                 animation: `fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.15}s forwards`,
                 opacity: 0,
@@ -128,7 +128,7 @@ export default function WorkPage() {
             {featuredWork.map((work, index) => (
               <div
                 key={work.title}
-                className="bg-white/5 border border-white/10 p-6 md:p-8 hover:border-white/30 transition-all duration-300"
+                className="luxury-card bg-white/5 border border-white/10 p-6 md:p-8"
                 style={{
                   animation: `fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) ${index * 0.1}s forwards`,
                   opacity: 0,

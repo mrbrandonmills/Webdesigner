@@ -56,9 +56,9 @@ export function CustomCursor() {
 
   return (
     <>
-      {/* Main cursor */}
+      {/* Main cursor - golden ring */}
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 pointer-events-none z-[9999] mix-blend-difference"
+        className="fixed top-0 left-0 w-10 h-10 pointer-events-none z-[9999]"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
@@ -66,33 +66,47 @@ export function CustomCursor() {
         }}
       >
         <motion.div
-          className="w-full h-full rounded-full border-2 border-white"
+          className="w-full h-full rounded-full border-2"
+          style={{
+            borderColor: 'var(--accent)',
+          }}
           animate={{
-            scale: isHovering ? 1.5 : 1,
+            scale: isHovering ? 1.8 : 1,
             borderWidth: isHovering ? 1 : 2,
+          }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        />
+      </motion.div>
+
+      {/* Cursor dot - white center */}
+      <motion.div
+        className="fixed top-0 left-0 w-1.5 h-1.5 pointer-events-none z-[9999]"
+        style={{
+          x: cursorXSpring,
+          y: cursorYSpring,
+          opacity: isVisible ? 1 : 0,
+          left: 17,
+          top: 17,
+        }}
+      >
+        <motion.div
+          className="w-full h-full rounded-full bg-white"
+          animate={{
+            scale: isHovering ? 0 : 1,
           }}
           transition={{ duration: 0.2 }}
         />
       </motion.div>
 
-      {/* Cursor dot */}
-      <motion.div
-        className="fixed top-0 left-0 w-1 h-1 pointer-events-none z-[9999] mix-blend-difference"
-        style={{
-          x: cursorXSpring,
-          y: cursorYSpring,
-          opacity: isVisible ? 1 : 0,
-          left: 14,
-          top: 14,
-        }}
-      >
-        <div className="w-full h-full rounded-full bg-white" />
-      </motion.div>
-
       {/* Hide default cursor */}
       <style jsx global>{`
-        * {
+        body * {
           cursor: none !important;
+        }
+        /* Preserve focus indicators for accessibility */
+        *:focus-visible {
+          outline: 2px solid var(--accent);
+          outline-offset: 2px;
         }
       `}</style>
     </>

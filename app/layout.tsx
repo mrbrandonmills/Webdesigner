@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/react'
 import Navigation from '@/components/navigation'
+import { CustomCursor } from '@/components/custom-cursor'
+import SmoothScroll from '@/components/smooth-scroll'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -23,10 +25,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <Navigation />
-        <main className="min-h-screen">
-          {children}
-        </main>
+        <CustomCursor />
+        <SmoothScroll>
+          <Navigation />
+          <main className="min-h-screen">
+            {children}
+          </main>
+        </SmoothScroll>
         <Analytics />
       </body>
     </html>
