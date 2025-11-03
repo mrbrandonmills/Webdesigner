@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/react'
 import Navigation from '@/components/navigation'
 import { CustomCursor } from '@/components/custom-cursor'
 import SmoothScroll from '@/components/smooth-scroll'
+import PageTransition from '@/components/page-transition'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -28,9 +29,11 @@ export default function RootLayout({
         <CustomCursor />
         <SmoothScroll>
           <Navigation />
-          <main className="min-h-screen">
-            {children}
-          </main>
+          <PageTransition>
+            <main className="min-h-screen">
+              {children}
+            </main>
+          </PageTransition>
         </SmoothScroll>
         <Analytics />
       </body>
