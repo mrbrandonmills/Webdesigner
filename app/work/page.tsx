@@ -3,34 +3,34 @@ import Link from 'next/link'
 export default function WorkPage() {
   const categories = [
     {
-      title: 'Mind',
-      subtitle: 'Cognitive Science Research',
-      description: 'Exploring consciousness, embodied cognition, and the nature of experience through empirical research and philosophical inquiry',
-      link: '/work/mind',
-      icon: '🧠',
-      color: 'from-blue-500/20 to-purple-500/20',
-    },
-    {
-      title: 'Body',
-      subtitle: 'Modeling & Performance',
-      description: 'Fashion modeling, physical expression, and the embodiment of aesthetic presence through commercial and editorial work',
-      link: '/gallery?category=body',
+      title: 'Modeling',
+      subtitle: 'Fashion & Editorial',
+      description: 'High-fashion editorial, commercial campaigns, and brand partnerships showcasing aesthetic presence and creative direction',
+      link: '/gallery',
       icon: '💫',
       color: 'from-pink-500/20 to-rose-500/20',
     },
     {
-      title: 'Creativity',
-      subtitle: 'Acting & Expression',
-      description: 'Performance art, theatrical work, and creative projects exploring character, narrative, and human emotion',
-      link: '/work/creativity',
+      title: 'Acting',
+      subtitle: 'Performance & Character',
+      description: 'Theatrical work, on-camera performance, and character-driven storytelling exploring the depths of human emotion and expression',
+      link: '/work/acting',
       icon: '🎭',
       color: 'from-amber-500/20 to-orange-500/20',
     },
     {
-      title: 'Synthesis',
-      subtitle: 'Self-Actualization',
-      description: 'Integrating mind, body, and creativity into unified expression through writing, AI development, and personal experiments',
-      link: '/work/synthesis',
+      title: 'Research',
+      subtitle: 'Embodied Cognition',
+      description: 'Exploring how physical experience shapes consciousness, perception, and creative expression through cognitive science',
+      link: '/work/research',
+      icon: '🧠',
+      color: 'from-blue-500/20 to-purple-500/20',
+    },
+    {
+      title: 'Creative Tech',
+      subtitle: 'AI & Innovation',
+      description: 'Building AI systems that amplify creative potential — automation tools for artists, writers, and performers',
+      link: '/work/tech',
       icon: '✨',
       color: 'from-emerald-500/20 to-teal-500/20',
     },
@@ -38,29 +38,29 @@ export default function WorkPage() {
 
   const featuredWork = [
     {
-      category: 'Mind',
-      title: 'Research in Embodied Consciousness',
-      description: 'Investigating how physical experience shapes cognitive processes',
-      status: 'In Progress',
-    },
-    {
-      category: 'Body',
+      category: 'Modeling',
       title: 'Editorial Fashion Portfolio',
-      description: 'High-fashion and commercial modeling work',
+      description: 'High-fashion editorial and commercial campaigns',
       status: 'View Gallery',
       link: '/gallery',
     },
     {
-      category: 'Creativity',
+      category: 'Acting',
       title: 'Character Studies & Performance',
-      description: 'Theatrical and improvised performance work',
+      description: 'Theatrical work and on-camera character performances',
       status: 'Coming Soon',
     },
     {
-      category: 'Synthesis',
-      title: 'Essay Collection',
-      description: 'Writing on consciousness, creativity, and integration',
-      status: 'Coming Soon',
+      category: 'Research',
+      title: 'Embodied Cognition Studies',
+      description: 'Exploring how physical performance informs consciousness',
+      status: 'In Progress',
+    },
+    {
+      category: 'Creative Tech',
+      title: 'AI Content Automation Platform',
+      description: 'Voice-to-essay system and creative workflow tools',
+      status: 'In Development',
     },
   ]
 
@@ -70,13 +70,13 @@ export default function WorkPage() {
       <section className="pt-32 pb-20 container-wide">
         <div className="max-w-4xl mx-auto text-center space-y-8 animate-fadeIn">
           <h1 className="text-5xl md:text-7xl lg:text-8xl font-light font-serif leading-none">
-            Research & Creative Work
+            Portfolio & Work
           </h1>
           <div className="luxury-divider"></div>
           <p className="text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed">
-            An integrated exploration of consciousness —
+            Modeling, acting, and creative expression —
             <br className="hidden md:block" />
-            where research, embodiment, and creative expression converge
+            where presence meets performance
           </p>
         </div>
       </section>
@@ -174,11 +174,11 @@ export default function WorkPage() {
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <div className="luxury-divider"></div>
           <blockquote className="text-2xl md:text-3xl font-light font-serif text-white/90 leading-relaxed py-8">
-            "To understand consciousness, one must inhabit it fully —
+            "Performance is the art of presence —
             <br className="hidden md:block" />
-            through thought, through body, through creative expression,
+            where the body becomes the medium
             <br className="hidden md:block" />
-            and through the synthesis of all three."
+            and expression becomes truth."
           </blockquote>
           <div className="luxury-divider"></div>
         </div>

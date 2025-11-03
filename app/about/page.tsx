@@ -11,7 +11,7 @@ export default function AboutPage() {
           </h1>
           <div className="luxury-divider"></div>
           <p className="text-xl md:text-2xl text-white/80 leading-relaxed font-light">
-            Cognitive Science Researcher · Model · Actor · Self-Actualization Mentor
+            Model · Actor · Researcher · Creative
           </p>
         </div>
       </section>
@@ -21,22 +21,22 @@ export default function AboutPage() {
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="space-y-6 text-lg text-white/70 leading-relaxed">
             <p className="animate-fadeIn">
-              A cognitive science researcher investigating the embodied nature of human consciousness,
-              where mind, body, and creativity converge into a unified expression of self.
-              My work explores how physical experience informs cognition, how performance shapes understanding,
-              and how self-actualization emerges from the synthesis of all dimensions of being.
+              A model and actor exploring the expressive possibilities of the human form —
+              where physical presence meets creative performance. My work spans high-fashion editorial,
+              commercial campaigns, theatrical performance, and character-driven storytelling,
+              all grounded in an understanding of embodiment and human experience.
             </p>
 
             <p className="animate-fadeIn" style={{ animationDelay: '0.2s', opacity: 0 }}>
-              Not compartmentalized, but integrated. Research informs performance. Modeling deepens
-              understanding of embodiment. Acting reveals the performative nature of consciousness.
-              Each facet illuminates the others in a continuous dance of discovery.
+              Performance is my medium. Whether on camera, on stage, or in front of a lens,
+              the body becomes a canvas for expression. My background in cognitive science
+              informs this work — understanding how physicality shapes perception, emotion, and presence.
             </p>
 
             <p className="animate-fadeIn" style={{ animationDelay: '0.4s', opacity: 0 }}>
-              Building AI systems that amplify human potential across domains — from automated research
-              synthesis to creative expression tools. The goal is to free humans to focus on what makes
-              us uniquely human: the integrated experience of being conscious, embodied, and creative.
+              Also developing AI tools for creatives — automating the technical so artists can focus
+              on what matters: the work itself. Because technology should amplify human creativity,
+              not replace it.
             </p>
           </div>
         </div>
@@ -47,9 +47,9 @@ export default function AboutPage() {
         <div className="max-w-3xl mx-auto">
           <div className="luxury-divider"></div>
           <blockquote className="text-2xl md:text-3xl font-light font-serif text-center text-white/90 leading-relaxed py-12 animate-fadeIn">
-            "The integrated self is not fragmented —
+            "The body is not separate from the mind —
             <br className="hidden md:block" />
-            mind, body, and creativity emerge from a single source."
+            performance reveals this truth."
           </blockquote>
           <div className="luxury-divider"></div>
         </div>
@@ -81,20 +81,20 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {[
               {
-                title: 'Mind',
-                areas: ['Cognitive Science Research', 'Consciousness Studies', 'Embodied Cognition', 'Psychology & Philosophy'],
+                title: 'Modeling',
+                areas: ['Fashion Editorial', 'Commercial Campaigns', 'Brand Partnerships', 'Creative Direction'],
               },
               {
-                title: 'Body',
-                areas: ['Fashion Modeling', 'Physical Performance', 'Embodiment Theory', 'Mind-Body Integration'],
+                title: 'Acting',
+                areas: ['Character Work', 'Theatrical Performance', 'On-Camera Acting', 'Improvisation'],
               },
               {
-                title: 'Creativity',
-                areas: ['Acting & Performance', 'Creative Expression', 'Artistic Practice', 'Improvisational Art'],
+                title: 'Research',
+                areas: ['Cognitive Science', 'Embodied Cognition', 'Performance Studies', 'Human Experience'],
               },
               {
-                title: 'Synthesis',
-                areas: ['Self-Actualization', 'AI Development', 'Systems Thinking', 'Personal Development'],
+                title: 'Technology',
+                areas: ['AI Development', 'Creative Automation', 'Content Systems', 'Digital Innovation'],
               },
             ].map((category, index) => (
               <div
