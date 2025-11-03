@@ -7,6 +7,7 @@ import PageTransition from '@/components/page-transition'
 import { CartProvider } from '@/contexts/cart-context'
 import CartSidebar from '@/components/cart-sidebar'
 import ToastWrapper from '@/components/toast-wrapper'
+import { ErrorBoundary } from '@/components/error-boundary'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -29,20 +30,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        <CartProvider>
-          <CustomCursor />
-          <SmoothScroll>
-            <Navigation />
-            <PageTransition>
-              <main className="min-h-screen">
-                {children}
-              </main>
-            </PageTransition>
-          </SmoothScroll>
-          <CartSidebar />
-          <ToastWrapper />
-          <Analytics />
-        </CartProvider>
+        <ErrorBoundary>
+          <CartProvider>
+            <CustomCursor />
+            <SmoothScroll>
+              <Navigation />
+              <PageTransition>
+                <main className="min-h-screen">
+                  {children}
+                </main>
+              </PageTransition>
+            </SmoothScroll>
+            <CartSidebar />
+            <ToastWrapper />
+            <Analytics />
+          </CartProvider>
+        </ErrorBoundary>
       </body>
     </html>
   )

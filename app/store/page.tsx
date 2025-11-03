@@ -45,15 +45,26 @@ export default function StorePage() {
         : '/api/store/products'
 
       const response = await fetch(url)
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       const data = await response.json()
 
-      if (data.success) {
-        setProducts(data.products)
+      if (data.success && Array.isArray(data.products)) {
+        // Filter out any invalid products
+        const validProducts = data.products.filter((p: any) =>
+          p && p.id && p.title && Array.isArray(p.variants) && p.variants.length > 0
+        )
+        setProducts(validProducts)
       } else {
-        console.error('Failed to fetch products:', data.error)
+        console.error('Invalid product data:', data)
+        setProducts([])
       }
     } catch (error) {
       console.error('Failed to fetch products:', error)
+      setProducts([])
     } finally {
       setLoading(false)
     }
@@ -212,11 +223,18 @@ export default function StorePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredProducts.map((product, index) => (
-                <ScrollReveal key={product.id} direction="up" delay={index * 0.1}>
-                  <ProductCard product={product} />
-                </ScrollReveal>
-              ))}
+              {filteredProducts.map((product, index) => {
+                try {
+                  return (
+                    <ScrollReveal key={product.id} direction="up" delay={index * 0.1}>
+                      <ProductCard product={product} />
+                    </ScrollReveal>
+                  )
+                } catch (error) {
+                  console.error('Error rendering product:', product.id, error)
+                  return null
+                }
+              })}
             </div>
           </>
         )}

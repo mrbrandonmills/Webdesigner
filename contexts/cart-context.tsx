@@ -37,27 +37,37 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const [toasts, setToasts] = useState<Toast[]>([])
+  const [mounted, setMounted] = useState(false)
 
   // Load cart from localStorage on mount
   useEffect(() => {
+    setMounted(true)
     if (typeof window !== 'undefined') {
-      const savedCart = localStorage.getItem('bmills-cart')
-      if (savedCart) {
-        try {
-          setItems(JSON.parse(savedCart))
-        } catch (error) {
-          console.error('Failed to load cart:', error)
+      try {
+        const savedCart = localStorage.getItem('bmills-cart')
+        if (savedCart) {
+          const parsed = JSON.parse(savedCart)
+          if (Array.isArray(parsed)) {
+            setItems(parsed)
+          }
         }
+      } catch (error) {
+        console.error('Failed to load cart:', error)
+        localStorage.removeItem('bmills-cart')
       }
     }
   }, [])
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage whenever it changes (but only after mount)
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('bmills-cart', JSON.stringify(items))
+    if (mounted && typeof window !== 'undefined') {
+      try {
+        localStorage.setItem('bmills-cart', JSON.stringify(items))
+      } catch (error) {
+        console.error('Failed to save cart:', error)
+      }
     }
-  }, [items])
+  }, [items, mounted])
 
   const addToast = (toast: Omit<Toast, 'id'>) => {
     const id = Date.now().toString()
