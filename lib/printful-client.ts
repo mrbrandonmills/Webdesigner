@@ -1,46 +1,112 @@
 /**
- * Printful API Client
+ * Printful V2 API Client
  * Documentation: https://developers.printful.com/
+ *
+ * Your Store: 17145314
+ * Token: vbrzkAu9dnvIO6AAikezjsczratgW3FWjhDAOuWo
  */
 
 const PRINTFUL_API_BASE = 'https://api.printful.com'
 
-interface PrintfulProduct {
-  id: number
-  external_id: string
-  name: string
-  variants: number
-  synced: number
-  thumbnail_url: string
-  is_ignored: boolean
+interface PrintfulResponse<T> {
+  data: T
+  paging?: {
+    total: number
+    offset: number
+    limit: number
+  }
 }
 
-interface PrintfulVariant {
+interface CatalogProduct {
   id: number
-  external_id: string
-  sync_product_id: number
+  title: string
+  brand: string
+  model: string
+  description: string
+  type: string
+  type_name: string
+}
+
+interface CatalogVariant {
+  id: number
+  product_id: number
   name: string
-  synced: boolean
+  size: string
+  color: string
+  color_code: string
+  color_code2: string | null
+  image: string
+  availability_status: string
+}
+
+interface VariantPrice {
   variant_id: number
-  retail_price: string
+  price: string
   currency: string
-  is_ignored: boolean
-  files: {
-    preview_url: string
-    thumbnail_url: string
-  }[]
 }
 
-interface PrintfulProductDetails {
-  sync_product: PrintfulProduct
-  sync_variants: PrintfulVariant[]
+interface FileUploadResponse {
+  id: string
+  url: string
+  filename: string
+  mime_type: string
+  size: number
+  width: number
+  height: number
+  dpi: number
+}
+
+interface Order {
+  id: number
+  external_id?: string
+  status: string
+  shipping: string
+  recipient: {
+    name: string
+    address1: string
+    city: string
+    state_code?: string
+    country_code: string
+    zip: string
+    email?: string
+    phone?: string
+  }
+  order_items: OrderItem[]
+  retail_costs?: {
+    currency: string
+    subtotal: string
+    shipping: string
+    tax: string
+    total: string
+  }
+}
+
+interface OrderItem {
+  source: 'catalog'
+  catalog_variant_id: number
+  quantity: number
+  retail_price?: string
+  placements: Placement[]
+}
+
+interface Placement {
+  placement: string
+  technique: string
+  layers: Layer[]
+}
+
+interface Layer {
+  type: 'file'
+  url: string
 }
 
 class PrintfulClient {
   private apiKey: string
+  private storeId: string
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, storeId: string) {
     this.apiKey = apiKey
+    this.storeId = storeId
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -50,6 +116,7 @@ class PrintfulClient {
       ...options,
       headers: {
         'Authorization': `Bearer ${this.apiKey}`,
+        'X-PF-Store-Id': this.storeId,
         'Content-Type': 'application/json',
         ...options.headers,
       },
@@ -57,64 +124,128 @@ class PrintfulClient {
 
     if (!response.ok) {
       const error = await response.text()
-      throw new Error(`Printful API error: ${response.status} - ${error}`)
+      throw new Error(`Printful API error (${response.status}): ${error}`)
     }
 
-    const data = await response.json()
-    return data.result as T
+    const result: PrintfulResponse<T> = await response.json()
+    return result.data
   }
 
   /**
-   * Get all store products
+   * Get catalog products (all available products you can sell)
    */
-  async getProducts(): Promise<PrintfulProduct[]> {
-    return this.request<PrintfulProduct[]>('/store/products')
+  async getCatalogProducts(params?: {
+    category_id?: number
+    offset?: number
+    limit?: number
+  }): Promise<CatalogProduct[]> {
+    const queryParams = new URLSearchParams()
+    if (params?.category_id) queryParams.set('category_id', params.category_id.toString())
+    if (params?.offset) queryParams.set('offset', params.offset.toString())
+    if (params?.limit) queryParams.set('limit', params.limit.toString())
+
+    const query = queryParams.toString()
+    const endpoint = query ? `/v2/catalog-products?${query}` : '/v2/catalog-products'
+
+    return this.request<CatalogProduct[]>(endpoint)
   }
 
   /**
-   * Get product details with variants
+   * Get specific catalog product details
    */
-  async getProduct(productId: string): Promise<PrintfulProductDetails> {
-    return this.request<PrintfulProductDetails>(`/store/products/${productId}`)
+  async getCatalogProduct(productId: number): Promise<CatalogProduct> {
+    return this.request<CatalogProduct>(`/v2/catalog-products/${productId}`)
   }
 
   /**
-   * Get available product catalog
+   * Get all variants (sizes/colors) for a product
    */
-  async getCatalogProducts(): Promise<any[]> {
-    return this.request<any[]>('/products')
+  async getCatalogVariants(productId: number): Promise<CatalogVariant[]> {
+    return this.request<CatalogVariant[]>(`/v2/catalog-products/${productId}/catalog-variants`)
   }
 
   /**
-   * Get product variant details
+   * Get specific variant details
    */
-  async getCatalogVariant(productId: number, variantId: number): Promise<any> {
-    return this.request<any>(`/products/${productId}/variants/${variantId}`)
+  async getCatalogVariant(variantId: number): Promise<CatalogVariant> {
+    return this.request<CatalogVariant>(`/v2/catalog-variants/${variantId}`)
   }
 
   /**
-   * Create a new product
+   * Get pricing for a variant
    */
-  async createProduct(productData: {
-    sync_product: {
-      external_id?: string
-      name: string
-      thumbnail?: string
-    }
-    sync_variants: {
-      variant_id: number
-      retail_price: string
-      files: {
-        url: string
-        type?: string
-        position?: string
-      }[]
-    }[]
-  }): Promise<PrintfulProductDetails> {
-    return this.request<PrintfulProductDetails>('/store/products', {
+  async getVariantPrice(variantId: number): Promise<VariantPrice> {
+    return this.request<VariantPrice>(`/v2/catalog-variants/${variantId}/prices`)
+  }
+
+  /**
+   * Upload a file (your portfolio image)
+   */
+  async uploadFile(file: File): Promise<FileUploadResponse> {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const response = await fetch(`${PRINTFUL_API_BASE}/v2/files`, {
       method: 'POST',
-      body: JSON.stringify(productData),
+      headers: {
+        'Authorization': `Bearer ${this.apiKey}`,
+        'X-PF-Store-Id': this.storeId,
+      },
+      body: formData,
     })
+
+    if (!response.ok) {
+      const error = await response.text()
+      throw new Error(`File upload failed (${response.status}): ${error}`)
+    }
+
+    const result: PrintfulResponse<FileUploadResponse> = await response.json()
+    return result.data
+  }
+
+  /**
+   * Create an order (when customer buys)
+   */
+  async createOrder(orderData: Omit<Order, 'id' | 'status'>): Promise<Order> {
+    return this.request<Order>('/v2/orders', {
+      method: 'POST',
+      body: JSON.stringify(orderData),
+    })
+  }
+
+  /**
+   * Confirm order for fulfillment
+   */
+  async confirmOrder(orderId: number): Promise<Order> {
+    return this.request<Order>(`/v2/orders/${orderId}/confirmation`, {
+      method: 'POST',
+    })
+  }
+
+  /**
+   * Get order details
+   */
+  async getOrder(orderId: number): Promise<Order> {
+    return this.request<Order>(`/v2/orders/${orderId}`)
+  }
+
+  /**
+   * Get all orders
+   */
+  async getOrders(params?: {
+    status?: string
+    offset?: number
+    limit?: number
+  }): Promise<Order[]> {
+    const queryParams = new URLSearchParams()
+    if (params?.status) queryParams.set('status', params.status)
+    if (params?.offset) queryParams.set('offset', params.offset.toString())
+    if (params?.limit) queryParams.set('limit', params.limit.toString())
+
+    const query = queryParams.toString()
+    const endpoint = query ? `/v2/orders?${query}` : '/v2/orders'
+
+    return this.request<Order[]>(endpoint)
   }
 
   /**
@@ -128,102 +259,28 @@ class PrintfulClient {
       zip?: string
     }
     items: {
-      variant_id: number
+      catalog_variant_id: number
       quantity: number
     }[]
-    currency?: string
   }): Promise<any> {
-    return this.request<any>('/shipping/rates', {
+    return this.request<any>('/v2/shipping-rates', {
       method: 'POST',
       body: JSON.stringify(data),
     })
   }
 
   /**
-   * Create an order
+   * Generate mockups
    */
-  async createOrder(orderData: {
-    external_id?: string
-    recipient: {
-      name: string
-      address1: string
-      city: string
-      state_code?: string
-      country_code: string
-      zip: string
-      email?: string
-      phone?: string
-    }
-    items: {
-      variant_id: number
-      quantity: number
-      retail_price?: string
-      files?: {
-        url: string
-      }[]
-    }[]
-    retail_costs?: {
-      currency: string
-      subtotal: string
-      discount: string
-      shipping: string
-      tax: string
-    }
-  }): Promise<any> {
-    return this.request<any>('/orders', {
-      method: 'POST',
-      body: JSON.stringify(orderData),
-    })
-  }
-
-  /**
-   * Confirm and submit order for fulfillment
-   */
-  async confirmOrder(orderId: string): Promise<any> {
-    return this.request<any>(`/orders/${orderId}/confirm`, {
-      method: 'POST',
-    })
-  }
-
-  /**
-   * Get order details
-   */
-  async getOrder(orderId: string): Promise<any> {
-    return this.request<any>(`/orders/${orderId}`)
-  }
-
-  /**
-   * Get all orders
-   */
-  async getOrders(params?: {
-    status?: string
-    offset?: number
-    limit?: number
-  }): Promise<any> {
-    const queryParams = new URLSearchParams(params as any).toString()
-    const endpoint = queryParams ? `/orders?${queryParams}` : '/orders'
-    return this.request<any>(endpoint)
-  }
-
-  /**
-   * Get product template
-   */
-  async getProductTemplate(productId: number): Promise<any> {
-    return this.request<any>(`/mockup-generator/templates/${productId}`)
-  }
-
-  /**
-   * Generate mockup
-   */
-  async generateMockup(data: {
+  async createMockupTask(data: {
     variant_ids: number[]
     format?: string
     files?: {
       placement: string
       image_url: string
     }[]
-  }): Promise<any> {
-    return this.request<any>('/mockup-generator/create-task', {
+  }): Promise<{ task_key: string; status: string }> {
+    return this.request<{ task_key: string; status: string }>('/v2/mockup-tasks', {
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -233,11 +290,14 @@ class PrintfulClient {
    * Get mockup task result
    */
   async getMockupTask(taskKey: string): Promise<any> {
-    return this.request<any>(`/mockup-generator/task?task_key=${taskKey}`)
+    return this.request<any>(`/v2/mockup-tasks?task_key=${taskKey}`)
   }
 }
 
 // Export singleton instance
-export const printfulClient = new PrintfulClient(process.env.PRINTFUL_API_KEY || '')
+export const printfulClient = new PrintfulClient(
+  process.env.PRINTFUL_API_KEY || '',
+  process.env.PRINTFUL_STORE_ID || ''
+)
 
 export default PrintfulClient
