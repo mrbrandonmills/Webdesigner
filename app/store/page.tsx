@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { ShoppingCart, Search } from 'lucide-react'
+import { useState, useEffect, useRef } from 'react'
+import { ShoppingCart, Search, Sparkles } from 'lucide-react'
 import ScrollReveal from '@/components/scroll-reveal'
 import { useCart } from '@/contexts/cart-context'
+import gsap from 'gsap'
 
 interface Product {
   id: number
@@ -79,70 +80,132 @@ export default function StorePage() {
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Hero Section */}
-      <section className="pt-32 pb-20 container-wide">
-        <div className="max-w-4xl mx-auto text-center space-y-8 animate-fadeIn">
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-light font-serif leading-none">
-            The Collection
-          </h1>
-          <div className="luxury-divider"></div>
-          <p className="text-xl md:text-2xl text-white/80 leading-relaxed font-light">
-            Premium prints, apparel, and art — where philosophy meets performance
-          </p>
-          <p className="text-white/60 max-w-2xl mx-auto">
-            Each piece created on-demand with museum-quality materials.
-            Featuring work from editorial shoots, creative projects, and original designs.
-          </p>
+      <section className="pt-40 pb-32 container-wide relative overflow-hidden">
+        {/* Background Gradient Effect */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-accent-gold/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div className="max-w-5xl mx-auto text-center space-y-12 relative z-10">
+          <ScrollReveal direction="up" delay={0.2}>
+            <div className="inline-flex items-center gap-3 px-6 py-3 border border-accent-gold/20 bg-accent-gold/5 rounded-full mb-8">
+              <Sparkles className="text-accent-gold" size={20} />
+              <span className="text-sm tracking-[0.2em] uppercase text-accent-gold font-light">
+                Curated Collection
+              </span>
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal direction="up" delay={0.3}>
+            <h1 className="text-6xl md:text-8xl lg:text-9xl font-light font-serif leading-[0.9] tracking-tight mb-8">
+              The Collection
+            </h1>
+          </ScrollReveal>
+
+          <ScrollReveal direction="up" delay={0.4}>
+            <div className="luxury-divider max-w-md mx-auto"></div>
+          </ScrollReveal>
+
+          <ScrollReveal direction="up" delay={0.5}>
+            <p className="text-2xl md:text-3xl text-white/90 leading-relaxed font-light max-w-3xl mx-auto">
+              Where philosophy meets performance
+            </p>
+          </ScrollReveal>
+
+          <ScrollReveal direction="up" delay={0.6}>
+            <p className="text-base md:text-lg text-white/50 max-w-2xl mx-auto leading-loose font-light">
+              Each piece created on-demand with museum-quality materials. Featuring work from editorial shoots,
+              creative projects, and original designs — crafted for those who seek depth in every detail.
+            </p>
+          </ScrollReveal>
         </div>
       </section>
 
       {/* Category Filter */}
-      <section className="pb-12 container-wide">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          {categories.map((category) => (
-            <button
-              key={category.id || 'all'}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`
-                p-6 border transition-all text-left
-                ${selectedCategory === category.id
-                  ? 'bg-accent-gold/10 border-accent-gold'
-                  : 'bg-white/5 border-white/10 hover:border-white/30'
-                }
-              `}
-            >
-              <div className="text-3xl mb-2">{category.icon}</div>
-              <div className="font-medium mb-1">{category.label}</div>
-              <div className="text-xs text-white/40">{category.desc}</div>
-            </button>
+      <section className="pb-20 container-wide">
+        <ScrollReveal direction="up" delay={0.2}>
+          <div className="text-center mb-12">
+            <h2 className="text-sm tracking-[0.3em] uppercase text-white/40 font-light mb-4">
+              Explore By Category
+            </h2>
+          </div>
+        </ScrollReveal>
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
+          {categories.map((category, index) => (
+            <ScrollReveal key={category.id || 'all'} direction="up" delay={index * 0.1}>
+              <button
+                onClick={() => setSelectedCategory(category.id)}
+                className={`
+                  group relative p-8 rounded-2xl backdrop-blur-xl transition-all duration-500 text-left overflow-hidden
+                  transform hover:scale-105 hover:-translate-y-1
+                  ${selectedCategory === category.id
+                    ? 'bg-gradient-to-br from-accent-gold/20 via-accent-gold/10 to-transparent border border-accent-gold/40 shadow-2xl shadow-accent-gold/30'
+                    : 'bg-white/5 border border-white/10 hover:border-accent-gold/30 hover:bg-white/10 hover:shadow-xl hover:shadow-white/5'
+                  }
+                `}
+              >
+                {/* Animated gradient orb */}
+                <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent-gold/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+
+                <div className="relative z-10">
+                  <div className="text-4xl mb-4 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    {category.icon}
+                  </div>
+                  <div className="font-serif text-base mb-2 group-hover:text-accent-gold transition-colors duration-300">
+                    {category.label}
+                  </div>
+                  <div className="text-xs text-white/40 group-hover:text-white/60 transition-colors duration-300 leading-relaxed">
+                    {category.desc}
+                  </div>
+                </div>
+
+                {/* Glass shine effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
+              </button>
+            </ScrollReveal>
           ))}
         </div>
       </section>
 
       {/* Search Bar */}
-      <section className="pb-12 container-wide">
-        <div className="max-w-2xl mx-auto relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-white/5 border border-white/10 pl-12 pr-4 py-4 text-white placeholder-white/30 focus:outline-none focus:border-accent-gold transition-colors"
-          />
-        </div>
+      <section className="pb-20 container-wide">
+        <ScrollReveal direction="up" delay={0.2}>
+          <div className="max-w-2xl mx-auto relative group">
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-accent-gold transition-all duration-300 z-10 group-focus-within:scale-110" size={20} />
+            <input
+              type="text"
+              placeholder="Search the collection..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full bg-white/5 backdrop-blur-xl border border-white/10 rounded-full pl-16 pr-6 py-5 text-white placeholder-white/30 focus:outline-none focus:border-accent-gold/50 focus:bg-white/10 focus:shadow-lg focus:shadow-accent-gold/10 transition-all duration-500"
+            />
+            {/* Glow effect on focus */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-accent-gold/20 via-accent-gold/10 to-accent-gold/20 opacity-0 group-focus-within:opacity-100 blur-xl transition-opacity duration-500 -z-10"></div>
+          </div>
+        </ScrollReveal>
       </section>
 
       {/* Products Grid */}
       <section className="pb-32 container-wide">
         {loading ? (
-          <div className="text-center py-20">
-            <div className="inline-block w-12 h-12 border-2 border-accent-gold border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-white/60">Loading collection from Printful...</p>
+          <div className="text-center py-32">
+            <div className="relative inline-block">
+              {/* Outer ring */}
+              <div className="w-20 h-20 border-2 border-accent-gold/20 rounded-full"></div>
+              {/* Spinning ring */}
+              <div className="absolute inset-0 w-20 h-20 border-2 border-accent-gold border-t-transparent rounded-full animate-spin"></div>
+              {/* Glow effect */}
+              <div className="absolute inset-0 w-20 h-20 bg-accent-gold/20 rounded-full blur-xl animate-pulse"></div>
+            </div>
+            <p className="mt-8 text-white/60 font-light tracking-wide">Curating your collection...</p>
+            <p className="mt-2 text-white/30 text-sm">Loading premium products from Printful</p>
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="text-center py-20">
-            <p className="text-2xl text-white/40">No products found</p>
-            <p className="mt-2 text-white/30">Try adjusting your search or filters</p>
+          <div className="text-center py-32">
+            <div className="inline-block p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl mb-6">
+              <Search size={64} className="text-white/20" />
+            </div>
+            <h3 className="text-3xl font-serif text-white/60 mb-4">No products found</h3>
+            <p className="text-white/40 font-light">Try adjusting your search or browse all categories</p>
           </div>
         ) : (
           <>
@@ -166,32 +229,48 @@ export default function StorePage() {
 
       {/* Info Section */}
       <section className="pb-32 container-wide">
-        <div className="max-w-4xl mx-auto">
-          <div className="luxury-divider mb-12"></div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            <div className="space-y-4">
-              <div className="text-4xl">🎨</div>
-              <h3 className="text-xl font-serif">Museum Quality</h3>
-              <p className="text-white/60 text-sm">
-                Premium materials and professional printing on every piece
-              </p>
-            </div>
-            <div className="space-y-4">
-              <div className="text-4xl">🚚</div>
-              <h3 className="text-xl font-serif">Made to Order</h3>
-              <p className="text-white/60 text-sm">
-                Each item crafted when you order, reducing waste
-              </p>
-            </div>
-            <div className="space-y-4">
-              <div className="text-4xl">🌍</div>
-              <h3 className="text-xl font-serif">Global Shipping</h3>
-              <p className="text-white/60 text-sm">
-                Worldwide fulfillment from local facilities
-              </p>
-            </div>
+        <div className="max-w-6xl mx-auto">
+          <ScrollReveal direction="up">
+            <div className="luxury-divider mb-20"></div>
+          </ScrollReveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {[
+              {
+                icon: '🎨',
+                title: 'Museum Quality',
+                desc: 'Premium materials and professional printing on every piece',
+              },
+              {
+                icon: '🚚',
+                title: 'Made to Order',
+                desc: 'Each item crafted when you order, reducing waste',
+              },
+              {
+                icon: '🌍',
+                title: 'Global Shipping',
+                desc: 'Worldwide fulfillment from local facilities',
+              },
+            ].map((item, index) => (
+              <ScrollReveal key={item.title} direction="up" delay={index * 0.15}>
+                <div className="group text-center p-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl hover:border-accent-gold/30 hover:bg-white/10 transition-all duration-500 hover:-translate-y-2">
+                  <div className="text-6xl mb-6 transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-2xl font-serif mb-4 group-hover:text-accent-gold transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="text-white/60 text-sm leading-relaxed font-light">
+                    {item.desc}
+                  </p>
+                </div>
+              </ScrollReveal>
+            ))}
           </div>
-          <div className="luxury-divider mt-12"></div>
+
+          <ScrollReveal direction="up" delay={0.5}>
+            <div className="luxury-divider mt-20"></div>
+          </ScrollReveal>
         </div>
       </section>
     </div>
@@ -281,15 +360,23 @@ function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <div className="luxury-card bg-white/5 border border-white/10 overflow-hidden group">
-      {/* Product Image */}
-      <div className="aspect-square overflow-hidden bg-white/5 relative">
+    <div className="group relative">
+      {/* Glow effect behind card */}
+      <div className="absolute inset-0 bg-gradient-to-br from-accent-gold/20 via-transparent to-transparent rounded-3xl opacity-0 group-hover:opacity-100 blur-2xl transition-all duration-700 -z-10 scale-95 group-hover:scale-100"></div>
+
+      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden transform transition-all duration-500 hover:border-accent-gold/30 hover:shadow-2xl hover:shadow-white/10 hover:-translate-y-2">
+        {/* Product Image */}
+        <div className="aspect-square overflow-hidden bg-gradient-to-br from-white/10 to-white/5 relative">
         {variant?.image || product.image ? (
-          <img
-            src={variant?.image || product.image || ''}
-            alt={product.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          <>
+            <img
+              src={variant?.image || product.image || ''}
+              alt={product.title}
+              className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:rotate-1"
+            />
+            {/* Image overlay gradient */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-white/20">
             <div className="text-center">
@@ -300,18 +387,23 @@ function ProductCard({ product }: { product: Product }) {
         )}
 
         {/* Quick Add Overlay */}
-        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
           <button
             onClick={handleAddToCart}
-            className="px-6 py-3 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors"
+            className="relative px-8 py-4 bg-accent-gold text-black font-medium tracking-[0.2em] uppercase rounded-full overflow-hidden group/btn transform hover:scale-105 transition-all duration-300 shadow-xl shadow-accent-gold/30"
           >
-            <ShoppingCart size={20} className="inline mr-2" />
-            Add to Cart
+            {/* Button shine effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700"></div>
+
+            <span className="relative z-10 flex items-center gap-3">
+              <ShoppingCart size={20} className="group-hover/btn:rotate-12 transition-transform duration-300" />
+              <span>Add to Cart</span>
+            </span>
           </button>
         </div>
 
         {/* Product Type Badge */}
-        <div className="absolute top-4 left-4 px-3 py-1 bg-black/80 backdrop-blur-sm text-xs tracking-wider uppercase">
+        <div className="absolute top-6 left-6 px-4 py-2 bg-black/90 backdrop-blur-xl border border-white/10 rounded-full text-xs tracking-[0.2em] uppercase shadow-lg">
           {product.type}
         </div>
       </div>
@@ -329,7 +421,7 @@ function ProductCard({ product }: { product: Product }) {
         {/* Variant Selector */}
         {product.variants.length > 1 && (
           <div>
-            <p className="text-xs text-white/40 mb-2 tracking-wider uppercase">
+            <p className="text-xs text-white/40 mb-3 tracking-[0.2em] uppercase font-light">
               {product.variantCount} Options Available
             </p>
             <div className="flex flex-wrap gap-2">
@@ -338,10 +430,11 @@ function ProductCard({ product }: { product: Product }) {
                   key={v.id}
                   onClick={() => setSelectedVariant(index)}
                   className={`
-                    px-3 py-1 text-xs border transition-all
+                    px-4 py-2 text-xs rounded-full border backdrop-blur-sm transition-all duration-300
+                    transform hover:scale-105
                     ${selectedVariant === index
-                      ? 'border-accent-gold bg-accent-gold/10 text-accent-gold'
-                      : 'border-white/10 text-white/60 hover:border-white/30'
+                      ? 'border-accent-gold bg-accent-gold/20 text-accent-gold shadow-lg shadow-accent-gold/20'
+                      : 'border-white/10 bg-white/5 text-white/60 hover:border-accent-gold/50 hover:bg-white/10'
                     }
                   `}
                 >
@@ -349,7 +442,7 @@ function ProductCard({ product }: { product: Product }) {
                 </button>
               ))}
               {product.variants.length > 4 && (
-                <button className="px-3 py-1 text-xs border border-white/10 text-white/40">
+                <button className="px-4 py-2 text-xs rounded-full border border-white/10 bg-white/5 text-white/40 backdrop-blur-sm">
                   +{product.variants.length - 4}
                 </button>
               )}
@@ -358,20 +451,22 @@ function ProductCard({ product }: { product: Product }) {
         )}
 
         {/* Pricing */}
-        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+        <div className="flex items-center justify-between pt-6 border-t border-white/5">
           <div>
-            <div className="text-2xl font-light">
+            <div className="text-3xl font-light text-accent-gold mb-1">
               ${suggestedPrice}
             </div>
-            <div className="text-xs text-white/40">
+            <div className="text-xs text-white/30 font-light">
               Base: ${product.basePrice}
             </div>
           </div>
-          <button className="text-accent-gold hover:text-accent-hover transition-colors text-sm tracking-wider uppercase">
-            Details →
+          <button className="group/details flex items-center gap-2 text-accent-gold hover:text-accent-hover transition-all duration-300 text-sm tracking-[0.15em] uppercase">
+            <span>Details</span>
+            <span className="group-hover/details:translate-x-1 transition-transform duration-300">→</span>
           </button>
         </div>
       </div>
+    </div>
     </div>
   )
 }

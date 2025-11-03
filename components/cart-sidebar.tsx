@@ -41,7 +41,7 @@ export default function CartSidebar() {
       {/* Backdrop */}
       <div
         className={`
-          fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300
+          fixed inset-0 bg-black/80 backdrop-blur-md z-50 transition-opacity duration-500
           ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}
         `}
         onClick={closeCart}
@@ -97,16 +97,16 @@ export default function CartSidebar() {
             items.map((item) => (
               <div
                 key={item.variantId}
-                className="bg-white/5 border border-white/10 p-4 space-y-4"
+                className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 space-y-4 hover:border-accent-gold/30 hover:bg-white/10 transition-all duration-300"
               >
                 <div className="flex gap-4">
                   {/* Product Image */}
-                  <div className="w-24 h-24 bg-white/5 overflow-hidden flex-shrink-0">
+                  <div className="w-24 h-24 bg-white/5 rounded-xl overflow-hidden flex-shrink-0 group-hover:shadow-lg transition-shadow duration-300">
                     {item.image ? (
                       <img
                         src={item.image}
                         alt={item.productTitle}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-white/20">
@@ -134,29 +134,29 @@ export default function CartSidebar() {
 
                 {/* Quantity Controls */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 bg-white/5 border border-white/10">
+                  <div className="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full overflow-hidden">
                     <button
                       onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
-                      className="p-2 hover:bg-white/5 transition-colors"
+                      className="p-3 hover:bg-accent-gold/20 hover:text-accent-gold transition-all duration-300"
                       aria-label="Decrease quantity"
                     >
-                      <Minus size={16} />
+                      <Minus size={14} />
                     </button>
-                    <span className="w-8 text-center font-medium">
+                    <span className="w-10 text-center font-medium text-sm">
                       {item.quantity}
                     </span>
                     <button
                       onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
-                      className="p-2 hover:bg-white/5 transition-colors"
+                      className="p-3 hover:bg-accent-gold/20 hover:text-accent-gold transition-all duration-300"
                       aria-label="Increase quantity"
                     >
-                      <Plus size={16} />
+                      <Plus size={14} />
                     </button>
                   </div>
 
                   <button
                     onClick={() => removeItem(item.variantId)}
-                    className="text-sm text-white/40 hover:text-white transition-colors"
+                    className="text-xs text-white/40 hover:text-red-400 transition-colors duration-300 tracking-wider uppercase"
                   >
                     Remove
                   </button>
@@ -182,19 +182,24 @@ export default function CartSidebar() {
 
             {/* Checkout Button */}
             <button
-              className="w-full py-4 bg-accent-gold text-black font-medium tracking-wider uppercase hover:bg-accent-hover transition-colors flex items-center justify-center gap-2 group"
+              className="relative w-full py-5 bg-accent-gold text-black font-medium tracking-[0.2em] uppercase rounded-full overflow-hidden group/btn shadow-xl shadow-accent-gold/30 hover:shadow-2xl hover:shadow-accent-gold/40 transition-all duration-300"
             >
-              Proceed to Checkout
-              <ArrowRight
-                size={20}
-                className="group-hover:translate-x-1 transition-transform"
-              />
+              {/* Button shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-200%] group-hover/btn:translate-x-[200%] transition-transform duration-700"></div>
+
+              <span className="relative z-10 flex items-center justify-center gap-3">
+                Proceed to Checkout
+                <ArrowRight
+                  size={20}
+                  className="group-hover/btn:translate-x-1 transition-transform duration-300"
+                />
+              </span>
             </button>
 
             {/* Continue Shopping */}
             <button
               onClick={closeCart}
-              className="w-full py-3 border border-white/10 text-white hover:bg-white/5 transition-colors text-sm tracking-wider uppercase"
+              className="w-full py-4 border border-white/10 text-white rounded-full hover:bg-white/5 hover:border-accent-gold/30 transition-all duration-300 text-sm tracking-[0.15em] uppercase backdrop-blur-sm"
             >
               Continue Shopping
             </button>
