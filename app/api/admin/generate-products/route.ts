@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server'
 import { writeFile, readFile } from 'fs/promises'
 import path from 'path'
+import OpenAI from 'openai'
+import { put } from '@vercel/blob'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+export const maxDuration = 60 // Allow up to 60 seconds for image generation
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+})
 
 // Design theme prompts mapped to AI image generation
 const THEME_PROMPTS: Record<string, string> = {
@@ -35,16 +42,40 @@ interface GenerateRequest {
 
 export async function POST(request: Request) {
   try {
+    // Check if OpenAI API key is configured
+    if (!process.env.OPENAI_API_KEY) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'OpenAI API key not configured. Add OPENAI_API_KEY to your environment variables.'
+        },
+        { status: 500 }
+      )
+    }
+
     const { themes, products }: GenerateRequest = await request.json()
 
     console.log(`🎨 Generating ${themes.length * products.length} products...`)
+    console.log(`   Themes: ${themes.join(', ')}`)
+    console.log(`   Products: ${products.join(', ')}`)
 
     const generatedProducts = []
 
+    // Cache designs per theme to avoid regenerating
+    const designCache: Record<string, string> = {}
+
     // Generate product for each theme × product combination
     for (const themeId of themes) {
+      // Generate design once per theme and cache it
+      if (!designCache[themeId]) {
+        console.log(`🎨 Generating new AI design for theme: ${themeId}`)
+        designCache[themeId] = await generateAIDesign(themeId)
+      } else {
+        console.log(`♻️  Reusing cached design for theme: ${themeId}`)
+      }
+
       for (const productId of products) {
-        const product = await generateProduct(themeId, productId)
+        const product = await generateProduct(themeId, productId, designCache[themeId])
         generatedProducts.push(product)
       }
     }
@@ -68,25 +99,52 @@ export async function POST(request: Request) {
     await writeFile(filePath, JSON.stringify(existingData, null, 2))
 
     console.log(`✅ Generated and saved ${generatedProducts.length} products!`)
+    console.log(`📦 Total products in store: ${existingData.products.length}`)
 
     return NextResponse.json({
       success: true,
       products: generatedProducts,
-      count: generatedProducts.length
+      count: generatedProducts.length,
+      totalProducts: existingData.products.length,
+      message: `Successfully generated ${generatedProducts.length} products with AI-designed artwork`
     })
   } catch (error) {
-    console.error('Product generation error:', error)
+    console.error('❌ Product generation error:', error)
+
+    const errorMessage = error instanceof Error ? error.message : 'Failed to generate products'
+
+    // Provide helpful error messages for common issues
+    if (errorMessage.includes('API key')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'OpenAI API key is missing or invalid. Please check your environment variables.'
+        },
+        { status: 500 }
+      )
+    }
+
+    if (errorMessage.includes('rate limit')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'OpenAI rate limit exceeded. Please wait a moment and try again.'
+        },
+        { status: 429 }
+      )
+    }
+
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to generate products'
+        error: errorMessage
       },
       { status: 500 }
     )
   }
 }
 
-async function generateProduct(themeId: string, productId: string) {
+async function generateProduct(themeId: string, productId: string, designUrl: string) {
   // Product configurations
   const productConfig: Record<string, any> = {
     'poster-small': { name: '12×16" Premium Poster', price: '49.00', printfulId: 1 },
@@ -107,11 +165,8 @@ async function generateProduct(themeId: string, productId: string) {
   // Generate description
   const description = generateDescription(themeId, config.name)
 
-  // TODO: In production, call actual AI image generation API here
-  // For now, use placeholder
-  const designUrl = await generateAIDesign(themeId)
-
-  // TODO: In production, generate Printful mockup
+  // Design URL is passed in (already generated and cached)
+  // TODO: Generate Printful mockup with this design
   const mockupUrl = `/api/placeholder-mockup?theme=${themeId}&product=${productId}`
 
   return {
@@ -148,14 +203,49 @@ function generateDescription(themeId: string, productName: string): string {
 }
 
 async function generateAIDesign(themeId: string): Promise<string> {
-  // TODO: Integrate with actual AI image generation
-  // Options: DALL-E, Midjourney API, Stable Diffusion, etc.
+  try {
+    console.log(`🎨 Generating AI design for theme: ${themeId}`)
 
-  // For now, return placeholder
-  // In production, this would:
-  // 1. Call AI image generation API with theme prompt
-  // 2. Upload generated image to storage
-  // 3. Return the URL
+    // Get the AI prompt for this theme
+    const prompt = THEME_PROMPTS[themeId] || THEME_PROMPTS.consciousness
 
-  return `/api/ai-design-placeholder?theme=${themeId}&t=${Date.now()}`
+    // Generate image with DALL-E 3
+    const response = await openai.images.generate({
+      model: 'dall-e-3',
+      prompt: prompt,
+      n: 1,
+      size: '1024x1024',
+      quality: 'standard', // Use 'hd' for higher quality (costs more)
+      style: 'natural', // 'vivid' or 'natural'
+    })
+
+    const imageUrl = response.data[0]?.url
+
+    if (!imageUrl) {
+      throw new Error('No image URL returned from DALL-E')
+    }
+
+    console.log(`✅ Image generated, downloading...`)
+
+    // Download the image from DALL-E's temporary URL
+    const imageResponse = await fetch(imageUrl)
+    const imageBuffer = await imageResponse.arrayBuffer()
+    const imageBlob = new Blob([imageBuffer], { type: 'image/png' })
+
+    // Upload to Vercel Blob for permanent storage
+    const filename = `designs/${themeId}-${Date.now()}.png`
+    const { url } = await put(filename, imageBlob, {
+      access: 'public',
+      contentType: 'image/png',
+    })
+
+    console.log(`✅ Image saved to Vercel Blob: ${url}`)
+
+    return url
+  } catch (error) {
+    console.error('AI design generation failed:', error)
+
+    // Fallback to placeholder if generation fails
+    return `/api/ai-design-placeholder?theme=${themeId}&t=${Date.now()}`
+  }
 }

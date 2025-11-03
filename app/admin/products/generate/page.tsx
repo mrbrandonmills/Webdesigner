@@ -97,6 +97,8 @@ export default function GenerateProductsPage() {
   const [selectedProducts, setSelectedProducts] = useState<string[]>([])
   const [generating, setGenerating] = useState(false)
   const [generatedProducts, setGeneratedProducts] = useState<any[]>([])
+  const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const toggleTheme = (themeId: string) => {
     setSelectedThemes(prev =>
@@ -116,6 +118,8 @@ export default function GenerateProductsPage() {
 
   const handleGenerate = async () => {
     setGenerating(true)
+    setError(null)
+    setSuccessMessage(null)
 
     try {
       // Call API to generate designs using AI
@@ -129,9 +133,21 @@ export default function GenerateProductsPage() {
       })
 
       const data = await response.json()
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.error || 'Failed to generate products')
+      }
+
       setGeneratedProducts(data.products)
+      setSuccessMessage(data.message || `Successfully generated ${data.count} products!`)
+
+      // Scroll to results
+      setTimeout(() => {
+        document.getElementById('generated-products')?.scrollIntoView({ behavior: 'smooth' })
+      }, 100)
     } catch (error) {
       console.error('Failed to generate products:', error)
+      setError(error instanceof Error ? error.message : 'Failed to generate products')
     } finally {
       setGenerating(false)
     }
@@ -157,6 +173,23 @@ export default function GenerateProductsPage() {
             create mockups, and add them to your store.
           </p>
         </div>
+
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mb-8 bg-green-500/10 border border-green-500/30 rounded-3xl p-6 text-center">
+            <p className="text-green-400 font-medium">✅ {successMessage}</p>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-8 bg-red-500/10 border border-red-500/30 rounded-3xl p-6 text-center">
+            <p className="text-red-400 font-medium">❌ {error}</p>
+            <p className="text-red-300/70 text-sm mt-2">
+              Check the console for more details or try again.
+            </p>
+          </div>
+        )}
 
         {/* Design Themes */}
         <div className="mb-16">
@@ -255,34 +288,38 @@ export default function GenerateProductsPage() {
 
         {/* Generated Products */}
         {generatedProducts.length > 0 && (
-          <div>
-            <h2 className="text-3xl font-serif mb-8 text-center">3. Review & Publish</h2>
+          <div id="generated-products">
+            <h2 className="text-3xl font-serif mb-8 text-center">✨ Your AI-Generated Products</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {generatedProducts.map((product, index) => (
                 <div
                   key={index}
-                  className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6"
+                  className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 hover:border-accent-gold/50 transition-all"
                 >
-                  <div className="aspect-square bg-white/10 rounded-2xl mb-4">
-                    {product.mockupUrl && (
-                      <img
-                        src={product.mockupUrl}
-                        alt={product.title}
-                        className="w-full h-full object-cover rounded-2xl"
-                      />
-                    )}
+                  <div className="aspect-square bg-white/10 rounded-2xl mb-4 overflow-hidden relative group">
+                    <img
+                      src={product.designUrl}
+                      alt={product.title}
+                      className="w-full h-full object-cover rounded-2xl group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        // Fallback if image fails to load
+                        e.currentTarget.src = `/api/ai-design-placeholder?theme=${product.themeId}&t=${Date.now()}`
+                      }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                      <p className="text-white text-xs">AI-Generated Design</p>
+                    </div>
                   </div>
 
-                  <h3 className="font-serif text-lg mb-2">{product.title}</h3>
+                  <h3 className="font-serif text-lg mb-2 line-clamp-2">{product.title}</h3>
                   <p className="text-sm text-white/60 mb-4 line-clamp-2">{product.description}</p>
 
                   <div className="flex items-center justify-between">
                     <span className="text-2xl font-light text-accent-gold">${product.price}</span>
-                    <RippleButton className="px-4 py-2 bg-accent-gold text-black rounded-full text-sm font-medium">
-                      <Plus size={16} className="inline mr-1" />
-                      Add to Store
-                    </RippleButton>
+                    <div className="text-xs text-green-400 bg-green-400/10 px-3 py-1 rounded-full">
+                      ✓ Added to Store
+                    </div>
                   </div>
                 </div>
               ))}
