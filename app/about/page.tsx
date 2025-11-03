@@ -21,30 +21,24 @@ export default function AboutPage() {
       <section className="pb-20 container-wide">
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="space-y-6 text-lg text-white/70 leading-relaxed">
-            <ScrollReveal direction="up">
-              <p>
-                A model and actor exploring the expressive possibilities of the human form —
-                where physical presence meets creative performance. My work spans high-fashion editorial,
-                commercial campaigns, theatrical performance, and character-driven storytelling,
-                all grounded in an understanding of embodiment and human experience.
-              </p>
-            </ScrollReveal>
+            <p className="animate-fadeIn">
+              A model and actor exploring the expressive possibilities of the human form —
+              where physical presence meets creative performance. My work spans high-fashion editorial,
+              commercial campaigns, theatrical performance, and character-driven storytelling,
+              all grounded in an understanding of embodiment and human experience.
+            </p>
 
-            <ScrollReveal direction="up" delay={0.2}>
-              <p>
-                Performance is my medium. Whether on camera, on stage, or in front of a lens,
-                the body becomes a canvas for expression. My background in cognitive science
-                informs this work — understanding how physicality shapes perception, emotion, and presence.
-              </p>
-            </ScrollReveal>
+            <p className="animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+              Performance is my medium. Whether on camera, on stage, or in front of a lens,
+              the body becomes a canvas for expression. My background in cognitive science
+              informs this work — understanding how physicality shapes perception, emotion, and presence.
+            </p>
 
-            <ScrollReveal direction="up" delay={0.4}>
-              <p>
-                Also developing AI tools for creatives — automating the technical so artists can focus
-                on what matters: the work itself. Because technology should amplify human creativity,
-                not replace it.
-              </p>
-            </ScrollReveal>
+            <p className="animate-fadeIn" style={{ animationDelay: '0.4s' }}>
+              Also developing AI tools for creatives — automating the technical so artists can focus
+              on what matters: the work itself. Because technology should amplify human creativity,
+              not replace it.
+            </p>
           </div>
         </div>
       </section>
