@@ -72,6 +72,11 @@ async function createOrder(session: Stripe.Checkout.Session) {
     // Parse items from session metadata
     const items = JSON.parse(session.metadata?.items || '[]')
 
+    // Get shipping address (with type assertion for compatibility)
+    const shippingAddress = (session as any).shipping_details?.address ||
+                           session.customer_details?.address ||
+                           null
+
     // Create order object
     const order = {
       id: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -79,7 +84,7 @@ async function createOrder(session: Stripe.Checkout.Session) {
       stripePaymentIntent: session.payment_intent as string,
       customerEmail: session.customer_details?.email || '',
       customerName: session.customer_details?.name || '',
-      shippingAddress: session.shipping_details?.address || null,
+      shippingAddress,
       items,
       totalAmount: session.amount_total ? session.amount_total / 100 : 0, // Convert from cents
       currency: session.currency || 'usd',
