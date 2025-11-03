@@ -5,6 +5,26 @@ import path from 'path'
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
+interface ProductVariation {
+  id: string
+  title: string
+  description: string
+  price: string
+  themeId: string
+  productType: string
+  designUrl: string
+  mockupUrl: string
+  printfulProductId: number
+  tags: string[]
+  parentProductId?: string
+  variationNumber?: number
+  createdAt: string
+}
+
+interface ProductsData {
+  products: ProductVariation[]
+}
+
 const WISDOM_QUOTES = [
   "Know Thyself",
   "The Unexamined Life Is Not Worth Living",
@@ -34,15 +54,15 @@ export async function POST(request: Request) {
     const filePath = path.join(process.cwd(), 'data', 'curated-products.json')
 
     // Read existing products
-    let data = { products: [] }
+    let data: ProductsData = { products: [] }
     try {
       const fileContent = await readFile(filePath, 'utf-8')
-      data = JSON.parse(fileContent)
+      data = JSON.parse(fileContent) as ProductsData
     } catch (error) {
       data = { products: [] }
     }
 
-    const newVariations = []
+    const newVariations: ProductVariation[] = []
 
     // For each top performer, create variations
     for (const productId of products) {
@@ -88,7 +108,7 @@ export async function POST(request: Request) {
 /**
  * Create a variation of a successful product
  */
-function createVariation(original: any, variationNumber: number) {
+function createVariation(original: any, variationNumber: number): ProductVariation {
   const themeId = original.themeId || 'consciousness'
   const themeName = themeId.charAt(0).toUpperCase() + themeId.slice(1)
 
