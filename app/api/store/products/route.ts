@@ -82,6 +82,11 @@ export async function GET(request: Request) {
     // Filter out failed products
     const validProducts = productsWithDetails.filter(p => p !== null)
 
+    console.log(`📦 Returning ${validProducts.length} valid products out of ${products.length} total`)
+    if (validProducts.length > 0) {
+      console.log('Sample product structure:', JSON.stringify(validProducts[0], null, 2))
+    }
+
     return NextResponse.json({
       success: true,
       products: validProducts,

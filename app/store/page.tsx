@@ -52,14 +52,26 @@ export default function StorePage() {
 
       const data = await response.json()
 
-      if (data.success && Array.isArray(data.products)) {
-        // Filter out any invalid products
-        const validProducts = data.products.filter((p: any) =>
-          p && p.id && p.title && Array.isArray(p.variants) && p.variants.length > 0
-        )
-        setProducts(validProducts)
+      if (data.success) {
+        console.log('✅ API Success! Received data:', {
+          success: data.success,
+          isArray: Array.isArray(data.products),
+          count: data.count,
+          productsLength: data.products?.length
+        })
+
+        if (Array.isArray(data.products)) {
+          console.log('📦 First product sample:', JSON.stringify(data.products[0], null, 2))
+
+          // Just use the products directly - API already validated them
+          setProducts(data.products)
+          console.log(`✨ Set ${data.products.length} products to state`)
+        } else {
+          console.error('❌ Products is not an array:', typeof data.products)
+          setProducts([])
+        }
       } else {
-        console.error('Invalid product data:', data)
+        console.error('❌ API returned success: false', data)
         setProducts([])
       }
     } catch (error) {
