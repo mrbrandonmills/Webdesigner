@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import bcrypt from 'bcryptjs'
 import logger from './logger'
-import { createSession, validateSession, deleteSession } from './session'
+import { createSession, validateSession, deleteSession } from './session-jwt'
 
 // SECURITY: Use environment variables and never hardcode credentials
 // In production, store hashed passwords in a secure database
@@ -38,8 +38,8 @@ export async function login(username: string, password: string): Promise<boolean
   const isValidPassword = await verifyPassword(password, ADMIN_PASSWORD_HASH)
 
   if (isValidPassword) {
-    // Generate cryptographically secure session token
-    const sessionToken = await createSession()
+    // Generate cryptographically secure JWT session token
+    const sessionToken = await createSession(username)
 
     // Store session token in secure cookie
     const cookieStore = await cookies()
@@ -51,7 +51,7 @@ export async function login(username: string, password: string): Promise<boolean
       path: '/',
     })
 
-    logger.info('User logged in successfully with secure session token')
+    logger.info('User logged in successfully with JWT session token')
     return true
   }
 

@@ -4,6 +4,7 @@ import path from 'path'
 import OpenAI from 'openai'
 import { put } from '@vercel/blob'
 import { z } from 'zod'
+import { printfulClient } from '@/lib/printful-client'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -61,6 +62,8 @@ interface GeneratedProduct {
   designUrl: string
   mockupUrl: string
   printfulProductId: number
+  printfulSyncProductId?: number
+  printfulSyncVariantId?: number
   tags: string[]
   createdAt: string
 }
@@ -211,13 +214,43 @@ export async function POST(request: Request) {
 }
 
 async function generateProduct(themeId: string, productId: string, designUrl: string): Promise<GeneratedProduct> {
-  // Product configurations
+  // Product configurations with Printful variant IDs
   const productConfig: Record<string, any> = {
-    'poster-small': { name: '12×16" Premium Poster', price: '49.00', printfulId: 1 },
-    'poster-medium': { name: '18×24" Gallery Print', price: '79.00', printfulId: 1 },
-    'poster-large': { name: '24×36" Statement Piece', price: '99.00', printfulId: 1 },
-    'canvas-small': { name: '16×20" Canvas', price: '149.00', printfulId: 29 },
-    'tshirt': { name: 'Premium T-Shirt', price: '35.00', printfulId: 71 }
+    'poster-small': {
+      name: '12×16" Premium Poster',
+      price: '49.00',
+      printfulId: 1,
+      variantId: 1349, // 12×16 poster
+      placement: 'default'
+    },
+    'poster-medium': {
+      name: '18×24" Gallery Print',
+      price: '79.00',
+      printfulId: 1,
+      variantId: 1, // 18×24 poster
+      placement: 'default'
+    },
+    'poster-large': {
+      name: '24×36" Statement Piece',
+      price: '99.00',
+      printfulId: 1,
+      variantId: 2, // 24×36 poster
+      placement: 'default'
+    },
+    'canvas-small': {
+      name: '16×20" Canvas',
+      price: '149.00',
+      printfulId: 29,
+      variantId: 6578, // 16×20 canvas
+      placement: 'default'
+    },
+    'tshirt': {
+      name: 'Premium T-Shirt',
+      price: '35.00',
+      printfulId: 71,
+      variantId: 4012, // Unisex Medium Black
+      placement: 'front'
+    }
   }
 
   const config = productConfig[productId]
@@ -231,12 +264,47 @@ async function generateProduct(themeId: string, productId: string, designUrl: st
   // Generate description
   const description = generateDescription(themeId, config.name)
 
-  // Design URL is passed in (already generated and cached)
-  // TODO: Generate Printful mockup with this design
-  const mockupUrl = `/api/placeholder-mockup?theme=${themeId}&product=${productId}`
+  // Generate unique external ID
+  const externalId = `${themeId}-${productId}-${Date.now()}`
+
+  let mockupUrl = `/api/placeholder-mockup?theme=${themeId}&product=${productId}`
+  let printfulSyncProductId: number | undefined
+  let printfulSyncVariantId: number | undefined
+
+  try {
+    // Create actual Printful sync product with the AI-generated design
+    console.log(`🚀 Creating Printful sync product: ${title}`)
+
+    const { product: syncProduct, mockupUrl: generatedMockupUrl } = await printfulClient.createProductWithDesign({
+      name: title,
+      designUrl: designUrl,
+      productId: config.printfulId,
+      variantId: config.variantId,
+      retailPrice: config.price,
+      placement: config.placement,
+      externalId: externalId
+    })
+
+    printfulSyncProductId = syncProduct.id
+
+    // Get the first sync variant ID
+    if (syncProduct.sync_variants && syncProduct.sync_variants.length > 0) {
+      printfulSyncVariantId = syncProduct.sync_variants[0].id
+    }
+
+    // Use Printful-generated mockup if available
+    if (generatedMockupUrl) {
+      mockupUrl = generatedMockupUrl
+    }
+
+    console.log(`✅ Printful sync product created successfully! ID: ${printfulSyncProductId}`)
+  } catch (error) {
+    console.error(`⚠️ Failed to create Printful sync product, continuing with local data:`, error)
+    // Continue without Printful sync - product will still be saved locally
+  }
 
   return {
-    id: `${themeId}-${productId}-${Date.now()}`,
+    id: externalId,
     title,
     description,
     price: config.price,
@@ -245,6 +313,8 @@ async function generateProduct(themeId: string, productId: string, designUrl: st
     designUrl,
     mockupUrl,
     printfulProductId: config.printfulId,
+    printfulSyncProductId,
+    printfulSyncVariantId,
     tags: [themeId, 'limited-edition', 'ai-generated'],
     createdAt: new Date().toISOString()
   }

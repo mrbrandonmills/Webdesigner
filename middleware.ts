@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { validateSession } from './lib/session'
+import { validateSession } from './lib/session-jwt'
 
 const AUTH_COOKIE_NAME = 'brandon-admin-auth'
 
