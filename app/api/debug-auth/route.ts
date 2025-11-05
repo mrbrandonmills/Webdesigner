@@ -21,7 +21,7 @@ export async function GET() {
     username,
     usernameLength: username?.length,
     usernameChars: Array.from(username || '').map(c => c.charCodeAt(0)),
-    hash Hash: hash?.substring(0, 20),
+    hashFirst20: hash?.substring(0, 20),
     hashLength: hash?.length,
     hashChars: hash ? Array.from(hash).slice(0, 20).map(c => c.charCodeAt(0)) : [],
     testPasswordMatches: match,
