@@ -4,7 +4,7 @@ import { useState, MouseEvent } from 'react'
 
 interface RippleButtonProps {
   children: React.ReactNode
-  onClick?: () => void
+  onClick?: (e: MouseEvent<HTMLButtonElement>) => void
   className?: string
   type?: 'button' | 'submit' | 'reset'
   disabled?: boolean
@@ -47,7 +47,7 @@ export function RippleButton({
       setRipples((prev) => prev.filter((r) => r.id !== newRipple.id))
     }, 600)
 
-    onClick?.()
+    onClick?.(e)
   }
 
   return (

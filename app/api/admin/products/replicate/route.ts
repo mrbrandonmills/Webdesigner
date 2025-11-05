@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
+import logger from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -47,9 +48,45 @@ const WISDOM_QUOTES = [
  */
 export async function POST(request: Request) {
   try {
-    const { products, variationsPerProduct }: { products: string[], variationsPerProduct: number } = await request.json()
+    const body = await request.json()
 
-    console.log(`🎨 Creating ${variationsPerProduct} variations for ${products.length} top performers...`)
+    // Validate input data
+    if (!body || typeof body !== 'object') {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid request body'
+        },
+        { status: 400 }
+      )
+    }
+
+    const { products, variationsPerProduct } = body
+
+    // Validate products array exists and is valid
+    if (!products || !Array.isArray(products) || products.length === 0) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Products array is required and must not be empty'
+        },
+        { status: 400 }
+      )
+    }
+
+    // Validate variationsPerProduct
+    if (!variationsPerProduct || typeof variationsPerProduct !== 'number' ||
+        variationsPerProduct < 1 || variationsPerProduct > 10) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Variations per product must be a number between 1 and 10'
+        },
+        { status: 400 }
+      )
+    }
+
+    logger.info(`Creating ${variationsPerProduct} variations for ${products.length} top performers`)
 
     const filePath = path.join(process.cwd(), 'data', 'curated-products.json')
 
@@ -69,7 +106,7 @@ export async function POST(request: Request) {
       const original = data.products.find((p: any) => p.id === productId)
 
       if (!original) {
-        console.warn(`Product ${productId} not found, skipping...`)
+        logger.warn(`Product ${productId} not found, skipping...`)
         continue
       }
 
@@ -86,7 +123,7 @@ export async function POST(request: Request) {
     // Save updated file
     await writeFile(filePath, JSON.stringify(data, null, 2))
 
-    console.log(`✅ Created ${newVariations.length} new product variations!`)
+    logger.success(`Created ${newVariations.length} new product variations!`)
 
     return NextResponse.json({
       success: true,
@@ -94,7 +131,7 @@ export async function POST(request: Request) {
       totalProducts: data.products.length
     })
   } catch (error) {
-    console.error('Product replication error:', error)
+    logger.error('Product replication error', error)
     return NextResponse.json(
       {
         success: false,

@@ -26,6 +26,7 @@ yarn-error.log*
 .env
 .env*.local
 .env.production
+.env.affiliate
 
 # Vercel
 .vercel
@@ -43,3 +44,10 @@ next-env.d.ts
 
 # OS
 Thumbs.db
+
+# Affiliate Automation (SENSITIVE - Never commit!)
+data/affiliate/credentials.json
+data/affiliate/signup-progress.json
+data/affiliate/affiliate-links.json
+exports/
+*.backup.json

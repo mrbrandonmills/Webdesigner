@@ -1,0 +1,263 @@
+{
+  "platforms": [
+    {
+      "id": "amazon-associates",
+      "name": "Amazon Associates",
+      "signupUrl": "https://affiliate-program.amazon.com/signup",
+      "priority": "high",
+      "approvalTime": "1-2 days",
+      "requirements": {
+        "website": true,
+        "taxInfo": true,
+        "trafficProof": false,
+        "phoneVerification": false
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "website": "brandonmills.com",
+        "websiteType": "blog",
+        "contentCategory": ["Photography", "Art", "Lifestyle"],
+        "trafficSources": ["Organic Search", "Social Media", "Direct"],
+        "monetizationMethods": ["Affiliate Links", "Sponsored Content"],
+        "monthlyVisitors": "1000-5000"
+      },
+      "postApproval": {
+        "apiAccess": true,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "Need to generate 3 sales within 180 days to maintain account"
+    },
+    {
+      "id": "shareasale",
+      "name": "ShareASale",
+      "signupUrl": "https://account.shareasale.com/newsignup.cfm",
+      "priority": "high",
+      "approvalTime": "2-5 days",
+      "requirements": {
+        "website": true,
+        "taxInfo": true,
+        "trafficProof": false,
+        "phoneVerification": true
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "website": "brandonmills.com",
+        "websiteDescription": "Professional photography portfolio and fine art prints featuring landscape, portrait, and lifestyle photography",
+        "promotionMethods": ["Website/Blog", "Social Media", "Email Marketing"],
+        "monthlyPageviews": "5000",
+        "primaryAudience": "Photography enthusiasts, art collectors, lifestyle consumers"
+      },
+      "postApproval": {
+        "apiAccess": true,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "Strong photography niche appeal, many photography merchants available"
+    },
+    {
+      "id": "cj-affiliate",
+      "name": "CJ Affiliate (Commission Junction)",
+      "signupUrl": "https://signup.cj.com/member/signup/publisher",
+      "priority": "high",
+      "approvalTime": "3-7 days",
+      "requirements": {
+        "website": true,
+        "taxInfo": true,
+        "trafficProof": false,
+        "phoneVerification": true
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "website": "brandonmills.com",
+        "websiteDescription": "Professional photography and fine art print marketplace",
+        "promotionMethods": ["Content/Niche", "Loyalty", "Search"],
+        "primaryCategory": "Art & Photography"
+      },
+      "postApproval": {
+        "apiAccess": true,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "Premium brands, requires professional site"
+    },
+    {
+      "id": "rakuten",
+      "name": "Rakuten Advertising",
+      "signupUrl": "https://rakutenadvertising.com/publisher/",
+      "priority": "medium",
+      "approvalTime": "5-10 days",
+      "requirements": {
+        "website": true,
+        "taxInfo": true,
+        "trafficProof": true,
+        "phoneVerification": true
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "website": "brandonmills.com",
+        "websiteDescription": "Premium photography portfolio and print marketplace",
+        "trafficVolume": "5000+ monthly visitors",
+        "promotionMethods": ["Content", "Social", "Email"]
+      },
+      "postApproval": {
+        "apiAccess": true,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "Higher barrier to entry, premium brands"
+    },
+    {
+      "id": "impact",
+      "name": "Impact Radius",
+      "signupUrl": "https://impact.com/publishers/",
+      "priority": "medium",
+      "approvalTime": "Varies by merchant",
+      "requirements": {
+        "website": true,
+        "taxInfo": true,
+        "trafficProof": false,
+        "phoneVerification": false
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "website": "brandonmills.com",
+        "websiteDescription": "Professional photography and art marketplace",
+        "promotionMethods": ["Content", "Social Media"]
+      },
+      "postApproval": {
+        "apiAccess": true,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "Modern platform, growing network"
+    },
+    {
+      "id": "awin",
+      "name": "Awin",
+      "signupUrl": "https://www.awin.com/gb/affiliates",
+      "priority": "medium",
+      "approvalTime": "3-5 days",
+      "requirements": {
+        "website": true,
+        "taxInfo": true,
+        "trafficProof": false,
+        "phoneVerification": true
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "website": "brandonmills.com",
+        "websiteDescription": "Photography portfolio and fine art prints",
+        "promotionMethods": ["Content", "Social Media", "Email"],
+        "region": "North America"
+      },
+      "postApproval": {
+        "apiAccess": true,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "Strong international presence, good for global merchants"
+    },
+    {
+      "id": "bhphoto",
+      "name": "B&H Photo Video",
+      "signupUrl": "https://www.bhphotovideo.com/affiliate",
+      "priority": "very-high",
+      "approvalTime": "1-3 days",
+      "requirements": {
+        "website": true,
+        "taxInfo": true,
+        "trafficProof": false,
+        "phoneVerification": false
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "website": "brandonmills.com",
+        "websiteDescription": "Professional photography portfolio featuring equipment reviews and recommendations",
+        "audienceDescription": "Professional and enthusiast photographers",
+        "promotionMethods": ["Website/Blog", "Social Media"]
+      },
+      "postApproval": {
+        "apiAccess": true,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "HIGHLY RELEVANT - photography equipment, fast approval for photography sites"
+    },
+    {
+      "id": "adorama",
+      "name": "Adorama",
+      "signupUrl": "https://www.adorama.com/affiliate",
+      "priority": "very-high",
+      "approvalTime": "1-3 days",
+      "requirements": {
+        "website": true,
+        "taxInfo": true,
+        "trafficProof": false,
+        "phoneVerification": false
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "website": "brandonmills.com",
+        "websiteDescription": "Professional photography and equipment recommendations",
+        "audienceDescription": "Photographers and visual artists",
+        "promotionMethods": ["Content", "Reviews", "Social Media"]
+      },
+      "postApproval": {
+        "apiAccess": true,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "HIGHLY RELEVANT - photography equipment competitor to B&H"
+    },
+    {
+      "id": "printful",
+      "name": "Printful Affiliate",
+      "signupUrl": "https://www.printful.com/affiliate",
+      "priority": "very-high",
+      "approvalTime": "Instant (if customer)",
+      "requirements": {
+        "website": false,
+        "taxInfo": false,
+        "trafficProof": false,
+        "phoneVerification": false
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "email": "affiliates@brandonmills.com",
+        "promotionMethods": ["Website", "Social Media", "Email"]
+      },
+      "postApproval": {
+        "apiAccess": true,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "INSTANT APPROVAL for existing customers - 10% commission + bonuses"
+    },
+    {
+      "id": "mpix",
+      "name": "Mpix Affiliate",
+      "signupUrl": "https://www.mpix.com/affiliate",
+      "priority": "high",
+      "approvalTime": "1-3 days",
+      "requirements": {
+        "website": true,
+        "taxInfo": true,
+        "trafficProof": false,
+        "phoneVerification": false
+      },
+      "fields": {
+        "businessName": "Brandon Mills Photography",
+        "website": "brandonmills.com",
+        "websiteDescription": "Professional photography and print recommendations",
+        "audienceDescription": "Photographers seeking professional printing services"
+      },
+      "postApproval": {
+        "apiAccess": false,
+        "linkGenerator": true,
+        "reports": true
+      },
+      "notes": "HIGHLY RELEVANT - professional photo printing for photographers"
+    }
+  ]
+}

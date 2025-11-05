@@ -1,0 +1,878 @@
+{
+  "catalogVersion": "1.0.0",
+  "lastUpdated": "2025-11-05",
+  "brandName": "Brandon Mills Photography",
+  "currency": "USD",
+  "categories": {
+    "fine_art_prints": {
+      "name": "Fine Art Prints",
+      "description": "Museum-quality photographic prints on archival paper",
+      "categoryTags": ["prints", "wall-art", "photography"],
+      "featured": true
+    },
+    "limited_editions": {
+      "name": "Limited Editions",
+      "description": "Numbered and signed collector's pieces",
+      "categoryTags": ["limited", "collectible", "investment"],
+      "featured": true
+    },
+    "canvas_art": {
+      "name": "Gallery Canvas",
+      "description": "Gallery-wrapped canvas prints ready to hang",
+      "categoryTags": ["canvas", "wall-art", "ready-to-hang"],
+      "featured": true
+    },
+    "metal_prints": {
+      "name": "Metal Prints",
+      "description": "Contemporary aluminum dibond prints with stunning clarity",
+      "categoryTags": ["metal", "modern", "high-end"],
+      "featured": false
+    },
+    "acrylic_prints": {
+      "name": "Acrylic Prints",
+      "description": "Face-mounted acrylic for extraordinary depth and luminosity",
+      "categoryTags": ["acrylic", "luxury", "gallery-quality"],
+      "featured": false
+    },
+    "framed_prints": {
+      "name": "Framed Prints",
+      "description": "Museum-quality frames with archival matting",
+      "categoryTags": ["framed", "ready-to-hang", "premium"],
+      "featured": true
+    },
+    "coffee_table_books": {
+      "name": "Coffee Table Books",
+      "description": "Premium bound collections showcasing signature work",
+      "categoryTags": ["books", "collections", "gift"],
+      "featured": false
+    },
+    "digital_products": {
+      "name": "Digital Products",
+      "description": "Lightroom presets, tutorials, and educational content",
+      "categoryTags": ["digital", "education", "presets"],
+      "featured": false
+    },
+    "luxury_apparel": {
+      "name": "Luxury Apparel",
+      "description": "Premium clothing featuring signature photography",
+      "categoryTags": ["apparel", "fashion", "wearable-art"],
+      "featured": false
+    },
+    "accessories": {
+      "name": "Premium Accessories",
+      "description": "Curated lifestyle accessories for the discerning creative",
+      "categoryTags": ["accessories", "lifestyle", "everyday-luxury"],
+      "featured": false
+    }
+  },
+  "collections": {
+    "urban_poetry": {
+      "name": "Urban Poetry",
+      "description": "Architectural studies and city landscapes that reveal hidden beauty in concrete jungles",
+      "theme": "Architecture & Urban Life",
+      "limitedEdition": true,
+      "totalEditions": 25,
+      "story": "Shot during early morning hours across major metropolitan areas, this collection captures the quiet moments when cities reveal their true character."
+    },
+    "human_connection": {
+      "name": "Human Connection",
+      "description": "Intimate portraits celebrating the depth of human emotion and relationship",
+      "theme": "Portrait & Emotion",
+      "limitedEdition": true,
+      "totalEditions": 50,
+      "story": "Each portrait in this series was created through genuine collaboration, revealing authentic moments of vulnerability and strength."
+    },
+    "natural_wonder": {
+      "name": "Natural Wonder",
+      "description": "Landscapes showcasing the raw power and delicate beauty of the natural world",
+      "theme": "Landscape & Nature",
+      "limitedEdition": false,
+      "story": "From coastal cliffs to mountain peaks, these images celebrate Earth's extraordinary diversity."
+    },
+    "studio_experiments": {
+      "name": "Studio Experiments",
+      "description": "Innovative studio work blending traditional photography with digital artistry",
+      "theme": "Creative & Experimental",
+      "limitedEdition": true,
+      "totalEditions": 15,
+      "story": "Where technical precision meets artistic vision, pushing the boundaries of photographic possibility."
+    }
+  },
+  "products": [
+    {
+      "id": "FP-001",
+      "sku": "BMILLS-FP-24x36-001",
+      "name": "Golden Hour Manhattan",
+      "collection": "urban_poetry",
+      "category": "fine_art_prints",
+      "description": "A breathtaking capture of Manhattan's skyline bathed in golden light, showcasing the interplay between architectural grandeur and natural beauty. Printed on Hahnemühle Photo Rag 308gsm, this museum-quality archival print reveals extraordinary detail and tonal range.",
+      "longDescription": "This iconic image was captured during a rare moment when atmospheric conditions created perfect golden hour lighting across Manhattan. The photograph showcases the technical excellence and artistic vision that defines Brandon Mills' work—every building edge is razor-sharp, while the overall composition maintains a dreamlike quality. Printed using pigment inks on 100% cotton rag paper, this piece is designed to last generations without fading.",
+      "price": 299,
+      "compareAtPrice": null,
+      "sizes": [
+        { "size": "18x24", "price": 199, "printfulId": "poster-18x24" },
+        { "size": "24x36", "price": 299, "printfulId": "poster-24x36" },
+        { "size": "30x40", "price": 499, "printfulId": "poster-30x40" },
+        { "size": "40x60", "price": 899, "printfulId": "poster-40x60" }
+      ],
+      "materials": {
+        "paper": "Hahnemühle Photo Rag 308gsm",
+        "inks": "Archival pigment inks (100+ year lifespan)",
+        "finish": "Matte, museum-quality surface"
+      },
+      "features": [
+        "Museum-quality archival paper",
+        "100+ year lifespan with proper care",
+        "Printed to order in premium facilities",
+        "Ships carefully rolled in protective tube",
+        "Certificate of authenticity included"
+      ],
+      "tags": ["cityscape", "architecture", "manhattan", "golden-hour", "limited-edition"],
+      "limitedEdition": true,
+      "editionSize": 25,
+      "signed": true,
+      "numbered": true,
+      "inStock": true,
+      "leadTime": "7-10 business days",
+      "images": [
+        "/images/products/golden-hour-manhattan-main.jpg",
+        "/images/products/golden-hour-manhattan-detail.jpg",
+        "/images/products/golden-hour-manhattan-frame.jpg"
+      ]
+    },
+    {
+      "id": "FP-002",
+      "sku": "BMILLS-FP-24x36-002",
+      "name": "Coastal Serenity",
+      "collection": "natural_wonder",
+      "category": "fine_art_prints",
+      "description": "Waves crash against ancient rocks in this meditation on the timeless power of the ocean. Long exposure technique creates ethereal movement while maintaining crystal clarity in the foreground details.",
+      "longDescription": "Captured during pre-dawn hours on the Pacific Coast, this image required precise timing and technical expertise. The 30-second exposure smooths the ocean into silk while keeping the rocky foreground sharp and detailed. The result is a contemplative piece that brings the calming energy of the coast into any space.",
+      "price": 279,
+      "compareAtPrice": null,
+      "sizes": [
+        { "size": "18x24", "price": 189, "printfulId": "poster-18x24" },
+        { "size": "24x36", "price": 279, "printfulId": "poster-24x36" },
+        { "size": "30x40", "price": 449, "printfulId": "poster-30x40" }
+      ],
+      "materials": {
+        "paper": "Hahnemühle Photo Rag 308gsm",
+        "inks": "Archival pigment inks",
+        "finish": "Matte surface"
+      },
+      "features": [
+        "Museum-quality archival paper",
+        "Long-exposure seascape",
+        "Limited availability",
+        "Certificate of authenticity",
+        "Made to order"
+      ],
+      "tags": ["seascape", "ocean", "coastal", "long-exposure", "nature"],
+      "limitedEdition": false,
+      "signed": true,
+      "numbered": false,
+      "inStock": true,
+      "leadTime": "7-10 business days",
+      "images": [
+        "/images/products/coastal-serenity-main.jpg"
+      ]
+    },
+    {
+      "id": "LE-001",
+      "sku": "BMILLS-LE-30x40-001",
+      "name": "Reflections in Steel - Limited Edition 1/15",
+      "collection": "studio_experiments",
+      "category": "limited_editions",
+      "description": "An experimental studio piece exploring light, reflection, and geometric precision. This limited edition of only 15 prints showcases the intersection of photography and digital art, creating something entirely unique.",
+      "longDescription": "Created through a meticulous process combining in-camera capture with precise digital manipulation, this piece represents the cutting edge of contemporary photographic art. Each of the 15 prints in this edition is hand-signed, numbered, and accompanied by a detailed certificate of authenticity describing the creative process. This is investment-grade art designed for serious collectors.",
+      "price": 1499,
+      "compareAtPrice": 1999,
+      "sizes": [
+        { "size": "30x40", "price": 1499, "printfulId": "poster-30x40" },
+        { "size": "40x60", "price": 2499, "printfulId": "poster-40x60" }
+      ],
+      "materials": {
+        "paper": "Hahnemühle FineArt Baryta 325gsm",
+        "inks": "Archival pigment inks (Epson UltraChrome)",
+        "finish": "High-gloss baryta surface"
+      },
+      "features": [
+        "Limited to 15 prints worldwide",
+        "Hand-signed and numbered by artist",
+        "Premium FineArt Baryta paper",
+        "Embossed certificate of authenticity",
+        "Exclusive collector's edition",
+        "Includes artist statement",
+        "Investment potential"
+      ],
+      "tags": ["limited-edition", "experimental", "studio", "collectible", "investment"],
+      "limitedEdition": true,
+      "editionSize": 15,
+      "remainingEditions": 8,
+      "signed": true,
+      "numbered": true,
+      "inStock": true,
+      "leadTime": "14-21 business days",
+      "images": [
+        "/images/products/reflections-steel-main.jpg",
+        "/images/products/reflections-steel-detail.jpg",
+        "/images/products/reflections-steel-certificate.jpg"
+      ]
+    },
+    {
+      "id": "CV-001",
+      "sku": "BMILLS-CV-24x36-001",
+      "name": "Urban Poetry #7 - Gallery Canvas",
+      "collection": "urban_poetry",
+      "category": "canvas_art",
+      "description": "Museum-quality canvas print gallery-wrapped on 1.5-inch stretcher bars. This piece arrives ready to hang, bringing sophisticated urban elegance to any space.",
+      "longDescription": "Printed on premium canvas using archival inks, this gallery-wrapped piece features mirrored edges for a seamless look. The 1.5-inch depth creates a substantial presence on the wall, while the canvas texture adds warmth and dimension to the image. Each canvas is carefully hand-stretched and inspected for quality before shipping.",
+      "price": 349,
+      "compareAtPrice": null,
+      "sizes": [
+        { "size": "16x20", "price": 199, "printfulId": "canvas-16x20" },
+        { "size": "24x36", "price": 349, "printfulId": "canvas-24x36" },
+        { "size": "30x40", "price": 549, "printfulId": "canvas-30x40" },
+        { "size": "40x60", "price": 899, "printfulId": "canvas-40x60" }
+      ],
+      "materials": {
+        "substrate": "Premium poly-cotton canvas (360gsm)",
+        "stretcher": "1.5-inch kiln-dried pine stretcher bars",
+        "inks": "Archival pigment inks",
+        "finish": "Protective UV coating"
+      },
+      "features": [
+        "Gallery-wrapped with mirrored edges",
+        "Ready to hang - no framing needed",
+        "UV-protective coating",
+        "Hand-stretched on premium stretcher bars",
+        "Arrives ready to display"
+      ],
+      "tags": ["canvas", "ready-to-hang", "urban", "architecture", "gallery-wrap"],
+      "limitedEdition": false,
+      "signed": false,
+      "numbered": false,
+      "inStock": true,
+      "leadTime": "10-14 business days",
+      "images": [
+        "/images/products/urban-poetry-7-canvas.jpg"
+      ]
+    },
+    {
+      "id": "MT-001",
+      "sku": "BMILLS-MT-24x36-001",
+      "name": "Minimalist Architecture - Metal Print",
+      "collection": "urban_poetry",
+      "category": "metal_prints",
+      "description": "Printed on brushed aluminum dibond, this contemporary piece offers unparalleled sharpness and a sleek, modern aesthetic. The metal surface creates incredible depth and luminosity.",
+      "longDescription": "Metal prints represent the pinnacle of modern photographic reproduction. Printed directly onto aluminum dibond using a heat sublimation process, the colors are vivid, the blacks are deep, and the overall clarity is stunning. The brushed metal finish adds a subtle texture that changes with viewing angle, creating a dynamic viewing experience. Perfect for contemporary spaces.",
+      "price": 599,
+      "compareAtPrice": null,
+      "sizes": [
+        { "size": "16x20", "price": 399, "printfulId": "metal-16x20" },
+        { "size": "24x36", "price": 599, "printfulId": "metal-24x36" },
+        { "size": "30x40", "price": 899, "printfulId": "metal-30x40" }
+      ],
+      "materials": {
+        "substrate": "Aluminum dibond (3mm thick)",
+        "process": "Dye-sublimation printing",
+        "finish": "Brushed aluminum surface",
+        "mounting": "Float mount hardware included"
+      },
+      "features": [
+        "Extraordinary color vibrancy",
+        "Scratch-resistant surface",
+        "Waterproof and durable",
+        "Float mount hardware included",
+        "Ultra-contemporary presentation",
+        "Virtually weightless"
+      ],
+      "tags": ["metal", "aluminum", "contemporary", "architecture", "modern"],
+      "limitedEdition": false,
+      "signed": false,
+      "numbered": false,
+      "inStock": true,
+      "leadTime": "14-21 business days",
+      "images": [
+        "/images/products/minimalist-architecture-metal.jpg"
+      ]
+    },
+    {
+      "id": "AC-001",
+      "sku": "BMILLS-AC-24x36-001",
+      "name": "Portrait Study #3 - Acrylic Face Mount",
+      "collection": "human_connection",
+      "category": "acrylic_prints",
+      "description": "Face-mounted on premium acrylic for extraordinary depth and luminosity. This luxury presentation creates a window-like quality that draws viewers into the image.",
+      "longDescription": "Acrylic face mounting is the premium choice for gallery presentations. The print is mounted behind 1/4-inch clear acrylic, creating incredible depth and protecting the image from UV damage and environmental factors. Colors appear to glow from within, and the overall effect is mesmerizing. The piece floats 1 inch off the wall using stainless steel standoffs, creating dramatic shadows and presence.",
+      "price": 799,
+      "compareAtPrice": 999,
+      "sizes": [
+        { "size": "20x30", "price": 699, "printfulId": "acrylic-20x30" },
+        { "size": "24x36", "price": 799, "printfulId": "acrylic-24x36" },
+        { "size": "30x40", "price": 1299, "printfulId": "acrylic-30x40" }
+      ],
+      "materials": {
+        "acrylic": "Premium 1/4-inch clear acrylic",
+        "backing": "Aluminum dibond backing",
+        "mounting": "Stainless steel standoff system",
+        "print": "Archival photographic paper"
+      },
+      "features": [
+        "Museum-quality presentation",
+        "Exceptional depth and clarity",
+        "UV protection",
+        "Standoff mounting hardware",
+        "Gallery-level craftsmanship",
+        "Heirloom quality"
+      ],
+      "tags": ["acrylic", "luxury", "portrait", "gallery-quality", "premium"],
+      "limitedEdition": true,
+      "editionSize": 50,
+      "signed": true,
+      "numbered": true,
+      "inStock": true,
+      "leadTime": "21-28 business days",
+      "images": [
+        "/images/products/portrait-study-3-acrylic.jpg"
+      ]
+    },
+    {
+      "id": "FR-001",
+      "sku": "BMILLS-FR-24x36-001",
+      "name": "Sunset Boulevard - Museum Frame",
+      "collection": "urban_poetry",
+      "category": "framed_prints",
+      "description": "A complete ready-to-hang solution featuring museum-quality archival matting and a handcrafted frame. This turnkey presentation is perfect for those who demand the finest.",
+      "longDescription": "Our framed prints combine the finest archival materials with expert craftsmanship. Each piece features a museum-quality print on Hahnemühle paper, surrounded by 4-ply acid-free matting, and enclosed in a handcrafted frame with UV-protective glazing. The result is a gallery-ready piece that will be treasured for generations.",
+      "price": 899,
+      "compareAtPrice": null,
+      "sizes": [
+        { "size": "20x30 (framed)", "price": 699, "printfulId": "framed-20x30" },
+        { "size": "24x36 (framed)", "price": 899, "printfulId": "framed-24x36" },
+        { "size": "30x40 (framed)", "price": 1299, "printfulId": "framed-30x40" }
+      ],
+      "materials": {
+        "print": "Hahnemühle Photo Rag 308gsm",
+        "matting": "4-ply acid-free conservation matting",
+        "frame": "Handcrafted hardwood frame",
+        "glazing": "Museum-quality UV-protective glass"
+      },
+      "frameOptions": [
+        { "name": "Classic Black", "finish": "Satin black hardwood" },
+        { "name": "Gallery White", "finish": "White ash hardwood" },
+        { "name": "Natural Oak", "finish": "Light oak hardwood" },
+        { "name": "Walnut", "finish": "Dark walnut hardwood" }
+      ],
+      "features": [
+        "Complete ready-to-hang solution",
+        "Museum-quality materials throughout",
+        "UV-protective glazing",
+        "Acid-free archival matting",
+        "Handcrafted hardwood frames",
+        "Professional mounting and backing"
+      ],
+      "tags": ["framed", "ready-to-hang", "museum-quality", "complete", "premium"],
+      "limitedEdition": false,
+      "signed": true,
+      "numbered": false,
+      "inStock": true,
+      "leadTime": "21-28 business days",
+      "images": [
+        "/images/products/sunset-boulevard-framed.jpg"
+      ]
+    },
+    {
+      "id": "BK-001",
+      "sku": "BMILLS-BK-STANDARD-001",
+      "name": "Urban Poetry: A Photographic Journey - Collector's Edition",
+      "collection": "urban_poetry",
+      "category": "coffee_table_books",
+      "description": "A stunning 120-page hardcover book showcasing the complete Urban Poetry collection. Printed on premium heavyweight paper with a linen-bound cover, this is a work of art in itself.",
+      "longDescription": "This collector's edition coffee table book presents 80 images from the Urban Poetry series, accompanied by essays exploring the creative process and philosophy behind the work. Each book is individually numbered and includes a tipped-in signed print. The premium production values—from the heavyweight paper to the linen binding—make this a treasured addition to any photography collection.",
+      "price": 249,
+      "compareAtPrice": 299,
+      "editions": [
+        { "type": "Standard Edition", "price": 149, "binding": "Hardcover" },
+        { "type": "Collector's Edition", "price": 249, "binding": "Linen-bound with slipcase" },
+        { "type": "Limited Signed Edition", "price": 399, "binding": "Leather-bound, numbered 1-100" }
+      ],
+      "materials": {
+        "pages": "170gsm premium art paper",
+        "binding": "Smyth-sewn hardcover binding",
+        "cover": "Linen cloth with foil stamping",
+        "box": "Custom slipcase (Collector's Edition)"
+      },
+      "specifications": {
+        "dimensions": "12 x 12 inches (30 x 30 cm)",
+        "pages": 120,
+        "images": 80,
+        "weight": "4.5 lbs",
+        "language": "English"
+      },
+      "features": [
+        "80 full-page images",
+        "Artist essays and statements",
+        "Premium heavyweight paper",
+        "Smyth-sewn binding (lies flat)",
+        "Individually numbered",
+        "Includes signed print (Collector's Edition)",
+        "Custom slipcase (Collector's Edition)"
+      ],
+      "tags": ["book", "collection", "urban-poetry", "coffee-table", "gift"],
+      "limitedEdition": true,
+      "editionSize": 1000,
+      "signed": true,
+      "numbered": true,
+      "inStock": true,
+      "leadTime": "3-5 business days",
+      "images": [
+        "/images/products/urban-poetry-book-cover.jpg",
+        "/images/products/urban-poetry-book-spread.jpg"
+      ]
+    },
+    {
+      "id": "BK-002",
+      "sku": "BMILLS-BK-LEATHER-001",
+      "name": "Portfolio: Collected Works 2020-2025 - Leather Bound",
+      "collection": null,
+      "category": "coffee_table_books",
+      "description": "The ultimate collector's item: a comprehensive survey of Brandon Mills' photography from 2020-2025. Bound in full-grain leather with gilt edges, limited to 100 copies worldwide.",
+      "longDescription": "This extraordinary volume represents five years of photographic exploration across multiple genres and styles. With 200 pages of carefully curated images, extended essays, and behind-the-scenes insights, this is the definitive collection. Each of the 100 copies is bound in full-grain leather, numbered and signed by the artist, and comes with an exclusive limited edition print not available elsewhere.",
+      "price": 799,
+      "compareAtPrice": null,
+      "materials": {
+        "pages": "200gsm museum-quality art paper",
+        "binding": "Full-grain leather binding with gold foil",
+        "edges": "Gilt edges",
+        "box": "Custom wooden presentation box"
+      },
+      "specifications": {
+        "dimensions": "14 x 11 inches (35 x 28 cm)",
+        "pages": 200,
+        "images": 150,
+        "weight": "8 lbs",
+        "language": "English"
+      },
+      "features": [
+        "150 museum-quality reproductions",
+        "Full-grain leather binding",
+        "Gilt page edges",
+        "Extended artist commentary",
+        "Limited to 100 copies",
+        "Includes exclusive 11x14 print",
+        "Custom wooden presentation box",
+        "Certificate of authenticity"
+      ],
+      "tags": ["book", "luxury", "leather", "limited-edition", "investment"],
+      "limitedEdition": true,
+      "editionSize": 100,
+      "remainingEditions": 42,
+      "signed": true,
+      "numbered": true,
+      "inStock": true,
+      "leadTime": "6-8 weeks",
+      "images": [
+        "/images/products/portfolio-leather-book.jpg"
+      ]
+    },
+    {
+      "id": "DG-001",
+      "sku": "BMILLS-DG-PRESETS-001",
+      "name": "Signature Lightroom Presets - Complete Collection",
+      "collection": null,
+      "category": "digital_products",
+      "description": "Professional-grade Lightroom presets developed over years of commercial and editorial work. 50+ presets covering every style from dramatic landscapes to subtle portraits.",
+      "longDescription": "These presets represent thousands of hours of workflow refinement. Each preset is carefully crafted to enhance images while maintaining natural tonality and color relationships. Whether you shoot portraits, landscapes, street photography, or commercial work, these presets will accelerate your editing workflow while maintaining the highest quality standards. Includes video tutorials and before/after examples.",
+      "price": 149,
+      "compareAtPrice": 199,
+      "packages": [
+        { "name": "Essentials", "presets": 15, "price": 49 },
+        { "name": "Professional", "presets": 30, "price": 99 },
+        { "name": "Complete Collection", "presets": 50, "price": 149 }
+      ],
+      "includes": [
+        "50+ Lightroom Classic presets (.xmp)",
+        "50+ Lightroom CC presets (.lrtemplate)",
+        "50+ Photoshop Camera Raw presets",
+        "20+ video tutorials (total 3 hours)",
+        "Before/after examples for each preset",
+        "PDF guide to using presets effectively",
+        "Lifetime updates",
+        "Private Facebook community access"
+      ],
+      "compatibility": {
+        "software": ["Lightroom Classic CC", "Lightroom CC", "Photoshop Camera Raw"],
+        "formats": [".xmp", ".lrtemplate"],
+        "minVersion": "Lightroom CC 2015 or later"
+      },
+      "categories": {
+        "portrait": 12,
+        "landscape": 15,
+        "urban": 10,
+        "black_white": 8,
+        "creative": 5
+      },
+      "features": [
+        "Instant download after purchase",
+        "Works on Mac and PC",
+        "One-click professional results",
+        "Fully customizable",
+        "Commercial use allowed",
+        "Money-back guarantee"
+      ],
+      "tags": ["presets", "lightroom", "editing", "digital", "workflow"],
+      "limitedEdition": false,
+      "inStock": true,
+      "deliveryMethod": "instant_download",
+      "fileSize": "245 MB",
+      "images": [
+        "/images/products/lightroom-presets-preview.jpg",
+        "/images/products/lightroom-presets-before-after.jpg"
+      ]
+    },
+    {
+      "id": "DG-002",
+      "sku": "BMILLS-DG-COURSE-001",
+      "name": "Mastering Light: Complete Photography Course",
+      "collection": null,
+      "category": "digital_products",
+      "description": "A comprehensive online course covering everything from camera fundamentals to advanced lighting techniques. 40+ hours of premium video content, assignments, and personalized feedback.",
+      "longDescription": "This is the course I wish I had when starting photography. Over 40 hours of detailed video instruction covering technical fundamentals, creative vision, lighting mastery, post-processing, and building a sustainable photography business. Includes lifetime access to all content, future updates, assignments with personalized feedback, and access to a private community of serious photographers.",
+      "price": 799,
+      "compareAtPrice": 999,
+      "curriculum": {
+        "module1": "Camera Fundamentals & Exposure",
+        "module2": "Composition & Visual Language",
+        "module3": "Natural Light Mastery",
+        "module4": "Artificial Lighting Techniques",
+        "module5": "Portrait Photography",
+        "module6": "Landscape & Travel",
+        "module7": "Post-Processing Workflow",
+        "module8": "Business & Marketing",
+        "module9": "Portfolio Development",
+        "module10": "Advanced Topics & Specialization"
+      },
+      "includes": [
+        "40+ hours of HD video instruction",
+        "Downloadable course materials",
+        "50+ practical assignments",
+        "Personalized feedback on assignments",
+        "Private student community",
+        "Monthly live Q&A sessions",
+        "Course completion certificate",
+        "Lifetime access to all updates",
+        "Money-back guarantee (30 days)"
+      ],
+      "features": [
+        "Learn at your own pace",
+        "Direct instructor access",
+        "Real-world assignments",
+        "Professional workflow templates",
+        "Industry insights and connections"
+      ],
+      "tags": ["course", "education", "photography", "online-learning", "comprehensive"],
+      "limitedEdition": false,
+      "inStock": true,
+      "enrollmentStatus": "open",
+      "deliveryMethod": "online_platform",
+      "images": [
+        "/images/products/photography-course-banner.jpg"
+      ]
+    },
+    {
+      "id": "DG-003",
+      "sku": "BMILLS-DG-MENTOR-001",
+      "name": "1-on-1 Photography Mentorship Session",
+      "collection": null,
+      "category": "digital_products",
+      "description": "Personalized 90-minute video mentorship session covering your specific questions, portfolio review, and actionable next steps for your photography journey.",
+      "longDescription": "Sometimes you need personalized guidance tailored to your specific situation. These one-on-one sessions provide focused attention on your work, challenges, and goals. Whether you need portfolio review, technical help, creative direction, or business advice, we'll create a customized session that delivers maximum value. Sessions are conducted via video call and include detailed follow-up notes and action items.",
+      "price": 499,
+      "compareAtPrice": null,
+      "sessionTypes": [
+        { "name": "Portfolio Review", "duration": 90, "price": 499 },
+        { "name": "Technical Deep Dive", "duration": 90, "price": 499 },
+        { "name": "Business Strategy", "duration": 90, "price": 499 },
+        { "name": "Extended Mentorship", "duration": 180, "price": 899 }
+      ],
+      "includes": [
+        "90-minute live video session",
+        "Pre-session questionnaire",
+        "Portfolio or work review",
+        "Detailed session notes",
+        "Personalized action plan",
+        "30-day email follow-up support",
+        "Session recording available"
+      ],
+      "bookingProcess": [
+        "Purchase session",
+        "Complete intake questionnaire",
+        "Schedule session (within 30 days)",
+        "Receive preparation materials",
+        "Attend live session",
+        "Receive follow-up materials"
+      ],
+      "features": [
+        "Completely personalized to your needs",
+        "Actionable advice and next steps",
+        "Direct access to professional insights",
+        "Flexible scheduling",
+        "Satisfaction guaranteed"
+      ],
+      "tags": ["mentorship", "consulting", "1-on-1", "personalized", "coaching"],
+      "limitedEdition": false,
+      "inStock": true,
+      "availability": "Limited slots per month",
+      "deliveryMethod": "video_call",
+      "images": [
+        "/images/products/mentorship-session.jpg"
+      ]
+    },
+    {
+      "id": "AP-001",
+      "sku": "BMILLS-AP-TEE-001",
+      "name": "Signature Series T-Shirt - Urban Poetry",
+      "collection": "urban_poetry",
+      "category": "luxury_apparel",
+      "description": "Premium 100% organic cotton t-shirt featuring a striking image from the Urban Poetry collection. Museum-quality printing on luxury fabric.",
+      "longDescription": "This isn't your standard photographer merchandise. We've partnered with premium manufacturers to create apparel that matches our photographic standards. Each shirt features a carefully selected image printed using advanced techniques that preserve detail and color accuracy. The organic cotton is incredibly soft, sustainably sourced, and built to last.",
+      "price": 89,
+      "compareAtPrice": null,
+      "sizes": ["XS", "S", "M", "L", "XL", "XXL"],
+      "colors": [
+        { "name": "Classic Black", "hex": "#000000" },
+        { "name": "Premium White", "hex": "#FFFFFF" },
+        { "name": "Charcoal", "hex": "#36454F" }
+      ],
+      "materials": {
+        "fabric": "100% organic cotton (180gsm)",
+        "print": "Direct-to-garment with eco-friendly inks",
+        "care": "Machine washable, colors permanent"
+      },
+      "features": [
+        "Premium organic cotton",
+        "Museum-quality printing",
+        "Preshrunk and tagless",
+        "Ethically manufactured",
+        "Unisex fit",
+        "Limited production runs"
+      ],
+      "tags": ["apparel", "t-shirt", "organic", "luxury", "wearable-art"],
+      "limitedEdition": false,
+      "inStock": true,
+      "leadTime": "5-7 business days",
+      "images": [
+        "/images/products/signature-tee-urban-poetry.jpg"
+      ]
+    },
+    {
+      "id": "AP-002",
+      "sku": "BMILLS-AP-HOODIE-001",
+      "name": "Premium Hoodie - Reflections Collection",
+      "collection": "studio_experiments",
+      "category": "luxury_apparel",
+      "description": "Luxury heavyweight hoodie featuring abstract imagery from the Studio Experiments series. Ultra-soft French terry interior with detailed embroidery.",
+      "longDescription": "Elevate your casual wear with this exceptional hoodie. Made from premium heavyweight cotton with a French terry interior, it's incredibly comfortable while maintaining a refined aesthetic. The front features a subtle embroidered logo, while the back showcases a striking image from the Reflections series. This is luxury streetwear for the discerning creative.",
+      "price": 149,
+      "compareAtPrice": 189,
+      "sizes": ["S", "M", "L", "XL", "XXL"],
+      "colors": [
+        { "name": "Midnight Black", "hex": "#000000" },
+        { "name": "Stone Grey", "hex": "#918C87" }
+      ],
+      "materials": {
+        "fabric": "80% organic cotton, 20% recycled polyester (380gsm)",
+        "interior": "French terry brushed interior",
+        "details": "Embroidered logo and printed artwork"
+      },
+      "features": [
+        "Heavyweight premium construction",
+        "Ultra-soft French terry lining",
+        "Metal-tipped drawstrings",
+        "Ribbed cuffs and hem",
+        "Kangaroo pocket",
+        "Limited seasonal release"
+      ],
+      "tags": ["apparel", "hoodie", "luxury", "streetwear", "premium"],
+      "limitedEdition": true,
+      "editionSize": 200,
+      "inStock": true,
+      "leadTime": "7-10 business days",
+      "images": [
+        "/images/products/premium-hoodie-reflections.jpg"
+      ]
+    },
+    {
+      "id": "AC-002",
+      "sku": "BMILLS-AC-TOTE-001",
+      "name": "Leather Tote Bag - Photographer's Essential",
+      "collection": null,
+      "category": "accessories",
+      "description": "Handcrafted full-grain leather tote designed for the working creative. Spacious interior with padded laptop sleeve and camera compartment.",
+      "longDescription": "Designed in collaboration with master leather craftspeople, this tote combines timeless aesthetics with modern functionality. The full-grain leather develops a beautiful patina over time, while the practical interior organization keeps your essential gear secure and accessible. Perfect for photographers, designers, and anyone who appreciates quality craftsmanship.",
+      "price": 399,
+      "compareAtPrice": null,
+      "colors": [
+        { "name": "Cognac Brown", "description": "Rich tan leather" },
+        { "name": "Deep Black", "description": "Classic black leather" }
+      ],
+      "materials": {
+        "exterior": "Full-grain vegetable-tanned leather",
+        "interior": "Waxed canvas lining",
+        "hardware": "Solid brass fixtures"
+      },
+      "dimensions": {
+        "height": "15 inches",
+        "width": "18 inches",
+        "depth": "6 inches",
+        "handles": "10-inch drop"
+      },
+      "features": [
+        "Handcrafted full-grain leather",
+        "Padded 15-inch laptop sleeve",
+        "Camera gear compartment",
+        "Multiple interior pockets",
+        "Solid brass hardware",
+        "Develops beautiful patina",
+        "Lifetime quality guarantee"
+      ],
+      "tags": ["accessories", "leather", "tote", "camera-bag", "luxury"],
+      "limitedEdition": false,
+      "inStock": true,
+      "leadTime": "14-21 business days (made to order)",
+      "images": [
+        "/images/products/leather-tote-photographer.jpg"
+      ]
+    },
+    {
+      "id": "AC-003",
+      "sku": "BMILLS-AC-PHONE-001",
+      "name": "Premium Phone Case - Signature Series",
+      "collection": "urban_poetry",
+      "category": "accessories",
+      "description": "Slim profile phone case featuring a museum-quality reproduction of selected work. Anti-scratch coating and raised edges protect your device in style.",
+      "longDescription": "Carry art in your pocket with these premium phone cases. Each features a high-resolution reproduction of signature photography, protected by an anti-scratch coating. The slim profile maintains the elegant lines of your phone while providing essential protection. Wireless charging compatible.",
+      "price": 49,
+      "compareAtPrice": null,
+      "models": [
+        "iPhone 15 Pro Max",
+        "iPhone 15 Pro",
+        "iPhone 15",
+        "iPhone 14 Pro Max",
+        "iPhone 14 Pro",
+        "iPhone 14",
+        "Samsung Galaxy S24 Ultra",
+        "Samsung Galaxy S24+",
+        "Samsung Galaxy S24"
+      ],
+      "designs": [
+        "Golden Hour Manhattan",
+        "Coastal Serenity",
+        "Urban Poetry #7",
+        "Minimalist Architecture"
+      ],
+      "materials": {
+        "shell": "Polycarbonate hardshell",
+        "coating": "Anti-scratch UV coating",
+        "print": "High-resolution sublimation print"
+      },
+      "features": [
+        "Slim, lightweight profile",
+        "Raised edges protect screen and camera",
+        "Wireless charging compatible",
+        "Museum-quality image reproduction",
+        "Anti-scratch coating",
+        "Precise cutouts for all ports"
+      ],
+      "tags": ["accessories", "phone-case", "tech", "everyday-luxury"],
+      "limitedEdition": false,
+      "inStock": true,
+      "leadTime": "3-5 business days",
+      "images": [
+        "/images/products/phone-case-signature.jpg"
+      ]
+    },
+    {
+      "id": "AC-004",
+      "sku": "BMILLS-AC-POSTCARDS-001",
+      "name": "Art Print Postcard Set - Collector's Edition",
+      "collection": null,
+      "category": "accessories",
+      "description": "Beautifully printed set of 20 postcards featuring signature images. Perfect for correspondence, framing, or collecting.",
+      "longDescription": "These aren't ordinary postcards. Printed on premium cardstock with museum-quality reproduction, each card is a miniature work of art. The set includes 20 different images spanning multiple collections, packaged in a custom presentation box. Use them for correspondence, frame them for mini gallery walls, or keep them as collectibles.",
+      "price": 39,
+      "compareAtPrice": null,
+      "specifications": {
+        "quantity": 20,
+        "size": "4 x 6 inches",
+        "paper": "300gsm premium cardstock",
+        "finish": "Matte surface",
+        "packaging": "Custom presentation box"
+      },
+      "includes": [
+        "20 unique postcards",
+        "Custom presentation box",
+        "Image index card",
+        "Perfect for gifting or collecting"
+      ],
+      "features": [
+        "Museum-quality printing",
+        "Premium heavyweight cardstock",
+        "Matte finish suitable for writing",
+        "Beautiful presentation box",
+        "Collectible set"
+      ],
+      "tags": ["accessories", "postcards", "gift", "collectible", "stationery"],
+      "limitedEdition": false,
+      "inStock": true,
+      "leadTime": "3-5 business days",
+      "images": [
+        "/images/products/postcard-set-collectors.jpg"
+      ]
+    }
+  ],
+  "pricingStrategy": {
+    "tiers": {
+      "entry": {
+        "range": "$39-$149",
+        "products": ["Digital products", "Postcards", "Phone cases", "Small prints"],
+        "description": "Accessible luxury - high quality at approachable price points"
+      },
+      "mid": {
+        "range": "$199-$499",
+        "products": ["Standard prints 24x36", "Canvas art", "Books", "Courses", "Apparel"],
+        "description": "Core collection - museum-quality products for serious collectors"
+      },
+      "premium": {
+        "range": "$599-$1,499",
+        "products": ["Large prints", "Metal prints", "Framed pieces", "Leather goods"],
+        "description": "Investment pieces - gallery-quality presentation"
+      },
+      "luxury": {
+        "range": "$1,999-$5,000+",
+        "products": ["Limited editions", "Acrylic prints", "Services", "Custom commissions"],
+        "description": "Exclusive offerings - for discerning collectors and commercial clients"
+      }
+    },
+    "margins": {
+      "fine_art_prints": "60-75%",
+      "limited_editions": "75-85%",
+      "digital_products": "90-95%",
+      "services": "70-80%",
+      "apparel": "50-60%"
+    }
+  },
+  "qualityPromise": {
+    "materials": [
+      "Museum-quality archival papers",
+      "100+ year lifespan with proper care",
+      "Acid-free materials throughout",
+      "Premium inks and printing processes",
+      "Sustainably sourced when possible"
+    ],
+    "guarantee": "30-day satisfaction guarantee on all products. If you're not completely delighted, return for full refund.",
+    "sustainability": "We're committed to minimizing environmental impact through made-to-order production, sustainable materials, and carbon-neutral shipping options.",
+    "giving": "10% of limited edition proceeds support emerging photographers and arts education programs."
+  }
+}

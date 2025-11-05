@@ -2,8 +2,8 @@
  * Printful V2 API Client
  * Documentation: https://developers.printful.com/
  *
- * Your Store: 17145314
- * Token: vbrzkAu9dnvIO6AAikezjsczratgW3FWjhDAOuWo
+ * SECURITY WARNING: Never hardcode API credentials in source code!
+ * Configure these values in your environment variables (.env.local)
  */
 
 const PRINTFUL_API_BASE = 'https://api.printful.com'

@@ -1,8 +1,26 @@
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { z } from 'zod'
+import logger from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
+
+// Zod validation schema for checkout request
+const checkoutItemSchema = z.object({
+  productId: z.string().min(1, 'Product ID is required'),
+  productTitle: z.string().min(1, 'Product title is required'),
+  variantId: z.string().min(1, 'Variant ID is required'),
+  variantName: z.string().min(1, 'Variant name is required'),
+  price: z.string().regex(/^\d+(\.\d{1,2})?$/, 'Invalid price format'),
+  quantity: z.number().int().min(1, 'Quantity must be at least 1').max(100, 'Quantity cannot exceed 100'),
+  image: z.string().url().optional(),
+})
+
+const checkoutRequestSchema = z.object({
+  items: z.array(checkoutItemSchema).min(1, 'At least one item is required'),
+  customerEmail: z.string().email().optional(),
+})
 
 export async function POST(request: Request) {
   try {
@@ -19,18 +37,39 @@ export async function POST(request: Request) {
       apiVersion: '2025-10-29.clover',
     })
 
-    const { items, customerEmail } = await request.json()
+    // Parse and validate request body
+    const body = await request.json()
 
-    // Validate items
-    if (!items || items.length === 0) {
+    // Validate input using Zod
+    const validationResult = checkoutRequestSchema.safeParse(body)
+
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'No items provided' },
+        {
+          error: 'Invalid request data',
+          details: validationResult.error.flatten()
+        },
         { status: 400 }
       )
     }
 
-    // Create line items for Stripe
-    const lineItems = items.map((item: any) => ({
+    const { items, customerEmail } = validationResult.data
+
+    // Additional security: Validate prices against your backend data
+    // In production, you should fetch actual prices from your database/Printful
+    // and never trust client-provided prices
+    for (const item of items) {
+      const price = parseFloat(item.price)
+      if (price < 0 || price > 10000) {
+        return NextResponse.json(
+          { error: 'Invalid price detected. Price must be between $0 and $10,000' },
+          { status: 400 }
+        )
+      }
+    }
+
+    // Create line items for Stripe with validated data
+    const lineItems = items.map((item) => ({
       price_data: {
         currency: 'usd',
         product_data: {
@@ -44,7 +83,7 @@ export async function POST(request: Request) {
         },
         unit_amount: Math.round(parseFloat(item.price) * 100), // Convert to cents
       },
-      quantity: item.quantity || 1,
+      quantity: item.quantity,
     }))
 
     // Get the base URL for redirects
@@ -59,7 +98,7 @@ export async function POST(request: Request) {
       cancel_url: `${baseUrl}/store`,
       customer_email: customerEmail || undefined,
       metadata: {
-        items: JSON.stringify(items), // Store cart items for order creation
+        items: JSON.stringify(items), // Store validated cart items for order creation
       },
       shipping_address_collection: {
         allowed_countries: ['US', 'CA', 'GB', 'AU', 'NZ'], // Expand as needed
@@ -108,14 +147,16 @@ export async function POST(request: Request) {
       ],
     })
 
-    console.log('✅ Stripe checkout session created:', session.id)
+    // Log success using secure logger
+    logger.success(`Stripe checkout session created: ${session.id}`)
 
     return NextResponse.json({
       sessionId: session.id,
       url: session.url,
     })
   } catch (error) {
-    console.error('❌ Stripe checkout error:', error)
+    // Log error using secure logger
+    logger.error('Stripe checkout error', error)
 
     const errorMessage = error instanceof Error ? error.message : 'Failed to create checkout session'
 
