@@ -79,35 +79,39 @@ export default function AboutPage() {
 
       {/* Skills/Focus Areas */}
       <section className="pb-32 container-wide">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-3xl mx-auto">
           <ScrollReveal direction="up">
-            <h2 className="text-3xl md:text-5xl font-light font-serif text-center mb-16">Areas of Focus</h2>
+            <h2 className="text-3xl md:text-5xl font-light font-serif text-center mb-16">Areas of Interest</h2>
           </ScrollReveal>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="space-y-12">
             {[
               {
-                title: 'Modeling',
+                title: 'Fashion Modeling',
                 areas: ['Fashion Editorial', 'Commercial Campaigns', 'Brand Partnerships', 'Creative Direction'],
               },
               {
-                title: 'Acting',
+                title: 'Acting & Performance',
                 areas: ['Character Work', 'Theatrical Performance', 'On-Camera Acting', 'Improvisation'],
               },
               {
-                title: 'Research',
+                title: 'Cognitive Research',
                 areas: ['Cognitive Science', 'Embodied Cognition', 'Performance Studies', 'Human Experience'],
               },
               {
-                title: 'Technology',
+                title: 'AI Engineering',
                 areas: ['AI Development', 'Creative Automation', 'Content Systems', 'Digital Innovation'],
+              },
+              {
+                title: 'Writing & Education',
+                areas: ['Author', 'Academic Study', 'Creative Writing', 'Knowledge Sharing'],
               },
             ].map((category, index) => (
               <ScrollReveal key={category.title} direction="up" delay={index * 0.1}>
-                <div className="space-y-4">
+                <div className="space-y-4 text-center">
                   <h3 className="text-xl font-serif text-accent-gold">{category.title}</h3>
                   <ul className="space-y-2 text-white/60">
                     {category.areas.map((area) => (
-                      <li key={area} className="text-sm">• {area}</li>
+                      <li key={area} className="text-sm">{area}</li>
                     ))}
                   </ul>
                 </div>
