@@ -42,8 +42,8 @@ export default function StorePage() {
     try {
       setLoading(true)
 
-      // Use curated products API for FAST loading (no Printful API calls)
-      const url = '/api/store/curated-products'
+      // Use products API to show all Printful products
+      const url = '/api/store/products'
 
       const response = await fetch(url)
 

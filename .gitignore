@@ -51,3 +51,6 @@ data/affiliate/signup-progress.json
 data/affiliate/affiliate-links.json
 exports/
 *.backup.json
+
+# Session Storage (SENSITIVE - Never commit!)
+data/sessions/

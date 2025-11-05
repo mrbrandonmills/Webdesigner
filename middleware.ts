@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { validateSession } from './lib/session'
 
 const AUTH_COOKIE_NAME = 'brandon-admin-auth'
-const AUTH_COOKIE_VALUE = 'authenticated-bmilly23'
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Allow access to login page
@@ -16,7 +16,10 @@ export function middleware(request: NextRequest) {
   if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
     const authCookie = request.cookies.get(AUTH_COOKIE_NAME)
 
-    if (authCookie?.value !== AUTH_COOKIE_VALUE) {
+    // Check if session token exists and is valid
+    const isValidSession = authCookie?.value ? await validateSession(authCookie.value) : false
+
+    if (!isValidSession) {
       // For API routes, return 401 Unauthorized instead of redirecting
       if (pathname.startsWith('/api/')) {
         return NextResponse.json(

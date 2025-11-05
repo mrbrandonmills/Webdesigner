@@ -123,8 +123,18 @@ class PrintfulClient {
     })
 
     if (!response.ok) {
-      const error = await response.text()
-      throw new Error(`Printful API error (${response.status}): ${error}`)
+      const errorText = await response.text()
+
+      // Log detailed error server-side for debugging
+      console.error(`Printful API Error [${response.status}]:`, {
+        endpoint,
+        status: response.status,
+        error: errorText,
+      })
+
+      // Throw sanitized error without exposing internal details
+      // The calling code should catch this and return a safe message to client
+      throw new Error(`Printful API request failed with status ${response.status}`)
     }
 
     const result: PrintfulResponse<T> = await response.json()
@@ -195,8 +205,13 @@ class PrintfulClient {
     })
 
     if (!response.ok) {
-      const error = await response.text()
-      throw new Error(`File upload failed (${response.status}): ${error}`)
+      const errorText = await response.text()
+
+      // Log detailed error server-side
+      console.error(`Printful File Upload Error [${response.status}]:`, errorText)
+
+      // Throw sanitized error
+      throw new Error(`File upload failed with status ${response.status}`)
     }
 
     const result: PrintfulResponse<FileUploadResponse> = await response.json()

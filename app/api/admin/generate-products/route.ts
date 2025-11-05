@@ -3,6 +3,7 @@ import { writeFile, readFile } from 'fs/promises'
 import path from 'path'
 import OpenAI from 'openai'
 import { put } from '@vercel/blob'
+import { z } from 'zod'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -10,6 +11,16 @@ export const maxDuration = 60 // Allow up to 60 seconds for image generation
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
+})
+
+// Input validation schema
+const GenerateRequestSchema = z.object({
+  themes: z.array(
+    z.enum(['consciousness', 'embodiment', 'philosophy', 'nature', 'typography', 'editorial'])
+  ).min(1, 'At least one theme is required').max(6, 'Maximum 6 themes allowed'),
+  products: z.array(
+    z.enum(['poster-small', 'poster-medium', 'poster-large', 'canvas-small', 'tshirt'])
+  ).min(1, 'At least one product type is required').max(5, 'Maximum 5 product types allowed')
 })
 
 // Design theme prompts mapped to AI image generation
@@ -71,7 +82,31 @@ export async function POST(request: Request) {
       )
     }
 
-    const { themes, products }: GenerateRequest = await request.json()
+    // Parse and validate request body
+    const body = await request.json()
+
+    // Validate input with Zod
+    const validationResult = GenerateRequestSchema.safeParse(body)
+
+    if (!validationResult.success) {
+      // Extract validation error messages
+      const errors = validationResult.error.errors.map(err => ({
+        field: err.path.join('.'),
+        message: err.message
+      }))
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid request parameters',
+          details: errors
+        },
+        { status: 400 }
+      )
+    }
+
+    // Use validated data
+    const { themes, products } = validationResult.data
 
     console.log(`🎨 Generating ${themes.length * products.length} products...`)
     console.log(`   Themes: ${themes.join(', ')}`)
@@ -127,35 +162,48 @@ export async function POST(request: Request) {
       message: `Successfully generated ${generatedProducts.length} products with AI-designed artwork`
     })
   } catch (error) {
+    // Log detailed error server-side for debugging
     console.error('❌ Product generation error:', error)
 
-    const errorMessage = error instanceof Error ? error.message : 'Failed to generate products'
+    // Extract error message for pattern matching (keep internal)
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
 
-    // Provide helpful error messages for common issues
-    if (errorMessage.includes('API key')) {
+    // Provide sanitized error messages to client
+    if (errorMessage.includes('API key') || errorMessage.includes('apiKey')) {
       return NextResponse.json(
         {
           success: false,
-          error: 'OpenAI API key is missing or invalid. Please check your environment variables.'
+          error: 'AI service configuration error. Please contact administrator.'
         },
         { status: 500 }
       )
     }
 
-    if (errorMessage.includes('rate limit')) {
+    if (errorMessage.includes('rate limit') || errorMessage.includes('429')) {
       return NextResponse.json(
         {
           success: false,
-          error: 'OpenAI rate limit exceeded. Please wait a moment and try again.'
+          error: 'Service rate limit exceeded. Please try again in a few minutes.'
         },
         { status: 429 }
       )
     }
 
+    if (errorMessage.includes('quota') || errorMessage.includes('billing')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'AI service quota exceeded. Please contact administrator.'
+        },
+        { status: 503 }
+      )
+    }
+
+    // Generic error without exposing internal details
     return NextResponse.json(
       {
         success: false,
-        error: errorMessage
+        error: 'Failed to generate products. Please try again or contact support.'
       },
       { status: 500 }
     )
