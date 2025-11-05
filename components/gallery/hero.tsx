@@ -153,7 +153,7 @@ export function Hero() {
           >
             <div className="w-2 h-2 rounded-full bg-accent-gold animate-pulse" />
             <span className="text-xs tracking-[0.3em] uppercase text-white/60 font-light">
-              Photography Portfolio
+              Modeling Portfolio
             </span>
           </motion.div>
 
