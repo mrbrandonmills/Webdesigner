@@ -35,6 +35,8 @@ This directory contains specialized AI agent configurations for managing multi-p
 
 ## Available Agents
 
+> **New**: Full workflow specs ("Genius Agent" playbooks) live alongside these briefs. See [`genius_agent_1_workflow.md`](./genius_agent_1_workflow.md) for the 6-stage Forensic Researcher Profile Builder pipeline.
+
 ### 1. [Shopify Specialist](./shopify-specialist.md)
 
 **Focus:** Shopify store management and automation
