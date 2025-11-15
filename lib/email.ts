@@ -45,8 +45,12 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
       html: emailHtml,
     })
 
-    console.log('✅ Order confirmation email sent:', result.id)
-    return { success: true, emailId: result.id }
+    if (result.error) {
+      throw new Error(`Email failed: ${result.error.message}`)
+    }
+
+    console.log('✅ Order confirmation email sent:', result.data.id)
+    return { success: true, emailId: result.data.id }
   } catch (error) {
     console.error('❌ Failed to send order confirmation email:', error)
     return { success: false, error }
@@ -72,8 +76,12 @@ export async function sendAdminNotification(data: OrderEmailData) {
       html: emailHtml,
     })
 
-    console.log('✅ Admin notification email sent:', result.id)
-    return { success: true, emailId: result.id }
+    if (result.error) {
+      throw new Error(`Email failed: ${result.error.message}`)
+    }
+
+    console.log('✅ Admin notification email sent:', result.data.id)
+    return { success: true, emailId: result.data.id }
   } catch (error) {
     console.error('❌ Failed to send admin notification:', error)
     return { success: false, error }
@@ -290,8 +298,12 @@ export async function sendShippingNotification(data: {
       html: emailHtml,
     })
 
-    console.log('✅ Shipping notification sent:', result.id)
-    return { success: true, emailId: result.id }
+    if (result.error) {
+      throw new Error(`Email failed: ${result.error.message}`)
+    }
+
+    console.log('✅ Shipping notification sent:', result.data.id)
+    return { success: true, emailId: result.data.id }
   } catch (error) {
     console.error('❌ Failed to send shipping notification:', error)
     return { success: false, error }
