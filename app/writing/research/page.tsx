@@ -98,25 +98,6 @@ export default function ResearchPage() {
                   </p>
                 </div>
 
-                {/* Chapters/Structure */}
-                {paper.chapters && (
-                  <div>
-                    <h3 className="text-accent-gold text-sm tracking-wider uppercase mb-4">
-                      Structure
-                    </h3>
-                    <div className="grid md:grid-cols-2 gap-3">
-                      {paper.chapters.map((chapter, i) => (
-                        <div
-                          key={i}
-                          className="bg-white/5 border border-white/10 p-4 text-white/70 font-serif"
-                        >
-                          {chapter}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
                 {/* CTA */}
                 <div className="flex flex-wrap items-center gap-4 pt-4">
                   {paper.link ? (
