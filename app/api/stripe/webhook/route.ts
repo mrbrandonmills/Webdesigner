@@ -41,8 +41,16 @@ export async function POST(request: Request) {
 
         console.log('💰 Payment successful:', session.id)
 
-        // Create order from session data
-        await createOrder(session)
+        // Check if this is a meditation purchase
+        const purchaseType = session.metadata?.type
+
+        if (purchaseType === 'meditation_single' || purchaseType === 'meditation_bundle') {
+          // Handle meditation unlock (already handled by unlock API route)
+          console.log('✅ Meditation purchase confirmed via webhook:', session.id)
+        } else {
+          // Create order from session data (for physical products)
+          await createOrder(session)
+        }
 
         break
       }

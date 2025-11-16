@@ -8,17 +8,18 @@ interface AudioReaderProps {
   contentId: string
   title: string
   textContent: string
-  voicePreference?: 'male' | 'female'
+  voicePreference?: 'male' | 'female' | 'male-indian' | 'female-indian'
+  showVoiceSelector?: boolean
 }
 
-export function AudioReader({ contentId, title, textContent, voicePreference = 'male' }: AudioReaderProps) {
+export function AudioReader({ contentId, title, textContent, voicePreference = 'male', showVoiceSelector = true }: AudioReaderProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [isGenerating, setIsGenerating] = useState(false)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
-  const [selectedVoice, setSelectedVoice] = useState<'male' | 'female'>(voicePreference)
+  const [selectedVoice, setSelectedVoice] = useState<'male' | 'female' | 'male-indian' | 'female-indian'>(voicePreference)
 
   const audioRef = useRef<HTMLAudioElement>(null)
 
@@ -134,28 +135,50 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
         </div>
 
         {/* Voice Selection */}
-        <div className="flex items-center gap-2 bg-black/30 rounded-full p-1">
-          <button
-            onClick={() => setSelectedVoice('male')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              selectedVoice === 'male'
-                ? 'bg-accent-gold text-black'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            Male
-          </button>
-          <button
-            onClick={() => setSelectedVoice('female')}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-              selectedVoice === 'female'
-                ? 'bg-accent-gold text-black'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            Female
-          </button>
-        </div>
+        {showVoiceSelector && (
+          <div className="flex items-center gap-2 bg-black/30 rounded-xl p-1">
+            <button
+              onClick={() => setSelectedVoice('male')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                selectedVoice === 'male'
+                  ? 'bg-accent-gold text-black'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              British Male
+            </button>
+            <button
+              onClick={() => setSelectedVoice('female')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                selectedVoice === 'female'
+                  ? 'bg-accent-gold text-black'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              British Female
+            </button>
+            <button
+              onClick={() => setSelectedVoice('male-indian')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                selectedVoice === 'male-indian'
+                  ? 'bg-accent-gold text-black'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Indian Male
+            </button>
+            <button
+              onClick={() => setSelectedVoice('female-indian')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                selectedVoice === 'female-indian'
+                  ? 'bg-accent-gold text-black'
+                  : 'text-white/60 hover:text-white'
+              }`}
+            >
+              Indian Female
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Player Controls */}

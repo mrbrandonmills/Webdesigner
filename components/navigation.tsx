@@ -26,6 +26,7 @@ export default function Navigation() {
     { name: 'GALLERY', href: '/gallery' },
     { name: 'BLOG', href: '/blog' },
     { name: 'WRITING', href: '/writing' },
+    { name: 'MEDITATIONS', href: '/meditations' },
     { name: 'STORE', href: '/store' },
     { name: 'ABOUT', href: '/about' },
     { name: 'CONTACT', href: '/contact' },
