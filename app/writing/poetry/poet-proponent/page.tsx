@@ -1,13 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Metadata } from 'next'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'Poet, Proponent | Brandon Mills',
-  description: 'A spoken word piece on systemic oppression, survival as methodology, and transformation through art.',
-}
 
 export default function PoetProponentPage() {
   // Scroll to top on page load

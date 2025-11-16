@@ -12,11 +12,11 @@ const books = [
   {
     id: 'block-a',
     title: 'Random Acts of Self-Actualization: Block A',
-    subtitle: 'The Foundation of Conscious Living',
+    subtitle: 'Breaking Free from Addictive Patterns',
     description: 'The journey begins. An exploration of the foundations of consciousness, identity, and the first steps toward self-awareness.',
-    pages: 'TBD',
+    pages: '85',
     price: 5,
-    status: 'coming-soon' as const,
+    status: 'available' as const,
   },
   {
     id: 'block-b',

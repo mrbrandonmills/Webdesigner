@@ -1,13 +1,8 @@
 'use client'
 
 import { useEffect } from 'react'
-import { Metadata } from 'next'
 import Link from 'next/link'
 
-export const metadata: Metadata = {
-  title: 'Fine Lines | Brandon Mills',
-  description: 'A rapid-fire exploration of language, systemic pollution, and the necessity of critical thinking in a world built on binaries.',
-}
 
 export default function FineLinesPage() {
   // Scroll to top on page load

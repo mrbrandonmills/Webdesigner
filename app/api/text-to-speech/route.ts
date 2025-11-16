@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import Cartesia from '@cartesia/cartesia-js'
 
 // Cartesia voices - Ultra-realistic, soothing English accents perfect for meditation and poetry
 const VOICES = {

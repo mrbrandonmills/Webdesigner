@@ -79,8 +79,6 @@ export function BookReader({
     }
   }
 
-  const displayElements = isUnlocked ? fullElements : teaserElements
-
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Book Header */}
