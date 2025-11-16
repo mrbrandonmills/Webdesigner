@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { FileText, BookOpen, Feather } from 'lucide-react'
+import { FileText, BookOpen, Feather, Library } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Writing | Brandon Mills',
@@ -34,9 +34,9 @@ export default function WritingPage() {
         </div>
       </section>
 
-      {/* Three Categories */}
+      {/* Four Categories */}
       <section className="pb-32 container-wide">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Research Papers */}
           <Link
             href="/writing/research"
@@ -129,6 +129,41 @@ export default function WritingPage() {
 
               <div className="text-accent-gold text-sm tracking-wider flex items-center gap-2 group-hover:gap-4 transition-all">
                 EXPLORE POETRY
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <path
+                    d="M1 8H15M15 8L8 1M15 8L8 15"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+            </div>
+          </Link>
+
+          {/* Books */}
+          <Link
+            href="/writing/books"
+            className="group border border-white/10 hover:border-accent-gold/50 transition-all p-8 md:p-12"
+          >
+            <div className="space-y-6">
+              <div className="w-16 h-16 rounded-full bg-accent-gold/10 border border-accent-gold/30 flex items-center justify-center group-hover:bg-accent-gold/20 transition-colors">
+                <Library size={32} className="text-accent-gold" />
+              </div>
+
+              <div>
+                <h2 className="text-2xl md:text-3xl font-light font-serif text-white mb-3 group-hover:text-accent-gold transition-colors">
+                  Books
+                </h2>
+                <p className="text-white/60 leading-relaxed">
+                  Full-length works exploring consciousness, self-actualization, and transformation.
+                  Random Acts trilogy available for purchase.
+                </p>
+              </div>
+
+              <div className="text-accent-gold text-sm tracking-wider flex items-center gap-2 group-hover:gap-4 transition-all">
+                VIEW BOOKS
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <path
                     d="M1 8H15M15 8L8 1M15 8L8 15"

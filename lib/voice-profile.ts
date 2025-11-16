@@ -95,7 +95,7 @@ export const BRAND_VOICE_PROFILE = {
 
   // Brand Context
   context: {
-    identity: 'Fashion Model, Actor, Author, Cognitive Researcher, Student, AI Engineer',
+    identity: 'Fashion Model, Actor, Author, Cognitive Researcher, Student, AI Architect',
     primaryActivities: 'Creative portfolio (modeling, acting), academic research (cognition), writing, AI development',
     notOffering: 'Photography services, modeling services, or any commercial services for hire',
     audienceRelationship: 'Peer to peer, creative professional to audience, researcher sharing work',

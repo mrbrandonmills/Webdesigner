@@ -201,7 +201,7 @@ export default function AboutPage() {
                   areas: ['Cognitive Science', 'Embodied Cognition', 'Performance Studies', 'Human Experience'],
                 },
                 {
-                  title: 'AI Engineering',
+                  title: 'AI Architecture',
                   areas: ['AI Development', 'Creative Automation', 'Content Systems', 'Digital Innovation'],
                 },
                 {

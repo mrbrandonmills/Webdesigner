@@ -21,7 +21,7 @@ const sessionDetails: Record<string, any> = {
     priceId: 'price_creative_process',
   },
   'ai-engineering': {
-    title: 'AI Engineering Consultation',
+    title: 'AI Architecture Consultation',
     duration: '90 minutes',
     price: 250,
     priceId: 'price_ai_engineering',

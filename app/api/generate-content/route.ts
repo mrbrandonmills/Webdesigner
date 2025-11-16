@@ -66,7 +66,7 @@ Brand Personality:
 - Unique Aspects: ${styleGuide.brandPersonality.uniqueSellingPoints.join(', ')}
 
 Professional Context:
-- Identity: Fashion Model, Actor, Author, Cognitive Researcher, Student, AI Engineer
+- Identity: Fashion Model, Actor, Author, Cognitive Researcher, Student, AI Architect
 - NOT selling: Photography services, modeling services, or any commercial services
 - Location: ${styleGuide.businessInfo.location}
 - Creative/Academic Specialties: ${styleGuide.businessInfo.specialties.join(', ')}

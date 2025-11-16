@@ -72,7 +72,7 @@ export default function HeroVideo() {
 
           {/* Tagline */}
           <p className="text-xl md:text-2xl lg:text-3xl font-light text-white/90 max-w-3xl leading-relaxed">
-            Model · Author · AI Engineer · Visual Artist
+            Model · Author · AI Architect · Visual Artist
           </p>
 
           {/* CTA */}

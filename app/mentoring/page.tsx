@@ -38,7 +38,7 @@ const sessions = [
   },
   {
     id: 'ai-engineering',
-    title: 'AI Engineering Consultation',
+    title: 'AI Architecture Consultation',
     duration: '90 minutes',
     price: 250,
     description: 'Technical consulting on AI projects, LLM integration, prompt engineering, and building AI-powered applications.',

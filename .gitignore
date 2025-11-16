@@ -54,3 +54,4 @@ exports/
 
 # Session Storage (SENSITIVE - Never commit!)
 data/sessions/
+public/books/*.pdf
