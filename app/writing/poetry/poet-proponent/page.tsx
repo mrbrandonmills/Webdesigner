@@ -89,6 +89,7 @@ from here on after
             textContent={textContent}
             voicePreference="male"
             showVoiceSelector={true}
+            contentType="poem"
           />
         </div>
       </section>

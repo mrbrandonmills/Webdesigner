@@ -43,6 +43,7 @@ The goal is not perfection but wholeness—the integration of shadow and light, 
       unlockPrice={5}
       audioTextContent={audioContent}
       showAudioReader={true}
+      contentType="book"
     />
   )
 }

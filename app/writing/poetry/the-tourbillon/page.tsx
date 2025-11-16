@@ -91,6 +91,7 @@ to the physical world.
             textContent={textContent}
             voicePreference="male"
             showVoiceSelector={true}
+            contentType="poem"
           />
         </div>
       </section>

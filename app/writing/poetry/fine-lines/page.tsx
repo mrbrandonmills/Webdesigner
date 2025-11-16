@@ -126,6 +126,7 @@ and brother you can enter
             textContent={textContent}
             voicePreference="male"
             showVoiceSelector={true}
+            contentType="poem"
           />
         </div>
       </section>

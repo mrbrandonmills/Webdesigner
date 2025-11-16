@@ -41,6 +41,7 @@ This is not a quick fix or easy answer. It is an invitation to the hardest and m
       unlockPrice={5}
       audioTextContent={audioContent}
       showAudioReader={true}
+      contentType="book"
     />
   )
 }

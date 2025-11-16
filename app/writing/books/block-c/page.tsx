@@ -58,6 +58,7 @@ Welcome to Block C. Welcome to integration. Welcome home.
       unlockPrice={5}
       audioTextContent={audioContent}
       showAudioReader={true}
+      contentType="book"
     />
   )
 }

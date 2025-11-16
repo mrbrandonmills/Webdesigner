@@ -101,6 +101,7 @@ By merging these frameworks, we create a cohesive model that justifies deeper in
             textContent={textContent}
             voicePreference="male"
             showVoiceSelector={true}
+            contentType="research"
           />
         </div>
       </section>

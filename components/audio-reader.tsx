@@ -10,9 +10,10 @@ interface AudioReaderProps {
   textContent: string
   voicePreference?: 'male' | 'female' | 'male-indian' | 'female-indian'
   showVoiceSelector?: boolean
+  contentType?: 'article' | 'poem' | 'essay' | 'research' | 'book'
 }
 
-export function AudioReader({ contentId, title, textContent, voicePreference = 'male', showVoiceSelector = true }: AudioReaderProps) {
+export function AudioReader({ contentId, title, textContent, voicePreference = 'male', showVoiceSelector = true, contentType = 'article' }: AudioReaderProps) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
@@ -129,7 +130,9 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
             <Volume2 size={24} className="text-accent-gold" />
           </div>
           <div>
-            <h3 className="text-white font-light text-lg">Listen to Article</h3>
+            <h3 className="text-white font-light text-lg">
+              Listen to {contentType === 'poem' ? 'Poem' : contentType === 'essay' ? 'Essay' : contentType === 'research' ? 'Paper' : contentType === 'book' ? 'Book' : 'Article'}
+            </h3>
             <p className="text-white/50 text-sm">{title}</p>
           </div>
         </div>
