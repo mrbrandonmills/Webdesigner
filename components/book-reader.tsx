@@ -14,6 +14,7 @@ interface BookReaderProps {
   unlockPrice?: number // Price in dollars (default $5)
   audioTextContent?: string // Optional text content for audio reader
   showAudioReader?: boolean // Whether to show audio reader (default false)
+  contentType?: 'article' | 'poem' | 'essay' | 'research' | 'book' // Type of content for audio reader
 }
 
 export function BookReader({
@@ -25,6 +26,7 @@ export function BookReader({
   unlockPrice = 5,
   audioTextContent,
   showAudioReader = false,
+  contentType = 'book',
 }: BookReaderProps) {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -254,6 +256,7 @@ export function BookReader({
               textContent={audioTextContent}
               voicePreference="male"
               showVoiceSelector={true}
+              contentType={contentType}
             />
           </div>
         </div>
