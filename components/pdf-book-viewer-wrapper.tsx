@@ -24,6 +24,7 @@ interface PDFBookViewerWrapperProps {
   unlockPrice?: number
   audioTextContent?: string
   showAudioReader?: boolean
+  contentType?: 'article' | 'poem' | 'essay' | 'research' | 'book'
 }
 
 export function PDFBookViewerWrapper(props: PDFBookViewerWrapperProps) {

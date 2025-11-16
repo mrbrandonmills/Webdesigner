@@ -21,6 +21,7 @@ interface PDFBookViewerClientProps {
   unlockPrice?: number
   audioTextContent?: string
   showAudioReader?: boolean
+  contentType?: 'article' | 'poem' | 'essay' | 'research' | 'book'
 }
 
 export function PDFBookViewerClient({
@@ -32,6 +33,7 @@ export function PDFBookViewerClient({
   unlockPrice = 5,
   audioTextContent,
   showAudioReader = false,
+  contentType = 'book',
 }: PDFBookViewerClientProps) {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -184,6 +186,7 @@ export function PDFBookViewerClient({
               textContent={audioTextContent}
               voicePreference="male"
               showVoiceSelector={true}
+              contentType={contentType}
             />
           </div>
         </div>
