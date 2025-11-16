@@ -117,12 +117,14 @@ export default function GenesisGallery() {
                     {/* Shadow for 3D effect */}
                     <div className="absolute inset-0 bg-accent-gold/20 blur-3xl translate-y-8 -z-10 group-hover:bg-accent-gold/30 transition-all" />
 
-                    <div className="relative aspect-[3/4] overflow-hidden bg-white/5 border border-white/10 group-hover:border-accent-gold/50 transition-all">
+                    <div className="gallery-item-full relative overflow-hidden bg-white/5 border border-white/10 group-hover:border-accent-gold/50 transition-all">
                       <Image
                         src={photo.src}
                         alt={photo.title}
-                        fill
-                        className="object-cover"
+                        width={800}
+                        height={1200}
+                        className="w-full h-auto object-contain"
+                        style={{ display: 'block' }}
                       />
 
                       {/* Hover overlay */}

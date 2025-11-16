@@ -827,3 +827,57 @@ html {
     font-size: 1.5rem;
   }
 }
+
+/* Gallery Masonry Grid - No Cropping, Full Image Display */
+.gallery-grid-no-crop {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  grid-auto-rows: 10px;
+}
+
+.gallery-grid-no-crop > div {
+  grid-row-end: span var(--row-span, 40);
+}
+
+/* Masonry column layout for variable heights */
+@media (min-width: 768px) {
+  .masonry-grid {
+    column-count: 2;
+    column-gap: 2rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .masonry-grid {
+    column-count: 3;
+    column-gap: 2rem;
+  }
+}
+
+.masonry-grid > * {
+  break-inside: avoid;
+  margin-bottom: 2rem;
+}
+
+/* Gallery item that shows full image without cropping */
+.gallery-item-full {
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.gallery-item-full:hover {
+  border-color: rgba(201, 160, 80, 0.5);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.gallery-item-full img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}

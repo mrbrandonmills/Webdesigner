@@ -220,9 +220,9 @@ export default function AMReedCollaboration() {
         </motion.div>
       </section>
 
-      {/* Image Gallery */}
+      {/* Image Gallery - Masonry layout with full images (no cropping) */}
       <section className="pb-32 container-wide">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="masonry-grid">
           {images.map((image, index) => (
             <motion.div
               key={index}
@@ -230,15 +230,17 @@ export default function AMReedCollaboration() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: index * 0.05 }}
-              className="group cursor-pointer"
+              className="gallery-item-full group cursor-pointer"
               onClick={() => openLightbox(index)}
             >
-              <div className="relative aspect-[3/4] overflow-hidden bg-white/5">
+              <div className="relative overflow-hidden">
                 <Image
                   src={image.src}
                   alt={image.alt}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  width={800}
+                  height={1200}
+                  className="w-full h-auto object-contain group-hover:scale-[1.02] transition-transform duration-700"
+                  style={{ display: 'block' }}
                 />
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-6 text-center">
