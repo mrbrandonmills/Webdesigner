@@ -1,4 +1,5 @@
 import HeroVideo from '@/components/home/hero-video'
+import FeaturedCollections from '@/components/home/featured-collections'
 
 export const metadata = {
   title: 'Brandon Mills | Renaissance Man of the Modern Era',
@@ -9,7 +10,8 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-black">
       <HeroVideo />
-      {/* Featured collections and other sections will be added in next tasks */}
+      <FeaturedCollections />
+      {/* Philosophy section and other sections will be added in next tasks */}
     </div>
   )
 }
