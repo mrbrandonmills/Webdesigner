@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { PDFBookViewer } from '@/components/pdf-book-viewer'
+import { PDFBookViewerWrapper } from '@/components/pdf-book-viewer-wrapper'
 
 export const metadata: Metadata = {
   title: 'Random Acts of Self-Actualization: Block B | Brandon Mills',
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function BlockBPage() {
   return (
-    <PDFBookViewer
+    <PDFBookViewerWrapper
       bookId="block-b"
       title="Random Acts of Self-Actualization: Block B"
       subtitle="The Path of Conscious Transformation"
