@@ -8,6 +8,7 @@ import { CartProvider } from '@/contexts/cart-context'
 import CartSidebar from '@/components/cart-sidebar'
 import ToastWrapper from '@/components/toast-wrapper'
 import { ErrorBoundary } from '@/components/error-boundary'
+import { ConciergeWidget } from '@/components/concierge/concierge-widget'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ export default function RootLayout({
               </PageTransition>
             </SmoothScroll>
             <CartSidebar />
+            <ConciergeWidget />
             <ToastWrapper />
             <Analytics />
           </CartProvider>

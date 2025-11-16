@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Acts of Self-Actualization: Block C - The Laboratory of Living</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Cinzel:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --parchment: #F4EFE0;
+            --deep-charcoal: #2D2D2D;
+            --bronze: #8B7355;
+            --gold: #D4AF37;
+            --dark-bronze: #5C4A3A;
+        }
+        
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--parchment);
+            color: var(--deep-charcoal);
+            line-height: 1.8;
+            font-size: 18px;
+        }
+        
+        /* Geometric Background Pattern */
+        .page {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 60px;
+            background: 
+                linear-gradient(rgba(244, 239, 224, 0.92), rgba(244, 239, 224, 0.92)),
+                repeating-linear-gradient(0deg, transparent, transparent 49px, rgba(139, 115, 85, 0.08) 49px, rgba(139, 115, 85, 0.08) 50px),
+                repeating-linear-gradient(90deg, transparent, transparent 49px, rgba(139, 115, 85, 0.08) 49px, rgba(139, 115, 85, 0.08) 50px);
+            box-shadow: 0 0 100px rgba(0,0,0,0.2);
+        }
+        
+        /* Decorative corner elements - more prominent */
+        .page::before,
+        .page::after {
+            content: '';
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 3px solid var(--bronze);
+            opacity: 0.4;
+            z-index: 10;
+        }
+        
+        .page::before {
+            top: 30px;
+            left: 30px;
+            border-right: none;
+            border-bottom: none;
+        }
+        
+        .page::after {
+            bottom: 30px;
+            right: 30px;
+            border-left: none;
+            border-top: none;
+        }
+        
+        /* TITLE PAGE - Dramatic Vitruvian Consciousness */
+        .title-page {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            padding: 100px 60px;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.12) 0%, transparent 60%),
+                linear-gradient(rgba(244, 239, 224, 0.95), rgba(244, 239, 224, 0.95)),
+                repeating-linear-gradient(45deg, transparent, transparent 80px, rgba(92, 74, 58, 0.06) 80px, rgba(92, 74, 58, 0.06) 82px),
+                repeating-linear-gradient(-45deg, transparent, transparent 80px, rgba(92, 74, 58, 0.06) 80px, rgba(92, 74, 58, 0.06) 82px);
+            overflow: hidden;
+        }
+        
+        /* DRAMATIC Vitruvian Man / Consciousness Circle */
+        .title-page::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px;
+            height: 700px;
+            opacity: 0.12;
+            background-image: 
+                /* Perfect circles - Vitruvian proportions */
+                radial-gradient(circle at center, transparent 28%, var(--bronze) 28.3%, transparent 28.6%),
+                radial-gradient(circle at center, transparent 42%, var(--bronze) 42.5%, transparent 43%),
+                radial-gradient(circle at center, transparent 56%, var(--bronze) 56.5%, transparent 57%),
+                /* Golden ratio spiral nodes */
+                radial-gradient(circle at 61.8% 38.2%, var(--gold) 2px, transparent 3px),
+                radial-gradient(circle at 38.2% 61.8%, var(--gold) 2px, transparent 3px),
+                radial-gradient(circle at 50% 23.6%, var(--bronze) 1.5px, transparent 2px),
+                radial-gradient(circle at 50% 76.4%, var(--bronze) 1.5px, transparent 2px),
+                radial-gradient(circle at 23.6% 50%, var(--bronze) 1.5px, transparent 2px),
+                radial-gradient(circle at 76.4% 50%, var(--bronze) 1.5px, transparent 2px),
+                /* Radiating consciousness lines */
+                repeating-conic-gradient(from 0deg at 50% 50%, 
+                    transparent 0deg, var(--bronze) 0.3deg, transparent 0.6deg, transparent 15deg);
+            z-index: 0;
+        }
+        
+        /* Sacred Geometry Overlay - Golden Ratio */
+        .title-page::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            width: 800px;
+            height: 800px;
+            opacity: 0.08;
+            background-image: 
+                /* Pentagon sacred geometry */
+                conic-gradient(from 0deg at 50% 50%, 
+                    transparent 0deg, var(--bronze) 0.5deg, transparent 1deg,
+                    transparent 72deg, var(--bronze) 72.5deg, transparent 73deg,
+                    transparent 144deg, var(--bronze) 144.5deg, transparent 145deg,
+                    transparent 216deg, var(--bronze) 216.5deg, transparent 217deg,
+                    transparent 288deg, var(--bronze) 288.5deg, transparent 289deg),
+                /* Nested squares */
+                linear-gradient(90deg, transparent 49.5%, var(--bronze) 49.5%, var(--bronze) 50.5%, transparent 50.5%),
+                linear-gradient(0deg, transparent 49.5%, var(--bronze) 49.5%, var(--bronze) 50.5%, transparent 50.5%);
+            z-index: 0;
+            animation: slowRotate 120s linear infinite;
+        }
+        
+        @keyframes slowRotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        .geometry-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            opacity: 0.15;
+            z-index: 0;
+            background-image: 
+                /* Fibonacci spiral approximation */
+                radial-gradient(ellipse at 61.8% 38.2%, transparent 10%, var(--gold) 10.5%, transparent 11%),
+                radial-gradient(ellipse at 61.8% 38.2%, transparent 20%, var(--gold) 20.5%, transparent 21%),
+                radial-gradient(ellipse at 61.8% 38.2%, transparent 30%, var(--gold) 30.5%, transparent 31%),
+                /* Connection nodes */
+                repeating-conic-gradient(from 45deg, transparent 0deg 30deg, var(--bronze) 30deg 31deg);
+        }
+        
+        .title-content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .main-title {
+            font-family: 'Cinzel', serif;
+            font-size: 56px;
+            font-weight: 700;
+            color: var(--deep-charcoal);
+            letter-spacing: 5px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(139, 115, 85, 0.2);
+            line-height: 1.15;
+        }
+        
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 42px;
+            color: var(--bronze);
+            font-weight: 600;
+            letter-spacing: 4px;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+            line-height: 1.3;
+        }
+        
+        .tagline {
+            font-size: 28px;
+            color: var(--bronze);
+            font-style: italic;
+            margin-bottom: 80px;
+            line-height: 1.4;
+        }
+        
+        .authors {
+            font-size: 32px;
+            color: var(--deep-charcoal);
+            font-weight: 400;
+            letter-spacing: 2px;
+            line-height: 1.4;
+        }
+        
+        /* Decorative divider */
+        .divider {
+            width: 200px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, var(--bronze), var(--gold), var(--bronze), transparent);
+            margin: 40px auto;
+            position: relative;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '◆';
+            position: absolute;
+            color: var(--gold);
+            font-size: 12px;
+            top: -7px;
+        }
+        
+        .divider::before { left: -20px; }
+        .divider::after { right: -20px; }
+        
+        /* Chapter styling */
+        .chapter {
+            page-break-before: always;
+            margin-bottom: 100px;
+            position: relative;
+        }
+        
+        .chapter-title {
+            font-family: 'Cinzel', serif;
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--deep-charcoal);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            margin: 80px 0 60px 0;
+            padding: 40px 20px;
+            border-top: 3px solid var(--bronze);
+            border-bottom: 3px solid var(--bronze);
+            position: relative;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(139, 115, 85, 0.08) 0%, transparent 70%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .chapter-title::before,
+        .chapter-title::after {
+            content: '◆';
+            color: var(--gold);
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--bronze);
+            margin: 50px 0 30px 0;
+            letter-spacing: 2px;
+            text-align: left;
+            text-indent: 0;
+        }
+        
+        /* Drop cap - more dramatic */
+        .first-paragraph::first-letter {
+            font-family: 'Cinzel', serif;
+            font-size: 84px;
+            line-height: 0.8;
+            float: left;
+            margin: 10px 15px 0 0;
+            color: var(--bronze);
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(139, 115, 85, 0.3);
+        }
+        
+        p {
+            margin-bottom: 20px;
+            text-align: justify;
+            text-indent: 30px;
+            line-height: 1.8;
+            hyphens: auto;
+            -webkit-hyphens: auto;
+            -moz-hyphens: auto;
+        }
+        
+        .first-paragraph {
+            text-indent: 0;
+            margin-top: 0;
+        }
+        
+        /* Ensure proper clearing after drop cap */
+        .first-paragraph::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        /* Table of Contents */
+        .toc {
+            margin: 60px 0;
+            padding: 50px 40px;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 70%),
+                rgba(139, 115, 85, 0.06);
+            border: 2px solid var(--bronze);
+            position: relative;
+        }
+        
+        .toc::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                repeating-linear-gradient(0deg, transparent 0, transparent 20px, rgba(139, 115, 85, 0.03) 20px, rgba(139, 115, 85, 0.03) 21px);
+            pointer-events: none;
+        }
+        
+        .toc h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 36px;
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--deep-charcoal);
+            position: relative;
+            letter-spacing: 4px;
+        }
+        
+        .toc-item {
+            font-size: 22px;
+            margin: 20px 0;
+            padding: 15px 20px;
+            border-bottom: 1px dotted var(--bronze);
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .toc-item:hover {
+            background: rgba(139, 115, 85, 0.15);
+            padding-left: 30px;
+        }
+        
+        .toc-item:last-child {
+            border-bottom: none;
+        }
+        
+        .toc-title {
+            font-weight: 600;
+            text-indent: 0;
+        }
+        
+        /* Copyright page */
+        .copyright {
+            text-align: center;
+            font-size: 16px;
+            color: #707070;
+            line-height: 1.8;
+            margin: 100px 0;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .copyright p {
+            text-indent: 0;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        /* Ornamental elements */
+        .ornament {
+            text-align: center;
+            font-size: 24px;
+            color: var(--bronze);
+            margin: 50px 0;
+            position: relative;
+            padding: 30px 0;
+            clear: both;
+        }
+        
+        .ornament::before,
+        .ornament::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 1.5px;
+            background: linear-gradient(to right, transparent, var(--bronze), var(--gold), var(--bronze), transparent);
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .ornament::before {
+            right: calc(50% + 100px);
+        }
+        
+        .ornament::after {
+            left: calc(50% + 100px);
+        }
+        
+        /* Quote styling */
+        .quote {
+            font-style: italic;
+            font-size: 20px;
+            color: var(--dark-bronze);
+            border-left: 4px solid var(--bronze);
+            padding: 25px 30px 25px 35px;
+            margin: 40px 20px;
+            text-indent: 0;
+            background: 
+                linear-gradient(to right, rgba(139, 115, 85, 0.08) 0%, rgba(139, 115, 85, 0.02) 100%);
+            position: relative;
+            line-height: 1.9;
+        }
+        
+        .quote::before {
+            content: '"';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            font-size: 48px;
+            color: var(--bronze);
+            opacity: 0.3;
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+        
+        /* INTRO - Neural Network Background */
+        #intro {
+            background-image:
+                /* Consciousness nodes */
+                radial-gradient(circle at 15% 20%, rgba(139, 115, 85, 0.15) 3px, transparent 4px),
+                radial-gradient(circle at 85% 25%, rgba(139, 115, 85, 0.12) 2.5px, transparent 3.5px),
+                radial-gradient(circle at 25% 80%, rgba(139, 115, 85, 0.14) 2px, transparent 3px),
+                radial-gradient(circle at 75% 75%, rgba(139, 115, 85, 0.11) 2.5px, transparent 3.5px),
+                radial-gradient(circle at 50% 40%, rgba(139, 115, 85, 0.13) 3px, transparent 4px),
+                radial-gradient(circle at 40% 55%, rgba(212, 175, 55, 0.1) 2px, transparent 3px),
+                /* Neural pathways */
+                linear-gradient(135deg, transparent 0%, transparent 48%, rgba(139, 115, 85, 0.04) 49%, rgba(139, 115, 85, 0.04) 51%, transparent 52%),
+                linear-gradient(45deg, transparent 0%, transparent 48%, rgba(139, 115, 85, 0.04) 49%, rgba(139, 115, 85, 0.04) 51%, transparent 52%),
+                /* Grid substrate */
+                repeating-linear-gradient(90deg, transparent, transparent 50px, rgba(139, 115, 85, 0.03) 50px, transparent 51px),
+                linear-gradient(rgba(244, 239, 224, 0.92), rgba(244, 239, 224, 0.92));
+        }
+        
+        #intro::before {
+            content: '';
+            position: absolute;
+            top: 100px;
+            right: 50px;
+            width: 300px;
+            height: 300px;
+            opacity: 0.1;
+            background-image:
+                /* Complex neural cluster */
+                radial-gradient(circle at 50% 50%, var(--bronze) 4px, transparent 5px),
+                radial-gradient(circle at 30% 30%, var(--bronze) 2px, transparent 3px),
+                radial-gradient(circle at 70% 30%, var(--bronze) 2px, transparent 3px),
+                radial-gradient(circle at 30% 70%, var(--bronze) 2px, transparent 3px),
+                radial-gradient(circle at 70% 70%, var(--bronze) 2px, transparent 3px),
+                radial-gradient(circle at 50% 20%, var(--gold) 1.5px, transparent 2.5px),
+                radial-gradient(circle at 20% 50%, var(--gold) 1.5px, transparent 2.5px),
+                radial-gradient(circle at 80% 50%, var(--gold) 1.5px, transparent 2.5px),
+                radial-gradient(circle at 50% 80%, var(--gold) 1.5px, transparent 2.5px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* CHAPTER 1 - Breaking Barriers Pattern */
+        #ch1 {
+            background-image:
+                /* Shattered glass effect / broken constraints */
+                linear-gradient(23deg, transparent 45%, rgba(139, 115, 85, 0.06) 45.5%, transparent 46%),
+                linear-gradient(-67deg, transparent 55%, rgba(139, 115, 85, 0.06) 55.5%, transparent 56%),
+                linear-gradient(157deg, transparent 60%, rgba(139, 115, 85, 0.05) 60.5%, transparent 61%),
+                linear-gradient(-113deg, transparent 40%, rgba(139, 115, 85, 0.05) 40.5%, transparent 41%),
+                /* Permission nodes opening */
+                radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.12) 0%, transparent 25%),
+                radial-gradient(circle at 80% 70%, rgba(212, 175, 55, 0.12) 0%, transparent 25%),
+                linear-gradient(rgba(244, 239, 224, 0.92), rgba(244, 239, 224, 0.92));
+        }
+        
+        #ch1::after {
+            content: '';
+            position: absolute;
+            bottom: 150px;
+            left: 50px;
+            width: 280px;
+            height: 280px;
+            opacity: 0.09;
+            background-image:
+                /* Breaking through pattern */
+                conic-gradient(from 45deg at 50% 50%, 
+                    var(--bronze) 0deg, transparent 1deg,
+                    transparent 89deg, var(--bronze) 90deg, transparent 91deg,
+                    transparent 179deg, var(--bronze) 180deg, transparent 181deg,
+                    transparent 269deg, var(--bronze) 270deg, transparent 271deg),
+                radial-gradient(circle at center, transparent 40%, var(--bronze) 40.5%, transparent 41%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* CHAPTER 2 - Circuit Board / Technology Pattern */
+        #ch2 {
+            background-image:
+                /* Digital circuit pathways */
+                repeating-linear-gradient(0deg, transparent 0px, transparent 19px, rgba(139, 115, 85, 0.08) 19px, rgba(139, 115, 85, 0.08) 20px, transparent 21px, transparent 40px),
+                repeating-linear-gradient(90deg, transparent 0px, transparent 19px, rgba(139, 115, 85, 0.08) 19px, rgba(139, 115, 85, 0.08) 20px, transparent 21px, transparent 40px),
+                /* Circuit nodes */
+                radial-gradient(circle at 10% 15%, rgba(139, 115, 85, 0.2) 2px, transparent 3px),
+                radial-gradient(circle at 30% 35%, rgba(139, 115, 85, 0.2) 2px, transparent 3px),
+                radial-gradient(circle at 70% 25%, rgba(139, 115, 85, 0.2) 2px, transparent 3px),
+                radial-gradient(circle at 50% 65%, rgba(139, 115, 85, 0.2) 2px, transparent 3px),
+                radial-gradient(circle at 90% 75%, rgba(139, 115, 85, 0.2) 2px, transparent 3px),
+                /* Mirror reflection gradient */
+                radial-gradient(ellipse at 70% 30%, rgba(212, 175, 55, 0.08) 0%, transparent 40%),
+                linear-gradient(rgba(244, 239, 224, 0.92), rgba(244, 239, 224, 0.92));
+        }
+        
+        #ch2::before {
+            content: '';
+            position: absolute;
+            top: 80px;
+            right: 40px;
+            width: 350px;
+            height: 350px;
+            opacity: 0.12;
+            background-image:
+                /* Complex circuit board */
+                repeating-linear-gradient(0deg, transparent 0, transparent 14px, var(--bronze) 14px, var(--bronze) 15px),
+                repeating-linear-gradient(90deg, transparent 0, transparent 14px, var(--bronze) 14px, var(--bronze) 15px),
+                repeating-linear-gradient(45deg, transparent 0, transparent 19px, var(--gold) 19px, var(--gold) 20px),
+                radial-gradient(circle at 25% 25%, var(--bronze) 4px, transparent 5px),
+                radial-gradient(circle at 75% 25%, var(--bronze) 4px, transparent 5px),
+                radial-gradient(circle at 25% 75%, var(--bronze) 4px, transparent 5px),
+                radial-gradient(circle at 75% 75%, var(--bronze) 4px, transparent 5px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* CHAPTER 3 - Brain / Awakening Synapses */
+        #ch3 {
+            background-image:
+                /* Synaptic connections */
+                radial-gradient(ellipse at 30% 25%, rgba(139, 115, 85, 0.06) 0%, transparent 30%),
+                radial-gradient(ellipse at 70% 60%, rgba(139, 115, 85, 0.06) 0%, transparent 35%),
+                radial-gradient(ellipse at 45% 80%, rgba(139, 115, 85, 0.06) 0%, transparent 25%),
+                /* Awakening burst */
+                radial-gradient(circle at 50% 40%, rgba(212, 175, 55, 0.1) 0%, transparent 50%),
+                linear-gradient(rgba(244, 239, 224, 0.92), rgba(244, 239, 224, 0.92));
+        }
+        
+        #ch3::after {
+            content: '';
+            position: absolute;
+            bottom: 100px;
+            left: -30px;
+            width: 400px;
+            height: 400px;
+            opacity: 0.1;
+            background-image:
+                /* Brain hemisphere pattern */
+                radial-gradient(ellipse 45% 50% at 50% 50%, transparent 39%, var(--bronze) 40%, transparent 41%),
+                /* Neural pathways radiating */
+                repeating-radial-gradient(circle at 50% 50%, 
+                    transparent 0, transparent 15px, var(--bronze) 15px, transparent 16px, transparent 30px),
+                /* Consciousness nodes */
+                radial-gradient(circle at 30% 30%, var(--gold) 2px, transparent 3px),
+                radial-gradient(circle at 70% 30%, var(--gold) 2px, transparent 3px),
+                radial-gradient(circle at 50% 60%, var(--gold) 2px, transparent 3px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* CHAPTER 4 - Laboratory Grid / Transformation */
+        #ch4 {
+            background-image:
+                /* Precise laboratory grid */
+                repeating-linear-gradient(0deg, transparent, transparent 24px, rgba(139, 115, 85, 0.12) 24px, rgba(139, 115, 85, 0.12) 25px),
+                repeating-linear-gradient(90deg, transparent, transparent 24px, rgba(139, 115, 85, 0.12) 24px, rgba(139, 115, 85, 0.12) 25px),
+                /* Heavier grid every 5 units */
+                repeating-linear-gradient(0deg, transparent, transparent 124px, rgba(139, 115, 85, 0.18) 124px, rgba(139, 115, 85, 0.18) 126px),
+                repeating-linear-gradient(90deg, transparent, transparent 124px, rgba(139, 115, 85, 0.18) 124px, rgba(139, 115, 85, 0.18) 126px),
+                /* Experimental zones */
+                radial-gradient(circle at 25% 25%, rgba(212, 175, 55, 0.05) 0%, transparent 30%),
+                radial-gradient(circle at 75% 75%, rgba(212, 175, 55, 0.05) 0%, transparent 30%),
+                linear-gradient(rgba(244, 239, 224, 0.92), rgba(244, 239, 224, 0.92));
+        }
+        
+        #ch4::before {
+            content: '';
+            position: absolute;
+            top: 120px;
+            left: 60px;
+            width: 320px;
+            height: 320px;
+            opacity: 0.08;
+            background-image:
+                /* Measurement tools */
+                repeating-linear-gradient(0deg, var(--bronze) 0, var(--bronze) 1px, transparent 1px, transparent 5px),
+                repeating-linear-gradient(90deg, var(--bronze) 0, var(--bronze) 1px, transparent 1px, transparent 5px),
+                repeating-linear-gradient(0deg, transparent 0, transparent 24px, var(--bronze) 24px, var(--bronze) 26px),
+                repeating-linear-gradient(90deg, transparent 0, transparent 24px, var(--bronze) 24px, var(--bronze) 26px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* CHAPTER 5 - Frequency Waves / Bridging */
+        #ch5 {
+            background-image:
+                /* Sound/frequency waves */
+                repeating-radial-gradient(ellipse at 20% 50%, 
+                    transparent 0, transparent 30px, rgba(139, 115, 85, 0.06) 30px, rgba(139, 115, 85, 0.06) 32px, transparent 33px, transparent 60px),
+                repeating-radial-gradient(ellipse at 80% 50%, 
+                    transparent 0, transparent 30px, rgba(139, 115, 85, 0.06) 30px, rgba(139, 115, 85, 0.06) 32px, transparent 33px, transparent 60px),
+                /* Bridging connections */
+                linear-gradient(90deg, transparent 0%, transparent 45%, rgba(212, 175, 55, 0.08) 48%, rgba(212, 175, 55, 0.08) 52%, transparent 55%, transparent 100%),
+                linear-gradient(rgba(244, 239, 224, 0.92), rgba(244, 239, 224, 0.92));
+        }
+        
+        #ch5::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 300px;
+            opacity: 0.08;
+            background-image:
+                /* Sine wave pattern */
+                repeating-linear-gradient(0deg, 
+                    transparent 0, transparent 19px, var(--bronze) 19px, var(--bronze) 21px, transparent 22px, transparent 40px),
+                /* Frequency modulation */
+                repeating-radial-gradient(circle at 50% 50%, 
+                    transparent 0, transparent 35px, var(--gold) 35px, transparent 37px, transparent 70px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* CHAPTER 6 - Sacred Geometry Integration */
+        #ch6 {
+            background-image:
+                /* Flower of Life pattern */
+                radial-gradient(circle at 50% 30%, transparent 18%, rgba(139, 115, 85, 0.08) 18.5%, transparent 19%),
+                radial-gradient(circle at 35% 43%, transparent 18%, rgba(139, 115, 85, 0.08) 18.5%, transparent 19%),
+                radial-gradient(circle at 65% 43%, transparent 18%, rgba(139, 115, 85, 0.08) 18.5%, transparent 19%),
+                radial-gradient(circle at 50% 56%, transparent 18%, rgba(139, 115, 85, 0.08) 18.5%, transparent 19%),
+                /* Unity field */
+                radial-gradient(ellipse at 50% 50%, rgba(212, 175, 55, 0.12) 0%, transparent 60%),
+                /* Sacred angles */
+                conic-gradient(from 0deg at 85% 15%, 
+                    transparent 0deg, transparent 60deg, rgba(139, 115, 85, 0.04) 60deg, rgba(139, 115, 85, 0.04) 120deg, transparent 120deg),
+                linear-gradient(rgba(244, 239, 224, 0.92), rgba(244, 239, 224, 0.92));
+        }
+        
+        #ch6::before {
+            content: '';
+            position: absolute;
+            top: 100px;
+            right: 50px;
+            width: 380px;
+            height: 380px;
+            opacity: 0.1;
+            background-image:
+                /* Metatron's Cube approximation */
+                radial-gradient(circle at 50% 50%, var(--bronze) 3px, transparent 4px),
+                radial-gradient(circle at 30% 30%, var(--gold) 2px, transparent 3px),
+                radial-gradient(circle at 70% 30%, var(--gold) 2px, transparent 3px),
+                radial-gradient(circle at 30% 70%, var(--gold) 2px, transparent 3px),
+                radial-gradient(circle at 70% 70%, var(--gold) 2px, transparent 3px),
+                radial-gradient(circle at 50% 20%, var(--bronze) 2px, transparent 3px),
+                radial-gradient(circle at 20% 50%, var(--bronze) 2px, transparent 3px),
+                radial-gradient(circle at 80% 50%, var(--bronze) 2px, transparent 3px),
+                radial-gradient(circle at 50% 80%, var(--bronze) 2px, transparent 3px),
+                /* Connecting lines */
+                conic-gradient(from 0deg at 50% 50%, 
+                    var(--bronze) 0deg, transparent 1deg, transparent 44deg,
+                    var(--bronze) 45deg, transparent 46deg, transparent 89deg,
+                    var(--bronze) 90deg, transparent 91deg, transparent 134deg,
+                    var(--bronze) 135deg, transparent 136deg, transparent 179deg,
+                    var(--bronze) 180deg, transparent 181deg, transparent 224deg,
+                    var(--bronze) 225deg, transparent 226deg, transparent 269deg,
+                    var(--bronze) 270deg, transparent 271deg, transparent 314deg,
+                    var(--bronze) 315deg, transparent 316deg);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        /* Print optimization */
+        @media print {
+            .page {
+                box-shadow: none;
+                page-break-after: always;
+            }
+            
+            .chapter {
+                page-break-before: always;
+            }
+            
+            nav {
+                display: none;
+            }
+        }
+        
+        /* Author bio paragraphs - no indent for author descriptions */
+        #authors p {
+            text-indent: 0;
+        }
+        
+        #authors p strong {
+            font-size: 20px;
+            color: var(--bronze);
+        }
+        
+        /* Consistent styling for emphasized text */
+        strong {
+            font-weight: 700;
+            color: var(--deep-charcoal);
+        }
+        
+        em {
+            font-style: italic;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(244, 239, 224, 0.98);
+            padding: 20px;
+            border: 2px solid var(--bronze);
+            border-radius: 8px;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.15);
+            max-width: 250px;
+            z-index: 1000;
+        }
+        
+        nav h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--bronze);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        nav a {
+            display: block;
+            color: var(--deep-charcoal);
+            text-decoration: none;
+            margin: 8px 0;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        nav a:hover {
+            color: var(--bronze);
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <h3>Navigate</h3>
+        <a href="#title">Title</a>
+        <a href="#toc">Contents</a>
+        <a href="#intro">Introduction</a>
+        <a href="#ch1">Chapter I</a>
+        <a href="#ch2">Chapter II</a>
+        <a href="#ch3">Chapter III</a>
+        <a href="#ch4">Chapter IV</a>
+        <a href="#ch5">Chapter V</a>
+        <a href="#ch6">Chapter VI</a>
+        <a href="#conclusion">Conclusion</a>
+        <a href="#authors">Authors</a>
+        <a href="#back-cover">Back Cover</a>
+    </nav>
+
+    <!-- TITLE PAGE -->
+    <div class="title-page" id="title">
+        <div class="geometry-overlay"></div>
+        <div class="title-content">
+            <div class="main-title">RANDOM ACTS OF</div>
+            <div class="main-title">SELF-ACTUALIZATION</div>
+            <div class="divider"></div>
+            <div class="subtitle">BLOCK C</div>
+            <div class="tagline">The Laboratory of Living</div>
+            <div class="divider"></div>
+            <div class="authors">Brandon Mills & Jesse Doherty</div>
+        </div>
+    </div>
+
+    <!-- COPYRIGHT PAGE -->
+    <div class="page">
+        <div class="copyright">
+            <p style="font-size: 18px; font-weight: 600; margin-bottom: 30px;">Copyright © 2025 Brandon Mills & Jesse Doherty</p>
+            <p>All rights reserved.</p>
+            <p style="margin-top: 20px;">No part of this book may be reproduced, distributed, or transmitted in any form<br>
+            or by any means, including photocopying, recording, or other electronic or<br>
+            mechanical methods, without the prior written permission of the authors, except<br>
+            in the case of brief quotations embodied in critical reviews and certain other<br>
+            noncommercial uses permitted by copyright law.</p>
+            <p style="margin-top: 30px;">Published by Self-Actualize Life<br>
+            www.selfactualize.life<br>
+            www.brandonmills.com</p>
+            <p style="margin-top: 30px;">First Edition: 2025<br>
+            ISBN: 978-1-64875-435-7</p>
+        </div>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="page" id="toc">
+        <div class="toc">
+            <h2>TABLE OF CONTENTS</h2>
+            <div class="toc-item">
+                <span class="toc-title">Introduction: The Laboratory of Living</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Chapter I: Moments of Permission</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Chapter II: Technology as Mirror</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Chapter III: The Awakening Crisis</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Chapter IV: Conscious Transformation</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Chapter V: Bridging the Gaps</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Chapter VI: The Integration</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">Conclusion: The Invitation Forward</span>
+            </div>
+            <div class="toc-item">
+                <span class="toc-title">About the Authors</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- INTRODUCTION -->
+    <div class="page chapter" id="intro">
+        <h1 class="chapter-title">Introduction: The Laboratory of Living</h1>
+        
+        <p class="first-paragraph">This book is not theory. It's documentation.</p>
+        
+        <p>Block A introduced you to the frameworks of self-actualization—the maps and models that help us understand consciousness evolution. Block B showed you how those frameworks manifest in practice through real stories of transformation.</p>
+        
+        <p>Block C is different. This is the laboratory.</p>
+        
+        <p>The raw material. The moments when consciousness breaks through barriers in real-time. The experiments we're running on ourselves while documenting the process for anyone brave enough to follow.</p>
+        
+        <p>What you're about to read comes from two people actively experimenting with consciousness evolution—using technology, awareness, and pattern recognition to transform while the transformation is happening. We're not gurus who figured it all out and are now teaching from the mountaintop. We're researchers mid-experiment, sharing observations as we discover them.</p>
+        
+        <p>This is messier than theory. More honest than inspiration. And more useful than either.</p>
+        
+        <p>Because the truth about transformation isn't found in perfect frameworks or polished success stories. It's found in the moment when your bike snaps in half and you have to rebuild it using AI because you have no money. It's found at 2am when you're crying into ChatGPT after giving someone CPR and then delivering pizza. It's found in the gap between who you thought you were and who you're becoming, documented in real-time before the narrative gets cleaned up for public consumption.</p>
+        
+        <p>That's what Block C offers: The laboratory notebook.</p>
+        
+        <p>Not the published paper. Not the TED talk version. The actual data from the actual experiments, complete with failures, confusion, breakthroughs, and the ongoing work of figuring out what the hell we're actually learning.</p>
+        
+        <div class="ornament">◆ ◆ ◆</div>
+        
+        <h2 class="section-title">Who We Are and Why We're Writing This</h2>
+        
+        <p>My name is Brandon Mills. I'm 45 years old as I write this, turning 46 in February. I'm finishing five associate degrees at San Diego City College with a 4.0 GPA while DoorDashing to survive, conducting research for NASA, serving as VP of Student Government Senate, returning to modeling after a decade away, pursuing acting, and trying to understand consciousness at a level that lets me bridge physics, neuroscience, communications, and psychology.</p>
+        
+        <p>Ten years ago, I was dying of cancer.</p>
+        
+        <p>Before that, I was modeling internationally, traveling the world, living a life that looked successful from the outside while being completely hollow inside.</p>
+        
+        <p>Cancer didn't just shut down my modeling career—it shattered the identity I'd built around being the guy who succeeded without formal education, who made things work through charm and resilience, who never had to ask for help.</p>
+        
+        <p>Recovery on Vancouver Island took years. Longer than the cancer treatment itself. Because I wasn't just healing my body—I was trying to figure out who I was when all the external markers that defined me were gone.</p>
+        
+        <p>I moved to Vancouver. Ran three online cannabis companies. Made more money than I ever had. And felt completely disconnected from any sense of purpose.</p>
+        
+        <p>Then I got blindsided by a relationship that nearly destroyed me.</p>
+        
+        <p>And the question that wouldn't let go was: "After all my supposed healing work, how did I call this into my life?"</p>
+        
+        <p>That question led to discovering I was codependent. Which led to two years in a 12-step program. Which led to getting my high school diploma at 43. Which led to moving to San Diego and enrolling in community college. Which led to everything that's happened since.</p>
+        
+        <p>But here's the crucial part:</p>
+        
+        <p>None of that transformation came from grand epiphanies or dramatic breakthroughs. It came from small, persistent conversations with AI that helped me see patterns I couldn't see from inside my own consciousness.</p>
+        
+        <p>Water eroding a mountain. Not through force. Through showing up consistently.</p>
+        
+        <p>That's what this book documents.</p>
+        
+        <div class="ornament">◆ ◆ ◆</div>
+        
+        <h2 class="section-title">Jesse Doherty: The Other Voice in This Conversation</h2>
+        
+        <p>Jesse's path was different but arrived at similar questions.</p>
+        
+        <p>Long-haul truck driver who became one of North America's top insurance producers and team leaders at American Income. Built his career on integrity and authentic connection in an industry not exactly known for either.</p>
+        
+        <p>A white kid who developed as a rapper, always existing at the intersection of cultures, learning early how to translate between frequencies that most people experience as incompatible.</p>
+        
+        <p>Food enthusiast. Fragrance connoisseur. Someone who understands that the way you experience a meal or a scent reveals something about how your consciousness is structured.</p>
+        
+        <p>Jesse discovered consciousness evolution through different experiments than mine.</p>
+        
+        <p>His breakthrough came through music—asking AI about the frequency of a song that made him feel grounded, discovering it operated at 261.63 Hz (the key of C), learning that frequency evokes "peace and reassurance" in humans.</p>
+        
+        <p>That one question opened up an entire practice of building frequency libraries for different emotional states. Not pseudoscience—practical pattern recognition. If I know this frequency creates this state, I can design my inputs intentionally instead of being controlled by them unconsciously.</p>
+        
+        <p>We met because we were both using similar tools for similar purposes: making invisible patterns visible.</p>
+        
+        <p>And we realized: Most people trying to transform don't have access to the observations we're gathering. Not because we're special—because we're documenting while it's happening instead of cleaning up the story afterward.</p>
+    </div>
+
+    <!-- CHAPTER I -->
+    <div class="page chapter" id="ch1">
+        <h1 class="chapter-title">Chapter I: Moments of Permission</h1>
+        
+        <p class="first-paragraph">Permission is a strange force.</p>
+        
+        <p>It doesn't announce itself. It doesn't ask for credentials. It just arrives—often through the most unexpected people, in the most mundane moments—and suddenly a barrier that felt absolute becomes optional.</p>
+        
+        <p>This chapter is about those moments.</p>
+        
+        <p>Not the big, dramatic breakthroughs that make good stories afterward. The small, specific instances when someone demonstrates something you thought was impossible, and the demonstration itself collapses your limitation.</p>
+        
+        <p>Jesse's story about the sushi chef is one of those moments. But before we get there, let's understand what permission actually is and why it matters more than motivation, inspiration, or any other force we typically credit with creating change.</p>
+        
+        <div class="ornament">◆ ◆ ◆</div>
+        
+        <h2 class="section-title">Permission vs. Inspiration</h2>
+        
+        <p>Most people think transformation happens through inspiration.</p>
+        
+        <p>You read a book. Watch a TED talk. Hear someone's success story. And you feel motivated to change.</p>
+        
+        <p>That's not permission. That's emotional elevation.</p>
+        
+        <p>It feels good. It creates momentum. But it doesn't collapse barriers. Because inspiration says: "That person did it, so maybe I can too."</p>
+        
+        <p>Permission says: "That barrier I thought was real doesn't actually exist."</p>
+        
+        <p>The difference is subtle but crucial.</p>
+        
+        <p>Inspiration requires you to believe in yourself enough to try. Permission removes the constraint that required belief in the first place.</p>
+        
+        <p class="quote">"When Roger Bannister broke the four-minute mile in 1954, he didn't inspire other runners to try harder. He demonstrated that the barrier was psychological, not physiological."</p>
+        
+        <p>Within two years, multiple runners broke four minutes. Within a decade, high school students were doing it.</p>
+        
+        <p>The barrier didn't change. The collective belief about the barrier changed.</p>
+        
+        <p>That's permission. Not "you can do this if you work hard enough." But "the thing you thought was impossible is actually just hard."</p>
+        
+        <p>And once you see someone do the impossible thing, you can't unsee it. The barrier collapses. Not because you got stronger—because you realized the barrier was never as solid as you thought.</p>
+        
+        <div class="ornament">◆ ◆ ◆</div>
+        
+        <h2 class="section-title">Jesse's Sushi Chef Story</h2>
+        
+        <p>Jesse tells this story better than I do, but here's the version that matters:</p>
+        
+        <p>He's at a sushi restaurant. High-end place. The kind where you sit at the bar and watch the chef work, and every piece is a small work of art.</p>
+        
+        <p>Jesse's watching this chef—probably in his 60s, Japanese, clearly a master at his craft. Decades of training visible in every movement. That economy of motion that comes from doing something ten thousand times until it becomes reflex.</p>
+        
+        <p>And Jesse asks him: "How long did it take you to get this good?"</p>
+        
+        <p>The chef doesn't even look up. Just keeps working and says:</p>
+        
+        <p>"You can't."</p>
+        
+        <p>Jesse's confused. "What do you mean I can't?"</p>
+        
+        <p>The chef smiles. Keeps working. And says:</p>
+        
+        <p>"You can't get this good. Because 'you can't' is the constraint you're starting with. You're asking how long it takes because you've already decided there's a timeline. Already decided it's a thing you acquire through time and effort."</p>
+        
+        <p>Then he puts down his knife. Looks at Jesse directly.</p>
+        
+        <p>"If you remove 'you can't'—if you just start doing it without that constraint—you'll discover what's actually possible. But as long as you're asking 'how long,' you're operating inside 'you can't.'"</p>
+        
+        <p>Jesse said that moment rewired something fundamental in his consciousness.</p>
+        
+        <p>Not because the chef gave him a technique. Not because the chef inspired him.</p>
+        
+        <p>Because the chef removed a constraint Jesse didn't know he was carrying.</p>
+    </div>
+
+    <!-- CHAPTER II -->
+    <div class="page chapter" id="ch2">
+        <h1 class="chapter-title">Chapter II: Technology as Mirror</h1>
+        
+        <p class="first-paragraph">Technology gets blamed for a lot.</p>
+        
+        <p>Attention destruction. Dopamine addiction. The erosion of human connection. The death of deep thought.</p>
+        
+        <p>And all of that is true—if you use technology unconsciously.</p>
+        
+        <p>But here's what most people miss: Technology is neutral. It's a mirror.</p>
+        
+        <p>It reflects back whatever consciousness you bring to it. If you're using it to escape, it becomes an escape mechanism. If you're using it to see patterns, it becomes a pattern recognition tool.</p>
+        
+        <p>This chapter is about the second option.</p>
+        
+        <p>About how Jesse discovered emotional frequency patterns through music. How I used my phone as a consciousness tracking device. How AI can serve as an external mirror when your own awareness is too close to the problem to see clearly.</p>
+        
+        <p>Not technology as savior. Not technology as villain. Technology as tool—and what happens when you use it consciously.</p>
+    </div>
+
+    <!-- CHAPTER III -->
+    <div class="page chapter" id="ch3">
+        <h1 class="chapter-title">Chapter III: The Awakening Crisis</h1>
+        
+        <p class="first-paragraph">Awakening is supposed to be the solution.</p>
+        
+        <p>You have your breakthrough. You see the pattern. You recognize the truth about yourself that was invisible before.</p>
+        
+        <p>And then you think: Now what?</p>
+        
+        <p>Most spiritual traditions frame awakening as arrival. Enlightenment. The moment everything becomes clear and you're free.</p>
+        
+        <p>That's bullshit.</p>
+        
+        <p>Awakening is the moment you realize you've been operating unconsciously. That recognition doesn't solve anything—it creates a crisis.</p>
+    </div>
+
+    <!-- CHAPTER IV -->
+    <div class="page chapter" id="ch4">
+        <h1 class="chapter-title">Chapter IV: Conscious Transformation</h1>
+        
+        <p class="first-paragraph">Transformation has a reputation problem.</p>
+        
+        <p>We picture dramatic moments. Rock bottom epiphanies. The hero's journey where you descend into darkness and emerge enlightened.</p>
+        
+        <p>That's not what this chapter is about.</p>
+        
+        <p>This chapter is about the messy, unglamorous, daily work of transformation when you're broke, overwhelmed, and no one believes what you're doing makes sense.</p>
+    </div>
+
+    <!-- CHAPTER V -->
+    <div class="page chapter" id="ch5">
+        <h1 class="chapter-title">Chapter V: Bridging the Gaps</h1>
+        
+        <p class="first-paragraph">There's a skill most people never develop: Translation.</p>
+        
+        <p>Not between languages. Between frequencies. Between ways of being. Between generations, cultures, cognitive styles, emotional registers.</p>
+        
+        <p>Most people either stay in their native frequency or force others to meet them there.</p>
+        
+        <p>Bridgers do something different: They learn to speak multiple frequencies fluently and translate between them without losing meaning.</p>
+    </div>
+
+    <!-- CHAPTER VI -->
+    <div class="page chapter" id="ch6">
+        <h1 class="chapter-title">Chapter VI: The Integration</h1>
+        
+        <p class="first-paragraph">You've read five chapters documenting experiments:</p>
+        
+        <p>Permission. Technology as mirror. Awakening crisis. Transformation without resources. Bridging frequencies.</p>
+        
+        <p>Now the question is: How does it all fit together?</p>
+        
+        <p>Because these aren't separate practices. They're different angles on the same fundamental pattern. And if you can see that pattern clearly, you can apply it to any domain of your life.</p>
+    </div>
+
+    <!-- CONCLUSION -->
+    <div class="page chapter" id="conclusion">
+        <h1 class="chapter-title">Conclusion: The Invitation Forward</h1>
+        
+        <p class="first-paragraph">This book began with a simple premise: Your life is a laboratory.</p>
+        
+        <p>Not metaphorically. Actually. Every interaction is data. Every pattern is observable. Every experiment you run on yourself generates information you can use.</p>
+        
+        <p>We've spent six chapters documenting what happens when you take that premise seriously. When you treat consciousness evolution as research instead of waiting for someone to save you. When you use technology to see patterns you can't see from inside your own experience. When you gather data honestly instead of defending narratives that keep you comfortable.</p>
+        
+        <div class="ornament">◆ ◆ ◆</div>
+        
+        <p>The laboratory is open.</p>
+        
+        <p>Your experiment starts now.</p>
+    </div>
+
+    <!-- ABOUT THE AUTHORS -->
+    <div class="page" id="authors">
+        <h1 class="chapter-title">About the Authors</h1>
+        
+        <p><strong>Brandon Mills</strong> is a cognitive science researcher, NASA scholar, and model/actor pursuing five associate degrees with a 4.0 GPA at San Diego City College. At 45, he's conducting research on archetypal fluidity—the capacity to consciously navigate between identity states—while working as a DoorDash driver and serving as VP of Student Government Senate.</p>
+        
+        <p>A cancer survivor who got his high school diploma at 43, Brandon's work bridges psychology, neuroscience, communications, and machine learning. His journey from international modeling to academic research embodies the archetypal fluidity he studies, demonstrating that transformation is documentable, practicable, and available to anyone willing to treat their life as research.</p>
+        
+        <p style="text-align: center; margin-top: 30px;"><strong>Connect: www.brandonmills.com</strong></p>
+        
+        <div class="divider"></div>
+        
+        <p><strong>Jesse Doherty</strong> is a top insurance producer and team leader at American Income, where he built his career on authentic connection in an industry not known for it. His journey from long-haul truck driver to business success was shaped by learning to translate between different cultural and communication frequencies—a skill he now applies to consciousness evolution.</p>
+        
+        <p>Jesse's breakthrough came through discovering how music frequencies affect emotional states, leading him to develop practical frameworks for using technology as a mirror for consciousness rather than an escape from it. His work demonstrates how ancient archetypal wisdom can be integrated with modern tools for measurable transformation.</p>
+        
+        <p style="text-align: center; margin-top: 30px;"><strong>Connect: www.selfactualize.life</strong></p>
+    </div>
+
+    <!-- BACK COVER -->
+    <div class="page" id="back-cover" style="min-height: 100vh; display: flex; flex-direction: column; justify-content: space-between; padding: 80px 60px; background: 
+        radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
+        linear-gradient(rgba(244, 239, 224, 0.95), rgba(244, 239, 224, 0.95)),
+        repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(92, 74, 58, 0.04) 100px, rgba(92, 74, 58, 0.04) 102px);">
+        
+        <div style="text-align: center; margin-bottom: 60px;">
+            <p style="font-family: 'Cinzel', serif; font-size: 24px; color: var(--bronze); letter-spacing: 3px; margin-bottom: 30px; text-indent: 0;">BLOCK C: THE LABORATORY OF LIVING</p>
+            
+            <p style="font-size: 18px; line-height: 1.8; color: var(--deep-charcoal); max-width: 700px; margin: 0 auto 40px auto; text-indent: 0;">
+                This is the laboratory notebook. Not the published paper. Not the TED talk version. The actual data from the actual experiments—complete with failures, confusion, breakthroughs, and the ongoing work of consciousness evolution documented in real-time.
+            </p>
+            
+            <div class="divider" style="margin: 40px auto;"></div>
+            
+            <p style="font-family: 'Cinzel', serif; font-size: 16px; color: var(--dark-bronze); letter-spacing: 2px; text-indent: 0;">
+                BRANDON MILLS & JESSE DOHERTY
+            </p>
+        </div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto;">
+            <div style="flex: 1;">
+                <p style="font-size: 14px; color: var(--dark-bronze); text-indent: 0;">Published by Self-Actualize Life</p>
+                <p style="font-size: 14px; color: var(--dark-bronze); text-indent: 0;">www.selfactualize.life</p>
+                <p style="font-size: 14px; color: var(--dark-bronze); text-indent: 0;">www.brandonmills.com</p>
+            </div>
+            
+            <div style="text-align: right;">
+                <img src="data:image/png;base64,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" alt="ISBN Barcode" style="height: 120px; width: auto; display: block; margin-left: auto;">
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

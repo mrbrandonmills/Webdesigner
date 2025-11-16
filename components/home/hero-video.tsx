@@ -6,6 +6,14 @@ import { useState, useEffect } from 'react'
 export default function HeroVideo() {
   const [isLoaded, setIsLoaded] = useState(false)
 
+  // Fallback: show content after 1.5s even if video doesn't load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoaded(true)
+    }, 1500)
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <section className="relative h-screen w-full overflow-hidden">
       {/* Video Background */}
@@ -20,6 +28,9 @@ export default function HeroVideo() {
       >
         <source src="/videos/hero-loop.mp4" type="video/mp4" />
       </video>
+
+      {/* Fallback Background Image (shows if video doesn't load) */}
+      <div className="absolute inset-0 bg-gradient-to-br from-black via-zinc-900 to-black" />
 
       {/* Elegant Overlay - darkens video */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/80" />

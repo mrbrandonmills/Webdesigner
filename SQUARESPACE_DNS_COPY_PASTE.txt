@@ -1,0 +1,93 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📧 SQUARESPACE DNS RECORDS - COPY/PASTE EACH ONE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+WHERE TO ADD:
+1. Login: https://login.squarespace.com
+2. Click: Settings → Domains → brandonmills.com
+3. Click: DNS Settings (or Advanced Settings)
+4. Scroll to: Custom Records section
+5. For EACH record below: Click "Add Record"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECORD 1 of 4: DKIM Verification
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Click "Add Record" in Squarespace, then enter:
+
+Record Type: TXT
+Host: resend._domainkey
+Data: p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDFblATCUvOzAJqm1OFRxMY3AhrQLcz87Dl5CIhv5aVwENVCcicttGHyUwrpZwfh/eb0XXBixam1x0mzpYFZMvnFjW+NS3FS/Z1RUABAI4uZbILi5NZuwJHQdtQLy2HBOqZ6aRKGRZ+ehc/YLxlqVzlWuJsB9mg7cg9fQsWsoXLzQIDAQAB
+
+Click "Add" or "Save"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECORD 2 of 4: Email Routing
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Click "Add Record" in Squarespace, then enter:
+
+Record Type: MX
+Host: send
+Data: feedback-smtp.us-east-1.amazonses.com
+Priority: 10
+
+Click "Add" or "Save"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECORD 3 of 4: Sender Authentication
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Click "Add Record" in Squarespace, then enter:
+
+Record Type: TXT
+Host: send
+Data: v=spf1 include:amazonses.com ~all
+
+Click "Add" or "Save"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECORD 4 of 4: DMARC (Optional but Recommended)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Click "Add Record" in Squarespace, then enter:
+
+Record Type: TXT
+Host: _dmarc
+Data: v=DMARC1; p=none;
+
+Click "Add" or "Save"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AFTER ADDING ALL 4 RECORDS:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Click "Save" at bottom of DNS page in Squarespace
+2. Wait 30-60 minutes for DNS propagation
+3. Go to: https://resend.com/domains
+4. Click "Verify" on brandonmills.com
+5. Wait for GREEN CHECKMARKS ✅
+
+THEN YOUR EMAIL WORKS:
+✅ Order confirmations to customers
+✅ Admin notifications for new sales
+✅ Shipping updates from Printful
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+QUICK TIPS FOR SQUARESPACE:
+
+- Host field: Enter exactly as shown (don't add @brandonmills.com)
+- Data field: Copy entire value, no quotes needed
+- Priority: Only for MX record, enter 10
+- TTL: Squarespace sets automatically
+
+NEED MORE HELP?
+See: DNS_SQUARESPACE_INSTRUCTIONS.md (detailed guide)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

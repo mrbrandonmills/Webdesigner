@@ -1,0 +1,78 @@
+🚀 COPY/PASTE THESE INTO VERCEL - 2 MINUTES
+================================================
+
+Open: https://vercel.com/dashboard
+Click: Your Webdesigner project
+Click: Settings (top) → Environment Variables (left)
+
+For EACH key below: Click "Add New", copy Name and Value, check ✓ Production, click Save
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY 1 of 5:
+Name: RESEND_API_KEY
+Value: re_d9Dh2s8m_8umoqgZxNhcx9U4mQagWBQZF
+Environment: ✓ Production
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY 2 of 5:
+Name: STRIPE_SECRET_KEY
+Value: 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
+Environment: ✓ Production
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY 3 of 5:
+Name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+Value: pk_live_51STrQWPoebCJnH3Yppvz9sTQHXpTlqbL23Yx2Q4VqioZVNwqMvMT0Jn7wYsazg4C2toDOBM9GkNmk2zBI8YDw9rg00Ftx7erTw
+Environment: ✓ Production
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY 4 of 5:
+Name: STRIPE_WEBHOOK_SECRET
+Value: whsec_DqYKEk2iSZ8WBPD2r8csvsKKROyI5xx6
+Environment: ✓ Production
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+KEY 5 of 5:
+Name: NEXT_PUBLIC_BASE_URL
+Value: https://brandonmills.com
+Environment: ✓ Production
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AFTER ADDING ALL 5:
+
+1. Click "Deployments" tab
+2. Click ••• on latest deployment
+3. Click "Redeploy"
+4. Uncheck "Use existing Build Cache"
+5. Click "Redeploy"
+
+WAIT 2-3 MINUTES FOR BUILD
+
+THEN TEST:
+- Visit: https://brandonmills.com
+- Admin: https://brandonmills.com/admin/login (Bmilly23 / Ailtoronto1@)
+
+YOU'RE LIVE! 🎉
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ DEPLOYMENT COMPLETE - NOW ENABLE EMAIL
+
+NEXT STEP: Add DNS Records for Email Service
+- File: DNS_RECORDS_COPY_PASTE.txt (quick version)
+- Guide: DNS_SETUP_GUIDE.md (detailed instructions)
+
+These enable:
+- Order confirmation emails to customers
+- Admin notifications for new sales
+- Shipping updates from Printful
+
+Takes 5 minutes to add, 10-60 minutes to verify.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

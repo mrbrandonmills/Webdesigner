@@ -1,0 +1,72 @@
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📧 DNS RECORDS FOR brandonmills.com EMAIL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️ ADD THESE AT YOUR DOMAIN REGISTRAR (NOT IN CODE)
+
+Go to where you registered brandonmills.com:
+- GoDaddy → DNS Management
+- Namecheap → Advanced DNS
+- Cloudflare → DNS Records
+- Vercel → Domains → DNS
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECORD 1 of 4: DKIM Verification
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: TXT
+Name: resend._domainkey
+Value: p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDFblATCUvOzAJqm1OFRxMY3AhrQLcz87Dl5CIhv5aVwENVCcicttGHyUwrpZwfh/eb0XXBixam1x0mzpYFZMvnFjW+NS3FS/Z1RUABAI4uZbILi5NZuwJHQdtQLy2HBOqZ6aRKGRZ+ehc/YLxlqVzlWuJsB9mg7cg9fQsWsoXLzQIDAQAB
+TTL: Auto
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECORD 2 of 4: MX Record (Email Routing)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: MX
+Name: send
+Value: feedback-smtp.us-east-1.amazonses.com
+Priority: 10
+TTL: Auto
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECORD 3 of 4: SPF Record (Sender Auth)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: TXT
+Name: send
+Value: v=spf1 include:amazonses.com ~all
+TTL: Auto
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+RECORD 4 of 4: DMARC (Optional but Recommended)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Type: TXT
+Name: _dmarc
+Value: v=DMARC1; p=none;
+TTL: Auto
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+AFTER ADDING ALL 4 RECORDS:
+
+1. Wait 10-60 minutes for DNS propagation
+2. Go to: https://resend.com/domains
+3. Click "Verify" on brandonmills.com
+4. Look for green checkmarks ✅
+
+THEN YOUR EMAILS WILL WORK:
+- Order confirmations to customers
+- Admin notifications for new sales
+- Shipping updates from Printful
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NEED HELP? See: DNS_SETUP_GUIDE.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

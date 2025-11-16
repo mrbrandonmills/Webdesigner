@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Share2, Eye } from 'lucide-react'
-import ProductGallery from '@/components/store/ProductGallery'
+import { ArrowLeft, Share2, Eye, Award, Shield, Sparkles } from 'lucide-react'
+import GalleryViewer from '@/components/product/gallery-viewer'
+import ArtistStatement from '@/components/product/artist-statement'
+import LuxuryPrice from '@/components/product/luxury-price'
 import ProductInfo from '@/components/store/ProductInfo'
 import VariantSelector from '@/components/store/VariantSelector'
 import AddToCartButton from '@/components/store/AddToCartButton'
@@ -11,6 +13,7 @@ import SizeGuide from '@/components/store/SizeGuide'
 import RelatedProducts from '@/components/store/RelatedProducts'
 import ScrollReveal from '@/components/scroll-reveal'
 import { Product, ProductImage, ProductVariant } from '@/types/store'
+import { motion } from 'framer-motion'
 
 export default function ProductDetailPage() {
   const params = useParams()
@@ -256,10 +259,93 @@ export default function ProductDetailPage() {
       {/* Product Detail */}
       <section className="pb-20 container-wide">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-          {/* Left: Gallery */}
+          {/* Left: Museum-Quality Gallery */}
           <ScrollReveal direction="left">
-            <div className="lg:sticky lg:top-32">
-              <ProductGallery images={product.images} productTitle={product.title} />
+            <div className="lg:sticky lg:top-32 space-y-8">
+              <GalleryViewer
+                images={product.images}
+                productName={product.title}
+                editionInfo={{
+                  isLimited: product.isLimitedEdition,
+                  editionNumber: product.editionNumber,
+                  editionSize: product.editionSize,
+                }}
+              />
+
+              {/* Certificate of Authenticity Preview */}
+              {product.isLimitedEdition && product.certificateOfAuthenticity && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.5 }}
+                  className="bg-gradient-to-br from-accent-gold/10 to-accent-gold/5 border border-accent-gold/30 rounded-2xl p-6"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-accent-gold/20 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Award className="w-6 h-6 text-accent-gold" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-serif text-white mb-2">
+                        Certificate of Authenticity
+                      </h3>
+                      <p className="text-sm text-white/70 leading-relaxed">
+                        Each limited edition print includes a signed certificate of authenticity,
+                        guaranteeing its provenance and limited edition status. Numbered{' '}
+                        {product.editionNumber && product.editionSize ? (
+                          <span className="text-accent-gold font-medium">
+                            {product.editionNumber}/{product.editionSize}
+                          </span>
+                        ) : (
+                          'individually'
+                        )}.
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Collector's Metadata */}
+              {product.isLimitedEdition && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                  className="bg-white/5 border border-white/10 rounded-2xl p-6"
+                >
+                  <h3 className="text-xs tracking-[0.2em] uppercase text-white/40 mb-4">
+                    Collector Information
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white/60">Edition Type</span>
+                      <span className="text-sm text-white font-medium">Limited Edition Print</span>
+                    </div>
+                    {product.editionSize && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-white/60">Total Edition Size</span>
+                        <span className="text-sm text-accent-gold font-medium">
+                          {product.editionSize} prints
+                        </span>
+                      </div>
+                    )}
+                    {product.editionNumber && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-white/60">This Edition</span>
+                        <span className="text-sm text-accent-gold font-medium">
+                          #{product.editionNumber}
+                        </span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-white/60">Exclusivity Status</span>
+                      <span className="text-sm text-white font-medium flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-accent-gold" />
+                        Museum Quality
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </div>
           </ScrollReveal>
 
@@ -268,6 +354,26 @@ export default function ProductDetailPage() {
             <div className="space-y-12">
               {/* Product Info Section */}
               <ProductInfo product={product} selectedVariant={selectedVariant} />
+
+              {/* Luxury Price Display */}
+              <div className="luxury-divider"></div>
+              <LuxuryPrice
+                price={displayPrice}
+                isLimitedEdition={product.isLimitedEdition}
+                originalPrice={selectedVariant.compareAtPrice}
+              />
+
+              {/* Artist Statement (for limited editions) */}
+              {product.isLimitedEdition && product.artist && (
+                <>
+                  <div className="luxury-divider"></div>
+                  <ArtistStatement
+                    artistName={product.artist}
+                    statement="Each piece in this limited collection represents a moment of creative vision, captured and preserved for collectors who appreciate the intersection of artistry and exclusivity. These works are not merely photographs—they are investment-grade artifacts of visual storytelling."
+                    signature={product.artistSignature}
+                  />
+                </>
+              )}
 
               {/* Variant Selector */}
               {product.variants && product.variants.length > 1 && (

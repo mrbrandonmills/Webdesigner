@@ -24,6 +24,8 @@ export default function Navigation() {
   const navLinks = [
     { name: 'WORK', href: '/work' },
     { name: 'GALLERY', href: '/gallery' },
+    { name: 'BLOG', href: '/blog' },
+    { name: 'WRITING', href: '/writing' },
     { name: 'STORE', href: '/store' },
     { name: 'ABOUT', href: '/about' },
     { name: 'CONTACT', href: '/contact' },
