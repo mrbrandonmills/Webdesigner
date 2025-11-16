@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Instagram } from 'lucide-react'
+import { Instagram, User, Briefcase } from 'lucide-react'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -120,20 +120,55 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* Alternative Contact Methods */}
+      {/* Join the Journey */}
       <section className="pb-32 container-wide">
-        <div className="max-w-2xl mx-auto text-center space-y-8">
+        <div className="max-w-3xl mx-auto text-center space-y-12">
           <div className="luxury-divider"></div>
-          <h2 className="text-2xl font-serif text-white/80">Or Connect on Social</h2>
-          <a
-            href="https://www.instagram.com/mrbrandonmills/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/20 hover:bg-white/10 hover:border-white/40 transition-all duration-300 group"
-          >
-            <Instagram size={24} className="group-hover:scale-110 transition-transform" />
-            <span className="tracking-wider text-sm">@MRBRANDONMILLS</span>
-          </a>
+
+          <div className="space-y-4">
+            <h2 className="text-3xl md:text-4xl font-serif text-white">Join the Journey</h2>
+            <p className="text-white/60 max-w-xl mx-auto">
+              Follow along on social media and professional platforms
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Instagram */}
+            <a
+              href="https://www.instagram.com/mrbrandonmills/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 p-6 bg-white/5 border border-white/20 hover:bg-white/10 hover:border-accent-gold/50 transition-all duration-300 group"
+            >
+              <div className="w-12 h-12 flex items-center justify-center bg-accent-gold/10 border border-accent-gold/30 group-hover:bg-accent-gold/20 transition-colors">
+                <Instagram size={24} className="text-accent-gold" />
+              </div>
+              <div className="flex-1 text-left">
+                <div className="text-xs tracking-wider uppercase text-white/50 mb-1">Social</div>
+                <div className="font-medium tracking-wider">@mrbrandonmills</div>
+              </div>
+            </a>
+
+            {/* Casting Networks */}
+            <a
+              href="https://app.castingnetworks.com/talent/public-profile/600c6058-65cf-11ef-9458-378752a1f84f"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 p-6 bg-white/5 border border-white/20 hover:bg-white/10 hover:border-accent-gold/50 transition-all duration-300 group"
+            >
+              <div className="w-12 h-12 flex items-center justify-center bg-accent-gold/10 border border-accent-gold/30 group-hover:bg-accent-gold/20 transition-colors">
+                <User size={24} className="text-accent-gold" />
+              </div>
+              <div className="flex-1 text-left">
+                <div className="text-xs tracking-wider uppercase text-white/50 mb-1">Acting</div>
+                <div className="font-medium tracking-wider">Casting Networks</div>
+              </div>
+            </a>
+          </div>
+
+          <p className="text-sm text-white/40 italic pt-4">
+            Open to collaborations • Available for bookings • Let's create something extraordinary
+          </p>
         </div>
       </section>
     </div>
