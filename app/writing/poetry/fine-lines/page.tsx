@@ -1,3 +1,6 @@
+'use client'
+
+import { useEffect } from 'react'
 import { Metadata } from 'next'
 import Link from 'next/link'
 
@@ -7,6 +10,10 @@ export const metadata: Metadata = {
 }
 
 export default function FineLinesPage() {
+  // Scroll to top on page load
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [])
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
