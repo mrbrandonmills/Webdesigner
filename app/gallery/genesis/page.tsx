@@ -3,14 +3,14 @@
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import { useState } from 'react'
-import { X } from 'lucide-react'
+import { X, Heart } from 'lucide-react'
 
 interface GenesisPhoto {
   id: string
   src: string
   title: string
   story: string
-  category: 'editorial' | 'campaign'
+  category: 'editorial' | 'campaign' | 'runway'
   brand?: string
 }
 
@@ -131,11 +131,11 @@ const genesisPhotos: GenesisPhoto[] = [
     category: 'editorial'
   },
   {
-    id: 'e25',
-    src: '/images/gallery/genesis/editorial/B.25.jpg',
-    title: 'Urban Explorer',
-    story: 'Shot on rooftops across downtown LA, this series captured the restless spirit of a city that never sleeps.',
-    category: 'editorial'
+    id: 'r1',
+    src: '/images/gallery/genesis/runway/B.25.jpg',
+    title: 'Runway Debut',
+    story: 'Walking the runway with confidence and presence. This moment captured the power of movement and the energy of live fashion.',
+    category: 'runway'
   },
   {
     id: 'e26',
@@ -375,7 +375,7 @@ const genesisPhotos: GenesisPhoto[] = [
 
 export default function GenesisGallery() {
   const [selectedPhoto, setSelectedPhoto] = useState<GenesisPhoto | null>(null)
-  const [activeTab, setActiveTab] = useState<'all' | 'editorial' | 'campaign'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'editorial' | 'campaign' | 'runway'>('all')
 
   const filteredPhotos = activeTab === 'all'
     ? genesisPhotos
@@ -383,6 +383,7 @@ export default function GenesisGallery() {
 
   const editorialCount = genesisPhotos.filter(p => p.category === 'editorial').length
   const campaignCount = genesisPhotos.filter(p => p.category === 'campaign').length
+  const runwayCount = genesisPhotos.filter(p => p.category === 'runway').length
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -409,11 +410,81 @@ export default function GenesisGallery() {
             </h1>
             <div className="w-24 h-px bg-gradient-to-r from-transparent via-accent-gold to-transparent mx-auto my-8" />
             <p className="text-xl text-white/70 font-light max-w-2xl mx-auto leading-relaxed">
-              Where it all began. 50 photos from campaigns and editorials that shaped a career.
-              From major luxury brands to groundbreaking magazine covers—each image tells a story.
+              Where it all began. 50 photos from runway shows, campaigns, and editorials that shaped a career.
+              From major luxury brands to groundbreaking magazine covers—each image tells a story of transformation and rebirth.
             </p>
           </motion.div>
         </div>
+      </section>
+
+      {/* The Rebirth - Andrew Gerard Story */}
+      <section className="pb-20 container-wide">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="max-w-4xl mx-auto"
+        >
+          <div className="border border-accent-gold/30 bg-gradient-to-br from-accent-gold/10 to-transparent p-12 rounded-3xl">
+            <div className="text-center mb-8">
+              <Heart className="text-accent-gold mx-auto mb-4" size={40} fill="currentColor" />
+              <h2 className="text-3xl md:text-4xl font-light font-serif text-white mb-4">
+                The Rebirth
+              </h2>
+              <p className="text-accent-gold text-sm tracking-wider uppercase">
+                Andrew Gerard — Vancouver
+              </p>
+            </div>
+
+            <div className="space-y-6 text-white/80 leading-relaxed">
+              <p className="text-xl font-light font-serif text-white text-center italic">
+                "Cancer victim was my new identity."
+              </p>
+
+              <p>
+                This archive includes my first modeling collaboration after being declared cancer-free. I was lost.
+                The person I used to be felt like a ghost. Cancer had stripped away my identity, my confidence,
+                my sense of self. All that remained was the label: <em>cancer survivor</em>.
+              </p>
+
+              <p>
+                Andrew Gerard saw something in me that I couldn't see yet. He created space for me to play
+                the <strong>bad guy</strong> — to embody strength, darkness, edge. Something opposite of
+                the fragility I felt inside.
+              </p>
+
+              <p className="text-accent-gold italic text-center">
+                "Like droplets of mercury coalescing..."
+              </p>
+
+              <p>
+                That's how it felt. Each frame we shot, each character choice, each moment of embodied
+                power — they were small pieces of myself coming back together. Not the old me. A new me.
+                Stronger. Wiser. Reborn through fire.
+              </p>
+
+              <p>
+                I am so grateful for Andrew working with me at a time when I couldn't yet see that I could
+                get my career back. This collaboration wasn't just a photoshoot. It was the first step toward
+                reclaiming my life. And now, the career is even stronger than before.
+              </p>
+
+              <div className="pt-6 border-t border-white/10 text-center">
+                <p className="text-sm text-white/50 uppercase tracking-wider mb-2">Photographer</p>
+                <a
+                  href="https://www.instagram.com/andrewgerardphotography"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xl font-serif text-accent-gold hover:text-accent-hover transition-colors inline-block"
+                >
+                  Andrew Gerard
+                </a>
+                <p className="text-white/60 mt-2">Director of Photography • Vancouver, Canada</p>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       </section>
 
       {/* Tab Navigation */}
@@ -428,6 +499,16 @@ export default function GenesisGallery() {
             }`}
           >
             All ({genesisPhotos.length})
+          </button>
+          <button
+            onClick={() => setActiveTab('runway')}
+            className={`px-6 py-3 border transition-all ${
+              activeTab === 'runway'
+                ? 'border-accent-gold text-accent-gold bg-accent-gold/10'
+                : 'border-white/20 text-white/60 hover:border-accent-gold/50 hover:text-white'
+            }`}
+          >
+            Runway ({runwayCount})
           </button>
           <button
             onClick={() => setActiveTab('editorial')}

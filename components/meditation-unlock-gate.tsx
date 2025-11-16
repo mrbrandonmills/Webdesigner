@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, Lock, Sparkles, Shield, Zap } from 'lucide-react'
+import { Check, Lock, Sparkles, Shield, Zap, Tag } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { Meditation } from '@/lib/meditations-data'
+import { storeUnlock } from '@/lib/meditation-unlock'
 
 interface MeditationUnlockGateProps {
   meditation: Meditation
@@ -13,6 +14,9 @@ interface MeditationUnlockGateProps {
 export function MeditationUnlockGate({ meditation, onUnlock }: MeditationUnlockGateProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [promoCode, setPromoCode] = useState('')
+  const [showPromoInput, setShowPromoInput] = useState(false)
+  const [promoMessage, setPromoMessage] = useState<string | null>(null)
 
   const handleUnlock = async () => {
     setIsLoading(true)
@@ -40,6 +44,70 @@ export function MeditationUnlockGate({ meditation, onUnlock }: MeditationUnlockG
     } catch (err) {
       console.error('Checkout error:', err)
       setError('Unable to process payment. Please try again.')
+      setIsLoading(false)
+    }
+  }
+
+  const handlePromoUnlock = async () => {
+    if (!promoCode.trim()) {
+      setError('Please enter a promo code')
+      return
+    }
+
+    // Get email from user
+    const email = prompt('Please enter your email to unlock with promo code:')
+    if (!email) {
+      return
+    }
+
+    // Basic email validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Please enter a valid email address')
+      return
+    }
+
+    setIsLoading(true)
+    setError(null)
+    setPromoMessage(null)
+
+    try {
+      // Unlock with promo code
+      const response = await fetch('/api/promo/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: promoCode,
+          contentType: 'meditation',
+          contentId: meditation.slug,
+          email,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success && data.unlocked) {
+        // Store unlock locally
+        storeUnlock(meditation.slug)
+
+        // Show success message
+        setPromoMessage('Meditation unlocked with promo code!')
+
+        // Trigger unlock callback
+        if (onUnlock) {
+          onUnlock()
+        }
+
+        // Reload page to show unlocked content
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500)
+      } else {
+        setError(data.message || 'Invalid promo code')
+        setIsLoading(false)
+      }
+    } catch (err) {
+      console.error('Promo unlock error:', err)
+      setError('Unable to process promo code. Please try again.')
       setIsLoading(false)
     }
   }
@@ -133,6 +201,54 @@ export function MeditationUnlockGate({ meditation, onUnlock }: MeditationUnlockG
         <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
           <p className="text-red-400 text-sm text-center">{error}</p>
         </div>
+      )}
+
+      {/* Success Message */}
+      {promoMessage && (
+        <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
+          <p className="text-green-400 text-sm text-center">{promoMessage}</p>
+        </div>
+      )}
+
+      {/* Promo Code Section */}
+      {showPromoInput ? (
+        <div className="mb-6 space-y-4">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+              placeholder="Enter promo code"
+              className="flex-1 px-4 py-3 bg-black/30 border border-white/20 rounded-xl text-white placeholder:text-white/40 focus:border-accent-gold/50 focus:outline-none"
+              disabled={isLoading}
+            />
+            <button
+              onClick={handlePromoUnlock}
+              disabled={isLoading || !promoCode.trim()}
+              className="px-6 py-3 bg-accent-gold/20 hover:bg-accent-gold/30 text-accent-gold font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Apply
+            </button>
+          </div>
+          <button
+            onClick={() => {
+              setShowPromoInput(false)
+              setPromoCode('')
+              setError(null)
+            }}
+            className="text-white/60 hover:text-white text-sm transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={() => setShowPromoInput(true)}
+          className="w-full mb-4 py-3 px-6 bg-black/30 hover:bg-black/40 border border-white/10 hover:border-accent-gold/30 text-white/70 hover:text-white font-medium rounded-xl transition-all flex items-center justify-center gap-2"
+        >
+          <Tag size={18} />
+          Have a promo code?
+        </button>
       )}
 
       {/* Unlock Button */}

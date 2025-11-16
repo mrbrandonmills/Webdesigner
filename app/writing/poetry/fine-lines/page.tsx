@@ -2,13 +2,88 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
-
+import { AudioReader } from '@/components/audio-reader'
 
 export default function FineLinesPage() {
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [])
+
+  const textContent = `
+Fine Lines - By Brandon Mills
+
+Artists with the front facing persona - it's an illusion
+Like how you're "fine" walking Upright with that brain contusion
+
+We lean on singular words with multiple meanings,
+but we don't know how to use them.
+
+I'm fine!
+Girl, yes you are!
+Fine I'll pay the fine
+
+Half of those are abusive
+
+We never get the full picture lost in our confusion
+Race, gender, sexuality, people excluded
+You fight - your black he's white they're Asian
+This shit, much more deep rooted
+
+Another word to work out
+Our minds, our bodies, our communities are polluted
+
+minds run Proprietary software
+What sells? Not photovoltaic cells
+Biology tells a different story about the binary
+But without an education, you're more worried about
+a job with the refinery
+Not the fucking finery
+
+One more time with that one again,
+Seemed the ostentatious are always winning,
+but you vote them into office - complain after they win
+
+Iceberg baby this shit runs deeper
+Deeper then the Mariana trench
+Pass the last stop on that ghost train haze creeper
+We're in Dante's realm now
+Yeah, you can call this heater
+
+Do you mean hot as in heat
+or hot as-in spicy?
+
+I mean without gun control I'm talking about under your seat
+
+Calm down just breathe
+
+Why didn't you teach me that when I was five
+Year old
+Before the anxiety grabbed me by the neck and stabbed me in the chest
+Daily, weekly, monthly did I say by the minute
+by the fraction of a second and every quantum moment
+that lies within it
+
+Hmm listen kid
+
+You can beat the drum but the
+The battlefields are different
+Watch out for codependence learn to be independent
+
+A mind that can contemplate
+a mind that thinks outside of what it's told is useful
+
+Grab a plane ticket, go spend a ruble
+Then a rupee, then a yen then a franc,
+Then come tell me if that Frank was from France
+or from Liechtenstein
+
+And then you can tell me which one you like better
+cause you will have seen the world
+and your eyes are more open
+and brother you can enter
+  `.trim()
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
@@ -39,6 +114,19 @@ export default function FineLinesPage() {
           <p className="text-white/60 text-sm tracking-wider uppercase">
             On Language, Pollution, & Critical Consciousness
           </p>
+        </div>
+      </section>
+
+      {/* Audio Reader */}
+      <section className="pb-12 container-wide">
+        <div className="max-w-3xl mx-auto">
+          <AudioReader
+            contentId="fine-lines"
+            title="Fine Lines"
+            textContent={textContent}
+            voicePreference="male"
+            showVoiceSelector={true}
+          />
         </div>
       </section>
 

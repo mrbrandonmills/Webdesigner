@@ -2,12 +2,52 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
+import { AudioReader } from '@/components/audio-reader'
 
 export default function TheTourbillonPage() {
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [])
+
+  const textContent = `
+The Tourbillon - By Brandon Mills
+
+Did I take the rope off my neck
+just to put it around my wrist?
+
+Inorganic elements
+mimic a strangling fig vine
+constricting the blood flow
+that I thought would set me free
+
+but now—
+it is just a weight
+around my wrist
+
+A reminder
+that even in liberation
+we seek to be bound
+
+by something beautiful
+by something rare
+by something that tells the world:
+
+I am here.
+I matter.
+I exist within constraints of my own choosing.
+
+The tourbillon spins—
+defying gravity,
+measuring time with mechanical precision,
+while I remain
+
+still
+
+bound
+
+to the physical world.
+  `.trim()
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -39,6 +79,19 @@ export default function TheTourbillonPage() {
           <p className="text-white/60 text-sm tracking-wider uppercase">
             On Status & Constraint
           </p>
+        </div>
+      </section>
+
+      {/* Audio Reader */}
+      <section className="pb-12 container-wide">
+        <div className="max-w-3xl mx-auto">
+          <AudioReader
+            contentId="the-tourbillon"
+            title="The Tourbillon"
+            textContent={textContent}
+            voicePreference="male"
+            showVoiceSelector={true}
+          />
         </div>
       </section>
 

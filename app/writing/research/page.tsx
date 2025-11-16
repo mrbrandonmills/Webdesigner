@@ -9,22 +9,15 @@ export const metadata: Metadata = {
 
 const papers = [
   {
-    id: 'block-c-conscious-transformation',
-    title: 'Random Acts of Self-Actualization: Block C',
-    subtitle: 'Conscious Transformation and Integration',
-    authors: ['Brandon Mills', 'Jesse Doherty'],
-    year: '2025',
-    status: 'In Production',
+    id: 'quantum-coherence',
+    title: 'Enlightenment Through Science',
+    subtitle: 'Bridging Classical and Quantum Models of Consciousness',
+    authors: ['Brandon Mills'],
+    year: '2024',
+    status: 'Published',
     field: 'Consciousness Studies',
-    abstract: 'The final volume in the Random Acts trilogy explores conscious transformation through the lens of integration. Bridging gaps between theory and practice, this work synthesizes insights from quantum physics, psychology, and lived experience.',
-    chapters: [
-      'Chapter IV: Conscious Transformation',
-      'Chapter V: Bridging the Gaps',
-      'Chapter VI: The Integration',
-      'Conclusion: The Invitation Forward',
-    ],
-    coverImage: '/images/research/block-c-preview.jpg', // Placeholder
-    pdfAvailable: false,
+    abstract: 'This paper explores the intersection of classical physics, quantum mechanics, psychology, and Buddhist philosophy to propose a scientific framework for understanding enlightenment. By examining consciousness through both classical and quantum lenses, we reveal how the transition from deterministic mental states to quantum coherence may represent the path to liberation from suffering.',
+    link: '/writing/research/quantum-coherence',
   },
 ]
 
@@ -126,7 +119,14 @@ export default function ResearchPage() {
 
                 {/* CTA */}
                 <div className="flex flex-wrap items-center gap-4 pt-4">
-                  {paper.pdfAvailable ? (
+                  {paper.link ? (
+                    <Link
+                      href={paper.link}
+                      className="px-8 py-3 bg-accent-gold text-black font-medium tracking-wider hover:bg-accent-hover transition-colors"
+                    >
+                      READ FULL PAPER
+                    </Link>
+                  ) : paper.pdfAvailable ? (
                     <a
                       href={`/research/${paper.id}.pdf`}
                       className="px-8 py-3 bg-accent-gold text-black font-medium tracking-wider hover:bg-accent-hover transition-colors"
@@ -138,13 +138,6 @@ export default function ResearchPage() {
                       PDF COMING SOON
                     </div>
                   )}
-
-                  <Link
-                    href="/store/books"
-                    className="px-8 py-3 border border-accent-gold text-accent-gold hover:bg-accent-gold hover:text-black transition-all font-medium tracking-wider"
-                  >
-                    VIEW PUBLISHED SERIES
-                  </Link>
                 </div>
               </div>
             </article>

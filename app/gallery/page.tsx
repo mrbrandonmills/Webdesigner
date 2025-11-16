@@ -21,23 +21,23 @@ export default async function GalleryPage() {
             Latest Work
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Andrew Gerard - Vancouver (The Rebirth) */}
+            {/* Genesis Archive (includes The Rebirth) */}
             <a
-              href="/gallery/collaborations/andrew-gerard"
+              href="/gallery/genesis"
               className="group relative aspect-[3/4] overflow-hidden border border-white/10 hover:border-accent-gold/50 transition-all duration-500"
             >
               <img
                 src="/images/collaborations/andrew-gerard-vancouver/image-01.jpg"
-                alt="Andrew Gerard Collaboration - Vancouver"
+                alt="Genesis Archive - The Rebirth"
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6">
                 <p className="text-accent-gold text-xs tracking-[0.2em] uppercase mb-2">
-                  The Rebirth
+                  The Archive
                 </p>
-                <h3 className="text-white text-2xl font-serif mb-2">Andrew Gerard</h3>
+                <h3 className="text-white text-2xl font-serif mb-2">Genesis</h3>
                 <p className="text-white/60 text-sm">
-                  First collaboration post-cancer · Vancouver
+                  The Rebirth · Runway · Editorial · Campaigns
                 </p>
               </div>
             </a>
@@ -60,27 +60,6 @@ export default async function GalleryPage() {
                 <p className="text-white/60 text-sm">
                   158 images · 7 series · Los Angeles
                 </p>
-              </div>
-            </a>
-
-            {/* Genesis - Coming Soon */}
-            <a
-              href="/gallery/genesis"
-              className="group relative aspect-[3/4] overflow-hidden border border-white/10 hover:border-accent-gold/50 transition-all duration-500"
-            >
-              <div className="w-full h-full bg-gradient-to-br from-white/5 to-white/[0.02] flex items-center justify-center">
-                <div className="text-center p-8">
-                  <p className="text-accent-gold text-xs tracking-[0.2em] uppercase mb-3">
-                    Archive
-                  </p>
-                  <h3 className="text-white text-2xl font-serif mb-3">Genesis</h3>
-                  <p className="text-white/60 text-sm mb-4">
-                    Runway · Editorial · Campaigns
-                  </p>
-                  <p className="text-white/40 text-xs">
-                    Dolce & Gabbana · Armani · GQ
-                  </p>
-                </div>
               </div>
             </a>
           </div>

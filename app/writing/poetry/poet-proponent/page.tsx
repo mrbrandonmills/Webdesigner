@@ -2,13 +2,51 @@
 
 import { useEffect } from 'react'
 import Link from 'next/link'
-
+import { AudioReader } from '@/components/audio-reader'
 
 export default function PoetProponentPage() {
   // Scroll to top on page load
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }, [])
+
+  const textContent = `
+Poet, Proponent - By Brandon Mills
+
+My fists these cuffs my mouth rips this cus
+Cuz cousin this is our life's sis y fus
+but don't fuss too much
+
+That's why your hands are in the man's
+pushing back their demands - their scripture, their doctrine.
+They're fucking high commands
+
+Yo, I'll take it to my man's 125th St., Harlem barbershop
+the agora still stands
+
+Politican finger lickin' we got a thing for this diction -
+but what we face is restriction -
+covalent bonds in the hood,
+and we share atoms with addiction
+
+Psychoanalytic methodologies come from survival - just living
+Not college curated
+
+We have phd's before prison
+
+They say 10,000 hours to Master
+But Master - that time in your debt
+steals the song from the laughter -
+
+I'd rather put that time into plaster
+Like a Robert Lugo mash up
+and find myself
+
+A poet,
+a proponent of my life
+from here on after
+  `.trim()
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
@@ -39,6 +77,19 @@ export default function PoetProponentPage() {
           <p className="text-white/60 text-sm tracking-wider uppercase">
             On Systemic Oppression & Liberation Through Art
           </p>
+        </div>
+      </section>
+
+      {/* Audio Reader */}
+      <section className="pb-12 container-wide">
+        <div className="max-w-3xl mx-auto">
+          <AudioReader
+            contentId="poet-proponent"
+            title="Poet, Proponent"
+            textContent={textContent}
+            voicePreference="male"
+            showVoiceSelector={true}
+          />
         </div>
       </section>
 

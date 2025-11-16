@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Document, Page, pdfjs } from 'react-pdf'
 import { Lock, Unlock, BookOpen, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react'
 import { RippleButton } from './ripple-button'
+import { AudioReader } from './audio-reader'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Configure PDF.js worker - only in browser
@@ -18,6 +19,8 @@ interface PDFBookViewerClientProps {
   pdfUrl: string
   teaserPages?: number
   unlockPrice?: number
+  audioTextContent?: string
+  showAudioReader?: boolean
 }
 
 export function PDFBookViewerClient({
@@ -27,6 +30,8 @@ export function PDFBookViewerClient({
   pdfUrl,
   teaserPages = 10,
   unlockPrice = 5,
+  audioTextContent,
+  showAudioReader = false,
 }: PDFBookViewerClientProps) {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -168,6 +173,21 @@ export function PDFBookViewerClient({
           )}
         </div>
       </div>
+
+      {/* Audio Reader */}
+      {showAudioReader && audioTextContent && (
+        <div className="container-wide pb-12">
+          <div className="max-w-4xl mx-auto">
+            <AudioReader
+              contentId={bookId}
+              title={title}
+              textContent={audioTextContent}
+              voicePreference="male"
+              showVoiceSelector={true}
+            />
+          </div>
+        </div>
+      )}
 
       {/* PDF Viewer */}
       <div className="container-wide pb-32">

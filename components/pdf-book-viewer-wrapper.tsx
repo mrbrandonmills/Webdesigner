@@ -22,6 +22,8 @@ interface PDFBookViewerWrapperProps {
   pdfUrl: string
   teaserPages?: number
   unlockPrice?: number
+  audioTextContent?: string
+  showAudioReader?: boolean
 }
 
 export function PDFBookViewerWrapper(props: PDFBookViewerWrapperProps) {

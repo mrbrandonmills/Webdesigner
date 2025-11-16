@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Lock, Unlock, BookOpen } from 'lucide-react'
+import { Lock, Unlock, BookOpen, Tag } from 'lucide-react'
 import { RippleButton } from './ripple-button'
+import { AudioReader } from './audio-reader'
 
 interface BookReaderProps {
   bookId: string
@@ -11,6 +12,8 @@ interface BookReaderProps {
   htmlContent: string
   teaserPercentage?: number // What % to show as preview (default 20%)
   unlockPrice?: number // Price in dollars (default $5)
+  audioTextContent?: string // Optional text content for audio reader
+  showAudioReader?: boolean // Whether to show audio reader (default false)
 }
 
 export function BookReader({
@@ -20,10 +23,16 @@ export function BookReader({
   htmlContent,
   teaserPercentage = 20,
   unlockPrice = 5,
+  audioTextContent,
+  showAudioReader = false,
 }: BookReaderProps) {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [displayHtml, setDisplayHtml] = useState<string>('')
+  const [promoCode, setPromoCode] = useState('')
+  const [showPromoInput, setShowPromoInput] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [promoMessage, setPromoMessage] = useState<string | null>(null)
 
   // Check if book is already unlocked
   useEffect(() => {
@@ -79,6 +88,66 @@ export function BookReader({
     }
   }
 
+  const handlePromoUnlock = async () => {
+    if (!promoCode.trim()) {
+      setError('Please enter a promo code')
+      return
+    }
+
+    // Get email from user
+    const email = prompt('Please enter your email to unlock with promo code:')
+    if (!email) {
+      return
+    }
+
+    // Basic email validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Please enter a valid email address')
+      return
+    }
+
+    setIsProcessing(true)
+    setError(null)
+    setPromoMessage(null)
+
+    try {
+      // Unlock with promo code
+      const response = await fetch('/api/promo/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: promoCode,
+          contentType: 'book',
+          contentId: bookId,
+          email,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.success && data.unlocked) {
+        // Store unlock locally
+        localStorage.setItem(`book-unlocked-${bookId}`, 'true')
+        setIsUnlocked(true)
+
+        // Show success message
+        setPromoMessage('Book unlocked with promo code!')
+
+        // Reload page to show unlocked content
+        setTimeout(() => {
+          window.location.reload()
+        }, 1500)
+      } else {
+        setError(data.message || 'Invalid promo code')
+        setIsProcessing(false)
+      }
+    } catch (err) {
+      console.error('Promo unlock error:', err)
+      setError('Unable to process promo code. Please try again.')
+      setIsProcessing(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Book Header */}
@@ -102,10 +171,66 @@ export function BookReader({
           )}
 
           {!isUnlocked && (
-            <div className="pt-6">
+            <div className="pt-6 space-y-4">
               <p className="text-white/50 mb-6">
                 Reading preview • Unlock full book for ${unlockPrice}
               </p>
+
+              {/* Error Message */}
+              {error && (
+                <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl mb-4">
+                  <p className="text-red-400 text-sm text-center">{error}</p>
+                </div>
+              )}
+
+              {/* Success Message */}
+              {promoMessage && (
+                <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-xl mb-4">
+                  <p className="text-green-400 text-sm text-center">{promoMessage}</p>
+                </div>
+              )}
+
+              {/* Promo Code Input */}
+              {showPromoInput ? (
+                <div className="space-y-3 mb-4">
+                  <div className="flex gap-2 max-w-md mx-auto">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                      placeholder="Enter promo code"
+                      className="flex-1 px-4 py-3 bg-black/30 border border-white/20 rounded-xl text-white placeholder:text-white/40 focus:border-accent-gold/50 focus:outline-none"
+                      disabled={isProcessing}
+                    />
+                    <button
+                      onClick={handlePromoUnlock}
+                      disabled={isProcessing || !promoCode.trim()}
+                      className="px-6 py-3 bg-accent-gold/20 hover:bg-accent-gold/30 text-accent-gold font-medium rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowPromoInput(false)
+                      setPromoCode('')
+                      setError(null)
+                    }}
+                    className="text-white/60 hover:text-white text-sm transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setShowPromoInput(true)}
+                  className="mb-4 py-3 px-6 bg-black/30 hover:bg-black/40 border border-white/10 hover:border-accent-gold/30 text-white/70 hover:text-white font-medium rounded-full transition-all inline-flex items-center gap-2"
+                >
+                  <Tag size={18} />
+                  Have a promo code?
+                </button>
+              )}
+
               <RippleButton
                 onClick={handleUnlock}
                 disabled={isProcessing}
@@ -118,6 +243,21 @@ export function BookReader({
           )}
         </div>
       </div>
+
+      {/* Audio Reader */}
+      {showAudioReader && audioTextContent && (
+        <div className="container-wide pb-12">
+          <div className="max-w-3xl mx-auto">
+            <AudioReader
+              contentId={bookId}
+              title={title}
+              textContent={audioTextContent}
+              voicePreference="male"
+              showVoiceSelector={true}
+            />
+          </div>
+        </div>
+      )}
 
       {/* Book Content */}
       <div className="container-wide pb-32">
