@@ -100,24 +100,13 @@ export default function ResearchPage() {
 
                 {/* CTA */}
                 <div className="flex flex-wrap items-center gap-4 pt-4">
-                  {paper.link ? (
+                  {paper.link && (
                     <Link
                       href={paper.link}
                       className="px-8 py-3 bg-accent-gold text-black font-medium tracking-wider hover:bg-accent-hover transition-colors"
                     >
                       READ FULL PAPER
                     </Link>
-                  ) : paper.pdfAvailable ? (
-                    <a
-                      href={`/research/${paper.id}.pdf`}
-                      className="px-8 py-3 bg-accent-gold text-black font-medium tracking-wider hover:bg-accent-hover transition-colors"
-                    >
-                      DOWNLOAD PDF
-                    </a>
-                  ) : (
-                    <div className="px-8 py-3 bg-white/5 border border-white/10 text-white/60 font-medium tracking-wider">
-                      PDF COMING SOON
-                    </div>
                   )}
                 </div>
               </div>
