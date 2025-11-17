@@ -9,6 +9,7 @@ import {
   calculateCommission,
   type AffiliateProduct
 } from '@/lib/affiliate-manager'
+import { trackAmazonClick } from '@/lib/analytics'
 
 interface AffiliateProductCardProps {
   product: AffiliateProduct
@@ -33,11 +34,14 @@ export function AffiliateProductCard({
   const commission = calculateCommission(product.price, product.program)
 
   const handleClick = async () => {
-    // Track the click
+    // Track the click in our database
     await trackAffiliateClick(product.id, product.program, {
       referrer: window.location.href,
       userAgent: navigator.userAgent,
     })
+
+    // Track in Google Analytics
+    trackAmazonClick(product.name, product.price, product.category)
 
     // Open in new tab
     window.open(affiliateLink, '_blank', 'noopener,noreferrer')

@@ -9,6 +9,7 @@ import CartSidebar from '@/components/cart-sidebar'
 import ToastWrapper from '@/components/toast-wrapper'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { ConciergeWidget } from '@/components/concierge/concierge-widget'
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ export default function RootLayout({
             <ConciergeWidget />
             <ToastWrapper />
             <Analytics />
+            <GoogleAnalytics />
           </CartProvider>
         </ErrorBoundary>
       </body>

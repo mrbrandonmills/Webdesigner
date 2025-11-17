@@ -5,6 +5,7 @@ import { Check, Lock, Sparkles, Shield, Zap, Tag } from 'lucide-react'
 import { motion } from 'framer-motion'
 import type { Meditation } from '@/lib/meditations-data'
 import { storeUnlock } from '@/lib/meditation-unlock'
+import { trackBeginCheckout } from '@/lib/analytics'
 
 interface MeditationUnlockGateProps {
   meditation: Meditation
@@ -21,6 +22,17 @@ export function MeditationUnlockGate({ meditation, onUnlock }: MeditationUnlockG
   const handleUnlock = async () => {
     setIsLoading(true)
     setError(null)
+
+    // Track checkout initiation in Google Analytics
+    trackBeginCheckout(meditation.price, [
+      {
+        item_id: meditation.slug,
+        item_name: meditation.title,
+        item_category: 'meditation',
+        price: meditation.price,
+        quantity: 1,
+      },
+    ])
 
     try {
       // Create Stripe checkout session

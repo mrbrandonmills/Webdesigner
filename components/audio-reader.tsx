@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { Play, Pause, Volume2, VolumeX, User } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { trackAudioPlay, trackAudioComplete } from '@/lib/analytics'
 
 interface AudioReaderProps {
   contentId: string
@@ -78,7 +79,11 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       console.log('Audio duration loaded:', audio.duration)
       setDuration(audio.duration)
     }
-    const handleEnded = () => setIsPlaying(false)
+    const handleEnded = () => {
+      setIsPlaying(false)
+      // Track audio completion
+      trackAudioComplete(contentType, contentId, audio.duration)
+    }
     const handleError = (e: Event) => {
       console.error('Audio error:', e)
       const audioElement = e.target as HTMLAudioElement
@@ -247,6 +252,8 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
           console.log('After play - volume:', audio.volume, 'muted:', audio.muted, 'currentTime:', audio.currentTime)
           setIsPlaying(true)
           setErrorMessage(null)
+          // Track audio play event
+          trackAudioPlay(contentType, contentId, title)
         })
         .catch(err => {
           console.error('Play failed:', err)

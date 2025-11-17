@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { getMeditationBySlug } from '@/lib/meditations-data'
 import { AudioReader } from '@/components/audio-reader'
+import { trackPurchase } from '@/lib/analytics'
 
 interface PageProps {
   params: Promise<{
@@ -41,6 +42,11 @@ export default function MeditationSuccessPage({ params }: PageProps) {
           if (!purchases.includes(resolvedParams.slug)) {
             purchases.push(resolvedParams.slug)
             localStorage.setItem('meditation_purchases', JSON.stringify(purchases))
+          }
+
+          // Track purchase in Google Analytics
+          if (meditation) {
+            trackPurchase(meditation.title, meditation.price, sessionId || undefined)
           }
         }
       } catch (error) {
@@ -150,7 +156,7 @@ export default function MeditationSuccessPage({ params }: PageProps) {
             textContent={meditation.description}
             voicePreference="male"
             showVoiceSelector={true}
-            contentType="meditation"
+            contentType="article"
           />
         </div>
       </section>
