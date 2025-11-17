@@ -21,15 +21,24 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
   const [isGenerating, setIsGenerating] = useState(false)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [selectedVoice, setSelectedVoice] = useState<'male' | 'female' | 'male-indian' | 'female-indian'>(voicePreference)
+  const [justGenerated, setJustGenerated] = useState(false)
 
   const audioRef = useRef<HTMLAudioElement>(null)
 
   // Check if audio already exists in cache
   useEffect(() => {
-    const cachedUrl = localStorage.getItem(`audio-${contentId}-${selectedVoice}`)
-    if (cachedUrl) {
-      setAudioUrl(cachedUrl)
+    // Stop current playback when voice changes
+    if (isPlaying) {
+      const audio = audioRef.current
+      if (audio) {
+        audio.pause()
+        setIsPlaying(false)
+      }
     }
+
+    // Load cached audio for selected voice, or clear if none exists
+    const cachedUrl = localStorage.getItem(`audio-${contentId}-${selectedVoice}`)
+    setAudioUrl(cachedUrl)
   }, [contentId, selectedVoice])
 
   // Update time as audio plays
@@ -52,6 +61,28 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
     }
   }, [audioUrl])
 
+  // Auto-play after audio generation completes (not when loading from cache)
+  useEffect(() => {
+    if (audioUrl && !isGenerating && justGenerated) {
+      const audio = audioRef.current
+      if (audio) {
+        // Small delay to ensure audio element is ready
+        setTimeout(() => {
+          audio.play()
+            .then(() => {
+              setIsPlaying(true)
+              setJustGenerated(false) // Reset flag
+            })
+            .catch(err => {
+              console.error('Auto-play failed:', err)
+              setJustGenerated(false) // Reset flag even on error
+              // Some browsers block auto-play, that's okay
+            })
+        }, 100)
+      }
+    }
+  }, [audioUrl, isGenerating, justGenerated])
+
   const generateAudio = async () => {
     setIsGenerating(true)
 
@@ -71,6 +102,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       if (data.audioUrl) {
         setAudioUrl(data.audioUrl)
         localStorage.setItem(`audio-${contentId}-${selectedVoice}`, data.audioUrl)
+        setJustGenerated(true) // Mark that we just generated audio (for auto-play)
       }
     } catch (error) {
       console.error('Failed to generate audio:', error)
