@@ -262,31 +262,32 @@ export const MEDITATIONS: Meditation[] = [
   }
 ]
 
-// Voice configurations for Cartesia API
+// Voice configurations for Cartesia API - Premium storytelling voices
+// Chosen for depth, warmth, and soothing quality perfect for meditation and poetry
 export const VOICE_CONFIGS = {
   male: {
-    id: '63ff761f-c1e8-414b-b969-d1833d1c870c',
-    name: 'British Male',
-    description: 'Classy British Man - Soothing, sophisticated, perfect for philosophy and empowerment',
-    accent: 'British'
+    id: 'f114a467-c40a-4db8-964d-aaba89cd08fa',
+    name: 'Miles - Yogi',
+    description: 'Deep, soothing mature male voice - perfect for meditation guidance and philosophical narration',
+    accent: 'American'
   },
   female: {
-    id: '79a125e8-cd45-4c13-8a67-188112f4dd22',
-    name: 'British Female',
-    description: 'British Lady - Calm, elegant, ideal for poetry and gentle guidance',
-    accent: 'British'
+    id: '03496517-369a-4db1-8236-3d3ae459ddf7',
+    name: 'Calypso - ASMR Lady',
+    description: 'Soothing, calming female voice - ideal for meditation, poetry, and gentle storytelling',
+    accent: 'American'
   },
   'male-indian': {
-    id: '846d6cb0-2301-48b6-9683-48f5618ea2f6',
-    name: 'Indian Male',
-    description: 'Indian Man - Warm, soothing, meditative quality for healing practices',
+    id: '1259b7e3-cb8a-43df-9446-30971a46b8b0',
+    name: 'Devansh - Warm Support',
+    description: 'Warm, conversational Indian male voice - Deepak Chopra-like quality for spiritual guidance',
     accent: 'Indian'
   },
   'female-indian': {
-    id: 'e13cae5c-ec59-4f71-b0a6-266df3c9ea12',
-    name: 'Indian Female',
-    description: 'Indian Lady - Gentle, calming, spiritual tone for sleep and compassion',
-    accent: 'Indian'
+    id: 'd7e54830-4754-4b17-952c-bcdb7e80a2fb',
+    name: 'Mabel - Grandma',
+    description: 'Friendly, grandmotherly female voice - warm maternal storytelling for empathetic narration',
+    accent: 'American'
   }
 }
 

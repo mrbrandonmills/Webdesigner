@@ -308,7 +308,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
                   : 'text-white/60 hover:text-white'
               }`}
             >
-              British Male
+              Miles (Yogi)
             </button>
             <button
               onClick={() => setSelectedVoice('female')}
@@ -318,7 +318,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
                   : 'text-white/60 hover:text-white'
               }`}
             >
-              British Female
+              Calypso (ASMR)
             </button>
             <button
               onClick={() => setSelectedVoice('male-indian')}
@@ -328,7 +328,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
                   : 'text-white/60 hover:text-white'
               }`}
             >
-              Indian Male
+              Devansh (Warm)
             </button>
             <button
               onClick={() => setSelectedVoice('female-indian')}
@@ -338,7 +338,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
                   : 'text-white/60 hover:text-white'
               }`}
             >
-              Indian Female
+              Mabel (Grandma)
             </button>
           </div>
         )}

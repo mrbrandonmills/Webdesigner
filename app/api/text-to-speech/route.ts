@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Cartesia voices - Ultra-realistic, soothing English accents perfect for meditation and poetry
+// Cartesia voices - Premium storytelling voices for meditation, poetry, and narration
+// Chosen for depth, warmth, and soothing quality (like David Attenborough, Barry White, Denzel Washington, Deepak Chopra)
 const VOICES = {
-  male: '63ff761f-c1e8-414b-b969-d1833d1c870c', // Classy British Man - Soothing, sophisticated, perfect for philosophy
-  female: '79a125e8-cd45-4c13-8a67-188112f4dd22', // British Lady - Calm, elegant, ideal for poetry
-  'male-indian': '846d6cb0-2301-48b6-9683-48f5618ea2f6', // Indian Man - Warm, soothing, meditative quality
-  'female-indian': 'e13cae5c-ec59-4f71-b0a6-266df3c9ea12', // Indian Lady - Gentle, calming, spiritual tone
+  male: 'f114a467-c40a-4db8-964d-aaba89cd08fa', // Miles - Yogi: Deep, soothing mature male perfect for guidance and meditation
+  female: '03496517-369a-4db1-8236-3d3ae459ddf7', // Calypso - ASMR Lady: Soothing female for meditations and calming narration
+  'male-indian': '1259b7e3-cb8a-43df-9446-30971a46b8b0', // Devansh - Warm Support Agent: Warm, conversational Indian male (Deepak Chopra vibe)
+  'female-indian': 'd7e54830-4754-4b17-952c-bcdb7e80a2fb', // Mabel - Grandma: Friendly, grandmotherly female for empathetic storytelling
 }
 
 export async function POST(request: NextRequest) {
