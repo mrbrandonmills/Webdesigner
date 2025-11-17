@@ -58,16 +58,41 @@ export async function POST(request: NextRequest) {
       throw new Error(`Cartesia API error: ${response.statusText}`)
     }
 
-    // Get audio data
+    // Get audio data as binary
     const audioBuffer = await response.arrayBuffer()
-    const base64Audio = Buffer.from(audioBuffer).toString('base64')
-    const audioUrl = `data:audio/mpeg;base64,${base64Audio}`
 
-    return NextResponse.json({
-      audioUrl,
-      contentId,
-      voice,
-      duration: null, // Will be set by the audio element
+    // Log audio size for debugging
+    console.log('Generated audio size:', audioBuffer.byteLength, 'bytes')
+
+    // Verify it's valid MP3 data by checking for either:
+    // 1. MP3 frame header (0xFF 0xE0-0xFF) - raw MP3 audio
+    // 2. ID3v2 tag header (0x49 0x44 0x33 = "ID3") - MP3 with metadata
+    const uint8Array = new Uint8Array(audioBuffer)
+    const hasMp3FrameHeader = uint8Array[0] === 0xFF && (uint8Array[1] & 0xE0) === 0xE0
+    const hasId3Tag = uint8Array[0] === 0x49 && uint8Array[1] === 0x44 && uint8Array[2] === 0x33
+    const isValidMp3 = hasMp3FrameHeader || hasId3Tag
+
+    console.log('Valid MP3 format:', {
+      hasMp3FrameHeader,
+      hasId3Tag,
+      isValid: isValidMp3
+    })
+
+    if (!isValidMp3) {
+      console.error('Invalid MP3 data received from Cartesia API')
+      console.error('First 10 bytes:', Array.from(uint8Array.slice(0, 10)).map(b => `0x${b.toString(16)}`).join(' '))
+      throw new Error('Invalid audio format received')
+    }
+
+    // Return raw audio data as binary response instead of base64
+    // This is more efficient and avoids localStorage size limits
+    return new NextResponse(audioBuffer, {
+      status: 200,
+      headers: {
+        'Content-Type': 'audio/mpeg',
+        'Content-Length': audioBuffer.byteLength.toString(),
+        'Cache-Control': 'public, max-age=31536000', // Cache for 1 year
+      },
     })
   } catch (error) {
     console.error('Text-to-speech error:', error)
