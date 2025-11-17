@@ -3,8 +3,31 @@ import Link from 'next/link'
 import { FileText, BookOpen, Feather, Library } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Writing | Brandon Mills',
-  description: 'Research papers, philosophical essays, and poetry exploring consciousness, self-actualization, and the human condition.',
+  title: 'Writing: Books, Essays & Poetry | Brandon Mills',
+  description: 'Explore deep essays on philosophy, self-improvement books, and contemplative poetry from polymath Brandon Mills.',
+  keywords: [
+    'philosophy essays',
+    'self-improvement books',
+    'poetry',
+    'philosophical writing',
+    'consciousness research',
+    'self-actualization writing',
+    'poetry 2025',
+    'philosophy books',
+    'Brandon Mills writing',
+    'polymath essays'
+  ],
+  openGraph: {
+    title: 'Writing: Books, Essays & Poetry | Brandon Mills',
+    description: 'Explore deep essays on philosophy, self-improvement books, and contemplative poetry from polymath Brandon Mills.',
+    type: 'website',
+    url: 'https://brandonmills.com/writing',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Writing: Books, Essays & Poetry | Brandon Mills',
+    description: 'Deep essays on philosophy, self-improvement books, and contemplative poetry.',
+  },
 }
 
 export default function WritingPage() {

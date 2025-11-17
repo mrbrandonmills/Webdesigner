@@ -15,6 +15,15 @@ export default function BlogPage() {
   // Featured blog posts
   const posts = [
     {
+      slug: '/blog/best-noise-canceling-headphones-2025',
+      category: 'Product Reviews',
+      title: 'Best Noise Canceling Headphones 2025: AirPods Max vs Sony WH-1000XM5',
+      excerpt: 'I tested both for 30 days to find the best noise canceling headphones for deep focus and work. Complete comparison with definitive recommendations.',
+      date: 'January 2025',
+      coverImage: '/images/blog/headphones-comparison.jpg',
+      readTime: '9 min read',
+    },
+    {
       slug: '/blog/photographer-collaborations/am-reed-august-2024',
       category: 'Latest Work',
       title: 'Creative Chemistry: Working with AM Reed',

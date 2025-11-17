@@ -3,13 +3,15 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ExternalLink, Star, Check, ShoppingBag, Award, Shield, Clock } from 'lucide-react'
 import { getProductBySlug } from '@/lib/affiliate-products'
+import { ProductSchema, BreadcrumbSchema } from '@/components/seo/ProductSchema'
 
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string }
+  params: Promise<{ slug: string }>
 }): Promise<Metadata> {
-  const product = getProductBySlug(params.slug)
+  const { slug } = await params
+  const product = getProductBySlug(slug)
 
   if (!product) {
     return {
@@ -17,18 +19,46 @@ export async function generateMetadata({
     }
   }
 
+  const discount = product.originalPrice
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0
+
+  const priceHint = product.originalPrice
+    ? `$${product.price} (${discount}% off)`
+    : `$${product.price}`
+
+  const seoTitle = `${product.name} Review 2025 - ${priceHint} | Brandon Mills`
+  const seoDescription = `${product.description.slice(0, 120)}... Rating: ${product.rating}/5 (${product.reviewCount} reviews). ${product.benefits[0]}.`
+
   return {
-    title: `${product.name} | Shop | Brandon Mills`,
-    description: product.description,
+    title: seoTitle,
+    description: seoDescription,
+    keywords: [
+      product.name,
+      product.brand,
+      `${product.category} 2025`,
+      'review',
+      'best ' + product.category,
+      product.brand + ' products',
+      'premium ' + product.category
+    ],
     openGraph: {
-      title: product.name,
-      description: product.description,
+      title: `${product.name} - ${product.brand}`,
+      description: seoDescription,
+      type: 'product',
+      url: `https://brandonmills.com/shop/${product.slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.name} - ${product.brand}`,
+      description: product.description.slice(0, 140),
     },
   }
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = getProductBySlug(params.slug)
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  const product = getProductBySlug(slug)
 
   if (!product) {
     notFound()
@@ -38,8 +68,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0
 
+  // Generate the full product URL for schema
+  const productUrl = `https://brandonmills.com/shop/${product.slug}`
+
   return (
-    <div className="min-h-screen bg-black text-white">
+    <>
+      {/* SEO Schema Markup for Google Rich Snippets */}
+      <ProductSchema product={product} url={productUrl} />
+      <BreadcrumbSchema product={product} />
+
+      <div className="min-h-screen bg-black text-white">
       {/* Navigation */}
       <section className="pt-32 pb-12 container-wide">
         <div className="max-w-6xl mx-auto">
@@ -286,5 +324,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         </div>
       </section>
     </div>
+    </>
   )
 }

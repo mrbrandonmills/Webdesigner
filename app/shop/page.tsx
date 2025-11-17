@@ -4,11 +4,28 @@ import { ExternalLink, Star, ShoppingBag } from 'lucide-react'
 import { affiliateProducts } from '@/lib/affiliate-products'
 
 export const metadata: Metadata = {
-  title: 'Shop | Brandon Mills',
-  description: 'Curated premium products that enhance your life. Carefully selected tools, beauty, wellness, and lifestyle essentials.',
+  title: 'Premium Curated Products | Shop | Brandon Mills',
+  description: 'Discover 21 premium products for polymaths: MacBook Pro, AirPods Max, philosophy books, NASA merch. Quality over quantity.',
+  keywords: [
+    'premium products',
+    'curated shop',
+    'polymath essentials',
+    'quality products',
+    'lifestyle products 2025',
+    'recommended products',
+    'affiliate shop',
+    'premium lifestyle'
+  ],
   openGraph: {
-    title: 'Shop | Brandon Mills',
-    description: 'Premium curated products for elevated living',
+    title: 'Premium Curated Products | Shop | Brandon Mills',
+    description: 'Discover 21 premium products for polymaths: MacBook Pro, AirPods Max, philosophy books, NASA merch. Quality over quantity.',
+    type: 'website',
+    url: 'https://brandonmills.com/shop',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Premium Curated Products | Shop | Brandon Mills',
+    description: 'Discover 21 premium products for polymaths. Quality over quantity.',
   },
 }
 
