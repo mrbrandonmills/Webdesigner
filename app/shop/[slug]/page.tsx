@@ -45,7 +45,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${product.name} - ${product.brand}`,
       description: seoDescription,
-      type: 'product',
+      type: 'website',
       url: `https://brandonmills.com/shop/${product.slug}`,
     },
     twitter: {
