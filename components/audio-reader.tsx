@@ -42,19 +42,18 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       URL.revokeObjectURL(audioUrl)
     }
 
-    // Load cached audio for selected voice, or clear if none exists
-    // Note: Blob URLs won't work across page refreshes, so we'll need to regenerate
+    // Clear ALL old cached audio (blob URLs and old base64 data URLs)
+    // Blob URLs are session-specific and invalid after refresh
+    // Base64 data URLs are from old implementation and don't work with CSP
     const cachedUrl = localStorage.getItem(`audio-${contentId}-${selectedVoice}`)
 
-    // Only use cached URL if it's valid (not a revoked blob URL)
-    if (cachedUrl && cachedUrl.startsWith('blob:')) {
-      // Blob URLs from localStorage are invalid after page refresh
-      console.log('Cached blob URL is invalid, clearing cache')
+    if (cachedUrl) {
+      console.log('Clearing old cached audio format:', cachedUrl.substring(0, 30) + '...')
       localStorage.removeItem(`audio-${contentId}-${selectedVoice}`)
-      setAudioUrl(null)
-    } else {
-      setAudioUrl(cachedUrl)
     }
+
+    // Always start fresh - we'll load from blob storage or generate on-demand
+    setAudioUrl(null)
 
     // Cleanup function to revoke blob URLs
     return () => {
@@ -197,11 +196,10 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       console.log('Created blob URL:', blobUrl)
 
       setAudioUrl(blobUrl)
-
-      // Store blob URL in localStorage (it will persist for the session)
-      // Note: Blob URLs are session-specific, so this is mainly for the current session
-      localStorage.setItem(`audio-${contentId}-${selectedVoice}`, blobUrl)
       setJustGenerated(true) // Mark that we just generated audio (for auto-play)
+
+      // Don't store in localStorage - blob URLs are session-specific and invalid after refresh
+      // Later we'll use pre-generated audio from Vercel Blob Storage for instant loading
     } catch (error) {
       console.error('Failed to generate audio:', error)
       throw error
