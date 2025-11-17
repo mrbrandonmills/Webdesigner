@@ -71,6 +71,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ]
 
+  // Blog pages
+  const blogPages = [
+    {
+      url: `${baseUrl}/blog`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/blog/best-noise-canceling-headphones-2025`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/blog/braun-ipl-first-week`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.9, // High priority - personal testimonial with conversion potential
+    },
+  ]
+
   // Writing pages
   const writingPages = [
     {
@@ -139,6 +161,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...staticPages,
     ...shopPages,
     ...meditationPages,
+    ...blogPages,
     ...writingPages,
   ]
 }
