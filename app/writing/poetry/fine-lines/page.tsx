@@ -47,7 +47,7 @@ Iceberg baby this shit runs deeper
 Deeper then the Mariana trench
 Pass the last stop on that ghost train haze creeper
 We're in Dante's realm now
-Yeah, you can call this heater
+Yeah, you can call this a heater
 
 Do you mean hot as in heat
 or hot as-in spicy?
@@ -56,8 +56,7 @@ I mean without gun control I'm talking about under your seat
 
 Calm down just breathe
 
-Why didn't you teach me that when I was five
-Year old
+Why didn't you teach me that when I was five years old
 Before the anxiety grabbed me by the neck and stabbed me in the chest
 Daily, weekly, monthly did I say by the minute
 by the fraction of a second and every quantum moment
@@ -65,8 +64,7 @@ that lies within it
 
 Hmm listen kid
 
-You can beat the drum but the
-The battlefields are different
+You can beat the drum but the battlefields are different
 Watch out for codependence learn to be independent
 
 A mind that can contemplate
@@ -189,12 +187,12 @@ and brother you can enter
               <p>Deeper then the Mariana trench</p>
               <p>Pass the last stop on that ghost train haze creeper</p>
               <p className="italic">We're in Dante's realm now</p>
-              <p>Yeah, you can call this heater</p>
+              <p>Yeah, you can call this a heater</p>
 
               <div className="py-3" />
 
-              <p className="text-white/60 text-base">Do you mean hot as in heat</p>
-              <p className="text-white/60 text-base">or hot as-in spicy?</p>
+              <p>Do you mean hot as in heat</p>
+              <p>or hot as-in spicy?</p>
 
               <div className="py-3" />
 
@@ -208,8 +206,7 @@ and brother you can enter
 
               <div className="py-3" />
 
-              <p>Why didn't you teach me that when I was five</p>
-              <p>Year old</p>
+              <p>Why didn't you teach me that when I was five years old</p>
               <p>Before the anxiety grabbed me by the neck and stabbed me in the chest</p>
               <p>Daily, weekly, monthly did I say by the minute</p>
               <p>by the fraction of a second and every quantum moment</p>
@@ -223,8 +220,7 @@ and brother you can enter
 
               <div className="py-3" />
 
-              <p>You can beat the drum but the</p>
-              <p>The battlefields are different</p>
+              <p>You can beat the drum but the battlefields are different</p>
               <p>Watch out for codependence learn to be independent</p>
 
               <div className="py-3" />
