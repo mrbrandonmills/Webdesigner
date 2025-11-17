@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline'",
               "img-src 'self' data: blob: https: http:",
               "font-src 'self' data:",
-              "connect-src 'self' https://api.stripe.com https://api.openai.com https://api.anthropic.com https://api.printful.com https://*.vercel-storage.com https://vitals.vercel-insights.com",
+              "connect-src 'self' https://api.stripe.com https://api.openai.com https://api.anthropic.com https://api.cartesia.ai https://api.printful.com https://*.vercel-storage.com https://vitals.vercel-insights.com",
               "frame-src 'self' https://js.stripe.com https://hooks.stripe.com",
               "object-src 'none'",
               "base-uri 'self'",

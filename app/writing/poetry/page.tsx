@@ -10,7 +10,7 @@ const poems = [
   {
     id: 'fine-lines',
     title: 'Fine Lines',
-    year: '2024',
+    year: '2025',
     theme: 'Language, Pollution & Critical Consciousness',
     excerpt: 'We lean on singular words with multiple meanings, but we don\'t know how to use them.',
     firstLines: [
@@ -24,7 +24,7 @@ const poems = [
   {
     id: 'poet-proponent',
     title: 'Poet, Proponent',
-    year: '2024',
+    year: '2025',
     theme: 'Systemic Oppression & Liberation',
     excerpt: 'My fists these cuffs my mouth rips this cus',
     firstLines: [
@@ -39,7 +39,7 @@ const poems = [
   {
     id: 'the-tourbillon',
     title: 'The Tourbillon',
-    year: '2024',
+    year: '2025',
     theme: 'Status & Constraint',
     excerpt: 'Did I take the rope off my neck just to put it around my wrist?',
     firstLines: [

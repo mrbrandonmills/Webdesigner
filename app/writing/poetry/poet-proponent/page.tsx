@@ -65,7 +65,7 @@ from here on after
       <section className="pb-16 container-wide">
         <div className="max-w-3xl mx-auto text-center space-y-6">
           <p className="text-accent-gold text-xs tracking-[0.3em] uppercase">
-            2024
+            2025
           </p>
 
           <h1 className="text-4xl md:text-5xl font-light font-serif leading-tight">
