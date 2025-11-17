@@ -14,7 +14,11 @@
     "affiliate:create": "node scripts/affiliate-account-creator.js",
     "affiliate:manage": "node scripts/credential-manager.js",
     "affiliate:configure": "node scripts/configure-affiliate-accounts.js",
-    "affiliate:status": "node scripts/check-affiliate-status.js"
+    "affiliate:status": "node scripts/check-affiliate-status.js",
+    "audio:generate": "tsx scripts/pre-generate-poem-audio.ts",
+    "audio:update-urls": "tsx scripts/update-audio-urls.ts",
+    "audio:setup": "bash scripts/setup-pre-generated-audio.sh",
+    "audio:test": "tsx scripts/test-audio-setup.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.0.0",

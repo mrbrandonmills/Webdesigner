@@ -6,7 +6,8 @@
  * Generates audio for:
  * - 3 poems × 4 voices = 12 files
  * - 10 meditations × 4 voices = 40 files
- * Total: 52 audio files
+ * - 1 research paper × 4 voices = 4 files
+ * Total: 56 audio files
  *
  * Uploads to Vercel Blob Storage for instant loading
  *
@@ -115,8 +116,21 @@ async function extractMeditationText(meditationFile: string): Promise<string> {
     .trim()
 }
 
-async function processContent(contentId: string, text: string, type: 'poem' | 'meditation') {
-  console.log(`\n📝 ${type === 'poem' ? 'Poem' : 'Meditation'}: ${contentId}`)
+async function extractResearchText(researchSlug: string): Promise<string> {
+  const pagePath = path.join(process.cwd(), `app/writing/research/${researchSlug}/page.tsx`)
+  const content = await fs.readFile(pagePath, 'utf-8')
+
+  // Extract textContent from the file
+  const match = content.match(/const textContent = `([\s\S]*?)`/)
+  if (!match) {
+    throw new Error(`Could not extract text content from ${researchSlug}`)
+  }
+
+  return match[1].trim()
+}
+
+async function processContent(contentId: string, text: string, type: 'poem' | 'meditation' | 'research') {
+  console.log(`\n📝 ${type === 'poem' ? 'Poem' : type === 'meditation' ? 'Meditation' : 'Research Paper'}: ${contentId}`)
   console.log(`   Text length: ${text.length} characters`)
 
   for (const [voiceKey, voiceId] of Object.entries(VOICES)) {
@@ -193,6 +207,15 @@ async function main() {
   for (const { file, id } of meditations) {
     const text = await extractMeditationText(file)
     await processContent(id, text, 'meditation')
+  }
+
+  // RESEARCH PAPERS
+  console.log('\n\n📚 GENERATING RESEARCH PAPER AUDIO\n')
+  const researchPapers = ['quantum-coherence']
+
+  for (const researchSlug of researchPapers) {
+    const text = await extractResearchText(researchSlug)
+    await processContent(researchSlug, text, 'research')
   }
 
   // Save mappings
