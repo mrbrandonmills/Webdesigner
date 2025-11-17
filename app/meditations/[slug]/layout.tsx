@@ -40,7 +40,7 @@ export async function generateMetadata({
     openGraph: {
       title: `${meditation.title} - ${categoryInfo.label} Meditation`,
       description: seoDescription,
-      type: 'product',
+      type: 'website',
       url: `https://brandonmills.com/meditations/${meditation.slug}`,
     },
     twitter: {
