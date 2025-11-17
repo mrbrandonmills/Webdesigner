@@ -14,10 +14,10 @@ export const metadata: Metadata = {
 // Essay data structure - will be populated with Medium exports
 const essays = [
   {
-    slug: '/essays/self-esteem-cultivating-positive-self-image',
+    slug: '/writing/essays/self-esteem-cultivating-positive-self-image',
     title: 'Self-Esteem: Cultivating a Positive Self Image',
     excerpt: 'How cultivating a positive self-image can lead to improved confidence and self-esteem, and the practices that support authentic self-worth.',
-    date: 'February 21, 2023',
+    date: 'February 20, 2023',
     category: 'Psychology',
     readTime: '6 min read',
     coverImage: '/images/essays/self-esteem.jpg', // placeholder
