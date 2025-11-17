@@ -36,9 +36,31 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       }
     }
 
+    // Revoke previous blob URL if it exists
+    if (audioUrl && audioUrl.startsWith('blob:')) {
+      URL.revokeObjectURL(audioUrl)
+    }
+
     // Load cached audio for selected voice, or clear if none exists
+    // Note: Blob URLs won't work across page refreshes, so we'll need to regenerate
     const cachedUrl = localStorage.getItem(`audio-${contentId}-${selectedVoice}`)
-    setAudioUrl(cachedUrl)
+
+    // Only use cached URL if it's valid (not a revoked blob URL)
+    if (cachedUrl && cachedUrl.startsWith('blob:')) {
+      // Blob URLs from localStorage are invalid after page refresh
+      console.log('Cached blob URL is invalid, clearing cache')
+      localStorage.removeItem(`audio-${contentId}-${selectedVoice}`)
+      setAudioUrl(null)
+    } else {
+      setAudioUrl(cachedUrl)
+    }
+
+    // Cleanup function to revoke blob URLs
+    return () => {
+      if (audioUrl && audioUrl.startsWith('blob:')) {
+        URL.revokeObjectURL(audioUrl)
+      }
+    }
   }, [contentId, selectedVoice])
 
   // Update time as audio plays
@@ -46,18 +68,47 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
     const audio = audioRef.current
     if (!audio) return
 
+    // CRITICAL: Ensure volume is set to maximum and audio is unmuted
+    audio.volume = 1.0
+    audio.muted = false
+    console.log('Audio initialized - Volume:', audio.volume, 'Muted:', audio.muted)
+
     const updateTime = () => setCurrentTime(audio.currentTime)
-    const updateDuration = () => setDuration(audio.duration)
+    const updateDuration = () => {
+      console.log('Audio duration loaded:', audio.duration)
+      setDuration(audio.duration)
+    }
     const handleEnded = () => setIsPlaying(false)
+    const handleError = (e: Event) => {
+      console.error('Audio error:', e)
+      const audioElement = e.target as HTMLAudioElement
+      if (audioElement.error) {
+        console.error('Audio error code:', audioElement.error.code)
+        console.error('Audio error message:', audioElement.error.message)
+      }
+    }
+    const handleCanPlay = () => {
+      console.log('Audio can play - ready to start')
+      console.log('Volume at canPlay:', audio.volume, 'Muted:', audio.muted)
+    }
 
     audio.addEventListener('timeupdate', updateTime)
     audio.addEventListener('loadedmetadata', updateDuration)
     audio.addEventListener('ended', handleEnded)
+    audio.addEventListener('error', handleError)
+    audio.addEventListener('canplay', handleCanPlay)
+
+    // Log audio element properties
+    console.log('Audio element src:', audio.src.substring(0, 100) + '...')
+    console.log('Audio element readyState:', audio.readyState)
+    console.log('Audio element networkState:', audio.networkState)
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime)
       audio.removeEventListener('loadedmetadata', updateDuration)
       audio.removeEventListener('ended', handleEnded)
+      audio.removeEventListener('error', handleError)
+      audio.removeEventListener('canplay', handleCanPlay)
     }
   }, [audioUrl])
 
@@ -83,9 +134,40 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
     }
   }, [audioUrl, isGenerating, justGenerated])
 
-  const generateAudio = async () => {
+  const loadAudio = async () => {
     setIsGenerating(true)
 
+    try {
+      // First, try to get pre-generated audio
+      console.log('Checking for pre-generated audio...')
+      const preGenResponse = await fetch(
+        `/api/get-poem-audio?contentId=${contentId}&voice=${selectedVoice}`
+      )
+
+      if (preGenResponse.ok) {
+        const data = await preGenResponse.json()
+
+        if (data.audioUrl && data.preGenerated) {
+          console.log('Using pre-generated audio from blob storage')
+          setAudioUrl(data.audioUrl)
+          // Don't auto-play pre-generated audio
+          setJustGenerated(false)
+          setIsGenerating(false)
+          return
+        }
+      }
+
+      // Fall back to on-demand generation
+      console.log('No pre-generated audio found, generating on-demand...')
+      await generateAudioOnDemand()
+    } catch (error) {
+      console.error('Failed to load audio:', error)
+      alert('Failed to load audio. Please try again.')
+      setIsGenerating(false)
+    }
+  }
+
+  const generateAudioOnDemand = async () => {
     try {
       const response = await fetch('/api/text-to-speech', {
         method: 'POST',
@@ -97,16 +179,28 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
         }),
       })
 
-      const data = await response.json()
-
-      if (data.audioUrl) {
-        setAudioUrl(data.audioUrl)
-        localStorage.setItem(`audio-${contentId}-${selectedVoice}`, data.audioUrl)
-        setJustGenerated(true) // Mark that we just generated audio (for auto-play)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to generate audio')
       }
+
+      // Get the audio as a blob
+      const audioBlob = await response.blob()
+      console.log('Received audio blob:', audioBlob.size, 'bytes', audioBlob.type)
+
+      // Create a blob URL for the audio
+      const blobUrl = URL.createObjectURL(audioBlob)
+      console.log('Created blob URL:', blobUrl)
+
+      setAudioUrl(blobUrl)
+
+      // Store blob URL in localStorage (it will persist for the session)
+      // Note: Blob URLs are session-specific, so this is mainly for the current session
+      localStorage.setItem(`audio-${contentId}-${selectedVoice}`, blobUrl)
+      setJustGenerated(true) // Mark that we just generated audio (for auto-play)
     } catch (error) {
       console.error('Failed to generate audio:', error)
-      alert('Failed to generate audio. Please try again.')
+      throw error
     } finally {
       setIsGenerating(false)
     }
@@ -114,19 +208,44 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
 
   const togglePlay = () => {
     if (!audioUrl) {
-      generateAudio()
+      loadAudio()
       return
     }
 
     const audio = audioRef.current
-    if (!audio) return
+    if (!audio) {
+      console.error('Audio element not found')
+      return
+    }
+
+    console.log('Toggle play - current state:', isPlaying)
+    console.log('Audio paused:', audio.paused)
+    console.log('Audio volume:', audio.volume)
+    console.log('Audio muted:', audio.muted)
+    console.log('Audio src:', audio.src.substring(0, 100) + '...')
+    console.log('Audio readyState:', audio.readyState)
+    console.log('Audio currentTime:', audio.currentTime)
 
     if (isPlaying) {
       audio.pause()
+      setIsPlaying(false)
     } else {
+      // Ensure volume is set before playing
+      audio.volume = 1.0
+      audio.muted = false
+      console.log('Playing with volume:', audio.volume, 'muted:', audio.muted)
+
       audio.play()
+        .then(() => {
+          console.log('Play started successfully')
+          console.log('After play - volume:', audio.volume, 'muted:', audio.muted, 'currentTime:', audio.currentTime)
+          setIsPlaying(true)
+        })
+        .catch(err => {
+          console.error('Play failed:', err)
+          alert('Failed to play audio. Please check console for details.')
+        })
     }
-    setIsPlaying(!isPlaying)
   }
 
   const toggleMute = () => {
@@ -296,7 +415,14 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
 
       {/* Hidden Audio Element */}
       {audioUrl && (
-        <audio ref={audioRef} src={audioUrl} className="hidden" />
+        <audio
+          ref={audioRef}
+          src={audioUrl}
+          className="hidden"
+          preload="auto"
+          onLoadedData={() => console.log('Audio data loaded')}
+          onLoadedMetadata={() => console.log('Audio metadata loaded')}
+        />
       )}
 
       {/* Info */}
