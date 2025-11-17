@@ -23,7 +23,7 @@ const essays = [
     coverImage: '/images/essays/self-esteem.jpg', // placeholder
   },
   {
-    slug: '/essays/intro-to-social-theory',
+    slug: '/writing/essays/intro-to-social-theory',
     title: 'An Intro to Social Theory by Charles Lamert',
     excerpt: 'Exploring social theory as an interdisciplinary field drawing from sociology, psychology, anthropology, philosophy, and political science.',
     date: 'February 2023',
