@@ -1,0 +1,21 @@
+# robots.txt for brandonmills.com
+# Allow all search engines to crawl the site
+
+User-agent: *
+Allow: /
+
+# Priority pages for crawling
+Allow: /shop
+Allow: /shop/*
+Allow: /meditations
+Allow: /meditations/*
+Allow: /writing
+Allow: /writing/*
+
+# Disallow admin/API routes
+Disallow: /api/
+Disallow: /admin/
+Disallow: /_next/
+
+# Sitemap location
+Sitemap: https://brandonmills.com/sitemap.xml
