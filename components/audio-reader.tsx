@@ -22,6 +22,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
   const [selectedVoice, setSelectedVoice] = useState<'male' | 'female' | 'male-indian' | 'female-indian'>(voicePreference)
   const [justGenerated, setJustGenerated] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const audioRef = useRef<HTMLAudioElement>(null)
 
@@ -162,7 +163,10 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       await generateAudioOnDemand()
     } catch (error) {
       console.error('Failed to load audio:', error)
-      alert('Failed to load audio. Please try again.')
+      const errorMsg = error instanceof Error
+        ? `❌ GENERATION ERROR: ${error.message}`
+        : `❌ GENERATION ERROR: ${String(error)}`
+      setErrorMessage(errorMsg)
       setIsGenerating(false)
     }
   }
@@ -215,6 +219,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
     const audio = audioRef.current
     if (!audio) {
       console.error('Audio element not found')
+      setErrorMessage('Audio element not found')
       return
     }
 
@@ -230,6 +235,9 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       audio.pause()
       setIsPlaying(false)
     } else {
+      // Clear any previous errors
+      setErrorMessage(null)
+
       // Ensure volume is set before playing
       audio.volume = 1.0
       audio.muted = false
@@ -240,10 +248,13 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
           console.log('Play started successfully')
           console.log('After play - volume:', audio.volume, 'muted:', audio.muted, 'currentTime:', audio.currentTime)
           setIsPlaying(true)
+          setErrorMessage(null)
         })
         .catch(err => {
           console.error('Play failed:', err)
-          alert('Failed to play audio. Please check console for details.')
+          const errorMsg = `❌ PLAYBACK ERROR: ${err.name} - ${err.message}`
+          setErrorMessage(errorMsg)
+          console.error('Full error:', err)
         })
     }
   }
@@ -403,15 +414,35 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
             )}
           </div>
 
-          {/* Status */}
-          <div className="text-sm text-white/60">
-            {isGenerating && 'Generating audio...'}
-            {!audioUrl && !isGenerating && 'Click play to generate'}
-            {audioUrl && !isPlaying && !isGenerating && 'Ready to play'}
-            {isPlaying && 'Now playing'}
-          </div>
+          {/* Status or Error */}
+          {errorMessage ? (
+            <div className="text-sm font-mono text-red-400 bg-red-500/10 border border-red-500/30 rounded px-3 py-2 max-w-md">
+              {errorMessage}
+            </div>
+          ) : (
+            <div className="text-sm text-white/60">
+              {isGenerating && 'Generating audio...'}
+              {!audioUrl && !isGenerating && 'Click play to generate'}
+              {audioUrl && !isPlaying && !isGenerating && 'Ready to play'}
+              {isPlaying && 'Now playing'}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Error Details (if any) */}
+      {errorMessage && (
+        <div className="mt-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl">
+          <p className="text-red-400 font-medium mb-2">🔍 Debugging Info:</p>
+          <div className="text-xs font-mono text-white/70 space-y-1">
+            <div>Audio URL: {audioUrl ? audioUrl.substring(0, 50) + '...' : 'null'}</div>
+            <div>Audio Element: {audioRef.current ? 'Found' : 'Missing'}</div>
+            <div>Volume: {audioRef.current?.volume ?? 'N/A'}</div>
+            <div>Muted: {audioRef.current?.muted ? 'Yes' : 'No'}</div>
+            <div>ReadyState: {audioRef.current?.readyState ?? 'N/A'}</div>
+          </div>
+        </div>
+      )}
 
       {/* Hidden Audio Element */}
       {audioUrl && (
