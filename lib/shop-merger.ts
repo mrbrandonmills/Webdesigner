@@ -3,6 +3,22 @@
 
 import { UnifiedProduct, ProductSource } from './types/shop'
 
+// Infer product type from title or type field
+function inferProductType(title: string, type?: string): UnifiedProduct['productType'] {
+  const lowerTitle = title.toLowerCase()
+  const lowerType = type?.toLowerCase() || ''
+
+  if (lowerTitle.includes('mug') || lowerType.includes('mug')) return 'mug'
+  if (lowerTitle.includes('t-shirt') || lowerTitle.includes('tshirt') || lowerType.includes('shirt')) return 'tshirt'
+  if (lowerTitle.includes('poster') || lowerType.includes('poster')) return 'poster'
+  if (lowerTitle.includes('hoodie') || lowerType.includes('hoodie')) return 'hoodie'
+  if (lowerTitle.includes('tote') || lowerType.includes('tote')) return 'totebag'
+  if (lowerTitle.includes('phone') || lowerTitle.includes('case') || lowerType.includes('phone')) return 'phone-case'
+  if (lowerTitle.includes('wall') || lowerTitle.includes('framed') || lowerType.includes('wall')) return 'wall-art'
+
+  return undefined
+}
+
 export function mergeShopProducts(
   printfulProducts: any[],
   amazonProducts: any[]
@@ -26,6 +42,7 @@ export function mergeShopProducts(
       syncVariantId: p.syncVariantId,
       tags: p.tags,
       category: p.type,
+      productType: inferProductType(p.title, p.type),
       featured: p.source === 'local-curated',
       inStock: true,
     })

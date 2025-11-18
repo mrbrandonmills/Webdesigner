@@ -4,6 +4,7 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { ExternalLink, ShoppingBag, Star, Sparkles } from 'lucide-react'
 import { useState, useRef } from 'react'
 import { UnifiedProduct } from '@/lib/types/shop'
+import { MockupGenerator } from './mockup-generator'
 
 interface EnhancedProductCardProps {
   product: UnifiedProduct
@@ -64,8 +65,14 @@ export function EnhancedProductCard({
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0
 
-  // Determine which image to show on hover
-  const hoverImage = product.images && product.images.length > 1 ? product.images[1] : null
+  // Determine mockup type for CSS-based mockup generation
+  const mockupType = product.productType === 'phone-case' || product.productType === 'wall-art'
+    ? undefined
+    : product.productType as 'tshirt' | 'poster' | 'mug' | 'hoodie' | 'totebag' | undefined
+
+  // Use CSS mockup for Printful products, fallback to image for Amazon/others
+  const canUseMockup = product.source === 'printful' && mockupType
+  const hoverImage = !canUseMockup && product.images && product.images.length > 1 ? product.images[1] : null
 
   return (
     <motion.div
@@ -129,7 +136,25 @@ export function EnhancedProductCard({
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 animate-pulse" />
         )}
 
-        {/* Hover Image (Mockup) - Cross-fade */}
+        {/* CSS-based Mockup for Printful products */}
+        {canUseMockup && mockupType && (
+          <motion.div
+            className="absolute inset-0 w-full h-full"
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: isHovered ? 1 : 0,
+            }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <MockupGenerator
+              designImage={product.image}
+              productType={mockupType}
+              productTitle={product.title}
+            />
+          </motion.div>
+        )}
+
+        {/* Hover Image (fallback for Amazon/other products) - Cross-fade */}
         {hoverImage && (
           <motion.img
             src={hoverImage}

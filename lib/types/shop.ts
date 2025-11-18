@@ -41,6 +41,7 @@ export interface UnifiedProduct {
   syncProductId?: number
   syncVariantId?: number
   tags?: string[]
+  productType?: 'tshirt' | 'poster' | 'mug' | 'hoodie' | 'totebag' | 'phone-case' | 'wall-art'
 
   // Common
   category: string
