@@ -36,7 +36,7 @@ Our minds, our bodies, our communities are polluted
 minds run Proprietary software
 What sells? Not photovoltaic cells
 Biology tells a different story about the binary
-But without an education, you're more worried about a job with the refinery
+But without an education, you're more worried about a job at the refinery
 Not the fucking finery
 
 One more time with that one again,
@@ -170,7 +170,7 @@ and brother you can enter
               <p>minds run Proprietary software</p>
               <p>What sells? Not photovoltaic cells</p>
               <p>Biology tells a different story about the binary</p>
-              <p>But without an education, you're more worried about a job with the refinery</p>
+              <p>But without an education, you're more worried about a job at the refinery</p>
               <p>Not the fucking <span className="italic">finery</span></p>
 
               <div className="py-3" />
