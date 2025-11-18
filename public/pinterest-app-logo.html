@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brandon Mills - Pinterest App Logo</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .logo-container {
+      text-align: center;
+    }
+    .logo {
+      width: 512px;
+      height: 512px;
+      background: linear-gradient(135deg, #1a1a1a 0%, #3a3a3a 100%);
+      border-radius: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .logo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1) 0%, transparent 60%);
+    }
+    .initials {
+      font-size: 180px;
+      font-weight: 700;
+      letter-spacing: -8px;
+      background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0;
+      line-height: 1;
+      position: relative;
+      z-index: 1;
+    }
+    .subtitle {
+      font-size: 28px;
+      color: rgba(255,255,255,0.7);
+      font-weight: 300;
+      letter-spacing: 6px;
+      margin-top: 20px;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+    .accent {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #E60023 0%, #BD081C 100%);
+      border-radius: 50%;
+      top: 30px;
+      right: 30px;
+      opacity: 0.15;
+    }
+    .instructions {
+      margin-top: 30px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      max-width: 512px;
+    }
+    .instructions h3 {
+      margin-top: 0;
+      color: #1a1a1a;
+    }
+    .instructions ol {
+      text-align: left;
+      color: #666;
+      line-height: 1.6;
+    }
+    .download-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 32px;
+      background: linear-gradient(135deg, #E60023 0%, #BD081C 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+    .download-btn:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="logo-container">
+    <div class="logo" id="logo">
+      <div class="accent"></div>
+      <div class="initials">BM</div>
+      <div class="subtitle">BRANDON</div>
+    </div>
+
+    <div class="instructions">
+      <h3>📌 How to Use This Logo for Pinterest App</h3>
+      <ol>
+        <li><strong>Screenshot Method:</strong>
+          <ul>
+            <li>Take a screenshot of just the logo square above</li>
+            <li>Crop to 512x512 pixels</li>
+            <li>Save as PNG or JPEG</li>
+          </ul>
+        </li>
+        <li><strong>OR Download:</strong>
+          <ul>
+            <li>Right-click the logo → "Save Image As"</li>
+            <li>Name it: <code>brandon-mills-pinterest-logo.png</code></li>
+          </ul>
+        </li>
+        <li><strong>Upload to Pinterest Developer Dashboard:</strong>
+          <ul>
+            <li>Go to your Pinterest app settings</li>
+            <li>Upload this image as your app icon</li>
+            <li>Pinterest recommends 512x512 or 1024x1024 pixels</li>
+          </ul>
+        </li>
+      </ol>
+      <button class="download-btn" onclick="downloadLogo()">📥 Download Logo as PNG</button>
+    </div>
+  </div>
+
+  <script>
+    function downloadLogo() {
+      const logo = document.getElementById('logo');
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      // Set canvas to high resolution
+      canvas.width = 1024;
+      canvas.height = 1024;
+
+      // Draw gradient background
+      const gradient = ctx.createLinearGradient(0, 0, 1024, 1024);
+      gradient.addColorStop(0, '#1a1a1a');
+      gradient.addColorStop(1, '#3a3a3a');
+      ctx.fillStyle = gradient;
+      ctx.roundRect(0, 0, 1024, 1024, 160);
+      ctx.fill();
+
+      // Draw accent circle
+      const accentGradient = ctx.createLinearGradient(0, 0, 240, 240);
+      accentGradient.addColorStop(0, '#E60023');
+      accentGradient.addColorStop(1, '#BD081C');
+      ctx.globalAlpha = 0.15;
+      ctx.fillStyle = accentGradient;
+      ctx.beginPath();
+      ctx.arc(884, 140, 120, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.globalAlpha = 1.0;
+
+      // Draw radial highlight
+      const radialGradient = ctx.createRadialGradient(307, 307, 0, 307, 307, 614);
+      radialGradient.addColorStop(0, 'rgba(255,255,255,0.1)');
+      radialGradient.addColorStop(0.6, 'transparent');
+      ctx.fillStyle = radialGradient;
+      ctx.fillRect(0, 0, 1024, 1024);
+
+      // Draw text
+      ctx.font = '700 360px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Create text gradient
+      const textGradient = ctx.createLinearGradient(0, 0, 1024, 1024);
+      textGradient.addColorStop(0, '#ffffff');
+      textGradient.addColorStop(1, '#e0e0e0');
+      ctx.fillStyle = textGradient;
+      ctx.fillText('BM', 512, 450);
+
+      // Draw subtitle
+      ctx.font = '300 56px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.letterSpacing = '12px';
+      ctx.fillText('B R A N D O N', 512, 630);
+
+      // Download
+      canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'brandon-mills-pinterest-logo.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    // Polyfill for roundRect
+    if (!CanvasRenderingContext2D.prototype.roundRect) {
+      CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
+        this.beginPath();
+        this.moveTo(x + r, y);
+        this.lineTo(x + w - r, y);
+        this.quadraticCurveTo(x + w, y, x + w, y + r);
+        this.lineTo(x + w, y + h - r);
+        this.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        this.lineTo(x + r, y + h);
+        this.quadraticCurveTo(x, y + h, x, y + h - r);
+        this.lineTo(x, y + r);
+        this.quadraticCurveTo(x, y, x + r, y);
+        this.closePath();
+      };
+    }
+  </script>
+</body>
+</html>

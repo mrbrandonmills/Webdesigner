@@ -7,6 +7,11 @@ const AUTH_COOKIE_NAME = 'brandon-admin-auth'
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  // Redirect Google verification file to API route
+  if (pathname === '/googlee62551f0bc5c4b9c.html') {
+    return NextResponse.rewrite(new URL('/api/googlee62551f0bc5c4b9c.html', request.url))
+  }
+
   // Allow access to login page
   if (pathname === '/admin/login') {
     return NextResponse.next()
@@ -41,6 +46,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     '/admin/:path*',
-    '/api/admin/:path*'  // Protect admin API routes as well
+    '/api/admin/:path*',  // Protect admin API routes as well
+    '/googlee62551f0bc5c4b9c.html'  // Handle Google verification file
   ],
 }
