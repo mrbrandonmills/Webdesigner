@@ -3,6 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Check, X, Star, ExternalLink } from 'lucide-react'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Best Noise Canceling Headphones 2025: AirPods Max vs Sony WH-1000XM5 - Complete Comparison',
   description: 'I tested the AirPods Max and Sony WH-1000XM5 for 30 days to find the best noise canceling headphones for 2025. Definitive comparison for deep focus, work, and travel.',
