@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Printful Design Preview - Brandon Mills</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #000;
+      color: #D4AF37;
+      padding: 40px 20px;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 60px;
+      border-bottom: 1px solid #D4AF37;
+      padding-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      font-weight: 300;
+      letter-spacing: 0.2em;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      opacity: 0.7;
+      letter-spacing: 0.1em;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-top: 30px;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      opacity: 0.6;
+      margin-top: 5px;
+    }
+
+    .category {
+      margin-bottom: 80px;
+    }
+
+    .category-title {
+      font-size: 1.5rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 40px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #D4AF37;
+      opacity: 0.9;
+    }
+
+    .designs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 40px;
+    }
+
+    .design-card {
+      background: #111;
+      border: 1px solid #333;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .design-card:hover {
+      border-color: #D4AF37;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px rgba(212, 175, 55, 0.2);
+    }
+
+    .design-image-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .design-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .design-info {
+      padding: 20px;
+      border-top: 1px solid #333;
+    }
+
+    .design-title {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+      color: #D4AF37;
+    }
+
+    .design-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      opacity: 0.7;
+      margin-top: 10px;
+    }
+
+    .product-type {
+      background: #D4AF37;
+      color: #000;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      display: inline-block;
+      margin-top: 10px;
+    }
+
+    .specs {
+      background: #0a0a0a;
+      padding: 40px;
+      margin-top: 80px;
+      border: 1px solid #333;
+    }
+
+    .specs-title {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+      color: #D4AF37;
+    }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .spec-item {
+      border-left: 2px solid #D4AF37;
+      padding-left: 20px;
+    }
+
+    .spec-name {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: #D4AF37;
+    }
+
+    .spec-details {
+      font-size: 0.875rem;
+      line-height: 1.6;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>PRINTFUL DESIGNS</h1>
+    <div class="subtitle">BRANDON MILLS LUXURY COLLECTION</div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value">20</div>
+        <div class="stat-label">TOTAL DESIGNS</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">56.6</div>
+        <div class="stat-label">MB TOTAL SIZE</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">300</div>
+        <div class="stat-label">DPI QUALITY</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Poetry Section -->
+  <div class="category">
+    <h2 class="category-title">POETRY COLLECTION</h2>
+    <div class="designs-grid">
+      <div class="design-card">
+        <div class="design-image-container">
+          <img src="poetry/fine-lines/t-shirt.png" alt="Fine Lines T-Shirt" class="design-image">
+        </div>
+        <div class="design-info">
+          <h3 class="design-title">Fine Lines</h3>
+          <div class="product-type">T-SHIRT</div>
+          <div class="design-meta">
+            <span>4500x5400px</span>
+            <span>3.17 MB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card">
+        <div class="design-image-container">
+          <img src="poetry/fine-lines/poster.jpg" alt="Fine Lines Poster" class="design-image">
+        </div>
+        <div class="design-info">
+          <h3 class="design-title">Fine Lines</h3>
+          <div class="product-type">POSTER</div>
+          <div class="design-meta">
+            <span>3600x5400px</span>
+            <span>0.13 MB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card">
+        <div class="design-image-container">
+          <img src="poetry/the-tourbillon/mug.png" alt="The Tourbillon Mug" class="design-image">
+        </div>
+        <div class="design-info">
+          <h3 class="design-title">The Tourbillon</h3>
+          <div class="product-type">MUG</div>
+          <div class="design-meta">
+            <span>2475x1155px</span>
+            <span>0.33 MB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Photography Section -->
+  <div class="category">
+    <h2 class="category-title">PHOTOGRAPHY COLLECTION</h2>
+    <div class="designs-grid">
+      <div class="design-card">
+        <div class="design-image-container">
+          <img src="photography/am-reed-aqua/poster.jpg" alt="Aqua Meditation Poster" class="design-image">
+        </div>
+        <div class="design-info">
+          <h3 class="design-title">Aqua Meditation</h3>
+          <div class="product-type">POSTER</div>
+          <div class="design-meta">
+            <span>3600x5400px</span>
+            <span>4.69 MB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card">
+        <div class="design-image-container">
+          <img src="photography/am-reed-monochrome/phone-case.png" alt="Monochrome Phone Case" class="design-image">
+        </div>
+        <div class="design-info">
+          <h3 class="design-title">Monochrome Elegance</h3>
+          <div class="product-type">PHONE CASE</div>
+          <div class="design-meta">
+            <span>3000x6000px</span>
+            <span>4.46 MB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card">
+        <div class="design-image-container">
+          <img src="photography/am-reed-leather/tote-bag.png" alt="Urban Edge Tote" class="design-image">
+        </div>
+        <div class="design-info">
+          <h3 class="design-title">Urban Edge</h3>
+          <div class="product-type">TOTE BAG</div>
+          <div class="design-meta">
+            <span>4500x4500px</span>
+            <span>3.00 MB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Philosophy Section -->
+  <div class="category">
+    <h2 class="category-title">PHILOSOPHY COLLECTION</h2>
+    <div class="designs-grid">
+      <div class="design-card">
+        <div class="design-image-container">
+          <img src="philosophy/enlightenment-science/mug.png" alt="Quantum Consciousness Mug" class="design-image">
+        </div>
+        <div class="design-info">
+          <h3 class="design-title">Quantum Consciousness</h3>
+          <div class="product-type">MUG</div>
+          <div class="design-meta">
+            <span>2475x1155px</span>
+            <span>0.03 MB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card">
+        <div class="design-image-container">
+          <img src="philosophy/social-theory/mug.png" alt="Structures of Power Mug" class="design-image">
+        </div>
+        <div class="design-info">
+          <h3 class="design-title">Structures of Power</h3>
+          <div class="product-type">MUG</div>
+          <div class="design-meta">
+            <span>2475x1155px</span>
+            <span>0.04 MB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-card">
+        <div class="design-image-container">
+          <img src="philosophy/self-esteem/mug.png" alt="Cultivating Self Mug" class="design-image">
+        </div>
+        <div class="design-info">
+          <h3 class="design-title">Cultivating Self</h3>
+          <div class="product-type">MUG</div>
+          <div class="design-meta">
+            <span>2475x1155px</span>
+            <span>0.03 MB</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Specs -->
+  <div class="specs">
+    <h2 class="specs-title">PRINTFUL SPECIFICATIONS</h2>
+    <div class="specs-grid">
+      <div class="spec-item">
+        <div class="spec-name">T-Shirts / Hoodies</div>
+        <div class="spec-details">
+          4500 x 5400 pixels<br>
+          15" x 18" @ 300 DPI<br>
+          PNG with transparency<br>
+          RGB color mode
+        </div>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-name">Posters / Wall Art</div>
+        <div class="spec-details">
+          3600 x 5400 pixels<br>
+          12" x 18" @ 300 DPI<br>
+          JPG or PNG format<br>
+          RGB color mode
+        </div>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-name">Mugs</div>
+        <div class="spec-details">
+          2475 x 1155 pixels<br>
+          8.25" x 3.85" @ 300 DPI<br>
+          PNG with transparency<br>
+          Wrap-around design
+        </div>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-name">Phone Cases</div>
+        <div class="spec-details">
+          3000 x 6000 pixels<br>
+          Device-specific sizing<br>
+          PNG with transparency<br>
+          Full coverage design
+        </div>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-name">Tote Bags</div>
+        <div class="spec-details">
+          4500 x 4500 pixels<br>
+          15" x 15" @ 300 DPI<br>
+          PNG format<br>
+          Square aspect ratio
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Add loading animation
+    document.querySelectorAll('.design-image').forEach(img => {
+      img.addEventListener('load', function() {
+        this.style.opacity = '0';
+        setTimeout(() => {
+          this.style.transition = 'opacity 0.5s ease';
+          this.style.opacity = '1';
+        }, 10);
+      });
+    });
+  </script>
+</body>
+</html>

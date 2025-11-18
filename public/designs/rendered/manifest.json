@@ -1,0 +1,264 @@
+{
+  "generatedAt": "2025-11-18T08:43:09.178Z",
+  "categories": {
+    "poetry": {
+      "fine-lines": [
+        {
+          "file": "mug.png",
+          "path": "/designs/rendered/poetry/fine-lines/mug.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/poetry/fine-lines/mug.png",
+          "sizeBytes": 413444,
+          "sizeMB": "0.39",
+          "productType": "mug",
+          "format": "png"
+        },
+        {
+          "file": "poster.jpg",
+          "path": "/designs/rendered/poetry/fine-lines/poster.jpg",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/poetry/fine-lines/poster.jpg",
+          "sizeBytes": 133736,
+          "sizeMB": "0.13",
+          "productType": "poster",
+          "format": "jpg"
+        },
+        {
+          "file": "t-shirt.png",
+          "path": "/designs/rendered/poetry/fine-lines/t-shirt.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/poetry/fine-lines/t-shirt.png",
+          "sizeBytes": 3320976,
+          "sizeMB": "3.17",
+          "productType": "t-shirt",
+          "format": "png"
+        }
+      ],
+      "poet-proponent": [
+        {
+          "file": "mug.png",
+          "path": "/designs/rendered/poetry/poet-proponent/mug.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/poetry/poet-proponent/mug.png",
+          "sizeBytes": 782556,
+          "sizeMB": "0.75",
+          "productType": "mug",
+          "format": "png"
+        }
+      ],
+      "the-tourbillon": [
+        {
+          "file": "mug.png",
+          "path": "/designs/rendered/poetry/the-tourbillon/mug.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/poetry/the-tourbillon/mug.png",
+          "sizeBytes": 349340,
+          "sizeMB": "0.33",
+          "productType": "mug",
+          "format": "png"
+        }
+      ]
+    },
+    "photography": {
+      "am-reed-aqua": [
+        {
+          "file": "phone-case.png",
+          "path": "/designs/rendered/photography/am-reed-aqua/phone-case.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-aqua/phone-case.png",
+          "sizeBytes": 10213541,
+          "sizeMB": "9.74",
+          "productType": "phone-case",
+          "format": "png"
+        },
+        {
+          "file": "poster.jpg",
+          "path": "/designs/rendered/photography/am-reed-aqua/poster.jpg",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-aqua/poster.jpg",
+          "sizeBytes": 4921686,
+          "sizeMB": "4.69",
+          "productType": "poster",
+          "format": "jpg"
+        },
+        {
+          "file": "tote-bag.png",
+          "path": "/designs/rendered/photography/am-reed-aqua/tote-bag.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-aqua/tote-bag.png",
+          "sizeBytes": 12108629,
+          "sizeMB": "11.55",
+          "productType": "tote-bag",
+          "format": "png"
+        },
+        {
+          "file": "wall-art.jpg",
+          "path": "/designs/rendered/photography/am-reed-aqua/wall-art.jpg",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-aqua/wall-art.jpg",
+          "sizeBytes": 4921686,
+          "sizeMB": "4.69",
+          "productType": "wall-art",
+          "format": "jpg"
+        }
+      ],
+      "am-reed-leather": [
+        {
+          "file": "phone-case.png",
+          "path": "/designs/rendered/photography/am-reed-leather/phone-case.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-leather/phone-case.png",
+          "sizeBytes": 3007760,
+          "sizeMB": "2.87",
+          "productType": "phone-case",
+          "format": "png"
+        },
+        {
+          "file": "poster.jpg",
+          "path": "/designs/rendered/photography/am-reed-leather/poster.jpg",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-leather/poster.jpg",
+          "sizeBytes": 940297,
+          "sizeMB": "0.90",
+          "productType": "poster",
+          "format": "jpg"
+        },
+        {
+          "file": "tote-bag.png",
+          "path": "/designs/rendered/photography/am-reed-leather/tote-bag.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-leather/tote-bag.png",
+          "sizeBytes": 3147998,
+          "sizeMB": "3.00",
+          "productType": "tote-bag",
+          "format": "png"
+        },
+        {
+          "file": "wall-art.jpg",
+          "path": "/designs/rendered/photography/am-reed-leather/wall-art.jpg",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-leather/wall-art.jpg",
+          "sizeBytes": 940297,
+          "sizeMB": "0.90",
+          "productType": "wall-art",
+          "format": "jpg"
+        }
+      ],
+      "am-reed-monochrome": [
+        {
+          "file": "phone-case.png",
+          "path": "/designs/rendered/photography/am-reed-monochrome/phone-case.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-monochrome/phone-case.png",
+          "sizeBytes": 4671580,
+          "sizeMB": "4.46",
+          "productType": "phone-case",
+          "format": "png"
+        },
+        {
+          "file": "poster.jpg",
+          "path": "/designs/rendered/photography/am-reed-monochrome/poster.jpg",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-monochrome/poster.jpg",
+          "sizeBytes": 1845824,
+          "sizeMB": "1.76",
+          "productType": "poster",
+          "format": "jpg"
+        },
+        {
+          "file": "tote-bag.png",
+          "path": "/designs/rendered/photography/am-reed-monochrome/tote-bag.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-monochrome/tote-bag.png",
+          "sizeBytes": 5693161,
+          "sizeMB": "5.43",
+          "productType": "tote-bag",
+          "format": "png"
+        },
+        {
+          "file": "wall-art.jpg",
+          "path": "/designs/rendered/photography/am-reed-monochrome/wall-art.jpg",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/photography/am-reed-monochrome/wall-art.jpg",
+          "sizeBytes": 1845824,
+          "sizeMB": "1.76",
+          "productType": "wall-art",
+          "format": "jpg"
+        }
+      ]
+    },
+    "philosophy": {
+      "enlightenment-science": [
+        {
+          "file": "mug.png",
+          "path": "/designs/rendered/philosophy/enlightenment-science/mug.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/philosophy/enlightenment-science/mug.png",
+          "sizeBytes": 36036,
+          "sizeMB": "0.03",
+          "productType": "mug",
+          "format": "png"
+        }
+      ],
+      "self-esteem": [
+        {
+          "file": "mug.png",
+          "path": "/designs/rendered/philosophy/self-esteem/mug.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/philosophy/self-esteem/mug.png",
+          "sizeBytes": 31381,
+          "sizeMB": "0.03",
+          "productType": "mug",
+          "format": "png"
+        }
+      ],
+      "social-theory": [
+        {
+          "file": "mug.png",
+          "path": "/designs/rendered/philosophy/social-theory/mug.png",
+          "absolutePath": "/Volumes/Super Mastery/Webdesigner/public/designs/rendered/philosophy/social-theory/mug.png",
+          "sizeBytes": 39082,
+          "sizeMB": "0.04",
+          "productType": "mug",
+          "format": "png"
+        }
+      ]
+    }
+  },
+  "totalDesigns": 20,
+  "totalSizeBytes": 59364834,
+  "productSpecs": {
+    "t-shirt": {
+      "width": 4500,
+      "height": 5400,
+      "dpi": 300,
+      "format": "png"
+    },
+    "hoodie": {
+      "width": 4500,
+      "height": 5400,
+      "dpi": 300,
+      "format": "png"
+    },
+    "poster": {
+      "width": 3600,
+      "height": 5400,
+      "dpi": 300,
+      "format": "jpg",
+      "background": "#FFFFFF"
+    },
+    "wall-art": {
+      "width": 3600,
+      "height": 5400,
+      "dpi": 300,
+      "format": "jpg",
+      "background": "#FFFFFF"
+    },
+    "mug": {
+      "width": 2475,
+      "height": 1155,
+      "dpi": 300,
+      "format": "png"
+    },
+    "phone-case": {
+      "width": 3000,
+      "height": 6000,
+      "dpi": 300,
+      "format": "png"
+    },
+    "tote-bag": {
+      "width": 4500,
+      "height": 4500,
+      "dpi": 300,
+      "format": "png"
+    },
+    "pillow": {
+      "width": 4500,
+      "height": 4500,
+      "dpi": 300,
+      "format": "png"
+    }
+  },
+  "totalSizeMB": "56.61"
+}

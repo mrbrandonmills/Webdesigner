@@ -4,11 +4,16 @@
 export type ProductSource = 'printful' | 'amazon'
 
 export interface ProductVariant {
-  id: number
-  name: string
+  id: number | string
+  name?: string
   size?: string
   color?: string
-  image: string
+  dimensions?: string
+  image?: string
+  price?: number
+  printfulVariantId?: number
+  syncVariantId?: number
+  inStock?: boolean
 }
 
 export interface UnifiedProduct {

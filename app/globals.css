@@ -1048,3 +1048,45 @@ html {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(201, 160, 80, 0.6);
 }
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Thin scrollbar utility */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 160, 80, 0.4) rgba(255, 255, 255, 0.05);
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(201, 160, 80, 0.4);
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 160, 80, 0.6);
+}
+
+.scrollbar-track-white\/5 {
+  scrollbar-color: rgba(201, 160, 80, 0.4) rgba(255, 255, 255, 0.05);
+}
+
+.scrollbar-thumb-white\/20 {
+  scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
+}

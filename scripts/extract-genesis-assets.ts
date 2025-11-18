@@ -8,8 +8,8 @@
  * to product designs.
  */
 
-import fs from 'fs/promises'
-import path from 'path'
+import * as fs from 'fs/promises'
+import * as path from 'path'
 import { fullyDevelopedStories } from '../lib/genesis-stories'
 
 interface PhotoManifest {

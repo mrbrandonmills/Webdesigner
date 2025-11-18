@@ -1,0 +1,25 @@
+{
+  "syncDate": "2025-11-18T09:08:58.373Z",
+  "successful": 0,
+  "failed": 3,
+  "results": [
+    {
+      "success": false,
+      "category": "poetry",
+      "name": "poet-proponent",
+      "productType": "mug"
+    },
+    {
+      "success": false,
+      "category": "philosophy",
+      "name": "self-esteem",
+      "productType": "mug"
+    },
+    {
+      "success": false,
+      "category": "photography",
+      "name": "am-reed-aqua",
+      "productType": "phone-case"
+    }
+  ]
+}

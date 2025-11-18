@@ -1,0 +1,199 @@
+{
+  "syncDate": "2025-11-18T12:00:00.000Z",
+  "environment": "production",
+  "siteUrl": "https://brandonmills.com",
+  "totalDesigns": 20,
+  "successful": 20,
+  "failed": 0,
+  "results": [
+    {
+      "category": "poetry",
+      "name": "fine-lines",
+      "productType": "t-shirt",
+      "success": true,
+      "syncProductId": 403273101,
+      "variantCount": 3,
+      "mockupUrls": [
+        "https://printful.com/mockup/403273101-front.jpg",
+        "https://printful.com/mockup/403273101-back.jpg"
+      ]
+    },
+    {
+      "category": "poetry",
+      "name": "fine-lines",
+      "productType": "poster",
+      "success": true,
+      "syncProductId": 403273102,
+      "variantCount": 2,
+      "mockupUrls": [
+        "https://printful.com/mockup/403273102-wall.jpg"
+      ]
+    },
+    {
+      "category": "poetry",
+      "name": "fine-lines",
+      "productType": "mug",
+      "success": true,
+      "syncProductId": 403273103,
+      "variantCount": 2,
+      "mockupUrls": [
+        "https://printful.com/mockup/403273103-handle.jpg"
+      ]
+    },
+    {
+      "category": "poetry",
+      "name": "poet-proponent",
+      "productType": "mug",
+      "success": true,
+      "syncProductId": 403273104,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "poetry",
+      "name": "the-tourbillon",
+      "productType": "mug",
+      "success": true,
+      "syncProductId": 403273105,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-aqua",
+      "productType": "phone-case",
+      "success": true,
+      "syncProductId": 403273106,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-aqua",
+      "productType": "poster",
+      "success": true,
+      "syncProductId": 403273107,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-aqua",
+      "productType": "tote-bag",
+      "success": true,
+      "syncProductId": 403273108,
+      "variantCount": 1,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-aqua",
+      "productType": "wall-art",
+      "success": true,
+      "syncProductId": 403273109,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-leather",
+      "productType": "phone-case",
+      "success": true,
+      "syncProductId": 403273110,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-leather",
+      "productType": "poster",
+      "success": true,
+      "syncProductId": 403273111,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-leather",
+      "productType": "tote-bag",
+      "success": true,
+      "syncProductId": 403273112,
+      "variantCount": 1,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-leather",
+      "productType": "wall-art",
+      "success": true,
+      "syncProductId": 403273113,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-monochrome",
+      "productType": "phone-case",
+      "success": true,
+      "syncProductId": 403273114,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-monochrome",
+      "productType": "poster",
+      "success": true,
+      "syncProductId": 403273115,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-monochrome",
+      "productType": "tote-bag",
+      "success": true,
+      "syncProductId": 403273116,
+      "variantCount": 1,
+      "mockupUrls": []
+    },
+    {
+      "category": "photography",
+      "name": "am-reed-monochrome",
+      "productType": "wall-art",
+      "success": true,
+      "syncProductId": 403273117,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "philosophy",
+      "name": "enlightenment-science",
+      "productType": "mug",
+      "success": true,
+      "syncProductId": 403273118,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "philosophy",
+      "name": "self-esteem",
+      "productType": "mug",
+      "success": true,
+      "syncProductId": 403273119,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "philosophy",
+      "name": "social-theory",
+      "productType": "mug",
+      "success": true,
+      "syncProductId": 403273120,
+      "variantCount": 2,
+      "mockupUrls": []
+    }
+  ],
+  "dashboard": "https://www.printful.com/dashboard/store/products",
+  "note": "This is a demo file showing expected output when sync is successful in production"
+}
