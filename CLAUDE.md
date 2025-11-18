@@ -327,4 +327,39 @@ Before deployment:
 
 ---
 
+## Vercel Deployment Issues
+
+### Context Compaction Breaks Auto-Deployment
+
+**Symptom:** After context compaction, Vercel deployments go to preview URLs but don't auto-promote to production domain (brandonmills.com)
+
+**Root Cause:** Context compaction can disrupt the session state that maintains Vercel's auto-promotion configuration
+
+**Solution:**
+
+1. **Manual Promotion via Vercel Dashboard:**
+   - Go to https://vercel.com/brandons-projects-c4dfa14a/webdesigner/deployments
+   - Find the latest "Ready" deployment
+   - Click "Promote to Production"
+
+2. **Vercel CLI Promotion:**
+   ```bash
+   cd "/Volumes/Super Mastery/Webdesigner"
+   npx vercel ls  # Find the latest ready deployment URL
+   npx vercel promote https://webdesigner-xxxxx.vercel.app --yes
+   ```
+
+3. **Check Domain Configuration:**
+   ```bash
+   npx vercel domains ls
+   ```
+   Ensure `brandonmills.com` is listed and pointing to the correct project
+
+**Prevention:**
+- Monitor deployments after context compaction
+- Verify production domain shows updates after each deployment
+- Keep Vercel dashboard open during active development sessions
+
+---
+
 Last Updated: 2025-11-17

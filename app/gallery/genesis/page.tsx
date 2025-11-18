@@ -677,7 +677,7 @@ export default function GenesisGallery() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="max-w-7xl w-full grid md:grid-cols-2 gap-8 md:gap-12 max-h-[90vh] overflow-hidden bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-8"
+              className="max-w-7xl w-full grid md:grid-cols-2 gap-8 md:gap-12 max-h-[90vh] overflow-hidden bg-black/70 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-8"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Image */}

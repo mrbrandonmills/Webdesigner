@@ -140,54 +140,6 @@ export const fullyDevelopedStories: GenesisStory[] = [
     published: false,
 
     tags: ['paris', 'magazine-cover', 'vulnerability', 'international', 'breakthrough']
-  },
-
-  {
-    id: 'rebirth',
-    src: '/images/gallery/genesis/editorial/B.2.jpg',
-    title: 'The Rebirth - First Shoot After Cancer',
-    category: 'editorial',
-    brand: 'Andrew Gerard Photography',
-    year: '2017',
-    location: 'Vancouver, Canada',
-
-    story: "My first modeling collaboration after being declared cancer-free. A photographer saw something in me that I couldn't see yet.",
-
-    fullBackstory: {
-      setting: `Vancouver, 2017. Six months cancer-free. My body was different—
-      thinner, paler, scarred. My confidence was gone. I'd been a working model
-      before the diagnosis. Now I couldn't recognize myself in the mirror. I was
-      ready to quit entirely.`,
-
-      challenge: `"Cancer victim was my new identity." Everyone treated me fragile.
-      Doctors, family, friends—they all spoke in soft voices, like I might break.
-      The modeling industry had moved on. My agency dropped me. I thought my career
-      was over before it really began.`,
-
-      breakthrough: `Andrew Gerard reached out. He didn't want the model I used to be.
-      He wanted to photograph "the bad guy"—dark, edgy, intense. He saw strength where
-      I saw weakness. During the shoot, he kept saying "more anger, more power."
-      Like droplets of mercury coalescing, pieces of myself started coming back together.`,
-
-      impact: `These photos proved something crucial: I wasn't damaged goods. I was
-      reborn. Different than before—but not less. Actually more. The cancer had stripped
-      away the performative bullshit. What remained was raw, real, and powerful.
-      These images launched the second act of my career—the one that actually mattered.`
-    },
-
-    lessonLearned: `Transformation isn't about going back to who you were before the
-    crisis. It's about becoming someone new—someone forged by fire. The old me wouldn't
-    have had the depth for the career I built after cancer. Sometimes losing everything
-    is the prerequisite for gaining what you actually need.`,
-
-    behindTheScenes: `I cried in the dressing room before the shoot. Andrew knew.
-    He didn't say anything—just turned up the music louder and let me feel what I needed
-    to feel. Best creative decision he could have made. That emotion is in every frame.`,
-
-    blogSlug: 'rebirth-first-shoot-after-cancer',
-    published: false,
-
-    tags: ['cancer-survivor', 'rebirth', 'transformation', 'gratitude', 'andrew-gerard']
   }
 ]
 

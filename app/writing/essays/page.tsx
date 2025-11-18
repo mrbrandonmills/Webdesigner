@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
+import { mediumEssays, getAllCategories } from '@/data/medium-essays'
 
 export const metadata: Metadata = {
   title: 'Essays | Brandon Mills',
@@ -11,27 +11,15 @@ export const metadata: Metadata = {
   },
 }
 
-// Essay data structure - will be populated with Medium exports
-const essays = [
-  {
-    slug: '/writing/essays/self-esteem-cultivating-positive-self-image',
-    title: 'Self-Esteem: Cultivating a Positive Self Image',
-    excerpt: 'How cultivating a positive self-image can lead to improved confidence and self-esteem, and the practices that support authentic self-worth.',
-    date: 'February 20, 2023',
-    category: 'Psychology',
-    readTime: '6 min read',
-    coverImage: '/images/essays/self-esteem.jpg', // placeholder
-  },
-  {
-    slug: '/writing/essays/intro-to-social-theory',
-    title: 'An Intro to Social Theory by Charles Lamert',
-    excerpt: 'Exploring social theory as an interdisciplinary field drawing from sociology, psychology, anthropology, philosophy, and political science.',
-    date: 'February 2023',
-    category: 'Philosophy',
-    readTime: '8 min read',
-    coverImage: '/images/essays/social-theory.jpg', // placeholder
-  },
-]
+// Convert Medium essays to display format
+const essays = mediumEssays.map((essay) => ({
+  slug: `/writing/essays/${essay.slug}`,
+  title: essay.title,
+  excerpt: essay.excerpt,
+  date: new Date(essay.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+  category: essay.category,
+  readTime: essay.readTime,
+}))
 
 export default function EssaysPage() {
   return (
@@ -115,19 +103,6 @@ export default function EssaysPage() {
               </Link>
             </article>
           ))}
-        </div>
-
-        {/* Coming Soon */}
-        <div className="max-w-3xl mx-auto mt-32">
-          <div className="border border-white/10 p-16 text-center space-y-6">
-            <h3 className="text-2xl md:text-3xl font-light font-serif text-white">
-              More Essays Coming Soon
-            </h3>
-            <p className="text-white/60">
-              Philosophical explorations on embodiment, performance, identity, and consciousness.
-              Each essay transformed into digital parchment with museum-quality typography.
-            </p>
-          </div>
         </div>
       </section>
 
