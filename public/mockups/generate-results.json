@@ -1,0 +1,108 @@
+{
+  "generateDate": "2025-11-18T20:30:44.612Z",
+  "total": 20,
+  "successful": 0,
+  "failed": 20,
+  "results": [
+    {
+      "product": "poetry-fine-lines-mug",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "poetry-fine-lines-poster",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "poetry-fine-lines-t-shirt",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "poetry-poet-proponent-mug",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "poetry-the-tourbillon-mug",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-aqua-phone-case",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-aqua-poster",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-aqua-tote-bag",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-aqua-wall-art",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-leather-phone-case",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-leather-poster",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-leather-tote-bag",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-leather-wall-art",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-monochrome-phone-case",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-monochrome-poster",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-monochrome-tote-bag",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "photography-am-reed-monochrome-wall-art",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "philosophy-enlightenment-science-mug",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "philosophy-self-esteem-mug",
+      "success": false,
+      "error": "Mockup generation failed"
+    },
+    {
+      "product": "philosophy-social-theory-mug",
+      "success": false,
+      "error": "Mockup generation failed"
+    }
+  ]
+}

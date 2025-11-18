@@ -1,0 +1,128 @@
+{
+  "fetchDate": "2025-11-18T20:29:44.762Z",
+  "total": 20,
+  "successful": 0,
+  "failed": 20,
+  "results": [
+    {
+      "product": "poetry-fine-lines-mug",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "poetry-fine-lines-poster",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "poetry-fine-lines-t-shirt",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "poetry-poet-proponent-mug",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "poetry-the-tourbillon-mug",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-aqua-phone-case",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-aqua-poster",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-aqua-tote-bag",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-aqua-wall-art",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-leather-phone-case",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-leather-poster",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-leather-tote-bag",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-leather-wall-art",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-monochrome-phone-case",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-monochrome-poster",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-monochrome-tote-bag",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "photography-am-reed-monochrome-wall-art",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "philosophy-enlightenment-science-mug",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "philosophy-self-esteem-mug",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    },
+    {
+      "product": "philosophy-social-theory-mug",
+      "filename": "",
+      "success": false,
+      "error": "No mockup URL"
+    }
+  ]
+}
