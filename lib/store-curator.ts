@@ -51,6 +51,7 @@ export const contentThemes = {
       targetAudience: 'Interior designers, art collectors, fashion enthusiasts',
       productTypes: ['large-canvas', 'premium-framed-poster'],
       designApproach: 'Full bleed photo, minimal text, museum-quality finish',
+      sourceImage: '/images/collaborations/am-reed-2024/IMG_1205.jpg',
     },
     'am-reed-leather': {
       name: 'Urban Edge',
@@ -61,6 +62,7 @@ export const contentThemes = {
       targetAudience: 'Fashion enthusiasts, young professionals, collectors',
       productTypes: ['framed-poster', 'canvas', 'greeting-cards'],
       designApproach: 'Dramatic contrast, gold accent elements, editorial layout',
+      sourceImage: '/images/gallery/genesis/campaigns/B.40.jpg',
     },
     'am-reed-monochrome': {
       name: 'Monochrome Elegance',
@@ -71,6 +73,7 @@ export const contentThemes = {
       targetAudience: 'Art collectors, interior designers, photography enthusiasts',
       productTypes: ['premium-framed-poster', 'large-canvas'],
       designApproach: 'High contrast B&W, gold signature element, archival quality',
+      sourceImage: '/images/gallery/genesis/editorial/B.3.jpg',
     },
   },
 
