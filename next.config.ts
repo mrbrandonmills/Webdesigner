@@ -6,6 +6,15 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '50mb', // Allow larger uploads for photos
     },
   },
+  async redirects() {
+    return [
+      {
+        source: '/store',
+        destination: '/shop',
+        permanent: true,
+      },
+    ]
+  },
   async rewrites() {
     return [
       {
