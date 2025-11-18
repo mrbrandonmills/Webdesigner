@@ -1,0 +1,37 @@
+{
+  "syncDate": "2025-11-18T18:31:36.711Z",
+  "environment": "production",
+  "siteUrl": "https://brandonmills.com",
+  "totalDesigns": 3,
+  "successful": 3,
+  "failed": 0,
+  "results": [
+    {
+      "category": "poetry",
+      "name": "fine-lines",
+      "productType": "mug",
+      "success": true,
+      "syncProductId": 403325367,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "poetry",
+      "name": "fine-lines",
+      "productType": "poster",
+      "success": true,
+      "syncProductId": 403325382,
+      "variantCount": 2,
+      "mockupUrls": []
+    },
+    {
+      "category": "poetry",
+      "name": "fine-lines",
+      "productType": "t-shirt",
+      "success": true,
+      "syncProductId": 403325394,
+      "variantCount": 3,
+      "mockupUrls": []
+    }
+  ]
+}
