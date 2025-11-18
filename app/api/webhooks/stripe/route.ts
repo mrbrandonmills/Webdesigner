@@ -2,12 +2,30 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { Resend } from 'resend'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-})
+export const dynamic = 'force-dynamic'
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
+function getStripe() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is not set')
+  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-10-29.clover',
+  })
+}
+
+function getResend() {
+  if (!process.env.RESEND_API_KEY) {
+    throw new Error('RESEND_API_KEY is not set')
+  }
+  return new Resend(process.env.RESEND_API_KEY)
+}
+
+function getWebhookSecret() {
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
+    throw new Error('STRIPE_WEBHOOK_SECRET is not set')
+  }
+  return process.env.STRIPE_WEBHOOK_SECRET
+}
 
 export async function POST(request: NextRequest) {
   const body = await request.text()
@@ -16,6 +34,8 @@ export async function POST(request: NextRequest) {
   let event: Stripe.Event
 
   try {
+    const stripe = getStripe()
+    const webhookSecret = getWebhookSecret()
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
   } catch (err) {
     console.error('Webhook signature verification failed:', err)
@@ -63,6 +83,7 @@ export async function POST(request: NextRequest) {
         }
 
         if (subject && htmlContent) {
+          const resend = getResend()
           await resend.emails.send({
             from: 'Brandon Mills <noreply@brandonmills.com>',
             to: customerEmail,
