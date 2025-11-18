@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function BlockCSuccessPage() {
+function SuccessPageContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   const [verifying, setVerifying] = useState(true)
@@ -70,5 +70,17 @@ export default function BlockCSuccessPage() {
         </div>
       </section>
     </div>
+  )
+}
+
+export default function BlockCSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-6xl">⏳</div>
+      </div>
+    }>
+      <SuccessPageContent />
+    </Suspense>
   )
 }

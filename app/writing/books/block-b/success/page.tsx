@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function BlockBSuccessPage() {
+function SuccessPageContent() {
   const searchParams = useSearchParams()
   const sessionId = searchParams.get('session_id')
   const [verifying, setVerifying] = useState(true)
@@ -21,7 +21,7 @@ export default function BlockBSuccessPage() {
         const data = await response.json()
 
         if (data.valid) {
-          localStorage.setItem('book-unlocked-block-b', 'true')
+          localStorage.setItem('book-unlocked-block-c', 'true')
           setVerifying(false)
         }
       } catch (error) {
@@ -56,10 +56,10 @@ export default function BlockBSuccessPage() {
           </p>
           <div className="pt-8">
             <Link
-              href="/writing/books/block-b"
+              href="/writing/books/block-c"
               className="inline-block bg-accent-gold text-black px-12 py-4 text-sm tracking-wider uppercase font-medium hover:bg-white transition-colors rounded-full"
             >
-              Read Block B Now
+              Read Block C Now
             </Link>
           </div>
           <div className="pt-8 text-white/50 text-sm space-y-2">
@@ -70,5 +70,17 @@ export default function BlockBSuccessPage() {
         </div>
       </section>
     </div>
+  )
+}
+
+export default function BlockCSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-6xl">⏳</div>
+      </div>
+    }>
+      <SuccessPageContent />
+    </Suspense>
   )
 }

@@ -10,6 +10,7 @@ import ToastWrapper from '@/components/toast-wrapper'
 import { ErrorBoundary } from '@/components/error-boundary'
 import { ConciergeWidget } from '@/components/concierge/concierge-widget'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
+import PageBackground from '@/components/ui/page-background'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body className="antialiased">
         <ErrorBoundary>
           <CartProvider>
+            <PageBackground />
             <CustomCursor />
             <SmoothScroll>
               <Navigation />

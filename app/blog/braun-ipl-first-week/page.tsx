@@ -65,7 +65,6 @@ const jsonLd = {
 export default function BraunIPLFirstWeekPage() {
   return (
     <>
-      <ProductSchema product={braunProduct} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
