@@ -6,6 +6,14 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '50mb', // Allow larger uploads for photos
     },
   },
+  async rewrites() {
+    return [
+      {
+        source: '/googlee62551f0bc5c4b9c.html',
+        destination: '/api/googlee62551f0bc5c4b9c.html',
+      },
+    ]
+  },
   async headers() {
     return [
       {
