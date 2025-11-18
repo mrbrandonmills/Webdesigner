@@ -8,9 +8,9 @@ function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('STRIPE_SECRET_KEY is not set')
   }
-  return new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2025-10-29.clover',
-  })
+  // Using the default API version from the Stripe package
+  // The package types expect '2025-10-29.clover' but we use the stable version
+  return new Stripe(process.env.STRIPE_SECRET_KEY)
 }
 
 export async function POST(request: NextRequest) {
@@ -67,8 +67,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: session.url })
   } catch (error) {
     console.error('Stripe checkout error:', error)
+
+    // Provide more specific error messages
+    let errorMessage = 'Failed to create checkout session'
+    if (error instanceof Error) {
+      if (error.message.includes('Invalid API Key')) {
+        errorMessage = 'Payment system configuration error'
+      } else if (error.message.includes('apiVersion')) {
+        errorMessage = 'Payment API version error'
+      } else {
+        errorMessage = error.message
+      }
+    }
+
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { error: errorMessage },
       { status: 500 }
     )
   }
