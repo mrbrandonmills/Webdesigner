@@ -17,7 +17,7 @@
       ],
       "productType": "poster",
       "printfulProductId": 1,
-      "syncProductId": 403273102,
+      "syncProductId": 403330181,
       "variantCount": 2,
       "variants": [
         {
@@ -77,7 +77,7 @@
       ],
       "productType": "t-shirt",
       "printfulProductId": 71,
-      "syncProductId": 403273101,
+      "syncProductId": 403330187,
       "variantCount": 4,
       "variants": [
         {
@@ -157,7 +157,7 @@
       ],
       "productType": "poster",
       "printfulProductId": 1,
-      "syncProductId": 403273107,
+      "syncProductId": 403330223,
       "variantCount": 2,
       "variants": [
         {
@@ -217,7 +217,7 @@
       ],
       "productType": "wall-art",
       "printfulProductId": 29,
-      "syncProductId": 403273109,
+      "syncProductId": 403330239,
       "variantCount": 2,
       "variants": [
         {
@@ -277,7 +277,7 @@
       ],
       "productType": "poster",
       "printfulProductId": 1,
-      "syncProductId": 403273111,
+      "syncProductId": 403331308,
       "variantCount": 2,
       "variants": [
         {
@@ -337,7 +337,7 @@
       ],
       "productType": "wall-art",
       "printfulProductId": 29,
-      "syncProductId": 403273113,
+      "syncProductId": 403331338,
       "variantCount": 2,
       "variants": [
         {
@@ -397,7 +397,7 @@
       ],
       "productType": "poster",
       "printfulProductId": 1,
-      "syncProductId": 403273115,
+      "syncProductId": 403331364,
       "variantCount": 2,
       "variants": [
         {
@@ -457,7 +457,7 @@
       ],
       "productType": "wall-art",
       "printfulProductId": 29,
-      "syncProductId": 403273117,
+      "syncProductId": 403331392,
       "variantCount": 2,
       "variants": [
         {
@@ -517,7 +517,7 @@
       ],
       "productType": "mug",
       "printfulProductId": 19,
-      "syncProductId": 403273118,
+      "syncProductId": 403331402,
       "variantCount": 2,
       "variants": [
         {
@@ -579,7 +579,7 @@
       ],
       "productType": "mug",
       "printfulProductId": 19,
-      "syncProductId": 403273119,
+      "syncProductId": 403331413,
       "variantCount": 2,
       "variants": [
         {
@@ -641,7 +641,7 @@
       ],
       "productType": "mug",
       "printfulProductId": 19,
-      "syncProductId": 403273120,
+      "syncProductId": 403331427,
       "variantCount": 2,
       "variants": [
         {
@@ -703,7 +703,7 @@
       ],
       "productType": "mug",
       "printfulProductId": 19,
-      "syncProductId": 403273103,
+      "syncProductId": 403330171,
       "variantCount": 2,
       "variants": [
         {
@@ -765,7 +765,7 @@
       ],
       "productType": "mug",
       "printfulProductId": 19,
-      "syncProductId": 403273104,
+      "syncProductId": 403330195,
       "variantCount": 2,
       "variants": [
         {
@@ -827,7 +827,7 @@
       ],
       "productType": "mug",
       "printfulProductId": 19,
-      "syncProductId": 403273105,
+      "syncProductId": 403330203,
       "variantCount": 2,
       "variants": [
         {
@@ -889,7 +889,7 @@
       ],
       "productType": "phone-case",
       "printfulProductId": 207,
-      "syncProductId": 403273106,
+      "syncProductId": 403330210,
       "variantCount": 2,
       "variants": [
         {
@@ -949,7 +949,7 @@
       ],
       "productType": "tote-bag",
       "printfulProductId": 86,
-      "syncProductId": 403273108,
+      "syncProductId": 403330231,
       "variantCount": 1,
       "variants": [
         {
@@ -1000,7 +1000,7 @@
       ],
       "productType": "phone-case",
       "printfulProductId": 207,
-      "syncProductId": 403273110,
+      "syncProductId": 403330246,
       "variantCount": 2,
       "variants": [
         {
@@ -1060,7 +1060,7 @@
       ],
       "productType": "tote-bag",
       "printfulProductId": 86,
-      "syncProductId": 403273112,
+      "syncProductId": 403331329,
       "variantCount": 1,
       "variants": [
         {
@@ -1111,7 +1111,7 @@
       ],
       "productType": "phone-case",
       "printfulProductId": 207,
-      "syncProductId": 403273114,
+      "syncProductId": 403331347,
       "variantCount": 2,
       "variants": [
         {
@@ -1171,7 +1171,7 @@
       ],
       "productType": "tote-bag",
       "printfulProductId": 86,
-      "syncProductId": 403273116,
+      "syncProductId": 403331378,
       "variantCount": 1,
       "variants": [
         {
@@ -1212,5 +1212,5 @@
     "philosophy": 3
   },
   "totalProducts": 20,
-  "generatedAt": "2025-11-18T13:32:56.354Z"
+  "generatedAt": "2025-11-18T19:05:36.944Z"
 }

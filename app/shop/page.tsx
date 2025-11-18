@@ -23,9 +23,20 @@ async function getProducts() {
       printfulProducts = printfulData.products || []
     }
 
-    // Combine theme factory products with Printful API products
-    // Theme factory products take precedence (they're our curated designs)
-    const allPrintfulProducts = [...themeFactoryProducts.products, ...printfulProducts]
+    // Create a set of sync product IDs from theme factory products
+    const themeFactorySyncIds = new Set(
+      themeFactoryProducts.products.map(p => p.syncProductId).filter(id => id)
+    )
+
+    // Filter out Printful API products that already exist in theme factory
+    // This avoids duplicates while maintaining local images for speed
+    const uniquePrintfulProducts = printfulProducts.filter(
+      (product: any) => !themeFactorySyncIds.has(product.syncProductId)
+    )
+
+    // Combine theme factory products with unique Printful API products
+    // Theme factory products take precedence (they have local images for faster loading)
+    const allPrintfulProducts = [...themeFactoryProducts.products, ...uniquePrintfulProducts]
 
     // Merge with Amazon affiliate products
     return mergeShopProducts(allPrintfulProducts, affiliateProducts)
