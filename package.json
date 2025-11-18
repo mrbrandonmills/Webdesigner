@@ -22,11 +22,17 @@
     "auto-post": "tsx scripts/auto-post-everywhere.ts",
     "auto-post:pinterest": "tsx scripts/auto-post-pinterest.ts",
     "auto-post:twitter": "tsx scripts/auto-post-twitter.ts",
-    "auto-post:quora": "tsx scripts/auto-post-quora.ts"
+    "auto-post:quora": "tsx scripts/auto-post-quora.ts",
+    "auto-post:reddit": "tsx scripts/auto-post-reddit.ts",
+    "auto-post:medium": "tsx scripts/auto-post-medium.ts",
+    "auto-import:medium": "tsx scripts/auto-import-medium.ts",
+    "traffic:dashboard": "tsx scripts/traffic-dashboard.ts",
+    "traffic:report": "tsx scripts/daily-traffic-report.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.0.0",
     "@ai-sdk/openai": "^1.0.0",
+    "@google-analytics/data": "^5.2.1",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.4.0",
