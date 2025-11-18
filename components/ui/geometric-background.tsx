@@ -31,7 +31,7 @@ export default function GeometricBackground({
 
   if (variant === 'luxury') {
     return (
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden will-change-transform" style={{ transform: 'translateZ(0)' }}>
         {/* Large rotating hexagons */}
         {[...Array(3)].map((_, i) => (
           <motion.div
@@ -136,7 +136,7 @@ export default function GeometricBackground({
 
   if (variant === 'smoke') {
     return (
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden will-change-transform" style={{ transform: 'translateZ(0)' }}>
         {/* Smoke-like blurred gradients */}
         {[...Array(6)].map((_, i) => (
           <motion.div
@@ -192,7 +192,7 @@ export default function GeometricBackground({
 
   if (variant === 'particles') {
     return (
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden will-change-transform" style={{ transform: 'translateZ(0)' }}>
         {/* Floating particles */}
         {[...Array(50)].map((_, i) => (
           <motion.div
@@ -257,7 +257,7 @@ export default function GeometricBackground({
 
   if (variant === 'waves') {
     return (
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden will-change-transform" style={{ transform: 'translateZ(0)' }}>
         {/* Flowing wave lines */}
         {[...Array(5)].map((_, i) => (
           <svg
@@ -296,7 +296,7 @@ export default function GeometricBackground({
 
   if (variant === 'sacred-geometry' || variant === 'vitruvian') {
     return (
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 pointer-events-none overflow-hidden will-change-transform" style={{ transform: 'translateZ(0)' }}>
         {/* Vitruvian Man Sacred Geometry - Concentric circles with golden ratio */}
         <motion.div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
@@ -462,7 +462,7 @@ export default function GeometricBackground({
 
   // Default minimal variant
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none overflow-hidden will-change-transform" style={{ transform: 'translateZ(0)' }}>
       {/* Simple gradient orbs */}
       {[...Array(3)].map((_, i) => (
         <motion.div

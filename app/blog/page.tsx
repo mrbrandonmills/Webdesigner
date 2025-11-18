@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { getSortedPosts } from '@/lib/blog-posts'
 
 export const metadata: Metadata = {
   title: 'Blog | Brandon Mills',
@@ -12,27 +13,8 @@ export const metadata: Metadata = {
 }
 
 export default function BlogPage() {
-  // Featured blog posts
-  const posts = [
-    {
-      slug: '/blog/best-noise-canceling-headphones-2025',
-      category: 'Product Reviews',
-      title: 'Best Noise Canceling Headphones 2025: AirPods Max vs Sony WH-1000XM5',
-      excerpt: 'I tested both for 30 days to find the best noise canceling headphones for deep focus and work. Complete comparison with definitive recommendations.',
-      date: 'January 2025',
-      coverImage: '/images/blog/headphones-comparison.jpg',
-      readTime: '9 min read',
-    },
-    {
-      slug: '/blog/photographer-collaborations/am-reed-august-2024',
-      category: 'Latest Work',
-      title: 'Creative Chemistry: Working with AM Reed',
-      excerpt: 'Behind the scenes of a 158-image photography session with AM Reed in Los Angeles. Exploring the creative chemistry that produces museum-quality work.',
-      date: 'August 2025',
-      coverImage: '/images/collaborations/am-reed-2024/IMG_1205.jpg',
-      readTime: '8 min read',
-    },
-  ]
+  // Get all blog posts sorted by date (newest first)
+  const posts = getSortedPosts()
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -50,11 +32,11 @@ export default function BlogPage() {
           <p className="text-sm tracking-[0.3em] uppercase text-accent-gold">
             Writing & Reflections
           </p>
-          <h1 className="text-5xl md:text-7xl font-light font-serif leading-tight">
+          <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl font-light font-serif leading-tight px-4">
             Blog
           </h1>
-          <div className="w-24 h-px bg-gradient-to-r from-transparent via-accent-gold to-transparent mx-auto my-8" />
-          <p className="text-xl text-white/70 font-light max-w-2xl mx-auto">
+          <div className="w-16 sm:w-24 h-px bg-gradient-to-r from-transparent via-accent-gold to-transparent mx-auto my-6 sm:my-8" />
+          <p className="text-base sm:text-lg md:text-xl text-white/70 font-light max-w-2xl mx-auto px-6">
             Essays on modeling, creative collaborations, and the art of performance
           </p>
         </div>
@@ -82,7 +64,7 @@ export default function BlogPage() {
                     <p className="text-accent-gold text-xs tracking-[0.3em] uppercase">
                       {post.category}
                     </p>
-                    <h2 className="text-3xl md:text-4xl font-light font-serif text-white group-hover:text-accent-gold transition-colors">
+                    <h2 className="text-2xl xs:text-3xl md:text-4xl font-light font-serif text-white group-hover:text-accent-gold transition-colors">
                       {post.title}
                     </h2>
                     <p className="text-white/60 leading-relaxed">
@@ -123,7 +105,7 @@ export default function BlogPage() {
         {/* Coming Soon Section */}
         <div className="max-w-3xl mx-auto mt-32 text-center">
           <div className="border border-white/10 p-16 space-y-6">
-            <h3 className="text-2xl md:text-3xl font-light font-serif text-white">
+            <h3 className="text-xl xs:text-2xl md:text-3xl font-light font-serif text-white">
               More Stories Coming Soon
             </h3>
             <p className="text-white/60">
@@ -136,7 +118,7 @@ export default function BlogPage() {
       {/* Newsletter Section (Optional - for future) */}
       <section className="pb-32 container-wide">
         <div className="max-w-2xl mx-auto border-t border-white/10 pt-20 text-center space-y-8">
-          <h2 className="text-3xl md:text-4xl font-light font-serif">
+          <h2 className="text-2xl xs:text-3xl md:text-4xl font-light font-serif">
             Stay Updated
           </h2>
           <p className="text-white/60">

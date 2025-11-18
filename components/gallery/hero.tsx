@@ -172,7 +172,7 @@ export function Hero() {
                 delay: 0.7,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="font-serif text-6xl md:text-8xl lg:text-9xl font-light text-white mb-0 leading-[0.9] tracking-tight"
+              className="font-serif text-4xl xs:text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light text-white mb-0 leading-[0.9] tracking-tight px-4"
               style={{
                 textShadow: '0 10px 30px rgba(0, 0, 0, 0.5)',
               }}
@@ -192,7 +192,7 @@ export function Hero() {
               initial={{ y: 50 }}
               animate={{ y: 0 }}
               transition={{ duration: 0.8, delay: 1.4, ease: [0.22, 1, 0.36, 1] }}
-              className="flex items-center justify-center gap-4 text-lg md:text-2xl text-gray-400 font-light tracking-[0.15em]"
+              className="flex flex-wrap items-center justify-center gap-2 xs:gap-3 md:gap-4 text-sm xs:text-base md:text-xl lg:text-2xl text-gray-400 font-light tracking-[0.1em] md:tracking-[0.15em] px-4"
             >
               {['Model', '·', 'Actor', '·', 'Researcher', '·', 'Creative'].map((word, i) => (
                 <motion.span
@@ -244,7 +244,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 2.4, ease: [0.22, 1, 0.36, 1] }}
-            className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed font-light"
+            className="text-sm xs:text-base md:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed font-light px-6"
           >
             A portfolio of work exploring the intersection of performance,
             research, and creative expression

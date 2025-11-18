@@ -1,9 +1,9 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import Image from 'next/image'
 import { useState } from 'react'
-import { X, Heart } from 'lucide-react'
+import { X, Heart, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface GenesisPhoto {
   id: string
@@ -376,6 +376,7 @@ const genesisPhotos: GenesisPhoto[] = [
 export default function GenesisGallery() {
   const [selectedPhoto, setSelectedPhoto] = useState<GenesisPhoto | null>(null)
   const [activeTab, setActiveTab] = useState<'all' | 'editorial' | 'campaign' | 'runway'>('all')
+  const [imageLoadStates, setImageLoadStates] = useState<Record<string, boolean>>({})
 
   const filteredPhotos = activeTab === 'all'
     ? genesisPhotos
@@ -384,6 +385,36 @@ export default function GenesisGallery() {
   const editorialCount = genesisPhotos.filter(p => p.category === 'editorial').length
   const campaignCount = genesisPhotos.filter(p => p.category === 'campaign').length
   const runwayCount = genesisPhotos.filter(p => p.category === 'runway').length
+
+  const handlePhotoClick = (photo: GenesisPhoto) => {
+    // Prevent stacking by only allowing one modal at a time
+    if (!selectedPhoto) {
+      setSelectedPhoto(photo)
+    }
+  }
+
+  const closeModal = () => {
+    setSelectedPhoto(null)
+  }
+
+  const navigatePhoto = (direction: 'prev' | 'next') => {
+    if (!selectedPhoto) return
+
+    const currentIndex = filteredPhotos.findIndex(p => p.id === selectedPhoto.id)
+    let newIndex: number
+
+    if (direction === 'prev') {
+      newIndex = currentIndex > 0 ? currentIndex - 1 : filteredPhotos.length - 1
+    } else {
+      newIndex = currentIndex < filteredPhotos.length - 1 ? currentIndex + 1 : 0
+    }
+
+    setSelectedPhoto(filteredPhotos[newIndex])
+  }
+
+  const handleImageLoad = (photoId: string) => {
+    setImageLoadStates(prev => ({ ...prev, [photoId]: true }))
+  }
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -489,7 +520,7 @@ export default function GenesisGallery() {
 
       {/* Tab Navigation */}
       <section className="pb-12 container-wide">
-        <div className="flex justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
           <button
             onClick={() => setActiveTab('all')}
             className={`px-6 py-3 border transition-all ${
@@ -533,14 +564,14 @@ export default function GenesisGallery() {
         </div>
       </section>
 
-      {/* Masonry Gallery */}
+      {/* Uniform Grid Gallery - Fixed Layout */}
       <section className="pb-32 container-wide">
         <motion.div
           key={activeTab}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
-          className="masonry-grid"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
         >
           {filteredPhotos.map((photo, index) => (
             <motion.div
@@ -549,15 +580,24 @@ export default function GenesisGallery() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.05 }}
               className="gallery-item-full cursor-pointer group"
-              onClick={() => setSelectedPhoto(photo)}
+              onClick={() => handlePhotoClick(photo)}
             >
-              <div className="relative overflow-hidden">
+              <div className="relative overflow-hidden aspect-[3/4] bg-white/5">
+                {/* Loading State */}
+                {!imageLoadStates[photo.id] && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-12 h-12 border-2 border-accent-gold/30 border-t-accent-gold rounded-full animate-spin" />
+                  </div>
+                )}
+
                 <Image
                   src={photo.src}
                   alt={photo.title}
-                  width={600}
-                  height={800}
-                  className="w-full h-auto object-contain transition-transform duration-500 group-hover:scale-105"
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover transition-all duration-500 group-hover:scale-105"
+                  onLoad={() => handleImageLoad(photo.id)}
+                  quality={85}
                 />
 
                 {/* Hover Overlay */}
@@ -587,77 +627,111 @@ export default function GenesisGallery() {
         </motion.div>
       </section>
 
-      {/* Lightbox Modal */}
-      {selectedPhoto && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[200] bg-black/98 flex items-center justify-center p-4 md:p-8"
-          onClick={() => setSelectedPhoto(null)}
-        >
-          <button
-            onClick={() => setSelectedPhoto(null)}
-            className="absolute top-4 md:top-8 right-4 md:right-8 text-white hover:text-accent-gold transition-colors z-10 p-2"
-            aria-label="Close"
-          >
-            <X size={32} />
-          </button>
-
+      {/* Lightbox Modal - Fixed Z-index and Stacking */}
+      <AnimatePresence mode="wait">
+        {selectedPhoto && (
           <motion.div
-            initial={{ scale: 0.9, y: 50 }}
-            animate={{ scale: 1, y: 0 }}
-            className="max-w-6xl w-full grid md:grid-cols-2 gap-8 md:gap-12 max-h-[90vh] overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[9999] bg-black/98 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+            onClick={closeModal}
           >
-            {/* Image */}
-            <div className="relative flex items-center justify-center overflow-hidden">
-              <Image
-                src={selectedPhoto.src}
-                alt={selectedPhoto.title}
-                width={800}
-                height={1200}
-                className="w-full h-auto object-contain max-h-[80vh]"
-                quality={100}
-              />
-            </div>
+            {/* Close Button */}
+            <button
+              onClick={closeModal}
+              className="fixed top-4 md:top-8 right-4 md:right-8 text-white hover:text-accent-gold transition-colors z-[10001] p-2 bg-black/50 rounded-full backdrop-blur-sm"
+              aria-label="Close"
+            >
+              <X size={32} />
+            </button>
 
-            {/* Story */}
-            <div className="flex flex-col justify-center space-y-6 overflow-y-auto max-h-[80vh] pr-4">
-              <div>
-                <p className="text-accent-gold text-xs tracking-[0.3em] uppercase mb-2">
-                  {selectedPhoto.category}
-                </p>
-                <h2 className="text-3xl md:text-4xl font-light font-serif text-white mb-4">
-                  {selectedPhoto.title}
-                </h2>
-              </div>
+            {/* Navigation Buttons */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                navigatePhoto('prev')
+              }}
+              className="fixed left-4 md:left-8 top-1/2 -translate-y-1/2 text-white hover:text-accent-gold transition-colors z-[10001] p-3 bg-black/50 rounded-full backdrop-blur-sm"
+              aria-label="Previous image"
+            >
+              <ChevronLeft size={32} />
+            </button>
 
-              {selectedPhoto.brand && (
-                <div>
-                  <p className="text-accent-gold text-sm tracking-wider uppercase mb-1">Brand</p>
-                  <p className="text-white/90 text-lg">{selectedPhoto.brand}</p>
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                navigatePhoto('next')
+              }}
+              className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 text-white hover:text-accent-gold transition-colors z-[10001] p-3 bg-black/50 rounded-full backdrop-blur-sm"
+              aria-label="Next image"
+            >
+              <ChevronRight size={32} />
+            </button>
+
+            {/* Modal Content */}
+            <motion.div
+              key={selectedPhoto.id}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="max-w-7xl w-full grid md:grid-cols-2 gap-8 md:gap-12 max-h-[90vh] overflow-hidden bg-black/40 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Image */}
+              <div className="relative flex items-center justify-center overflow-hidden rounded-lg">
+                <div className="relative w-full h-full max-h-[70vh] md:max-h-[80vh]">
+                  <Image
+                    src={selectedPhoto.src}
+                    alt={selectedPhoto.title}
+                    width={800}
+                    height={1200}
+                    className="w-full h-full object-contain"
+                    quality={100}
+                    priority
+                  />
                 </div>
-              )}
-
-              <div className="w-24 h-px bg-gradient-to-r from-accent-gold to-transparent" />
-
-              <div>
-                <p className="text-accent-gold text-sm tracking-wider uppercase mb-3">The Story</p>
-                <p className="text-white/70 text-lg leading-relaxed">
-                  {selectedPhoto.story}
-                </p>
               </div>
 
-              <div className="pt-6">
-                <p className="text-white/40 text-sm italic">
-                  Genesis modeling archive • Part of Brandon&apos;s journey from model to entrepreneur
-                </p>
+              {/* Story */}
+              <div className="flex flex-col justify-center space-y-6 overflow-y-auto max-h-[70vh] md:max-h-[80vh] pr-4 custom-scrollbar">
+                <div>
+                  <p className="text-accent-gold text-xs tracking-[0.3em] uppercase mb-2">
+                    {selectedPhoto.category}
+                  </p>
+                  <h2 className="text-3xl md:text-4xl font-light font-serif text-white mb-4">
+                    {selectedPhoto.title}
+                  </h2>
+                </div>
+
+                {selectedPhoto.brand && (
+                  <div>
+                    <p className="text-accent-gold text-sm tracking-wider uppercase mb-1">Brand</p>
+                    <p className="text-white/90 text-lg">{selectedPhoto.brand}</p>
+                  </div>
+                )}
+
+                <div className="w-24 h-px bg-gradient-to-r from-accent-gold to-transparent" />
+
+                <div>
+                  <p className="text-accent-gold text-sm tracking-wider uppercase mb-3">The Story</p>
+                  <p className="text-white/70 text-lg leading-relaxed">
+                    {selectedPhoto.story}
+                  </p>
+                </div>
+
+                <div className="pt-6">
+                  <p className="text-white/40 text-sm italic">
+                    Genesis modeling archive • Part of Brandon&apos;s journey from model to entrepreneur
+                  </p>
+                </div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   )
 }

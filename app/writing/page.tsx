@@ -46,11 +46,11 @@ export default function WritingPage() {
           <p className="text-sm tracking-[0.3em] uppercase text-accent-gold">
             Intellectual Work
           </p>
-          <h1 className="text-5xl md:text-7xl font-light font-serif leading-tight">
+          <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl font-light font-serif leading-tight px-4">
             Writing
           </h1>
-          <div className="w-24 h-px bg-gradient-to-r from-transparent via-accent-gold to-transparent mx-auto my-8" />
-          <p className="text-xl text-white/70 font-light max-w-2xl mx-auto leading-relaxed">
+          <div className="w-16 sm:w-24 h-px bg-gradient-to-r from-transparent via-accent-gold to-transparent mx-auto my-6 sm:my-8" />
+          <p className="text-base sm:text-lg md:text-xl text-white/70 font-light max-w-2xl mx-auto leading-relaxed px-6">
             Research papers, philosophical essays, and poetry exploring consciousness,
             quantum physics, self-actualization, and what it means to be human.
           </p>
@@ -71,7 +71,7 @@ export default function WritingPage() {
               </div>
 
               <div>
-                <h2 className="text-2xl md:text-3xl font-light font-serif text-white mb-3 group-hover:text-accent-gold transition-colors">
+                <h2 className="text-xl xs:text-2xl md:text-3xl font-light font-serif text-white mb-3 group-hover:text-accent-gold transition-colors">
                   Research Papers
                 </h2>
                 <p className="text-white/60 leading-relaxed">
@@ -106,7 +106,7 @@ export default function WritingPage() {
               </div>
 
               <div>
-                <h2 className="text-2xl md:text-3xl font-light font-serif text-white mb-3 group-hover:text-accent-gold transition-colors">
+                <h2 className="text-xl xs:text-2xl md:text-3xl font-light font-serif text-white mb-3 group-hover:text-accent-gold transition-colors">
                   Essays
                 </h2>
                 <p className="text-white/60 leading-relaxed">
@@ -141,7 +141,7 @@ export default function WritingPage() {
               </div>
 
               <div>
-                <h2 className="text-2xl md:text-3xl font-light font-serif text-white mb-3 group-hover:text-accent-gold transition-colors">
+                <h2 className="text-xl xs:text-2xl md:text-3xl font-light font-serif text-white mb-3 group-hover:text-accent-gold transition-colors">
                   Poetry
                 </h2>
                 <p className="text-white/60 leading-relaxed">
@@ -176,7 +176,7 @@ export default function WritingPage() {
               </div>
 
               <div>
-                <h2 className="text-2xl md:text-3xl font-light font-serif text-white mb-3 group-hover:text-accent-gold transition-colors">
+                <h2 className="text-xl xs:text-2xl md:text-3xl font-light font-serif text-white mb-3 group-hover:text-accent-gold transition-colors">
                   Books
                 </h2>
                 <p className="text-white/60 leading-relaxed">
@@ -206,7 +206,7 @@ export default function WritingPage() {
       <section className="pb-32 container-wide">
         <div className="max-w-4xl mx-auto border-t border-white/10 pt-20">
           <blockquote className="text-center space-y-8">
-            <p className="text-2xl md:text-3xl font-light font-serif text-white/90 leading-relaxed italic">
+            <p className="text-lg xs:text-xl sm:text-2xl md:text-3xl font-light font-serif text-white/90 leading-relaxed italic px-4">
               "Writing is thinking made visible. Through research, reflection, and verse,
               we map the territory between what we know and what we're learning to see."
             </p>

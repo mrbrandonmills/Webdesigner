@@ -63,15 +63,15 @@ export default function HeroVideo() {
           </motion.p>
 
           {/* Main Title */}
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-light font-serif leading-none text-white">
+          <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light font-serif leading-none text-white px-4">
             Brandon Mills
           </h1>
 
           {/* Divider */}
-          <div className="w-24 h-px bg-gradient-to-r from-transparent via-accent-gold to-transparent mx-auto" />
+          <div className="w-16 sm:w-24 h-px bg-gradient-to-r from-transparent via-accent-gold to-transparent mx-auto" />
 
           {/* Tagline */}
-          <p className="text-xl md:text-2xl lg:text-3xl font-light text-white/90 max-w-3xl leading-relaxed">
+          <p className="text-base xs:text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-white/90 max-w-3xl leading-relaxed px-6">
             Model · Author · AI Architect · Visual Artist
           </p>
 

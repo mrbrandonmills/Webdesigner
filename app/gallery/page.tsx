@@ -15,12 +15,12 @@ export default async function GalleryPage() {
       <Hero />
 
       {/* Latest Work */}
-      <div className="px-8 lg:px-16 py-16 border-t border-white/10">
+      <div className="px-4 sm:px-6 lg:px-16 py-12 sm:py-16 border-t border-white/10">
         <div className="max-w-6xl mx-auto">
-          <h2 className="font-serif text-3xl md:text-4xl text-white font-light mb-8">
+          <h2 className="font-serif text-2xl xs:text-3xl md:text-4xl text-white font-light mb-6 sm:mb-8">
             Latest Work
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Genesis Archive (includes The Rebirth) */}
             <a
               href="/gallery/genesis"
@@ -67,8 +67,8 @@ export default async function GalleryPage() {
       </div>
 
       {/* Section title */}
-      <div className="px-8 lg:px-16 py-16 border-t border-white/10">
-        <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl text-white font-light text-center mb-4">
+      <div className="px-4 sm:px-6 lg:px-16 py-12 sm:py-16 border-t border-white/10">
+        <h2 className="font-serif text-3xl xs:text-4xl sm:text-5xl md:text-6xl text-white font-light text-center mb-4 px-4">
           Selected Work
         </h2>
         <p className="text-center text-gray-500 text-sm tracking-wide">
@@ -79,7 +79,7 @@ export default async function GalleryPage() {
       <ProjectGrid projects={projects} />
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-16 px-8 lg:px-16">
+      <footer className="border-t border-white/10 py-12 sm:py-16 px-4 sm:px-6 lg:px-16">
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 text-sm text-gray-500">
           <p>© {new Date().getFullYear()} Brandon Mills. All rights reserved.</p>
           <div className="flex gap-8">

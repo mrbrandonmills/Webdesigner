@@ -57,14 +57,14 @@ export default function FeaturedCollections() {
           <p className="text-sm tracking-[0.3em] uppercase text-accent-gold mb-4">
             Curated Excellence
           </p>
-          <h2 className="text-5xl md:text-7xl font-light font-serif mb-6">
+          <h2 className="text-3xl xs:text-4xl sm:text-5xl md:text-7xl font-light font-serif mb-6 px-4">
             Featured Collections
           </h2>
           <div className="w-24 h-px bg-gradient-to-r from-transparent via-accent-gold to-transparent mx-auto" />
         </motion.div>
 
         {/* Collections Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
           {collections.map((collection, index) => {
             const Icon = collection.icon
 
@@ -97,8 +97,8 @@ export default function FeaturedCollections() {
                   </div>
 
                   {/* Content */}
-                  <div className="p-8 space-y-4">
-                    <h3 className="text-2xl font-serif text-white group-hover:text-accent-gold transition-colors duration-300">
+                  <div className="p-6 sm:p-8 space-y-3 sm:space-y-4">
+                    <h3 className="text-xl xs:text-2xl font-serif text-white group-hover:text-accent-gold transition-colors duration-300">
                       {collection.title}
                     </h3>
                     <p className="text-sm text-white/60 leading-relaxed">
