@@ -74,7 +74,7 @@ export default function SocialDashboard() {
     if (template === 'braun-ipl') {
       setRedditPost({
         ...redditPost,
-        title: 'Week 1 with Braun IPL: Honest review from a male model who\\'s tried everything',
+        title: "Week 1 with Braun IPL: Honest review from a male model who's tried everything",
         text: `I've been hairless since sixteen. Not genetics—choice.
 
 When the Braun Silk Expert Pro 7 arrived, I committed to documenting honestly. Here's my first week.
