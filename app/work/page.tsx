@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import VideoHero from '@/components/video-hero'
+import FeaturedCollections from '@/components/home/featured-collections'
 
 export default function WorkPage() {
   const categories = [
@@ -188,6 +189,9 @@ export default function WorkPage() {
           <div className="luxury-divider"></div>
         </div>
       </section>
+
+      {/* Featured Collections */}
+      <FeaturedCollections />
     </div>
   )
 }

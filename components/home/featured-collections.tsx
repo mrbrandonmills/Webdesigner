@@ -10,7 +10,7 @@ const collections = [
     title: 'Fine Art Photography',
     description: 'Limited edition prints capturing the intersection of human form and artistic vision',
     icon: Camera,
-    image: '/images/collections/photography-preview.jpg',
+    image: '/images/gallery/genesis/editorial/B.3.jpg',
     href: '/store?category=photography',
     items: '47 pieces',
   },
@@ -19,7 +19,7 @@ const collections = [
     title: 'Published Works',
     description: 'Books exploring embodied cognition, performance, and the philosophy of human experience',
     icon: BookOpen,
-    image: '/images/collections/books-preview.jpg',
+    image: '/images/gallery/genesis/editorial/B.2.jpg',
     href: '/store?category=books',
     items: '12 titles',
   },
@@ -28,7 +28,7 @@ const collections = [
     title: 'AI Tools & Software',
     description: 'Revolutionary tools that amplify creative potential and automate the technical',
     icon: Cpu,
-    image: '/images/collections/software-preview.jpg',
+    image: '/images/gallery/genesis/campaigns/B.40.jpg',
     href: '/store?category=software',
     items: '8 tools',
   },
@@ -82,8 +82,12 @@ export default function FeaturedCollections() {
                 >
                   {/* Image Container */}
                   <div className="relative aspect-[4/5] overflow-hidden">
-                    {/* Placeholder for collection image */}
-                    <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5" />
+                    {/* Collection image */}
+                    <img
+                      src={collection.image}
+                      alt={collection.title}
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
 
                     {/* Overlay on hover */}
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
