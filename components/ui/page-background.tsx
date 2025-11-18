@@ -70,8 +70,8 @@ export default function PageBackground() {
       }
     }
 
-    // Shop/Products - Luxury for premium feel
-    if (pathname?.startsWith('/shop') || pathname?.startsWith('/products')) {
+    // Store/Products - Luxury for premium feel
+    if (pathname?.startsWith('/store') || pathname?.startsWith('/shop') || pathname?.startsWith('/products')) {
       return {
         variant: 'luxury',
         intensity: 'medium',

@@ -11,7 +11,7 @@ const collections = [
     description: 'MacBook Pro, AirPods Max, iPad Pro - the tools that power creative work and deep thinking',
     icon: Camera,
     image: '/images/gallery/genesis/editorial/B.3.jpg',
-    href: '/shop#premium-tech',
+    href: '/store',
     items: '6 products',
   },
   {
@@ -20,7 +20,7 @@ const collections = [
     description: 'Meditations, Sapiens, Atomic Habits - foundational texts for polymaths and deep thinkers',
     icon: BookOpen,
     image: '/images/gallery/genesis/editorial/B.2.jpg',
-    href: '/shop#philosophy-books',
+    href: '/store',
     items: '4 titles',
   },
   {
@@ -29,7 +29,7 @@ const collections = [
     description: 'YETI tumblers, Kindle Oasis, Moleskine notebooks - quality items for daily excellence',
     icon: Cpu,
     image: '/images/gallery/genesis/campaigns/B.40.jpg',
-    href: '/shop#luxury-lifestyle',
+    href: '/store',
     items: '5 essentials',
   },
 ]

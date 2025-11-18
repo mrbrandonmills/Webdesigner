@@ -14,9 +14,9 @@ export default function GeometricBackground({
   color = 'gold',
 }: GeometricBackgroundProps) {
   const opacityMap = {
-    subtle: 0.03,
-    medium: 0.06,
-    bold: 0.12,
+    subtle: 0.15,
+    medium: 0.25,
+    bold: 0.40,
   }
 
   const baseOpacity = opacityMap[intensity]
