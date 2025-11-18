@@ -14,64 +14,6 @@ export default async function GalleryPage() {
     <main className="min-h-screen bg-black">
       <Hero />
 
-      {/* Genesis Archive - Featured Block */}
-      <div className="px-4 sm:px-6 lg:px-16 py-12 sm:py-20 border-t border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <a
-            href="/gallery/genesis"
-            className="group block relative overflow-hidden border border-white/10 hover:border-accent-gold/50 transition-all duration-700"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-              {/* Left: Image */}
-              <div className="relative aspect-[4/5] lg:aspect-auto lg:min-h-[600px] overflow-hidden">
-                <img
-                  src="/images/collaborations/andrew-gerard-vancouver/image-01.jpg"
-                  alt="Genesis Archive - The Rebirth"
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-black/60 lg:to-black/80" />
-              </div>
-
-              {/* Right: Content */}
-              <div className="relative flex flex-col justify-center p-8 sm:p-12 lg:p-16 bg-black/40 backdrop-blur-sm">
-                <div className="space-y-6">
-                  <div>
-                    <p className="text-accent-gold text-xs sm:text-sm tracking-[0.3em] uppercase mb-3">
-                      The Archive
-                    </p>
-                    <h2 className="text-white text-4xl sm:text-5xl lg:text-6xl font-serif font-light mb-4">
-                      Genesis
-                    </h2>
-                    <div className="w-16 h-px bg-accent-gold/50 mb-6" />
-                  </div>
-
-                  <p className="text-white/80 text-lg sm:text-xl leading-relaxed max-w-2xl">
-                    A comprehensive archive documenting my modeling career's evolution—from the first shoot after cancer
-                    to high-fashion campaigns across three continents.
-                  </p>
-
-                  <div className="flex flex-wrap gap-3 pt-4">
-                    <span className="px-4 py-2 border border-white/20 text-white/70 text-sm">The Rebirth</span>
-                    <span className="px-4 py-2 border border-white/20 text-white/70 text-sm">Runway</span>
-                    <span className="px-4 py-2 border border-white/20 text-white/70 text-sm">Editorial</span>
-                    <span className="px-4 py-2 border border-white/20 text-white/70 text-sm">Campaigns</span>
-                  </div>
-
-                  <div className="pt-6">
-                    <span className="inline-flex items-center gap-2 text-accent-gold text-sm tracking-wider group-hover:gap-4 transition-all">
-                      EXPLORE THE ARCHIVE
-                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="group-hover:translate-x-1 transition-transform">
-                        <path d="M1 8H15M15 8L8 1M15 8L8 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </a>
-        </div>
-      </div>
-
       {/* Latest Work */}
       <div className="px-4 sm:px-6 lg:px-16 py-12 sm:py-16 border-t border-white/10">
         <div className="max-w-6xl mx-auto">
