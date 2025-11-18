@@ -41,8 +41,8 @@ const PRODUCT_MAPPINGS: Record<string, any> = {
   'poster': {
     productName: 'Art Print',
     variants: [
-      { id: 3483, size: '12×18' },
-      { id: 3484, size: '18×24' }
+      { id: 3876, size: '12×18' },  // Updated from 3483 - Enhanced Matte Paper Poster 12″×18″
+      { id: 1, size: '18×24' }       // Updated from 3484 - Enhanced Matte Paper Poster 18″×24″
     ],
     placement: 'default',
     retailPrice: '29.95'
@@ -50,8 +50,8 @@ const PRODUCT_MAPPINGS: Record<string, any> = {
   'mug': {
     productName: 'Ceramic Mug',
     variants: [
-      { id: 1320, size: '11oz' },
-      { id: 1321, size: '15oz' }
+      { id: 1320, size: '11oz' },    // White Glossy Mug 11 oz - VALID
+      { id: 4830, size: '15oz' }     // Updated from 1321 - White Glossy Mug 15 oz
     ],
     placement: 'default',
     retailPrice: '24.95'
@@ -59,8 +59,8 @@ const PRODUCT_MAPPINGS: Record<string, any> = {
   'phone-case': {
     productName: 'Phone Case',
     variants: [
-      { id: 12318, model: 'iPhone 14' },
-      { id: 12319, model: 'iPhone 14 Pro' }
+      { id: 16910, model: 'iPhone 14' },      // Updated - Snap Case for iPhone® (Glossy / iPhone 14)
+      { id: 16912, model: 'iPhone 14 Pro' }   // Updated - Snap Case for iPhone® (Glossy / iPhone 14 Pro)
     ],
     placement: 'default',
     retailPrice: '34.95'
@@ -68,7 +68,7 @@ const PRODUCT_MAPPINGS: Record<string, any> = {
   'tote-bag': {
     productName: 'Eco Tote',
     variants: [
-      { id: 12262, size: '15×15' }
+      { id: 10457, size: 'One size' }         // Updated - Econscious EC8000 (Black / One size)
     ],
     placement: 'default',
     retailPrice: '44.95'
@@ -76,8 +76,8 @@ const PRODUCT_MAPPINGS: Record<string, any> = {
   'wall-art': {
     productName: 'Framed Print',
     variants: [
-      { id: 3490, size: '12×18', frame: 'Black' },
-      { id: 3491, size: '18×24', frame: 'Black' }
+      { id: 4398, size: '12×18', frame: 'Black' },  // Updated - Enhanced Matte Paper Framed Poster (Black/12″×18″)
+      { id: 3, size: '18×24', frame: 'Black' }       // Updated - Enhanced Matte Paper Framed Poster (Black/18″×24″)
     ],
     placement: 'default',
     retailPrice: '89.95'
