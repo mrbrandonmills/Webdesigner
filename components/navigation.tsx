@@ -133,7 +133,7 @@ export default function Navigation() {
           mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       >
-        <div className="flex flex-col items-center justify-center h-full gap-6 px-6 py-20 overflow-y-auto">
+        <div className="flex flex-col items-center justify-start h-full gap-5 px-6 pt-28 pb-8 overflow-y-auto">
           {navLinks.map((link, index) => (
             <Link
               key={link.href}
