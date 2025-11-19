@@ -362,4 +362,59 @@ Before deployment:
 
 ---
 
-Last Updated: 2025-11-17
+## Claude Code Instructions
+
+### DO NOT Create Documentation
+
+**NEVER create documentation files for completed work.** This includes:
+- README files for features
+- Setup guides
+- Plan documents
+- Markdown summaries
+
+Just write the code and commit it. The user will ask if they need docs.
+
+### Automation System
+
+**Location:** `/scripts/automation/`
+
+Fully automated posting to Reddit, Twitter, Quora. Runs via GitHub Actions.
+
+**Required Secrets (add to GitHub):**
+```
+REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USERNAME, REDDIT_PASSWORD
+TWITTER_API_KEY, TWITTER_API_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET
+OPENAI_API_KEY
+SITE_URL=https://brandonmills.com
+```
+
+**Commands:**
+- `npm run automate` - Run 24/7 scheduler locally
+- GitHub Actions run automatically once secrets are added
+
+### Traffic Generation Content
+
+**Ready-to-post content locations:**
+- `/content/reddit/posts.md` - 10 Reddit posts
+- `/content/quora/answers.md` - 15 Quora answers
+- `/content/twitter/tweets.md` - Daily tweets
+- `/content/product-hunt/` - Product Hunt launch assets
+
+### AI-Powered Features
+
+**Gemini API routes:**
+- `/api/gemini/analyze` - Mind Visualizer
+- `/api/gemini/dream` - Dream Decoder
+- `/api/gemini/lifepath` - Life Path Oracle
+
+**Required env var:** `GOOGLE_AI_API_KEY`
+
+### Email Capture
+
+- Popup triggers after 30s or exit intent
+- Stores to `/data/subscribers.json`
+- Ready for ConvertKit integration
+
+---
+
+Last Updated: 2025-11-18
