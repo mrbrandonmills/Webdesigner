@@ -30,7 +30,14 @@
     "traffic:report": "tsx scripts/daily-traffic-report.ts",
     "sync:printful": "tsx scripts/sync-printful-production.ts",
     "sync:printful:test": "tsx scripts/sync-printful-production.ts --test",
-    "sync:printful:prod": "NODE_ENV=production npm run sync:printful"
+    "sync:printful:prod": "NODE_ENV=production npm run sync:printful",
+    "automate": "tsx scripts/automation/scheduler.ts",
+    "automate:once": "tsx scripts/automation/scheduler.ts --once",
+    "automate:status": "tsx scripts/automation/scheduler.ts --status",
+    "automate:reddit": "tsx scripts/automation/reddit-poster.ts",
+    "automate:twitter": "tsx scripts/automation/twitter-poster.ts",
+    "automate:quora": "tsx scripts/automation/quora-poster.ts",
+    "automate:generate": "tsx scripts/automation/content-generator.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.0.0",
@@ -62,6 +69,7 @@
     "lucide-react": "^0.468.0",
     "nanoid": "^5.1.6",
     "next": "^15.1.0",
+    "node-cron": "^3.0.3",
     "openai": "^4.77.0",
     "pdfjs-dist": "^5.4.394",
     "playwright": "^1.56.1",
@@ -84,6 +92,7 @@
     "@types/form-data": "^2.2.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.2",
+    "@types/node-cron": "^3.0.11",
     "@types/react": "^19.0.1",
     "@types/react-dom": "^19.0.2",
     "autoprefixer": "^10.4.20",

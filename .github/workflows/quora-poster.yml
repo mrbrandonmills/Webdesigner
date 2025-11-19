@@ -1,0 +1,173 @@
+name: Daily Quora Answer
+
+on:
+  schedule:
+    # Runs at 11 AM PST (7 PM UTC)
+    - cron: '0 19 * * *'
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: 'Specific topic to answer about'
+        required: false
+        type: string
+      dry_run:
+        description: 'Run in dry-run mode'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  NODE_ENV: production
+
+jobs:
+  post-to-quora:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Puppeteer dependencies
+        run: |
+          # Install required system dependencies for headless Chrome
+          sudo apt-get update
+          sudo apt-get install -y \
+            libnss3 \
+            libatk-bridge2.0-0 \
+            libdrm2 \
+            libxkbcommon0 \
+            libxcomposite1 \
+            libxdamage1 \
+            libxfixes3 \
+            libxrandr2 \
+            libgbm1 \
+            libasound2 \
+            libpangocairo-1.0-0 \
+            libgtk-3-0
+
+      - name: Run Quora posting script
+        id: quora_post
+        env:
+          QUORA_EMAIL: ${{ secrets.QUORA_EMAIL }}
+          QUORA_PASSWORD: ${{ secrets.QUORA_PASSWORD }}
+          SITE_URL: ${{ secrets.SITE_URL || 'https://brandonmills.com' }}
+          TOPIC: ${{ github.event.inputs.topic || '' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+          # Puppeteer configuration for GitHub Actions
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 'false'
+          PUPPETEER_EXECUTABLE_PATH: ''
+        run: |
+          echo "Starting Quora posting at $(date)"
+
+          # Run with extended timeout for Puppeteer operations
+          timeout 900 npx tsx scripts/auto-post-quora.ts 2>&1 | tee quora-output.log
+
+          EXIT_CODE=$?
+          if [ $EXIT_CODE -eq 0 ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "Quora answer posted successfully"
+          elif [ $EXIT_CODE -eq 124 ]; then
+            echo "status=timeout" >> $GITHUB_OUTPUT
+            echo "Quora posting timed out"
+            exit 1
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "Quora posting failed with exit code $EXIT_CODE"
+            exit 1
+          fi
+
+      - name: Update tracking file
+        if: success()
+        run: |
+          if [ -f data/quora-post-tracking.json ]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add data/quora-post-tracking.json
+            git diff --staged --quiet || git commit -m "chore: Update Quora post tracking [skip ci]"
+            git push
+          fi
+
+      - name: Take debug screenshot on failure
+        if: failure()
+        run: |
+          # The Puppeteer script should save screenshots on failure
+          # This step ensures they're captured
+          echo "Checking for debug screenshots..."
+          ls -la *.png 2>/dev/null || echo "No screenshots found"
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quora-post-artifacts-${{ github.run_id }}
+          path: |
+            quora-output.log
+            *.png
+          retention-days: 7
+          if-no-files-found: ignore
+
+      - name: Send failure notification
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let errorDetails = 'No output captured';
+
+            try {
+              const log = fs.readFileSync('quora-output.log', 'utf8');
+              errorDetails = log.split('\n').slice(-30).join('\n');
+            } catch (e) {
+              errorDetails = 'Could not read log file';
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Quora Post Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: `## Quora Posting Workflow Failed
+
+**Run ID:** ${context.runId}
+**Timestamp:** ${new Date().toISOString()}
+
+### Error Details
+\`\`\`
+${errorDetails}
+\`\`\`
+
+### Common Issues
+- Quora may have blocked the IP or account
+- Login credentials may have changed
+- CAPTCHA may be required
+- Puppeteer dependency issues
+
+### Action Required
+1. Check Quora account status manually
+2. Verify credentials in repository secrets
+3. Review workflow logs for specific errors
+
+[View Workflow Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              labels: ['automation', 'quora', 'failed']
+            });
+
+      - name: Notify via webhook
+        if: always() && vars.NOTIFICATION_WEBHOOK_URL
+        run: |
+          STATUS="${{ job.status }}"
+          curl -X POST ${{ vars.NOTIFICATION_WEBHOOK_URL }} \
+            -H "Content-Type: application/json" \
+            -d "{\"workflow\":\"quora-post\",\"status\":\"$STATUS\",\"run_id\":\"${{ github.run_id }}\"}" \
+            || true

@@ -1,0 +1,140 @@
+name: Daily Reddit Post
+
+on:
+  schedule:
+    # Runs at 10 AM PST (6 PM UTC) - optimal Reddit engagement time
+    - cron: '0 18 * * *'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Run in dry-run mode (no actual posting)'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  NODE_ENV: production
+
+jobs:
+  post-to-reddit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Reddit posting script
+        id: reddit_post
+        env:
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
+          REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
+          REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+          SITE_URL: ${{ secrets.SITE_URL || 'https://brandonmills.com' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: |
+          echo "Starting Reddit posting at $(date)"
+          npx tsx scripts/auto-post-reddit.ts 2>&1 | tee reddit-output.log
+
+          # Capture success/failure
+          if [ $? -eq 0 ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "Reddit post completed successfully"
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "Reddit post failed"
+            exit 1
+          fi
+
+      - name: Update tracking file
+        if: success()
+        run: |
+          # Check if tracking file was modified
+          if [ -f data/reddit-post-tracking.json ]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add data/reddit-post-tracking.json
+            git diff --staged --quiet || git commit -m "chore: Update Reddit post tracking [skip ci]"
+            git push
+          fi
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reddit-post-logs-${{ github.run_id }}
+          path: reddit-output.log
+          retention-days: 7
+
+      - name: Send success notification
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const log = fs.readFileSync('reddit-output.log', 'utf8');
+            const lastLines = log.split('\n').slice(-10).join('\n');
+
+            console.log('Reddit post completed successfully');
+            console.log('Last 10 lines of output:');
+            console.log(lastLines);
+
+      - name: Send failure notification
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let errorDetails = 'No output captured';
+
+            try {
+              const log = fs.readFileSync('reddit-output.log', 'utf8');
+              errorDetails = log.split('\n').slice(-20).join('\n');
+            } catch (e) {
+              errorDetails = 'Could not read log file';
+            }
+
+            // Create an issue for tracking failures
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Reddit Post Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: `## Reddit Posting Workflow Failed
+
+**Run ID:** ${context.runId}
+**Timestamp:** ${new Date().toISOString()}
+
+### Error Details
+\`\`\`
+${errorDetails}
+\`\`\`
+
+### Action Required
+Please check the workflow logs and Reddit API credentials.
+
+[View Workflow Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              labels: ['automation', 'reddit', 'failed']
+            });
+
+      - name: Notify via webhook (optional)
+        if: always() && vars.NOTIFICATION_WEBHOOK_URL
+        run: |
+          STATUS="${{ job.status }}"
+          curl -X POST ${{ vars.NOTIFICATION_WEBHOOK_URL }} \
+            -H "Content-Type: application/json" \
+            -d "{\"workflow\":\"reddit-post\",\"status\":\"$STATUS\",\"run_id\":\"${{ github.run_id }}\"}" \
+            || true

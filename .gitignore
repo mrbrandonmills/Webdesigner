@@ -55,3 +55,7 @@ exports/
 # Session Storage (SENSITIVE - Never commit!)
 data/sessions/
 public/books/*.pdf
+
+# Automation (logs and state)
+logs/
+data/automation-state.json

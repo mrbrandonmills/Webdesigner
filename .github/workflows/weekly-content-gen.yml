@@ -1,0 +1,365 @@
+name: Weekly Content Generation
+
+on:
+  schedule:
+    # Runs every Sunday at 6 AM PST (2 PM UTC)
+    - cron: '0 14 * * 0'
+  workflow_dispatch:
+    inputs:
+      content_count:
+        description: 'Number of posts to generate'
+        required: false
+        default: '7'
+        type: string
+      auto_merge:
+        description: 'Automatically merge PR if checks pass'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  NODE_ENV: production
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    outputs:
+      pr_number: ${{ steps.create_pr.outputs.pr_number }}
+      pr_url: ${{ steps.create_pr.outputs.pr_url }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT_TOKEN || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create content generation branch
+        id: branch
+        run: |
+          BRANCH_NAME="content/weekly-$(date +%Y-%m-%d)"
+          git checkout -b $BRANCH_NAME
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+      - name: Generate weekly content
+        id: generate
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CONTENT_COUNT: ${{ github.event.inputs.content_count || '7' }}
+          SITE_URL: ${{ secrets.SITE_URL || 'https://brandonmills.com' }}
+        run: |
+          echo "Starting content generation at $(date)"
+          echo "Generating $CONTENT_COUNT posts for the week"
+
+          # Create content generation script if it doesn't exist
+          cat > scripts/generate-weekly-content.ts << 'SCRIPT'
+          import fs from 'fs';
+          import path from 'path';
+
+          interface ContentPost {
+            title: string;
+            slug: string;
+            content: string;
+            excerpt: string;
+            tags: string[];
+            platform: string;
+            scheduledDate: string;
+            generatedAt: string;
+          }
+
+          const DREAM_TOPICS = [
+            'Flying dreams and their meanings',
+            'Water dreams interpretation',
+            'Being chased in dreams',
+            'Teeth falling out dreams',
+            'Recurring dreams analysis',
+            'Lucid dreaming techniques',
+            'Dream journaling benefits',
+            'Nightmares and how to overcome them',
+            'Dreams about loved ones',
+            'Prophetic dreams',
+          ];
+
+          const PLATFORMS = ['reddit', 'twitter', 'quora', 'pinterest', 'blog'];
+
+          async function generateContent(): Promise<void> {
+            const count = parseInt(process.env.CONTENT_COUNT || '7', 10);
+            const posts: ContentPost[] = [];
+
+            console.log(`Generating ${count} content pieces...`);
+
+            for (let i = 0; i < count; i++) {
+              const topic = DREAM_TOPICS[i % DREAM_TOPICS.length];
+              const platform = PLATFORMS[i % PLATFORMS.length];
+              const date = new Date();
+              date.setDate(date.getDate() + i);
+
+              const post: ContentPost = {
+                title: `Understanding ${topic}`,
+                slug: topic.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+                content: generateContentForPlatform(topic, platform),
+                excerpt: `Explore the meaning of ${topic.toLowerCase()} and what your subconscious is trying to tell you.`,
+                tags: ['dreams', 'interpretation', platform, topic.split(' ')[0].toLowerCase()],
+                platform,
+                scheduledDate: date.toISOString().split('T')[0],
+                generatedAt: new Date().toISOString(),
+              };
+
+              posts.push(post);
+              console.log(`Generated: ${post.title} for ${platform}`);
+            }
+
+            // Save generated content
+            const outputDir = 'content/generated';
+            if (!fs.existsSync(outputDir)) {
+              fs.mkdirSync(outputDir, { recursive: true });
+            }
+
+            const outputFile = path.join(outputDir, `weekly-${new Date().toISOString().split('T')[0]}.json`);
+            fs.writeFileSync(outputFile, JSON.stringify(posts, null, 2));
+
+            // Also create individual platform files
+            const byPlatform: Record<string, ContentPost[]> = {};
+            posts.forEach(post => {
+              if (!byPlatform[post.platform]) {
+                byPlatform[post.platform] = [];
+              }
+              byPlatform[post.platform].push(post);
+            });
+
+            Object.entries(byPlatform).forEach(([platform, platformPosts]) => {
+              const platformFile = path.join(outputDir, `${platform}-queue.json`);
+              let existing: ContentPost[] = [];
+              if (fs.existsSync(platformFile)) {
+                existing = JSON.parse(fs.readFileSync(platformFile, 'utf-8'));
+              }
+              fs.writeFileSync(platformFile, JSON.stringify([...existing, ...platformPosts], null, 2));
+            });
+
+            console.log(`\nGenerated ${posts.length} posts saved to ${outputFile}`);
+            console.log('Content queue updated for each platform');
+          }
+
+          function generateContentForPlatform(topic: string, platform: string): string {
+            // Platform-specific content templates
+            const templates: Record<string, string> = {
+              reddit: `Have you ever experienced ${topic.toLowerCase()}? These dreams are more common than you might think, and they often carry deep symbolic meaning.
+
+**What This Dream Means**
+
+${topic} often symbolizes aspects of your waking life that deserve attention. Many dream analysts believe these visions reflect...
+
+**Common Variations**
+
+- Scenario 1: [Description]
+- Scenario 2: [Description]
+- Scenario 3: [Description]
+
+**What to Do**
+
+Keep a dream journal to track patterns. Visit brandonmills.com for more dream interpretation tools and resources.
+
+*What's your experience with ${topic.toLowerCase()}? Share in the comments!*`,
+
+              twitter: `Did you know ${topic.toLowerCase()} are among the most common dreams?
+
+Here's what your subconscious might be telling you:
+
+A thread about dream interpretation and self-discovery.
+
+Learn more at brandonmills.com/dreams`,
+
+              quora: `${topic} are fascinating windows into our subconscious mind.
+
+As someone who has studied dream interpretation extensively, I can share that these dreams typically represent...
+
+The symbolism varies based on:
+1. Your personal context
+2. Cultural background
+3. Current life situations
+4. Emotional state
+
+For more detailed dream analysis tools and resources, you can visit brandonmills.com where I've compiled extensive research on dream interpretation.
+
+Remember, the best interpreter of your dreams is ultimately you, but having the right tools and knowledge helps unlock their meaning.`,
+
+              pinterest: `${topic} - Dream Interpretation Guide | What Your Dreams Mean | Dream Analysis | brandonmills.com`,
+
+              blog: `# ${topic}: What Your Dreams Are Telling You
+
+Dreams have fascinated humanity for millennia, and ${topic.toLowerCase()} are among the most reported dream experiences worldwide.
+
+## Understanding the Symbolism
+
+When you experience ${topic.toLowerCase()}, your subconscious is often processing...
+
+## Common Interpretations
+
+### Psychological Perspective
+Modern psychology views these dreams as...
+
+### Spiritual Meaning
+Many traditions interpret ${topic.toLowerCase()} as...
+
+## How to Work With These Dreams
+
+1. **Keep a Dream Journal** - Record your dreams immediately upon waking
+2. **Look for Patterns** - Note recurring themes
+3. **Consider Context** - What's happening in your waking life?
+4. **Trust Your Intuition** - You are the best interpreter of your dreams
+
+## Conclusion
+
+${topic} offer valuable insights into your inner world. By paying attention to these nocturnal messages, you can gain deeper self-understanding.
+
+For more dream interpretation resources and tools, explore our [dream analysis section](/dreams).`,
+            };
+
+            return templates[platform] || templates.blog;
+          }
+
+          generateContent().catch(console.error);
+          SCRIPT
+
+          npx tsx scripts/generate-weekly-content.ts 2>&1 | tee content-gen-output.log
+
+          if [ $? -eq 0 ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "Content generation completed"
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "Content generation failed"
+            exit 1
+          fi
+
+      - name: Commit generated content
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          git add content/generated/
+          git add scripts/generate-weekly-content.ts
+
+          if git diff --staged --quiet; then
+            echo "No new content generated"
+            exit 0
+          fi
+
+          git commit -m "feat: Generate weekly content for $(date +%Y-%m-%d)
+
+- Added content for multiple platforms
+- Updated content queues for automated posting
+
+Generated by weekly-content-gen workflow"
+
+          git push origin ${{ steps.branch.outputs.branch_name }}
+
+      - name: Create Pull Request
+        id: create_pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Weekly Content: ${new Date().toISOString().split('T')[0]}`,
+              head: '${{ steps.branch.outputs.branch_name }}',
+              base: 'main',
+              body: `## Weekly Content Generation
+
+This PR contains automatically generated content for the week.
+
+### Included Content
+- Dream analysis posts for multiple platforms
+- Updated content queues for automated posting
+- Scheduled for the upcoming week
+
+### Review Checklist
+- [ ] Content is accurate and helpful
+- [ ] Links are correct
+- [ ] No sensitive information included
+- [ ] Tone matches brand voice
+
+### Auto-merge
+Set to: ${{ github.event.inputs.auto_merge || 'false' }}
+
+---
+Generated by [Weekly Content Generation Workflow](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              labels: ['content', 'automated']
+            });
+
+            core.setOutput('pr_number', pr.number);
+            core.setOutput('pr_url', pr.html_url);
+
+            console.log(`Created PR #${pr.number}: ${pr.html_url}`);
+
+      - name: Enable auto-merge
+        if: github.event.inputs.auto_merge == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.pulls.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: ${{ steps.create_pr.outputs.pr_number }},
+              auto_merge: true,
+              merge_method: 'squash'
+            });
+
+            console.log('Auto-merge enabled for PR');
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: content-gen-logs-${{ github.run_id }}
+          path: content-gen-output.log
+          retention-days: 14
+
+      - name: Send failure notification
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let errorDetails = 'No output captured';
+
+            try {
+              const log = fs.readFileSync('content-gen-output.log', 'utf8');
+              errorDetails = log.split('\n').slice(-30).join('\n');
+            } catch (e) {
+              errorDetails = 'Could not read log file';
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Content Generation Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: `## Weekly Content Generation Failed
+
+**Run ID:** ${context.runId}
+**Timestamp:** ${new Date().toISOString()}
+
+### Error Details
+\`\`\`
+${errorDetails}
+\`\`\`
+
+### Action Required
+Check AI API credentials and content generation scripts.
+
+[View Workflow Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              labels: ['automation', 'content', 'failed']
+            });

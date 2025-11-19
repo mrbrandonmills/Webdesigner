@@ -1,0 +1,172 @@
+name: Daily Twitter Posts
+
+on:
+  schedule:
+    # 9 AM PST (5 PM UTC) - Morning engagement
+    - cron: '0 17 * * *'
+    # 2 PM PST (10 PM UTC) - Afternoon engagement
+    - cron: '0 22 * * *'
+    # 7 PM PST (3 AM UTC next day) - Evening engagement
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      post_type:
+        description: 'Type of post to send'
+        required: false
+        default: 'auto'
+        type: choice
+        options:
+          - auto
+          - dream-analysis
+          - blog-promotion
+          - engagement
+      dry_run:
+        description: 'Run in dry-run mode'
+        required: false
+        default: 'false'
+        type: boolean
+
+env:
+  NODE_ENV: production
+
+jobs:
+  post-to-twitter:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine post content based on schedule
+        id: post_type
+        run: |
+          HOUR=$(date -u +%H)
+
+          # Determine content type based on scheduled time
+          if [ "$HOUR" = "17" ]; then
+            # 9 AM PST - Morning: Dream analysis tips
+            POST_TYPE="dream-analysis"
+            TOPIC="morning dream recall tips"
+          elif [ "$HOUR" = "22" ]; then
+            # 2 PM PST - Afternoon: Blog/content promotion
+            POST_TYPE="blog-promotion"
+            TOPIC="dream interpretation insights"
+          elif [ "$HOUR" = "03" ]; then
+            # 7 PM PST - Evening: Engagement/questions
+            POST_TYPE="engagement"
+            TOPIC="dream journaling benefits"
+          else
+            # Manual trigger or fallback
+            POST_TYPE="${{ github.event.inputs.post_type || 'auto' }}"
+            TOPIC="dream analysis"
+          fi
+
+          echo "post_type=$POST_TYPE" >> $GITHUB_OUTPUT
+          echo "topic=$TOPIC" >> $GITHUB_OUTPUT
+          echo "Posting type: $POST_TYPE about $TOPIC"
+
+      - name: Run Twitter posting script
+        id: twitter_post
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+          TWITTER_BEARER_TOKEN: ${{ secrets.TWITTER_BEARER_TOKEN }}
+          SITE_URL: ${{ secrets.SITE_URL || 'https://brandonmills.com' }}
+          POST_TYPE: ${{ steps.post_type.outputs.post_type }}
+          POST_TOPIC: ${{ steps.post_type.outputs.topic }}
+          DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+        run: |
+          echo "Starting Twitter posting at $(date)"
+          echo "Post type: $POST_TYPE"
+          echo "Topic: $POST_TOPIC"
+
+          npx tsx scripts/auto-post-twitter.ts 2>&1 | tee twitter-output.log
+
+          if [ $? -eq 0 ]; then
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "Twitter post completed successfully"
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            echo "Twitter post failed"
+            exit 1
+          fi
+
+      - name: Update tracking file
+        if: success()
+        run: |
+          if [ -f data/twitter-post-tracking.json ]; then
+            git config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git config --local user.name "github-actions[bot]"
+            git add data/twitter-post-tracking.json
+            git diff --staged --quiet || git commit -m "chore: Update Twitter post tracking [skip ci]"
+            git push
+          fi
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: twitter-post-logs-${{ github.run_id }}
+          path: twitter-output.log
+          retention-days: 7
+
+      - name: Send failure notification
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let errorDetails = 'No output captured';
+
+            try {
+              const log = fs.readFileSync('twitter-output.log', 'utf8');
+              errorDetails = log.split('\n').slice(-20).join('\n');
+            } catch (e) {
+              errorDetails = 'Could not read log file';
+            }
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `Twitter Post Failed - ${new Date().toISOString().split('T')[0]}`,
+              body: `## Twitter Posting Workflow Failed
+
+**Run ID:** ${context.runId}
+**Post Type:** ${{ steps.post_type.outputs.post_type }}
+**Timestamp:** ${new Date().toISOString()}
+
+### Error Details
+\`\`\`
+${errorDetails}
+\`\`\`
+
+### Action Required
+Check Twitter API credentials and rate limits.
+
+[View Workflow Run](${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId})`,
+              labels: ['automation', 'twitter', 'failed']
+            });
+
+      - name: Notify via webhook
+        if: always() && vars.NOTIFICATION_WEBHOOK_URL
+        run: |
+          STATUS="${{ job.status }}"
+          curl -X POST ${{ vars.NOTIFICATION_WEBHOOK_URL }} \
+            -H "Content-Type: application/json" \
+            -d "{\"workflow\":\"twitter-post\",\"status\":\"$STATUS\",\"type\":\"${{ steps.post_type.outputs.post_type }}\",\"run_id\":\"${{ github.run_id }}\"}" \
+            || true
