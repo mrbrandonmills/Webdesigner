@@ -16,21 +16,21 @@ interface FeaturedPhoto {
 
 const featuredPhotos: FeaturedPhoto[] = [
   {
-    src: '/images/gallery/genesis/campaigns/B.40.jpg',
+    src: '/images/gallery/genesis/campaigns/B.6.jpg',
     title: 'Underwear Campaign',
     category: 'CAMPAIGN',
     year: '2019',
     story: 'A major underwear campaign that required intense physical preparation and absolute confidence. The results spoke for themselves.',
   },
   {
-    src: '/images/gallery/genesis/editorial/B.3.jpg',
+    src: '/images/gallery/genesis/editorial/B.2.jpg',
     title: 'TETU Magazine Cover',
     category: 'EDITORIAL',
     year: '2018',
     story: 'Landing this French magazine cover was a career milestone. Shot in Paris, exploring modern masculinity.',
   },
   {
-    src: '/images/gallery/genesis/campaigns/B.43.jpg',
+    src: '/images/gallery/genesis/campaigns/B.5.jpg',
     title: 'Global Campaign',
     category: 'CAMPAIGN',
     year: '2020',
@@ -108,13 +108,19 @@ export default function GenesisArchiveSection() {
                 className="group relative cursor-pointer"
               >
                 {/* Image Container */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-zinc-900">
+                <div className="relative aspect-[3/4] overflow-hidden bg-zinc-800">
                   <Image
                     src={photo.src}
                     alt={photo.title}
                     fill
                     className="object-cover transition-all duration-700 ease-out group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, 33vw"
+                    priority={index === 0}
+                    onError={(e) => {
+                      // Fallback if image fails to load
+                      const target = e.target as HTMLImageElement
+                      target.style.display = 'none'
+                    }}
                   />
 
                   {/* Gradient Overlay */}

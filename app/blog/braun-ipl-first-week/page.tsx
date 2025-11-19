@@ -1,7 +1,8 @@
 import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ProductSchema } from '@/components/seo/ProductSchema'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateArticleSchema, generateBreadcrumbSchema } from '@/lib/json-ld'
 
 const AFFILIATE_TAG = process.env.NEXT_PUBLIC_AMAZON_AFFILIATE_TAG || 'brandonmil0e-20'
 const BRAUN_AMAZON_URL = `https://www.amazon.com/Braun-i%C2%B7expert-Removal-Holiday-Trimmer/dp/B0CMVPMPZ8?tag=${AFFILIATE_TAG}`
@@ -44,31 +45,60 @@ const braunProduct = {
   description: `The Braun Silk Expert Pro 7 is the world's #1 IPL device, offering professional-grade at-home laser hair removal for both women and men.`,
 }
 
-const jsonLd = {
+// Generate structured data using utilities
+const articleSchema = generateArticleSchema({
+  title: 'The Hairless Rabbit Diaries: My First Week With Braun IPL',
+  description: 'Real results from my first week using the Braun Silk Expert Pro 7. Honest review from a male model with photos. Is at-home IPL worth it?',
+  image: '/blog/braun-ipl/braun-ipl-results-1.jpg',
+  datePublished: '2025-11-17',
+  dateModified: '2025-11-17',
+  url: '/blog/braun-ipl-first-week',
+  category: 'Personal Review',
+  wordCount: 1850,
+})
+
+const breadcrumbSchema = generateBreadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Blog', url: '/blog' },
+  { name: 'Braun IPL Review', url: '/blog/braun-ipl-first-week' },
+])
+
+// Product review schema for the Braun device
+const productReviewSchema = {
   '@context': 'https://schema.org',
-  '@type': 'BlogPosting',
-  headline: 'The Hairless Rabbit Diaries: My First Week With Braun IPL',
+  '@type': 'Review',
+  itemReviewed: {
+    '@type': 'Product',
+    name: 'Braun IPL at Home Laser Hair Removal, Silk Expert Pro 7',
+    brand: {
+      '@type': 'Brand',
+      name: 'Braun',
+    },
+    image: 'https://brandonmills.com/blog/braun-ipl/braun-ipl-results-1.jpg',
+    offers: {
+      '@type': 'Offer',
+      price: '499.99',
+      priceCurrency: 'USD',
+      availability: 'https://schema.org/InStock',
+    },
+  },
   author: {
     '@type': 'Person',
     name: 'Brandon Mills',
     url: 'https://brandonmills.com',
   },
-  datePublished: '2025-11-17',
-  dateModified: '2025-11-17',
-  image: 'https://brandonmills.com/blog/braun-ipl/braun-ipl-results-1.jpg',
-  publisher: {
-    '@type': 'Person',
-    name: 'Brandon Mills',
+  reviewRating: {
+    '@type': 'Rating',
+    ratingValue: '4.5',
+    bestRating: '5',
   },
+  reviewBody: 'After one week of using the Braun Silk Expert Pro 7, I\'m seeing measurable results: slower regrowth, patchy coverage, and finer hair texture. The device feels premium, the SensoAdapt technology works as advertised, and the German engineering shows. Would recommend for those with light to medium skin and dark hair.',
 }
 
 export default function BraunIPLFirstWeekPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={[articleSchema, breadcrumbSchema, productReviewSchema]} />
 
       <article className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 dark:from-zinc-950 dark:via-black dark:to-zinc-900">
         {/* Hero Section */}

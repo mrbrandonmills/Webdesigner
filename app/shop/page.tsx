@@ -3,6 +3,9 @@ import { ShopPageClient } from './shop-client'
 import { affiliateProducts } from '@/lib/affiliate-products'
 import { mergeShopProducts } from '@/lib/shop-merger'
 import themeFactoryProducts from '@/public/data/theme-factory-products.json'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateAggregateOfferSchema, generateBreadcrumbSchema } from '@/lib/json-ld'
+import { UnifiedProduct } from '@/lib/types/shop'
 
 export const metadata: Metadata = {
   title: 'Shop | Brandon Mills',
@@ -47,8 +50,73 @@ async function getProducts() {
   }
 }
 
+// Generate ItemList schema for product collection
+function generateItemListSchema(products: UnifiedProduct[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Brandon Mills Shop Collection',
+    description: 'Museum-quality products including custom merchandise, philosophy books, and premium tech',
+    numberOfItems: products.length,
+    itemListElement: products.slice(0, 20).map((product, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'Product',
+        name: product.title,
+        description: product.description,
+        image: product.image.startsWith('http')
+          ? product.image
+          : `https://brandonmills.com${product.image}`,
+        offers: {
+          '@type': 'Offer',
+          price: product.price.toFixed(2),
+          priceCurrency: product.currency || 'USD',
+          availability: product.inStock
+            ? 'https://schema.org/InStock'
+            : 'https://schema.org/OutOfStock',
+        },
+        ...(product.rating && product.reviewCount ? {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: product.rating,
+            reviewCount: product.reviewCount,
+          },
+        } : {}),
+      },
+    })),
+  }
+}
+
 export default async function ShopPage() {
   const products = await getProducts()
 
-  return <ShopPageClient products={products} />
+  // Calculate price range for aggregate offer
+  const prices = products.map(p => p.price).filter(p => p > 0)
+  const lowPrice = Math.min(...prices)
+  const highPrice = Math.max(...prices)
+
+  // Generate structured data
+  const aggregateOfferSchema = generateAggregateOfferSchema({
+    name: 'Brandon Mills Shop Collection',
+    description: 'Museum-quality products: custom merchandise, philosophy books, premium tech. Every item tells a story.',
+    lowPrice,
+    highPrice,
+    offerCount: products.length,
+    image: '/og-image.jpg',
+  })
+
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Shop', url: '/shop' },
+  ])
+
+  const itemListSchema = generateItemListSchema(products)
+
+  return (
+    <>
+      <JsonLd data={[aggregateOfferSchema, breadcrumbSchema, itemListSchema]} />
+      <ShopPageClient products={products} />
+    </>
+  )
 }

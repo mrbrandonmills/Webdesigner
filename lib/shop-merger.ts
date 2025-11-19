@@ -3,6 +3,9 @@
 
 import { UnifiedProduct, ProductSource } from './types/shop'
 
+// Placeholder image for products without images
+const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80'
+
 // Infer product type from title or type field
 function inferProductType(title: string, type?: string): UnifiedProduct['productType'] {
   const lowerTitle = title.toLowerCase()
@@ -27,29 +30,38 @@ export function mergeShopProducts(
 
   // Convert Printful products
   for (const p of printfulProducts) {
+    // Use placeholder if no image available
+    const productImage = p.image || PLACEHOLDER_IMAGE
+    const productImages = p.images && p.images.length > 0 ? p.images : [productImage]
+
     unified.push({
       id: `printful-${p.id}`,
       source: 'printful',
       title: p.title,
       description: p.description,
-      price: parseFloat(p.basePrice),
-      currency: p.currency,
-      image: p.image,
-      images: p.images || [p.image],
+      price: parseFloat(p.basePrice || p.price || 0),
+      currency: p.currency || 'USD',
+      image: productImage,
+      images: productImages,
       variantCount: p.variantCount,
       variants: p.variants,
       syncProductId: p.syncProductId,
       syncVariantId: p.syncVariantId,
       tags: p.tags,
-      category: p.type,
-      productType: inferProductType(p.title, p.type),
-      featured: p.source === 'local-curated',
-      inStock: true,
+      category: p.type || p.category,
+      productType: inferProductType(p.title, p.type || p.productType),
+      featured: p.featured || p.source === 'local-curated',
+      inStock: p.inStock !== false,
     })
   }
 
   // Convert Amazon products
   for (const p of amazonProducts) {
+    // Use placeholder if no images available
+    const hasImages = p.images && p.images.length > 0 && p.images[0]
+    const productImage = hasImages ? p.images[0] : PLACEHOLDER_IMAGE
+    const productImages = hasImages ? p.images : [PLACEHOLDER_IMAGE]
+
     unified.push({
       id: `amazon-${p.id}`,
       source: 'amazon',
@@ -58,8 +70,8 @@ export function mergeShopProducts(
       price: p.price,
       originalPrice: p.originalPrice,
       currency: 'USD',
-      image: p.images[0],
-      images: p.images,
+      image: productImage,
+      images: productImages,
       amazonUrl: p.amazonUrl,
       rating: p.rating,
       reviewCount: p.reviewCount,

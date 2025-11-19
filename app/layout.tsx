@@ -11,6 +11,9 @@ import { ErrorBoundary } from '@/components/error-boundary'
 import { ConciergeWidget } from '@/components/concierge/concierge-widget'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import PageBackground from '@/components/ui/page-background'
+import { EmailPopup } from '@/components/email-capture'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateOrganizationSchema, generateWebSiteSchema } from '@/lib/json-ld'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -37,8 +40,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Generate structured data for the entire site
+  const organizationSchema = generateOrganizationSchema()
+  const webSiteSchema = generateWebSiteSchema({ includeSearch: true })
+
   return (
     <html lang="en">
+      <head>
+        {/* Global JSON-LD structured data for SEO */}
+        <JsonLd data={[organizationSchema, webSiteSchema]} />
+      </head>
       <body className="antialiased">
         <ErrorBoundary>
           <CartProvider>
@@ -54,6 +65,7 @@ export default function RootLayout({
             </SmoothScroll>
             <CartSidebar />
             <ConciergeWidget />
+            <EmailPopup />
             <ToastWrapper />
             <Analytics />
             <GoogleAnalytics />

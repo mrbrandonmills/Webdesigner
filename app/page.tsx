@@ -1,6 +1,7 @@
 import HeroVideo from '@/components/home/hero-video'
 import PhilosophySection from '@/components/home/philosophy-section'
 import GenesisArchiveSection from '@/components/home/genesis-archive-section'
+import SocialProofSection from '@/components/home/social-proof-section'
 
 export const metadata = {
   title: 'Brandon Mills - Polymath, Model, Philosopher & Entrepreneur',
@@ -37,8 +38,8 @@ export default function HomePage() {
     <div className="min-h-screen bg-black">
       <HeroVideo />
       <PhilosophySection />
+      <SocialProofSection />
       <GenesisArchiveSection />
-      {/* Additional sections will be added in next tasks */}
     </div>
   )
 }

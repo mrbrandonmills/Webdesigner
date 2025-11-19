@@ -3,7 +3,11 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { Sparkles, Brain, ArrowRight, Loader2 } from 'lucide-react'
+import { Sparkles, Brain, ArrowRight } from 'lucide-react'
+import { VoiceInput } from '@/components/voice-input'
+import GenerationLoader from '@/components/generation-loader'
+import { ActivityCounter } from '@/components/social-proof/activity-counter'
+import { TestimonialCarousel } from '@/components/social-proof/testimonials'
 
 export default function VisualizeMindPage() {
   const router = useRouter()
@@ -29,6 +33,8 @@ export default function VisualizeMindPage() {
       }
 
       const result = await response.json()
+      // Store result in sessionStorage so results page can access it
+      sessionStorage.setItem(`visualization_${result.id}`, JSON.stringify(result))
       router.push(`/visualize/${result.id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
@@ -61,10 +67,13 @@ export default function VisualizeMindPage() {
               Visualize Your Mind
             </h1>
 
-            <p className="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
               Paste any essay, journal entry, or stream of consciousness.
               AI will transform your thoughts into an interactive 3D neural network.
             </p>
+
+            {/* Activity Counter */}
+            <ActivityCounter type="visualize" className="mb-12" />
           </motion.div>
 
           {/* Input Form */}
@@ -79,12 +88,18 @@ export default function VisualizeMindPage() {
               <textarea
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                placeholder="Paste your text here... (minimum 50 characters)"
-                className="w-full h-64 p-6 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A050]/50 resize-none"
+                placeholder="Paste your text here, or use voice input... (minimum 50 characters)"
+                className="w-full h-64 p-6 pb-16 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A050]/50 resize-none"
                 disabled={isLoading}
               />
-              <div className="absolute bottom-4 right-4 text-sm text-gray-500">
-                {text.length}/10,000
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                <VoiceInput
+                  onTranscript={(transcript) => setText(prev => prev ? prev + ' ' + transcript : transcript)}
+                  disabled={isLoading}
+                />
+                <span className="text-sm text-gray-500">
+                  {text.length}/10,000
+                </span>
               </div>
             </div>
 
@@ -97,19 +112,17 @@ export default function VisualizeMindPage() {
               disabled={text.length < 50 || isLoading}
               className="mt-6 w-full py-4 bg-[#C9A050] text-black font-medium rounded-lg hover:bg-[#D4B861] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Analyzing your mind...
-                </>
-              ) : (
-                <>
-                  <Brain className="w-5 h-5" />
-                  Generate Visualization
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
+              <Brain className="w-5 h-5" />
+              Generate Visualization
+              <ArrowRight className="w-5 h-5" />
             </button>
+
+            <GenerationLoader
+              isLoading={isLoading}
+              message="Creating your 3D mind map..."
+              subMessage="AI is analyzing your text and generating a custom Three.js visualization. This takes 1-2 minutes."
+              color="#C9A050"
+            />
           </motion.form>
 
           {/* Example prompts */}
@@ -160,6 +173,14 @@ export default function VisualizeMindPage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-24 px-6 border-t border-white/10">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="font-serif text-3xl text-center mb-16">See What Others Created</h2>
+          <TestimonialCarousel filter="visualize" />
         </div>
       </section>
     </div>

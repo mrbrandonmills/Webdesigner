@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { Share2, Download, Heart, ArrowRight, Sparkles } from 'lucide-react'
+import { ShareCard, ShareButton } from '@/components/social-proof/share-card'
 
 interface VisualizationData {
   id: string
@@ -22,27 +23,41 @@ export default function VisualizationResultPage() {
   const params = useParams()
   const [data, setData] = useState<VisualizationData | null>(null)
   const [showEmailModal, setShowEmailModal] = useState(false)
+  const [showShareCard, setShowShareCard] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // In production, fetch from API/database
-  // For now, reconstruct URL from blob storage pattern
+  // Fetch visualization data from sessionStorage
   useEffect(() => {
     const id = params.id as string
-    // This would be fetched from database in production
-    setData({
-      id,
-      url: `https://your-blob-url.public.blob.vercel-storage.com/visualizations/${id}.html`,
-      analysis: {
-        dominantArchetype: 'Magician',
-        insights: [
-          'Your thinking shows strong analytical patterns',
-          'You connect abstract concepts to practical applications',
-          'Growth mindset is evident in your language'
-        ],
-        recommendedMeditation: 'deep-focus',
-        conceptCount: 12,
-        connectionCount: 18
+    const stored = sessionStorage.getItem(`visualization_${id}`)
+
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored)
+        setData({
+          id,
+          url: parsed.url,
+          analysis: {
+            dominantArchetype: parsed.analysis?.dominantArchetype || 'Magician',
+            insights: parsed.analysis?.insights || [
+              'Your thinking shows strong analytical patterns',
+              'You connect abstract concepts to practical applications',
+              'Growth mindset is evident in your language'
+            ],
+            recommendedMeditation: parsed.analysis?.recommendedMeditation || 'deep-focus',
+            conceptCount: parsed.analysis?.concepts?.length || 12,
+            connectionCount: parsed.analysis?.connections?.length || 18
+          }
+        })
+      } catch (e) {
+        console.error('Failed to parse visualization data:', e)
+        // Fallback to error state
+        setData(null)
       }
-    })
+    } else {
+      // No data found - show error
+      setData(null)
+    }
 
     // Show email modal after 10 seconds
     const timer = setTimeout(() => {
@@ -55,10 +70,31 @@ export default function VisualizationResultPage() {
     return () => clearTimeout(timer)
   }, [params.id])
 
-  if (!data) {
+  useEffect(() => {
+    // Small delay to allow sessionStorage to be read
+    const timer = setTimeout(() => setIsLoading(false), 500)
+    return () => clearTimeout(timer)
+  }, [])
+
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-[#C9A050]">Loading visualization...</div>
+      </div>
+    )
+  }
+
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center text-center px-6">
+        <h1 className="font-serif text-3xl text-white mb-4">Visualization Not Found</h1>
+        <p className="text-gray-400 mb-8">This visualization may have expired or the session was lost.</p>
+        <Link
+          href="/visualize"
+          className="px-6 py-3 bg-[#C9A050] text-black font-medium rounded-lg hover:bg-[#D4B861] transition-colors"
+        >
+          Create New Visualization
+        </Link>
       </div>
     )
   }
@@ -84,7 +120,10 @@ export default function VisualizationResultPage() {
 
         {/* Overlay controls */}
         <div className="absolute bottom-4 right-4 flex gap-2">
-          <button className="p-3 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors">
+          <button
+            onClick={() => setShowShareCard(true)}
+            className="p-3 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors"
+          >
             <Share2 className="w-5 h-5" />
           </button>
           <button className="p-3 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors">
@@ -153,20 +192,22 @@ export default function VisualizationResultPage() {
           {/* Share CTA */}
           <div className="mt-12 text-center">
             <p className="text-gray-500 mb-4">Share your visualization</p>
-            <div className="flex justify-center gap-4">
-              <button className="px-6 py-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
-                Twitter
-              </button>
-              <button className="px-6 py-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
-                LinkedIn
-              </button>
-              <button className="px-6 py-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
-                Copy Link
-              </button>
-            </div>
+            <ShareButton onClick={() => setShowShareCard(true)} className="mx-auto" />
           </div>
         </div>
       </section>
+
+      {/* Share Card Modal */}
+      {showShareCard && data && (
+        <ShareCard
+          type="visualization"
+          title={data.analysis.dominantArchetype}
+          subtitle={`${data.analysis.conceptCount} Concepts, ${data.analysis.connectionCount} Connections`}
+          description={data.analysis.insights[0]}
+          id={data.id}
+          onClose={() => setShowShareCard(false)}
+        />
+      )}
 
       {/* Email Capture Modal */}
       {showEmailModal && (

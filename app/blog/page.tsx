@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getSortedPosts } from '@/lib/blog-posts'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateBreadcrumbSchema } from '@/lib/json-ld'
 
 export const metadata: Metadata = {
   title: 'Blog | Brandon Mills',
@@ -12,12 +14,53 @@ export const metadata: Metadata = {
   },
 }
 
+// Generate CollectionPage schema for blog listing
+function generateBlogCollectionSchema(posts: ReturnType<typeof getSortedPosts>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Brandon Mills Blog',
+    description: 'Essays on modeling, creative collaborations, and the art of performance',
+    url: 'https://brandonmills.com/blog',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: posts.map((post, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'BlogPosting',
+          headline: post.title,
+          description: post.excerpt,
+          image: post.coverImage.startsWith('http')
+            ? post.coverImage
+            : `https://brandonmills.com${post.coverImage}`,
+          datePublished: post.datePublished || post.date,
+          url: `https://brandonmills.com${post.slug}`,
+          author: {
+            '@type': 'Person',
+            name: 'Brandon Mills',
+          },
+        },
+      })),
+    },
+  }
+}
+
 export default function BlogPage() {
   // Get all blog posts sorted by date (newest first)
   const posts = getSortedPosts()
 
+  // Generate structured data
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Blog', url: '/blog' },
+  ])
+  const blogCollectionSchema = generateBlogCollectionSchema(posts)
+
   return (
-    <div className="min-h-screen bg-black text-white">
+    <>
+      <JsonLd data={[breadcrumbSchema, blogCollectionSchema]} />
+      <div className="min-h-screen bg-black text-white">
       {/* Hero Section */}
       <section className="pt-32 pb-20 container-wide relative overflow-hidden">
         {/* Background accent */}
@@ -140,5 +183,6 @@ export default function BlogPage() {
         </div>
       </section>
     </div>
+    </>
   )
 }
