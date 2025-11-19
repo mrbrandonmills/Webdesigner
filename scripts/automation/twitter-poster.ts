@@ -347,6 +347,8 @@ function loadTweets(): Tweet[] {
 
     for (const block of tweetBlocks) {
       const text = block.trim()
+      // Skip header comments (lines starting with #)
+      if (text.startsWith('#')) continue
       if (text && text.length <= 280) {
         const id = crypto.createHash('md5').update(text).digest('hex').substring(0, 8)
         tweets.push({ id, text })
