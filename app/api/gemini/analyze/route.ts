@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
   try {
     // Rate limiting (if configured)
     if (ratelimit) {
-      const ip = request.ip ?? request.headers.get('x-forwarded-for') ?? 'anonymous'
+      const ip = request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? 'anonymous'
       const { success, limit, remaining, reset } = await ratelimit.limit(ip)
 
       if (!success) {

@@ -15,6 +15,7 @@ import {
   OrderStats,
   PaginationParams,
   OrderStatus,
+  PrintfulStatus,
 } from './types'
 
 /**
@@ -65,7 +66,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
       RETURNING *
     `
 
-    return mapRowToOrder(result.rows[0])
+    return mapRowToOrder(result.rows[0] as OrderDatabaseRow)
   } catch (error) {
     logger.error('Failed to create order in database:', error)
     throw new DatabaseError('Failed to create order', error)
@@ -87,7 +88,7 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
       return null
     }
 
-    return mapRowToOrder(result.rows[0])
+    return mapRowToOrder(result.rows[0] as OrderDatabaseRow)
   } catch (error) {
     logger.error('Failed to get order by ID:', error)
     throw new DatabaseError('Failed to retrieve order', error)
@@ -111,7 +112,7 @@ export async function getOrderByStripeSessionId(
       return null
     }
 
-    return mapRowToOrder(result.rows[0])
+    return mapRowToOrder(result.rows[0] as OrderDatabaseRow)
   } catch (error) {
     logger.error('Failed to get order by session ID:', error)
     throw new DatabaseError('Failed to retrieve order', error)
@@ -169,7 +170,7 @@ export async function updateOrder(input: UpdateOrderInput): Promise<Order> {
       throw new Error(`Order not found: ${input.id}`)
     }
 
-    return mapRowToOrder(result.rows[0])
+    return mapRowToOrder(result.rows[0] as OrderDatabaseRow)
   } catch (error) {
     logger.error('Failed to update order:', error)
     throw new DatabaseError('Failed to update order', error)
@@ -225,7 +226,7 @@ export async function getOrders(
 
     const result = await sql.query(query, values)
 
-    return result.rows.map(mapRowToOrder)
+    return result.rows.map(row => mapRowToOrder(row as OrderDatabaseRow))
   } catch (error) {
     logger.error('Failed to get orders:', error)
     throw new DatabaseError('Failed to retrieve orders', error)
@@ -404,10 +405,10 @@ function mapRowToOrder(row: OrderDatabaseRow): Order {
         : row.billing_address,
     items:
       typeof row.items === 'string' ? JSON.parse(row.items) : row.items,
-    total_amount: parseFloat(row.total_amount),
+    total_amount: typeof row.total_amount === 'number' ? row.total_amount : parseFloat(row.total_amount),
     currency: row.currency,
     status: row.status as OrderStatus,
-    printful_status: row.printful_status,
+    printful_status: row.printful_status as PrintfulStatus,
     printful_order_id: row.printful_order_id,
     metadata:
       typeof row.metadata === 'string'

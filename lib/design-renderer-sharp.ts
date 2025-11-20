@@ -337,7 +337,7 @@ export class DesignRendererSharp {
   private static async createLuxuryOverlay(
     width: number,
     height: number,
-    theme: { colorPalette: string[]; name?: string }
+    theme: { colorPalette: readonly string[]; name?: string }
   ): Promise<Buffer> {
     const [primary] = theme.colorPalette
 
@@ -389,7 +389,7 @@ export class DesignRendererSharp {
           letter-spacing="0.15em"
           font-weight="600"
         >
-          ${theme.name.toUpperCase()}
+          ${theme.name?.toUpperCase() || ''}
         </text>
       </svg>
     `
