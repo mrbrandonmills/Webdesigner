@@ -1,9 +1,13 @@
 /**
- * In-Memory Rate Limiter
+ * Distributed Rate Limiter with Upstash Redis
  *
- * Provides simple brute force protection by tracking request attempts by IP address.
- * Suitable for small to medium traffic. For production at scale, consider Redis.
+ * Provides brute force protection using Upstash Redis for distributed rate limiting.
+ * Falls back to in-memory storage for local development when Redis is not configured.
  */
+
+import { Ratelimit } from '@upstash/ratelimit'
+import { Redis } from '@upstash/redis'
+import { logger } from '@/lib/logger'
 
 interface RateLimitEntry {
   count: number
@@ -11,32 +15,51 @@ interface RateLimitEntry {
   resetAt: number
 }
 
-class RateLimiter {
+// Check if Upstash is configured
+const isUpstashConfigured = !!(
+  process.env.UPSTASH_REDIS_REST_URL &&
+  process.env.UPSTASH_REDIS_REST_TOKEN
+)
+
+// Initialize Upstash Redis client if configured
+let redis: Redis | null = null
+let upstashRateLimiter: Ratelimit | null = null
+
+if (isUpstashConfigured) {
+  redis = new Redis({
+    url: process.env.UPSTASH_REDIS_REST_URL!,
+    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+  })
+
+  // Default rate limiter: 5 requests per 15 minutes using sliding window
+  upstashRateLimiter = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(5, '15 m'),
+    analytics: true,
+    prefix: 'ratelimit',
+  })
+}
+
+/**
+ * In-Memory Rate Limiter (fallback for development)
+ */
+class InMemoryRateLimiter {
   private attempts: Map<string, RateLimitEntry>
   private cleanupInterval: NodeJS.Timeout | null = null
 
   constructor() {
     this.attempts = new Map()
-    // Clean up expired entries every 5 minutes
     this.startCleanup()
   }
 
-  /**
-   * Check if a request should be rate limited
-   * @param identifier - Unique identifier (typically IP address)
-   * @param maxAttempts - Maximum attempts allowed in window
-   * @param windowMs - Time window in milliseconds
-   * @returns true if rate limit exceeded, false otherwise
-   */
   isRateLimited(
     identifier: string,
     maxAttempts: number = 5,
-    windowMs: number = 15 * 60 * 1000 // 15 minutes default
+    windowMs: number = 15 * 60 * 1000
   ): boolean {
     const now = Date.now()
     const entry = this.attempts.get(identifier)
 
-    // No previous attempts or window expired
     if (!entry || now > entry.resetAt) {
       this.attempts.set(identifier, {
         count: 1,
@@ -46,21 +69,12 @@ class RateLimiter {
       return false
     }
 
-    // Increment attempt count
     entry.count++
     this.attempts.set(identifier, entry)
-
-    // Check if limit exceeded
     return entry.count > maxAttempts
   }
 
-  /**
-   * Get remaining attempts for an identifier
-   */
-  getRemainingAttempts(
-    identifier: string,
-    maxAttempts: number = 5
-  ): number {
+  getRemainingAttempts(identifier: string, maxAttempts: number = 5): number {
     const entry = this.attempts.get(identifier)
     if (!entry || Date.now() > entry.resetAt) {
       return maxAttempts
@@ -68,9 +82,6 @@ class RateLimiter {
     return Math.max(0, maxAttempts - entry.count)
   }
 
-  /**
-   * Get time until reset in seconds
-   */
   getTimeUntilReset(identifier: string): number {
     const entry = this.attempts.get(identifier)
     if (!entry) return 0
@@ -81,16 +92,10 @@ class RateLimiter {
     return Math.ceil((entry.resetAt - now) / 1000)
   }
 
-  /**
-   * Reset attempts for an identifier (useful after successful auth)
-   */
   reset(identifier: string): void {
     this.attempts.delete(identifier)
   }
 
-  /**
-   * Clean up expired entries
-   */
   private cleanup(): void {
     const now = Date.now()
     for (const [identifier, entry] of this.attempts.entries()) {
@@ -100,21 +105,13 @@ class RateLimiter {
     }
   }
 
-  /**
-   * Start periodic cleanup
-   */
   private startCleanup(): void {
     if (this.cleanupInterval) return
-
-    // Run cleanup every 5 minutes
     this.cleanupInterval = setInterval(() => {
       this.cleanup()
     }, 5 * 60 * 1000)
   }
 
-  /**
-   * Stop cleanup (useful for testing)
-   */
   stopCleanup(): void {
     if (this.cleanupInterval) {
       clearInterval(this.cleanupInterval)
@@ -122,9 +119,6 @@ class RateLimiter {
     }
   }
 
-  /**
-   * Get current stats (useful for monitoring)
-   */
   getStats(): { totalEntries: number; activeBlocks: number } {
     const now = Date.now()
     let activeBlocks = 0
@@ -142,21 +136,108 @@ class RateLimiter {
   }
 }
 
-// Singleton instance
-const rateLimiter = new RateLimiter()
+// In-memory fallback instance
+const inMemoryLimiter = new InMemoryRateLimiter()
 
-export default rateLimiter
+/**
+ * Result from rate limit check
+ */
+interface RateLimitResult {
+  success: boolean
+  limit: number
+  remaining: number
+  reset: number
+}
+
+/**
+ * Check rate limit for an identifier
+ * Uses Upstash Redis if configured, otherwise falls back to in-memory
+ */
+export async function checkRateLimit(
+  identifier: string,
+  maxAttempts: number = 5,
+  windowMs: number = 15 * 60 * 1000
+): Promise<RateLimitResult> {
+  if (isUpstashConfigured && upstashRateLimiter) {
+    // Use Upstash rate limiter
+    const result = await upstashRateLimiter.limit(identifier)
+
+    return {
+      success: result.success,
+      limit: result.limit,
+      remaining: result.remaining,
+      reset: result.reset,
+    }
+  }
+
+  // Fallback to in-memory
+  const isLimited = inMemoryLimiter.isRateLimited(
+    identifier,
+    maxAttempts,
+    windowMs
+  )
+
+  return {
+    success: !isLimited,
+    limit: maxAttempts,
+    remaining: inMemoryLimiter.getRemainingAttempts(identifier, maxAttempts),
+    reset: Date.now() + inMemoryLimiter.getTimeUntilReset(identifier) * 1000,
+  }
+}
+
+/**
+ * Create a custom rate limiter with specific limits
+ * Only works when Upstash is configured
+ */
+export function createRateLimiter(
+  requests: number,
+  window: string
+): Ratelimit | null {
+  if (!isUpstashConfigured || !redis) {
+    logger.warn('Upstash Redis not configured. Custom rate limiters require Redis.')
+    return null
+  }
+
+  return new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(requests, window as Parameters<typeof Ratelimit.slidingWindow>[1]),
+    analytics: true,
+    prefix: 'ratelimit:custom',
+  })
+}
+
+/**
+ * Reset rate limit for an identifier
+ * Only works for in-memory limiter (Upstash handles expiration automatically)
+ */
+export function resetRateLimit(identifier: string): void {
+  inMemoryLimiter.reset(identifier)
+}
+
+/**
+ * Get rate limiter stats
+ * Only available for in-memory limiter
+ */
+export function getRateLimiterStats(): {
+  totalEntries: number
+  activeBlocks: number
+  backend: 'upstash' | 'memory'
+} {
+  const stats = inMemoryLimiter.getStats()
+  return {
+    ...stats,
+    backend: isUpstashConfigured ? 'upstash' : 'memory',
+  }
+}
 
 /**
  * Helper function to extract client IP from Next.js request
  */
 export function getClientIP(request: Request): string {
-  // Try various headers that might contain the real IP
   const headers = request.headers as Headers
 
   const forwardedFor = headers.get('x-forwarded-for')
   if (forwardedFor) {
-    // x-forwarded-for can contain multiple IPs, take the first one
     return forwardedFor.split(',')[0].trim()
   }
 
@@ -170,6 +251,38 @@ export function getClientIP(request: Request): string {
     return cfConnectingIp
   }
 
-  // Fallback to a default (not ideal but prevents crashes)
   return 'unknown'
+}
+
+/**
+ * Legacy compatibility: Synchronous rate limiter for in-memory only
+ * @deprecated Use checkRateLimit for distributed rate limiting
+ */
+const rateLimiter = {
+  isRateLimited: (
+    identifier: string,
+    maxAttempts: number = 5,
+    windowMs: number = 15 * 60 * 1000
+  ): boolean => {
+    if (isUpstashConfigured) {
+      logger.warn('Using synchronous isRateLimited with Upstash configured. Consider using async checkRateLimit instead.')
+    }
+    return inMemoryLimiter.isRateLimited(identifier, maxAttempts, windowMs)
+  },
+  getRemainingAttempts: (identifier: string, maxAttempts: number = 5): number =>
+    inMemoryLimiter.getRemainingAttempts(identifier, maxAttempts),
+  getTimeUntilReset: (identifier: string): number =>
+    inMemoryLimiter.getTimeUntilReset(identifier),
+  reset: (identifier: string): void => inMemoryLimiter.reset(identifier),
+  getStats: () => inMemoryLimiter.getStats(),
+  stopCleanup: () => inMemoryLimiter.stopCleanup(),
+}
+
+export default rateLimiter
+
+/**
+ * Check if Upstash is configured
+ */
+export function isRedisConfigured(): boolean {
+  return isUpstashConfigured
 }

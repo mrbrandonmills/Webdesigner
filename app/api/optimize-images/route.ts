@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { v2 as cloudinary } from 'cloudinary'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -69,11 +70,11 @@ export async function POST(request: Request) {
             bytes: result.bytes,
           }
         } catch (error: any) {
-          console.error(`Error optimizing photo ${photo.id}:`, error)
+          logger.error('Error optimizing photo ${photo.id}:', error)
 
           // If file is too large for Cloudinary free tier, use original Blob URL
           if (error?.http_code === 400 && error?.message?.includes('File size too large')) {
-            console.log(`Photo ${photo.id} exceeds Cloudinary limit, using Blob URL`)
+            logger.info('Photo ${photo.id} exceeds Cloudinary limit, using Blob URL')
             return {
               id: photo.id,
               optimizedUrl: photo.url, // Use Vercel Blob URL directly
@@ -96,7 +97,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(optimizedPhotos)
   } catch (error) {
-    console.error('Image optimization error:', error)
+    logger.error('Image optimization error:', error)
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Optimization failed',

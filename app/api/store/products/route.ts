@@ -2,14 +2,59 @@ import { NextResponse } from 'next/server'
 import { printfulClient } from '@/lib/printful-client'
 import { readFile } from 'fs/promises'
 import path from 'path'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
+/**
+ * Product response data structure
+ */
+interface ProductResponseData {
+  success: boolean
+  products: StoreProduct[]
+  count: number
+  sources: {
+    syncProducts: number
+    curatedProducts: number
+    catalogProducts: number
+  }
+}
+
+/**
+ * Store product structure
+ */
+interface StoreProduct {
+  id: string
+  title: string
+  description: string
+  type: string
+  image: string | null
+  basePrice: string
+  currency: string
+  syncProductId?: number | null
+  syncVariantId?: number | null
+  variantCount: number
+  variants: StoreVariant[]
+  tags?: string[]
+  source: string
+  createdAt?: string
+}
+
+interface StoreVariant {
+  id: number
+  name: string
+  price?: string
+  sku?: string
+  size?: string
+  color?: string
+  image?: string | null
+}
+
 // In-memory cache with TTL
 let productCache: {
-  data: any
+  data: ProductResponseData
   timestamp: number
 } | null = null
 
@@ -45,21 +90,21 @@ export async function GET(request: Request) {
 
     // Check cache first (unless force refresh)
     if (!forceRefresh && productCache && Date.now() - productCache.timestamp < CACHE_TTL) {
-      console.log('📦 Returning cached products')
+      logger.info('Returning cached products')
       return NextResponse.json(productCache.data)
     }
 
-    console.log('🔄 Fetching fresh products from Printful and local storage...')
+    logger.info('Fetching fresh products from Printful and local storage...')
 
     const products = []
 
     // 1. Try to fetch sync products from Printful
     try {
-      console.log('📥 Fetching sync products from Printful...')
+      logger.info('Fetching sync products from Printful...')
       const syncProducts = await printfulClient.getSyncProducts({ limit: 100 })
 
       if (syncProducts && syncProducts.length > 0) {
-        console.log(`✅ Found ${syncProducts.length} sync products on Printful`)
+        logger.info('Found ${syncProducts.length} sync products on Printful')
 
         // Fetch detailed info for each sync product
         const detailedProducts = await Promise.all(
@@ -94,7 +139,7 @@ export async function GET(request: Request) {
                 source: 'printful-sync'
               }
             } catch (error) {
-              console.error(`Failed to fetch details for sync product ${syncProduct.id}:`, error)
+              logger.error('Failed to fetch details for sync product ${syncProduct.id}:', error)
               return null
             }
           })
@@ -103,23 +148,23 @@ export async function GET(request: Request) {
         // Add valid sync products
         const validSyncProducts = detailedProducts.filter(p => p !== null)
         products.push(...validSyncProducts)
-        console.log(`✅ Processed ${validSyncProducts.length} valid sync products`)
+        logger.info('Processed ${validSyncProducts.length} valid sync products')
       } else {
-        console.log('⚠️ No sync products found on Printful')
+        logger.info('No sync products found on Printful')
       }
     } catch (error) {
-      console.error('Failed to fetch sync products from Printful:', error)
+      logger.error('Failed to fetch sync products from Printful:', error)
     }
 
     // 2. Fetch local curated products as fallback/addition
     try {
-      console.log('📂 Fetching local curated products...')
+      logger.info('Fetching local curated products...')
       const filePath = path.join(process.cwd(), 'data', 'curated-products.json')
       const fileContent = await readFile(filePath, 'utf-8')
       const curatedData = JSON.parse(fileContent) as { products: CuratedProduct[] }
 
       if (curatedData.products && curatedData.products.length > 0) {
-        console.log(`✅ Found ${curatedData.products.length} curated products locally`)
+        logger.info('Found ${curatedData.products.length} curated products locally')
 
         // Transform curated products to match the API format
         const transformedCurated = curatedData.products.map(p => ({
@@ -146,15 +191,15 @@ export async function GET(request: Request) {
           : transformedCurated.filter(c => !c.syncProductId) // Only non-synced ones
 
         products.push(...curatedToAdd)
-        console.log(`✅ Added ${curatedToAdd.length} curated products`)
+        logger.info('Added ${curatedToAdd.length} curated products')
       }
     } catch (error) {
-      console.log('No local curated products found or error reading file:', error)
+      logger.info('No local curated products found or error reading file:', { data: error })
     }
 
     // 3. If still no products, fetch catalog products as last resort
     if (products.length === 0) {
-      console.log('⚠️ No sync or curated products found, fetching catalog products...')
+      logger.info('No sync or curated products found, fetching catalog products...')
 
       // Map categories to Printful IDs
       const categoryMap: Record<string, number> = {
@@ -200,7 +245,7 @@ export async function GET(request: Request) {
               source: 'printful-catalog'
             }
           } catch (error) {
-            console.error(`Failed to fetch details for catalog product ${product.id}:`, error)
+            logger.error('Failed to fetch details for catalog product ${product.id}:', error)
             return null
           }
         })
@@ -217,11 +262,11 @@ export async function GET(request: Request) {
              (sourceOrder[b.source as keyof typeof sourceOrder] || 3)
     })
 
-    console.log(`📦 Returning ${products.length} total products`)
-    console.log(`   Sources: ${products.reduce((acc, p) => {
+    logger.info(`Returning ${products.length} total products`)
+    logger.info(`Sources: ${JSON.stringify(products.reduce((acc, p) => {
       acc[p.source] = (acc[p.source] || 0) + 1
       return acc
-    }, {} as Record<string, number>)}`)
+    }, {} as Record<string, number>))}`)
 
     const responseData = {
       success: true,
@@ -242,7 +287,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(responseData)
   } catch (error) {
-    console.error('Store products API error:', error)
+    logger.error('Store products API error:', error)
     return NextResponse.json(
       {
         success: false,

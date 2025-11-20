@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { printfulClient } from '@/lib/printful-client'
 import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -38,7 +39,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url)
     const includeDetails = searchParams.get('details') === 'true'
 
-    console.log('📋 Fetching sync products from Printful...')
+    logger.info('Fetching sync products from Printful...')
 
     // Get all sync products
     const syncProducts = await printfulClient.getSyncProducts({ limit: 100 })
@@ -60,7 +61,7 @@ export async function GET(request: Request) {
     }
 
     // Fetch detailed information for each product
-    console.log('📦 Fetching detailed information for sync products...')
+    logger.info('Fetching detailed information for sync products...')
 
     const detailedProducts = await Promise.all(
       syncProducts.map(async (product) => {
@@ -90,7 +91,7 @@ export async function GET(request: Request) {
             })) || []
           }
         } catch (error) {
-          console.error(`Failed to fetch details for product ${product.id}:`, error)
+          logger.error('Failed to fetch details for product ${product.id}:', error)
           return {
             id: product.id,
             external_id: product.external_id,
@@ -105,7 +106,7 @@ export async function GET(request: Request) {
       })
     )
 
-    console.log(`✅ Retrieved ${detailedProducts.length} sync products`)
+    logger.info('Retrieved ${detailedProducts.length} sync products')
 
     return NextResponse.json({
       success: true,
@@ -113,7 +114,7 @@ export async function GET(request: Request) {
       products: detailedProducts
     })
   } catch (error) {
-    console.error('Failed to list sync products:', error)
+    logger.error('Failed to list sync products:', error)
     return NextResponse.json(
       {
         success: false,
@@ -143,16 +144,16 @@ export async function DELETE(request: Request) {
       )
     }
 
-    console.log(`🗑️ Deleting ${productIds.length} sync products...`)
+    logger.info('Deleting ${productIds.length} sync products...')
 
     const results = await Promise.all(
       productIds.map(async (id: number) => {
         try {
           await printfulClient.deleteSyncProduct(id)
-          console.log(`✅ Deleted sync product ${id}`)
+          logger.info('Deleted sync product ${id}')
           return { id, success: true }
         } catch (error) {
-          console.error(`❌ Failed to delete sync product ${id}:`, error)
+          logger.error('Failed to delete sync product ${id}:', error)
           return { id, success: false, error: error instanceof Error ? error.message : 'Unknown error' }
         }
       })
@@ -180,9 +181,9 @@ export async function DELETE(request: Request) {
       })
 
       await writeFile(filePath, JSON.stringify(data, null, 2))
-      console.log('✅ Updated local product database')
+      logger.info('Updated local product database')
     } catch (error) {
-      console.error('Failed to update local database:', error)
+      logger.error('Failed to update local database:', error)
     }
 
     return NextResponse.json({
@@ -192,7 +193,7 @@ export async function DELETE(request: Request) {
       results
     })
   } catch (error) {
-    console.error('Failed to delete sync products:', error)
+    logger.error('Failed to delete sync products:', error)
     return NextResponse.json(
       {
         success: false,
@@ -224,7 +225,7 @@ export async function POST(request: Request) {
         )
       }
 
-      console.log(`🎨 Refreshing mockups for ${productIds.length} products...`)
+      logger.info('Refreshing mockups for ${productIds.length} products...')
 
       const results = await Promise.all(
         productIds.map(async (id: number) => {
@@ -251,10 +252,10 @@ export async function POST(request: Request) {
             const mockupResult = await printfulClient.getMockupResult(mockupTask.task_key)
             const mockupUrl = mockupResult.result.mockups?.[0]?.mockup_url
 
-            console.log(`✅ Refreshed mockup for product ${id}`)
+            logger.info('Refreshed mockup for product ${id}')
             return { id, success: true, mockupUrl }
           } catch (error) {
-            console.error(`❌ Failed to refresh mockup for product ${id}:`, error)
+            logger.error('Failed to refresh mockup for product ${id}:', error)
             return { id, success: false, error: error instanceof Error ? error.message : 'Unknown error' }
           }
         })
@@ -268,7 +269,7 @@ export async function POST(request: Request) {
 
     if (action === 'sync') {
       // Sync local curated products with Printful
-      console.log('🔄 Syncing local products with Printful...')
+      logger.info('Syncing local products with Printful...')
 
       const filePath = path.join(process.cwd(), 'data', 'curated-products.json')
       const fileContent = await readFile(filePath, 'utf-8')
@@ -285,7 +286,7 @@ export async function POST(request: Request) {
         })
       }
 
-      console.log(`📤 Found ${unsyncedProducts.length} products to sync`)
+      logger.info('Found ${unsyncedProducts.length} products to sync')
 
       const syncResults = await Promise.all(
         unsyncedProducts.map(async (product) => {
@@ -317,10 +318,10 @@ export async function POST(request: Request) {
               product.mockupUrl = mockupUrl
             }
 
-            console.log(`✅ Synced product: ${product.title}`)
+            logger.info('Synced product: ${product.title}')
             return { id: product.id, success: true, syncProductId: syncProduct.id }
           } catch (error) {
-            console.error(`❌ Failed to sync product ${product.id}:`, error)
+            logger.error('Failed to sync product ${product.id}:', error)
             return { id: product.id, success: false, error: error instanceof Error ? error.message : 'Unknown error' }
           }
         })
@@ -341,7 +342,7 @@ export async function POST(request: Request) {
 
     // Check sync status
     if (action === 'status') {
-      console.log('📊 Checking sync status...')
+      logger.info('Checking sync status...')
 
       // Get Printful sync products
       const syncProducts = await printfulClient.getSyncProducts({ limit: 100 })
@@ -379,7 +380,7 @@ export async function POST(request: Request) {
       { status: 400 }
     )
   } catch (error) {
-    console.error('Sync products error:', error)
+    logger.error('Sync products error:', error)
     return NextResponse.json(
       {
         success: false,

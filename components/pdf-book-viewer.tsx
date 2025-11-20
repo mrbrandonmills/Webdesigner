@@ -5,6 +5,7 @@ import { Document, Page, pdfjs } from 'react-pdf'
 import { Lock, Unlock, BookOpen, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react'
 import { RippleButton } from './ripple-button'
 import { motion, AnimatePresence } from 'framer-motion'
+import { clientLogger } from '@/lib/client-logger'
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`
@@ -68,7 +69,7 @@ export function PDFBookViewer({
         setIsUnlocked(true)
       }
     } catch (error) {
-      console.error('Failed to unlock book:', error)
+      clientLogger.error('Failed to unlock book:', error)
       alert('Failed to process payment. Please try again.')
     } finally {
       setIsProcessing(false)

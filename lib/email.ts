@@ -6,10 +6,20 @@
  */
 
 import { Resend } from 'resend'
+import { logger } from '@/lib/logger'
 
 const resend = process.env.RESEND_API_KEY
   ? new Resend(process.env.RESEND_API_KEY)
   : null
+
+interface ShippingAddress {
+  line1?: string | null
+  line2?: string | null
+  city?: string | null
+  state?: string | null
+  postal_code?: string | null
+  country?: string | null
+}
 
 interface OrderEmailData {
   orderId: string
@@ -23,7 +33,7 @@ interface OrderEmailData {
     image: string
   }>
   totalAmount: number
-  shippingAddress: any
+  shippingAddress: ShippingAddress | null
 }
 
 /**
@@ -31,7 +41,7 @@ interface OrderEmailData {
  */
 export async function sendOrderConfirmation(data: OrderEmailData) {
   if (!resend) {
-    console.warn('⚠️ Resend not configured - skipping email')
+    logger.warn('Resend not configured - skipping email')
     return { success: false, error: 'Email service not configured' }
   }
 
@@ -49,10 +59,10 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
       throw new Error(`Email failed: ${result.error.message}`)
     }
 
-    console.log('✅ Order confirmation email sent:', result.data.id)
+    logger.info('Order confirmation email sent:', { data: result.data.id })
     return { success: true, emailId: result.data.id }
   } catch (error) {
-    console.error('❌ Failed to send order confirmation email:', error)
+    logger.error('Failed to send order confirmation email:', error)
     return { success: false, error }
   }
 }
@@ -62,7 +72,7 @@ export async function sendOrderConfirmation(data: OrderEmailData) {
  */
 export async function sendAdminNotification(data: OrderEmailData) {
   if (!resend) {
-    console.warn('⚠️ Resend not configured - skipping admin notification')
+    logger.warn('Resend not configured - skipping admin notification')
     return { success: false, error: 'Email service not configured' }
   }
 
@@ -80,10 +90,10 @@ export async function sendAdminNotification(data: OrderEmailData) {
       throw new Error(`Email failed: ${result.error.message}`)
     }
 
-    console.log('✅ Admin notification email sent:', result.data.id)
+    logger.info('Admin notification email sent:', { data: result.data.id })
     return { success: true, emailId: result.data.id }
   } catch (error) {
-    console.error('❌ Failed to send admin notification:', error)
+    logger.error('Failed to send admin notification:', error)
     return { success: false, error }
   }
 }
@@ -254,7 +264,7 @@ export async function sendShippingNotification(data: {
   carrier: string
 }) {
   if (!resend) {
-    console.warn('⚠️ Resend not configured - skipping shipping email')
+    logger.warn('Resend not configured - skipping shipping email')
     return { success: false, error: 'Email service not configured' }
   }
 
@@ -302,10 +312,10 @@ export async function sendShippingNotification(data: {
       throw new Error(`Email failed: ${result.error.message}`)
     }
 
-    console.log('✅ Shipping notification sent:', result.data.id)
+    logger.info('Shipping notification sent:', { data: result.data.id })
     return { success: true, emailId: result.data.id }
   } catch (error) {
-    console.error('❌ Failed to send shipping notification:', error)
+    logger.error('Failed to send shipping notification:', error)
     return { success: false, error }
   }
 }

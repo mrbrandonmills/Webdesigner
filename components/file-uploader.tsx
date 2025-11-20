@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import { Upload, X, FileText, Image as ImageIcon, Film, Mic } from 'lucide-react'
 import { upload } from '@vercel/blob/client'
+import { clientLogger } from '@/lib/client-logger'
 
 interface FileUploaderProps {
   contentType: 'research' | 'essay' | 'modeling' | 'creative' | ''
@@ -90,7 +91,7 @@ export default function FileUploader({
           handleUploadUrl: '/api/upload',
         })
 
-        console.log('Uploaded:', blob.url)
+        clientLogger.info('Uploaded:', { data: blob.url })
 
         // Process the uploaded file
         await fetch('/api/process-content', {
@@ -119,7 +120,7 @@ export default function FileUploader({
       setFiles([])
       alert(`✅ Successfully uploaded and processed ${files.length} file(s)!`)
     } catch (err) {
-      console.error('Upload error:', err)
+      clientLogger.error('Upload error:', err)
       setError(err instanceof Error ? err.message : 'Upload failed')
     } finally {
       setUploading(false)

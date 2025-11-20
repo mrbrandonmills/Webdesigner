@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { convertToWebflowHTML } from '@/lib/webflow-richtext'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
       }
     })
 
-    console.log('Creating Webflow item with data:', JSON.stringify(cmsItemData, null, 2))
+    logger.info('Creating Webflow item with data:', { data: JSON.stringify(cmsItemData, null, 2) })
 
     // Create the item via Webflow API v2
     const createResponse = await fetch(
@@ -100,7 +101,7 @@ export async function POST(request: Request) {
 
     if (!createResponse.ok) {
       const errorData = await createResponse.text()
-      console.error('Webflow API error:', errorData)
+      logger.error('Webflow API error:',  errorData)
       throw new Error(`Webflow API error: ${createResponse.status} - ${errorData}`)
     }
 
@@ -124,7 +125,7 @@ export async function POST(request: Request) {
       )
 
       if (!publishResponse.ok) {
-        console.error('Site publish warning:', await publishResponse.text())
+        logger.error('Site publish warning:',  await publishResponse.text())
         // Don't fail the whole request if publish fails
       }
     }
@@ -147,7 +148,7 @@ export async function POST(request: Request) {
           timestamp: new Date().toISOString(),
         }
 
-        console.log('Triggering n8n workflow for social media posting...')
+        logger.info('Triggering n8n workflow for social media posting...')
 
         const n8nResponse = await fetch(process.env.N8N_WEBHOOK_URL, {
           method: 'POST',
@@ -156,13 +157,13 @@ export async function POST(request: Request) {
         })
 
         if (n8nResponse.ok) {
-          console.log('n8n workflow triggered successfully')
+          logger.info('n8n workflow triggered successfully')
         } else {
-          console.error('n8n webhook failed:', await n8nResponse.text())
+          logger.error('n8n webhook failed:',  await n8nResponse.text())
           // Don't fail the whole request if n8n fails
         }
       } catch (n8nError) {
-        console.error('Error triggering n8n webhook:', n8nError)
+        logger.error('Error triggering n8n webhook:',  n8nError)
         // Non-blocking - social media posting is optional
       }
     }
@@ -175,7 +176,7 @@ export async function POST(request: Request) {
       socialMediaQueued: !draft && !!process.env.N8N_WEBHOOK_URL,
     })
   } catch (error) {
-    console.error('Webflow publish error:', error)
+    logger.error('Webflow publish error:',  error)
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Publishing failed',

@@ -2,19 +2,10 @@ import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { validatePromoCode, recordPromoCodeUsage } from '@/lib/promo-codes'
 import logger from '@/lib/logger'
+import { ValidatePromoSchema, formatZodErrors } from '@/lib/validations'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-// Validation schema
-const validateRequestSchema = z.object({
-  code: z.string().min(1, 'Promo code is required'),
-  contentType: z.enum(['meditation', 'book'], {
-    errorMap: () => ({ message: 'Content type must be meditation or book' }),
-  }),
-  contentId: z.string().min(1, 'Content ID is required'),
-  email: z.string().email().optional(),
-})
 
 /**
  * POST /api/promo/validate
@@ -23,15 +14,11 @@ const validateRequestSchema = z.object({
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const validationResult = validateRequestSchema.safeParse(body)
+    const validationResult = ValidatePromoSchema.safeParse(body)
 
     if (!validationResult.success) {
       return NextResponse.json(
-        {
-          valid: false,
-          message: 'Invalid request data',
-          details: validationResult.error.flatten(),
-        },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }

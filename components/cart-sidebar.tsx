@@ -4,6 +4,7 @@ import { useCart } from '@/contexts/cart-context'
 import { X, Plus, Minus, ShoppingBag, ArrowRight, Loader2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { RippleButton } from '@/components/ripple-button'
+import { clientLogger } from '@/lib/client-logger'
 
 export default function CartSidebar() {
   const {
@@ -71,7 +72,7 @@ export default function CartSidebar() {
       // Redirect to Stripe Checkout
       window.location.href = data.url
     } catch (error) {
-      console.error('Checkout error:', error)
+      clientLogger.error('Checkout error:', error)
       setCheckoutError(error instanceof Error ? error.message : 'Failed to start checkout')
       setIsCheckingOut(false)
     }

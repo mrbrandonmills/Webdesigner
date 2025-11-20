@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { AffiliateProduct } from '@/lib/affiliate-manager'
+import { logger } from '@/lib/logger'
 
 // Mock search function - in production, integrate with real APIs
 export async function GET(request: NextRequest) {
@@ -75,7 +76,7 @@ export async function GET(request: NextRequest) {
       results,
     })
   } catch (error) {
-    console.error('Error searching affiliate products:', error)
+    logger.error('Error searching affiliate products:', error)
     return NextResponse.json(
       { error: 'Search failed' },
       { status: 500 }

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger'
 /**
  * Product Analytics & Performance Tracking
  * Tracks product engagement to optimize inventory
@@ -280,7 +281,7 @@ export class ProductAnalytics {
     try {
       localStorage.setItem(this.STORAGE_KEY, JSON.stringify(metrics))
     } catch (error) {
-      console.error('Failed to save metrics:', error)
+      logger.error('Failed to save metrics:', error)
     }
   }
 
@@ -302,7 +303,7 @@ export class ProductAnalytics {
     return metrics[productId]
   }
 
-  private static sendEvent(eventName: string, data: any) {
+  private static sendEvent(eventName: string, data: Record<string, unknown>) {
     // Send to backend analytics
     fetch('/api/analytics/track', {
       method: 'POST',

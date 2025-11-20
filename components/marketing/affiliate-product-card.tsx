@@ -69,13 +69,13 @@ export function AffiliateProductCard({
 
   return (
     <div
-      className="group relative bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300"
+      className="group relative glass-card rounded-lg overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Featured Badge */}
       {product.featured && (
-        <div className="absolute top-2 left-2 z-10 bg-black text-white text-xs px-2 py-1 rounded">
+        <div className="absolute top-2 left-2 z-10 glass-badge bg-accent-gold/20 border-accent-gold/40 text-accent-gold text-xs px-2 py-1 rounded">
           Featured
         </div>
       )}
@@ -104,19 +104,19 @@ export function AffiliateProductCard({
 
       {/* Product Details */}
       <div className="p-4">
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2">
+        <h3 className="font-semibold text-lg mb-2 line-clamp-2 text-white">
           {product.name}
         </h3>
 
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+        <p className="text-white/60 text-sm mb-3 line-clamp-2">
           {product.description}
         </p>
 
         {/* Price and Commission */}
         <div className="flex items-center justify-between mb-4">
-          <div className="text-2xl font-bold">${product.price.toFixed(2)}</div>
+          <div className="text-2xl font-light text-accent-gold">${product.price.toFixed(2)}</div>
           {showCommission && commission > 0 && (
-            <div className="text-sm text-green-600 flex items-center">
+            <div className="text-sm text-green-400 flex items-center">
               <DollarSign size={14} />
               <span>Earn ${commission.toFixed(2)}</span>
             </div>
@@ -125,7 +125,7 @@ export function AffiliateProductCard({
 
         {/* Category Tag */}
         <div className="mb-4">
-          <span className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded">
+          <span className="inline-block glass-badge text-white/70 text-xs px-2 py-1 rounded">
             {product.category}
           </span>
         </div>
@@ -133,14 +133,14 @@ export function AffiliateProductCard({
         {/* CTA Button */}
         <button
           onClick={handleClick}
-          className="w-full bg-black text-white py-3 px-4 rounded flex items-center justify-center hover:bg-gray-800 transition-colors"
+          className="w-full glass-button bg-accent-gold/90 text-black py-3 px-4 rounded flex items-center justify-center hover:bg-accent-gold transition-colors"
         >
           <span>View Product</span>
           <ExternalLink size={16} className="ml-2" />
         </button>
 
         {/* Affiliate Disclosure */}
-        <div className="mt-3 text-xs text-gray-500 text-center">
+        <div className="mt-3 text-xs text-white/40 text-center">
           Affiliate link - We may earn a commission
         </div>
       </div>

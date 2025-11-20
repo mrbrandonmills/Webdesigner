@@ -1,14 +1,37 @@
 import { NextResponse } from 'next/server'
 import { readFile } from 'fs/promises'
 import path from 'path'
+import { logger } from '@/lib/logger'
+import { isAuthenticated } from '@/lib/auth'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 /**
- * Get all orders
+ * Order summary from index file
  */
-export async function GET() {
+interface OrderSummary {
+  id: string
+  email: string
+  total: number
+  status: string
+  createdAt: string
+}
+
+/**
+ * Get all orders - REQUIRES AUTHENTICATION
+ */
+export async function GET(request: Request) {
+  // CRITICAL: Verify authentication before exposing order data
+  const authenticated = await isAuthenticated()
+  if (!authenticated) {
+    logger.warn('Unauthorized access attempt to /api/admin/orders')
+    return NextResponse.json(
+      { success: false, error: 'Unauthorized - Admin access required' },
+      { status: 401 }
+    )
+  }
+
   try {
     const indexFile = path.join(process.cwd(), 'data', 'orders', 'index.json')
 
@@ -32,8 +55,8 @@ export async function GET() {
     // Calculate stats
     const stats = {
       totalOrders: orders.length,
-      totalRevenue: orders.reduce((sum: number, order: any) => sum + order.total, 0),
-      pendingOrders: orders.filter((order: any) => order.status === 'pending' || order.status === 'paid').length,
+      totalRevenue: orders.reduce((sum: number, order: OrderSummary) => sum + order.total, 0),
+      pendingOrders: orders.filter((order: OrderSummary) => order.status === 'pending' || order.status === 'paid').length,
     }
 
     return NextResponse.json({
@@ -42,7 +65,7 @@ export async function GET() {
       stats,
     })
   } catch (error) {
-    console.error('Failed to load orders:', error)
+    logger.error('Failed to load orders:', error)
     return NextResponse.json(
       {
         success: false,

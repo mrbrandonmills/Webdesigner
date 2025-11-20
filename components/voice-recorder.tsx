@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { Mic, Square, Play, Pause, Trash2 } from 'lucide-react'
+import { clientLogger } from '@/lib/client-logger'
 
 interface VoiceRecorderProps {
   onRecordingComplete?: (audioBlob: Blob, duration: number) => void
@@ -76,7 +77,7 @@ export default function VoiceRecorder({ onRecordingComplete }: VoiceRecorderProp
         setDuration((prev) => prev + 1)
       }, 1000)
     } catch (error) {
-      console.error('Error starting recording:', error)
+      clientLogger.error('Error starting recording:', error)
       alert('Could not access microphone. Please grant permission.')
     }
   }

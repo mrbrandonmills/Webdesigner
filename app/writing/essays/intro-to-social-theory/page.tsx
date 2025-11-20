@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { AudioReader } from '@/components/audio-reader'
+import { Twitter, Linkedin, Link as LinkIcon } from 'lucide-react'
 
 export default function SocialTheoryEssayPage() {
   useEffect(() => {
@@ -40,6 +41,18 @@ While "Social Theory" is primarily an introduction to the field of social theory
 
 Overall, "Social Theory" is an excellent introduction to the field of social theory. It provides a comprehensive overview of the major schools of thought, and it emphasizes the practical implications of social theory for understanding and addressing social problems. Lemert's clear writing and accessible style make this book an ideal resource for students and anyone interested in understanding the social world.
   `.trim()
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href)
+  }
+
+  const shareOnTwitter = () => {
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('An Intro to Social Theory by Charles Lemert - by Brandon Mills')}`, '_blank')
+  }
+
+  const shareOnLinkedIn = () => {
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')
+  }
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
@@ -94,6 +107,34 @@ Overall, "Social Theory" is an excellent introduction to the field of social the
                 <span>•</span>
                 <span>8 min read</span>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Author Info */}
+      <section className="pb-8 container-wide relative z-10">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center justify-between p-6 backdrop-blur-sm bg-white/[0.02] border border-white/10">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-accent-gold/20 rounded-full flex items-center justify-center">
+                <span className="text-accent-gold font-serif text-lg">BM</span>
+              </div>
+              <div>
+                <p className="text-white font-medium">Brandon Mills</p>
+                <p className="text-white/60 text-sm">Writer & Philosopher</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={shareOnTwitter} className="p-2 text-white/60 hover:text-accent-gold transition-colors" aria-label="Share on Twitter">
+                <Twitter size={18} />
+              </button>
+              <button onClick={shareOnLinkedIn} className="p-2 text-white/60 hover:text-accent-gold transition-colors" aria-label="Share on LinkedIn">
+                <Linkedin size={18} />
+              </button>
+              <button onClick={copyLink} className="p-2 text-white/60 hover:text-accent-gold transition-colors" aria-label="Copy link">
+                <LinkIcon size={18} />
+              </button>
             </div>
           </div>
         </div>
@@ -212,6 +253,29 @@ Overall, "Social Theory" is an excellent introduction to the field of social the
               </p>
             </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Reading */}
+      <section className="pb-16 container-wide relative z-10">
+        <div className="max-w-3xl mx-auto">
+          <h3 className="text-xl font-serif text-white mb-6">Related Reading</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <Link
+              href="/writing/essays/enlightenment-through-science"
+              className="p-6 backdrop-blur-sm bg-white/[0.02] border border-white/10 hover:border-accent-gold/50 transition-colors group"
+            >
+              <p className="text-accent-gold text-xs tracking-wider uppercase mb-2">Consciousness</p>
+              <p className="text-white group-hover:text-accent-gold transition-colors">Enlightenment Through Science</p>
+            </Link>
+            <Link
+              href="/writing/essays/self-esteem-cultivating-positive-self-image"
+              className="p-6 backdrop-blur-sm bg-white/[0.02] border border-white/10 hover:border-accent-gold/50 transition-colors group"
+            >
+              <p className="text-accent-gold text-xs tracking-wider uppercase mb-2">Psychology</p>
+              <p className="text-white group-hover:text-accent-gold transition-colors">Self-Esteem: Cultivating a Positive Self Image</p>
+            </Link>
           </div>
         </div>
       </section>

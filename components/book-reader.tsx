@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Lock, Unlock, BookOpen, Tag } from 'lucide-react'
 import { RippleButton } from './ripple-button'
 import { AudioReader } from './audio-reader'
+import { clientLogger } from '@/lib/client-logger'
 
 interface BookReaderProps {
   bookId: string
@@ -83,7 +84,7 @@ export function BookReader({
         setIsUnlocked(true)
       }
     } catch (error) {
-      console.error('Failed to unlock book:', error)
+      clientLogger.error('Failed to unlock book:', error)
       alert('Failed to process payment. Please try again.')
     } finally {
       setIsProcessing(false)
@@ -144,7 +145,7 @@ export function BookReader({
         setIsProcessing(false)
       }
     } catch (err) {
-      console.error('Promo unlock error:', err)
+      clientLogger.error('Promo unlock error:', err)
       setError('Unable to process promo code. Please try again.')
       setIsProcessing(false)
     }

@@ -9,6 +9,7 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import { DesignGenerator } from './design-generator'
 import { contentThemes } from './store-curator'
+import { logger } from '@/lib/logger'
 
 export interface RenderConfig {
   width: number
@@ -234,7 +235,7 @@ export class DesignRendererSharp {
     try {
       await fs.access(imagePath)
     } catch (error) {
-      console.warn(`Source image not found: ${imagePath}, using placeholder`)
+      logger.warn('Source image not found: ${imagePath}, using placeholder')
       // Generate a placeholder design instead
       return this.generatePlaceholderDesign(themeId, productType, spec)
     }
@@ -336,7 +337,7 @@ export class DesignRendererSharp {
   private static async createLuxuryOverlay(
     width: number,
     height: number,
-    theme: any
+    theme: { colorPalette: string[]; name?: string }
   ): Promise<Buffer> {
     const [primary] = theme.colorPalette
 
@@ -512,9 +513,9 @@ export class DesignRendererSharp {
       try {
         const path = await this.renderDesignForProduct(category, themeId, productType)
         renderedPaths.push(path)
-        console.log(`  ✅ ${productType}`)
+        logger.info('productType}')
       } catch (error) {
-        console.error(`  ❌ ${productType}: ${error}`)
+        logger.error('productType}: ${error}')
       }
     }
 
@@ -593,8 +594,8 @@ export class DesignRendererSharp {
     const manifestPath = path.join(this.outputDir, 'manifest.json')
     await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2))
 
-    console.log(`\n📊 Manifest saved to ${manifestPath}`)
-    console.log(`   Total designs: ${manifest.totalDesigns}`)
-    console.log(`   Total size: ${manifest.totalSizeMB} MB`)
+    logger.info('n📊 Manifest saved to ${manifestPath}')
+    logger.info('Total designs: ${manifest.totalDesigns}')
+    logger.info('Total size: ${manifest.totalSizeMB} MB')
   }
 }

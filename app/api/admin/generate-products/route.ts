@@ -5,6 +5,7 @@ import OpenAI from 'openai'
 import { put } from '@vercel/blob'
 import { z } from 'zod'
 import { printfulClient } from '@/lib/printful-client'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -111,9 +112,9 @@ export async function POST(request: Request) {
     // Use validated data
     const { themes, products } = validationResult.data
 
-    console.log(`🎨 Generating ${themes.length * products.length} products...`)
-    console.log(`   Themes: ${themes.join(', ')}`)
-    console.log(`   Products: ${products.join(', ')}`)
+    logger.info('Generating ${themes.length * products.length} products...')
+    logger.info('Log message', { template: `   Themes: ${themes.join(', ')}` })
+    logger.info('Log message', { template: `   Products: ${products.join(', ')}` })
 
     const generatedProducts = []
 
@@ -124,10 +125,10 @@ export async function POST(request: Request) {
     for (const themeId of themes) {
       // Generate design once per theme and cache it
       if (!designCache[themeId]) {
-        console.log(`🎨 Generating new AI design for theme: ${themeId}`)
+        logger.info('Generating new AI design for theme: ${themeId}')
         designCache[themeId] = await generateAIDesign(themeId)
       } else {
-        console.log(`♻️  Reusing cached design for theme: ${themeId}`)
+        logger.info('Reusing cached design for theme: ${themeId}')
       }
 
       for (const productId of products) {
@@ -154,8 +155,8 @@ export async function POST(request: Request) {
     // Write back to file
     await writeFile(filePath, JSON.stringify(existingData, null, 2))
 
-    console.log(`✅ Generated and saved ${generatedProducts.length} products!`)
-    console.log(`📦 Total products in store: ${existingData.products.length}`)
+    logger.info('Generated and saved ${generatedProducts.length} products!')
+    logger.info('Total products in store: ${existingData.products.length}')
 
     return NextResponse.json({
       success: true,
@@ -166,7 +167,7 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     // Log detailed error server-side for debugging
-    console.error('❌ Product generation error:', error)
+    logger.error('Product generation error:', error)
 
     // Extract error message for pattern matching (keep internal)
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -273,7 +274,7 @@ async function generateProduct(themeId: string, productId: string, designUrl: st
 
   try {
     // Create actual Printful sync product with the AI-generated design
-    console.log(`🚀 Creating Printful sync product: ${title}`)
+    logger.info('Creating Printful sync product: ${title}')
 
     const { product: syncProduct, mockupUrl: generatedMockupUrl } = await printfulClient.createProductWithDesign({
       name: title,
@@ -297,9 +298,9 @@ async function generateProduct(themeId: string, productId: string, designUrl: st
       mockupUrl = generatedMockupUrl
     }
 
-    console.log(`✅ Printful sync product created successfully! ID: ${printfulSyncProductId}`)
+    logger.info('Printful sync product created successfully! ID: ${printfulSyncProductId}')
   } catch (error) {
-    console.error(`⚠️ Failed to create Printful sync product, continuing with local data:`, error)
+    logger.error('Failed to create Printful sync product, continuing with local data:', error)
     // Continue without Printful sync - product will still be saved locally
   }
 
@@ -340,7 +341,7 @@ function generateDescription(themeId: string, productName: string): string {
 
 async function generateAIDesign(themeId: string): Promise<string> {
   try {
-    console.log(`🎨 Generating AI design for theme: ${themeId}`)
+    logger.info('Generating AI design for theme: ${themeId}')
 
     // Get the AI prompt for this theme
     const prompt = THEME_PROMPTS[themeId] || THEME_PROMPTS.consciousness
@@ -361,7 +362,7 @@ async function generateAIDesign(themeId: string): Promise<string> {
       throw new Error('No image URL returned from DALL-E')
     }
 
-    console.log(`✅ Image generated, downloading...`)
+    logger.info('Image generated, downloading...')
 
     // Download the image from DALL-E's temporary URL
     const imageResponse = await fetch(imageUrl)
@@ -375,11 +376,11 @@ async function generateAIDesign(themeId: string): Promise<string> {
       contentType: 'image/png',
     })
 
-    console.log(`✅ Image saved to Vercel Blob: ${url}`)
+    logger.info('Image saved to Vercel Blob: ${url}')
 
     return url
   } catch (error) {
-    console.error('AI design generation failed:', error)
+    logger.error('AI design generation failed:', error)
 
     // Fallback to placeholder if generation fails
     return `/api/ai-design-placeholder?theme=${themeId}&t=${Date.now()}`

@@ -6,6 +6,7 @@ import { Lock, Unlock, BookOpen, ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Max
 import { RippleButton } from './ripple-button'
 import { AudioReader } from './audio-reader'
 import { motion, AnimatePresence } from 'framer-motion'
+import { clientLogger } from '@/lib/client-logger'
 
 // Configure PDF.js worker - only in browser
 if (typeof window !== 'undefined') {
@@ -85,7 +86,7 @@ export function PDFBookViewerClient({
         setIsUnlocked(true)
       }
     } catch (error) {
-      console.error('Failed to unlock book:', error)
+      clientLogger.error('Failed to unlock book:', error)
       alert('Failed to process payment. Please try again.')
     } finally {
       setIsProcessing(false)

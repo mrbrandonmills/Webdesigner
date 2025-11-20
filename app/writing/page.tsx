@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { FileText, BookOpen, Feather, Library } from 'lucide-react'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateBreadcrumbSchema } from '@/lib/json-ld'
 
 export const metadata: Metadata = {
   title: 'Writing: Books, Essays & Poetry | Brandon Mills',
@@ -31,8 +33,15 @@ export const metadata: Metadata = {
 }
 
 export default function WritingPage() {
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Writing', url: '/writing' },
+  ])
+
   return (
-    <div className="min-h-screen bg-black text-white">
+    <>
+      <JsonLd data={[breadcrumbSchema]} />
+      <div className="min-h-screen bg-black text-white">
       {/* Hero */}
       <section className="pt-32 pb-20 container-wide relative overflow-hidden">
         <div
@@ -217,5 +226,6 @@ export default function WritingPage() {
         </div>
       </section>
     </div>
+    </>
   )
 }

@@ -5,6 +5,7 @@
  */
 
 import { sql } from '@vercel/postgres'
+import { logger } from '@/lib/logger'
 import {
   Order,
   CreateOrderInput,
@@ -66,7 +67,7 @@ export async function createOrder(input: CreateOrderInput): Promise<Order> {
 
     return mapRowToOrder(result.rows[0])
   } catch (error) {
-    console.error('Failed to create order in database:', error)
+    logger.error('Failed to create order in database:', error)
     throw new DatabaseError('Failed to create order', error)
   }
 }
@@ -88,7 +89,7 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
 
     return mapRowToOrder(result.rows[0])
   } catch (error) {
-    console.error('Failed to get order by ID:', error)
+    logger.error('Failed to get order by ID:', error)
     throw new DatabaseError('Failed to retrieve order', error)
   }
 }
@@ -112,7 +113,7 @@ export async function getOrderByStripeSessionId(
 
     return mapRowToOrder(result.rows[0])
   } catch (error) {
-    console.error('Failed to get order by session ID:', error)
+    logger.error('Failed to get order by session ID:', error)
     throw new DatabaseError('Failed to retrieve order', error)
   }
 }
@@ -123,7 +124,7 @@ export async function getOrderByStripeSessionId(
 export async function updateOrder(input: UpdateOrderInput): Promise<Order> {
   try {
     const updates: string[] = []
-    const values: any[] = []
+    const values: (string | Date | null)[] = []
 
     if (input.status !== undefined) {
       updates.push('status')
@@ -170,7 +171,7 @@ export async function updateOrder(input: UpdateOrderInput): Promise<Order> {
 
     return mapRowToOrder(result.rows[0])
   } catch (error) {
-    console.error('Failed to update order:', error)
+    logger.error('Failed to update order:', error)
     throw new DatabaseError('Failed to update order', error)
   }
 }
@@ -187,7 +188,7 @@ export async function getOrders(
     const offset = pagination?.offset || 0
 
     let query = `SELECT * FROM orders WHERE 1=1`
-    const values: any[] = []
+    const values: (string | number | Date)[] = []
     let paramIndex = 1
 
     // Apply filters
@@ -226,7 +227,7 @@ export async function getOrders(
 
     return result.rows.map(mapRowToOrder)
   } catch (error) {
-    console.error('Failed to get orders:', error)
+    logger.error('Failed to get orders:', error)
     throw new DatabaseError('Failed to retrieve orders', error)
   }
 }
@@ -247,7 +248,7 @@ export async function getOrderSummaries(
       FROM orders
       WHERE 1=1
     `
-    const values: any[] = []
+    const values: (string | number | Date)[] = []
     let paramIndex = 1
 
     // Apply filters (same as getOrders)
@@ -283,7 +284,7 @@ export async function getOrderSummaries(
 
     return result.rows as OrderSummary[]
   } catch (error) {
-    console.error('Failed to get order summaries:', error)
+    logger.error('Failed to get order summaries:', error)
     throw new DatabaseError('Failed to retrieve order summaries', error)
   }
 }
@@ -305,7 +306,7 @@ export async function getOrderStats(filters?: OrderFilters): Promise<OrderStats>
       FROM orders
       WHERE 1=1
     `
-    const values: any[] = []
+    const values: (string | Date)[] = []
     let paramIndex = 1
 
     // Apply filters
@@ -340,7 +341,7 @@ export async function getOrderStats(filters?: OrderFilters): Promise<OrderStats>
       averageOrderValue: parseFloat(row.average_order_value),
     }
   } catch (error) {
-    console.error('Failed to get order stats:', error)
+    logger.error('Failed to get order stats:', error)
     throw new DatabaseError('Failed to retrieve order statistics', error)
   }
 }
@@ -356,15 +357,37 @@ export async function deleteOrder(orderId: string): Promise<void> {
       WHERE id = ${orderId}
     `
   } catch (error) {
-    console.error('Failed to delete order:', error)
+    logger.error('Failed to delete order:', error)
     throw new DatabaseError('Failed to delete order', error)
   }
 }
 
 /**
+ * Database row structure from SQL query
+ */
+interface OrderDatabaseRow {
+  id: string
+  stripe_session_id: string
+  stripe_payment_intent_id: string | null
+  customer_email: string
+  customer_name: string
+  shipping_address: string | object | null
+  billing_address: string | object | null
+  items: string | object[]
+  total_amount: string | number
+  currency: string
+  status: string
+  printful_status: string
+  printful_order_id: string | null
+  metadata: string | object | null
+  created_at: string | Date
+  updated_at: string | Date
+}
+
+/**
  * Map database row to Order interface
  */
-function mapRowToOrder(row: any): Order {
+function mapRowToOrder(row: OrderDatabaseRow): Order {
   return {
     id: row.id,
     stripe_session_id: row.stripe_session_id,
@@ -401,7 +424,7 @@ function mapRowToOrder(row: any): Order {
 export class DatabaseError extends Error {
   constructor(
     message: string,
-    public originalError?: any
+    public originalError?: unknown
   ) {
     super(message)
     this.name = 'DatabaseError'
@@ -416,7 +439,7 @@ export async function isDatabaseAvailable(): Promise<boolean> {
     await sql`SELECT 1`
     return true
   } catch (error) {
-    console.error('Database connection check failed:', error)
+    logger.error('Database connection check failed:', error)
     return false
   }
 }

@@ -39,7 +39,7 @@ export default function Navigation() {
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'bg-black/80 backdrop-blur-md border-b border-white/10'
+            ? 'glass-navbar'
             : 'bg-transparent'
         }`}
       >
@@ -128,11 +128,18 @@ export default function Navigation() {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay - Touch optimized */}
+      {/* Mobile Menu Overlay - Touch optimized with liquid glass */}
       <div
-        className={`fixed inset-0 bg-black z-40 md:hidden transition-opacity duration-500 ${
-          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ${
+          mobileMenuOpen
+            ? 'opacity-100 pointer-events-auto'
+            : 'opacity-0 pointer-events-none'
         }`}
+        style={{
+          background: 'rgba(0, 0, 0, 0.85)',
+          backdropFilter: 'blur(40px) saturate(180%)',
+          WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+        }}
       >
         <div className="flex flex-col items-center justify-start h-full gap-5 px-6 pt-28 pb-8 overflow-y-auto">
           {navLinks.map((link, index) => (

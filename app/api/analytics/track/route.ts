@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 import { writeFile, readFile, mkdir } from 'fs/promises'
 import path from 'path'
+import { AnalyticsTrackSchema, formatZodErrors } from '@/lib/validations'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -10,10 +13,20 @@ export const dynamic = 'force-dynamic'
  */
 export async function POST(request: Request) {
   try {
-    const { event, data, timestamp } = await request.json()
+    const body = await request.json()
+
+    // Validate input with Zod
+    const validationResult = AnalyticsTrackSchema.safeParse(body)
+    if (!validationResult.success) {
+      // Don't fail on analytics validation errors, just log and return success
+      logger.error('Analytics validation error:', validationResult.error.errors)
+      return NextResponse.json({ success: true })
+    }
+
+    const { event, data, timestamp } = validationResult.data
 
     // Log to console for monitoring
-    console.log(`📊 [${event}]`, data)
+    logger.info('event}]', { data: data })
 
     // Optionally save to file for persistence
     const analyticsDir = path.join(process.cwd(), 'data', 'analytics')
@@ -40,7 +53,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Analytics tracking error:', error)
+    logger.error('Analytics tracking error:', error)
     // Don't fail on analytics errors
     return NextResponse.json({ success: true })
   }

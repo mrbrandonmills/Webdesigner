@@ -3,15 +3,10 @@ import Stripe from 'stripe'
 import { z } from 'zod'
 import logger from '@/lib/logger'
 import { getMeditationBySlug } from '@/lib/meditations-data'
+import { MeditationCheckoutSchema, formatZodErrors } from '@/lib/validations'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-// Validation schema for checkout request
-const checkoutRequestSchema = z.object({
-  meditationSlug: z.string().min(1, 'Meditation slug is required'),
-  customerEmail: z.string().email().optional(),
-})
 
 export async function POST(request: Request) {
   try {
@@ -30,14 +25,11 @@ export async function POST(request: Request) {
 
     // Parse and validate request body
     const body = await request.json()
-    const validationResult = checkoutRequestSchema.safeParse(body)
+    const validationResult = MeditationCheckoutSchema.safeParse(body)
 
     if (!validationResult.success) {
       return NextResponse.json(
-        {
-          error: 'Invalid request data',
-          details: validationResult.error.flatten()
-        },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }

@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { BRAND_VOICE_PROFILE } from '@/lib/voice-profile'
 import fs from 'fs'
 import path from 'path'
+import { logger } from '@/lib/logger'
 
 // Increase timeout to 60 seconds (requires Vercel Pro plan)
 export const maxDuration = 60
@@ -54,8 +55,8 @@ export async function POST(req: NextRequest) {
     // Determine if this post has real content or Lorem ipsum
     const hasRealContent = !post.description.toLowerCase().includes('lorem ipsum')
 
-    console.log(`Enhancing post ${postIndex + 1}/${allPosts.length}: ${post.title}`)
-    console.log(`Has real content: ${hasRealContent}`)
+    logger.info('Enhancing post ${postIndex + 1}/${allPosts.length}: ${post.title}')
+    logger.info('Has real content: ${hasRealContent}')
 
     const enhancementPrompt = hasRealContent
       ? `You are enhancing existing portfolio content for Brandon Mills.
@@ -134,7 +135,7 @@ CREATE original content that honors the title and images.`
       temperature: hasRealContent ? 0.7 : 0.8, // More creative for generated content
     })
 
-    console.log('Enhanced content generated:', enhanced.title)
+    logger.info('Enhanced content generated:', { data: enhanced.title })
 
     // Now publish to Webflow
     const webflowToken = process.env.WEBFLOW_API_TOKEN
@@ -180,7 +181,7 @@ CREATE original content that honors the title and images.`
       isArchived: false,
     }
 
-    console.log('Publishing to Webflow:', cmsItemData.fieldData.name)
+    logger.info('Publishing to Webflow:', { data: cmsItemData.fieldData.name })
 
     const webflowResponse = await fetch(
       `https://api.webflow.com/v2/collections/${collectionId}/items`,
@@ -197,12 +198,12 @@ CREATE original content that honors the title and images.`
 
     if (!webflowResponse.ok) {
       const errorData = await webflowResponse.json()
-      console.error('Webflow API error:', errorData)
+      logger.error('Webflow API error:', errorData)
       throw new Error(`Webflow API error: ${JSON.stringify(errorData)}`)
     }
 
     const webflowData = await webflowResponse.json()
-    console.log('Published to Webflow successfully:', webflowData)
+    logger.info('Published to Webflow successfully:', { data: webflowData })
 
     return NextResponse.json({
       success: true,
@@ -220,7 +221,7 @@ CREATE original content that honors the title and images.`
     })
 
   } catch (error: any) {
-    console.error('Autonomous import error:', error)
+    logger.error('Autonomous import error:', error)
     return NextResponse.json(
       {
         error: 'Import failed',

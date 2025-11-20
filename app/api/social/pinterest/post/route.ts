@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createPinterestPin } from '@/lib/pinterest-automation'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 300 // 5 minutes for browser automation
@@ -62,7 +63,7 @@ export async function POST(request: NextRequest) {
       )
     }
   } catch (error) {
-    console.error('Pinterest posting error:', error)
+    logger.error('Pinterest posting error:', error)
     return NextResponse.json(
       {
         success: false,

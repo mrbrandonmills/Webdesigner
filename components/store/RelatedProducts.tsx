@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { useCart } from '@/contexts/cart-context'
 import { RippleButton } from '@/components/ripple-button'
 import Link from 'next/link'
+import { clientLogger } from '@/lib/client-logger'
 
 interface RelatedProduct {
   id: number
@@ -51,7 +52,7 @@ export default function RelatedProducts({
         setProducts(filtered)
       }
     } catch (error) {
-      console.error('Failed to fetch related products:', error)
+      clientLogger.error('Failed to fetch related products:', error)
     } finally {
       setLoading(false)
     }

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -46,7 +47,7 @@ export async function POST(request: Request) {
       )
     }
 
-    console.log(`Publishing to Medium: "${title}"`)
+    logger.info('Log message', { template: `Publishing to Medium: "${title}"` })
 
     // Publish to Medium
     const mediumResponse = await fetch(
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
 
     if (!mediumResponse.ok) {
       const errorText = await mediumResponse.text()
-      console.error('Medium API error:', errorText)
+      logger.error('Medium API error:', errorText)
       return NextResponse.json(
         {
           success: false,
@@ -84,7 +85,7 @@ export async function POST(request: Request) {
 
     const mediumData = await mediumResponse.json()
 
-    console.log('✅ Published to Medium:', mediumData.data.url)
+    logger.info('Published to Medium:', { data: mediumData.data.url })
 
     return NextResponse.json({
       success: true,
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
       message: `Successfully published to Medium: ${mediumData.data.url}`,
     })
   } catch (error) {
-    console.error('Medium publish error:', error)
+    logger.error('Medium publish error:', error)
     return NextResponse.json(
       {
         success: false,

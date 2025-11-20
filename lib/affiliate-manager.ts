@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger'
 /**
  * Affiliate Manager
  * Handles all affiliate program integrations and link generation
@@ -172,19 +173,19 @@ export async function trackAffiliateClick(
     })
 
     if (!response.ok) {
-      console.error('Failed to track affiliate click')
+      logger.error('Failed to track affiliate click')
     }
 
     // Also track in Google Analytics if available
-    if (typeof window !== 'undefined' && (window as any).gtag) {
-      (window as any).gtag('event', 'affiliate_click', {
+    if (typeof window !== 'undefined' && window.gtag) {
+      window.gtag('event', 'affiliate_click', {
         event_category: 'affiliate',
         event_label: program,
         value: productId,
       })
     }
   } catch (error) {
-    console.error('Error tracking affiliate click:', error)
+    logger.error('Error tracking affiliate click:', error)
   }
 }
 
@@ -193,7 +194,7 @@ export async function trackAffiliateClick(
  */
 export async function fetchAmazonProduct(asin: string): Promise<AffiliateProduct | null> {
   if (!process.env.AMAZON_ASSOCIATES_ACCESS_KEY || !process.env.AMAZON_ASSOCIATES_SECRET_KEY) {
-    console.warn('Amazon API credentials not configured')
+    logger.warn('Amazon API credentials not configured')
     return null
   }
 
@@ -213,7 +214,7 @@ export async function fetchAmazonProduct(asin: string): Promise<AffiliateProduct
     const data = await response.json()
     return data
   } catch (error) {
-    console.error('Error fetching Amazon product:', error)
+    logger.error('Error fetching Amazon product:', error)
     return null
   }
 }
@@ -304,7 +305,7 @@ export async function getRecommendedProducts(
     const products = await response.json()
     return products
   } catch (error) {
-    console.error('Error fetching recommended products:', error)
+    logger.error('Error fetching recommended products:', error)
     return []
   }
 }
@@ -328,7 +329,7 @@ export async function searchAffiliateProducts(
     const products = await response.json()
     return products
   } catch (error) {
-    console.error('Error searching affiliate products:', error)
+    logger.error('Error searching affiliate products:', error)
     return []
   }
 }

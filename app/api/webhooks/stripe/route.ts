@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { Resend } from 'resend'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -38,7 +39,7 @@ export async function POST(request: NextRequest) {
     const webhookSecret = getWebhookSecret()
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
   } catch (err) {
-    console.error('Webhook signature verification failed:', err)
+    logger.error('Webhook signature verification failed', err)
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
 
@@ -91,11 +92,11 @@ export async function POST(request: NextRequest) {
             html: htmlContent,
           })
 
-          console.log(`Confirmation email sent to ${customerEmail}`)
+          logger.info('Confirmation email sent', { email: customerEmail })
         }
       }
     } catch (emailError) {
-      console.error('Failed to send confirmation email:', emailError)
+      logger.error('Failed to send confirmation email', emailError)
       // Don't fail the webhook if email fails
     }
   }

@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger'
 /**
  * Promo Code Management System
  *
@@ -159,7 +160,7 @@ export function recordPromoCodeUsage(
     // 1. Save usage to database/file
     // 2. Update promo code usage count
     // 3. Create audit trail
-    console.log(`[PROMO] Code ${code} used by ${usedBy} for ${contentType}:${contentId}`)
+    logger.info('[PROMO] Code ${code} used by ${usedBy} for ${contentType}:${contentId}')
   }
 }
 
@@ -177,7 +178,7 @@ export function createPromoCode(promoCode: Omit<PromoCode, 'createdAt' | 'usageC
   PROMO_CODES.set(newCode.code, newCode)
 
   // In a real implementation, persist to database/file
-  console.log(`[PROMO] Created code: ${newCode.code}`)
+  logger.info('[PROMO] Created code: ${newCode.code}')
 
   return newCode
 }

@@ -6,6 +6,7 @@
 import fs from 'fs'
 import path from 'path'
 import { printfulClient } from './printful-client'
+import { logger } from '@/lib/logger'
 
 // Interfaces
 export interface RenderedDesign {
@@ -105,7 +106,7 @@ export class PrintfulSyncService {
     this.baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'
 
     if (!this.apiKey || !this.storeId) {
-      console.warn('⚠️ Printful API credentials not configured')
+      logger.warn('Printful API credentials not configured')
     }
   }
 
@@ -114,7 +115,7 @@ export class PrintfulSyncService {
    */
   async uploadDesignFile(filePath: string): Promise<string> {
     try {
-      console.log(`📤 Uploading file: ${path.basename(filePath)}`)
+      logger.info('Uploading file: ${path.basename(filePath)}')
 
       // For local development, use local server; for production use actual URL
       const isProduction = process.env.NODE_ENV === 'production'
@@ -130,15 +131,15 @@ export class PrintfulSyncService {
         fileUrl = `http://localhost:8080/${relativePath}`
       }
 
-      console.log(`   From URL: ${fileUrl}`)
+      logger.info('From URL: ${fileUrl}')
 
       // Use the existing printfulClient method which handles auth correctly
       const uploadResult = await printfulClient.uploadFileFromUrl(fileUrl, path.basename(filePath))
 
-      console.log(`✅ File uploaded successfully: ID ${uploadResult.id}`)
+      logger.info('File uploaded successfully: ID ${uploadResult.id}')
       return uploadResult.id
     } catch (error) {
-      console.error(`❌ Failed to upload file ${filePath}:`, error)
+      logger.error('Failed to upload file ${filePath}:', error)
       throw error
     }
   }
@@ -162,7 +163,7 @@ export class PrintfulSyncService {
       // Create external ID for tracking
       const externalId = `${design.category}-${design.name}-${design.productType}-${Date.now()}`
 
-      console.log(`📦 Creating sync product: ${productName}`)
+      logger.info('Creating sync product: ${productName}')
 
       // Prepare sync variants for selected sizes/variants
       const syncVariants = mapping.variantIds.slice(0, 2).map((variantId, index) => ({
@@ -190,14 +191,14 @@ export class PrintfulSyncService {
       // Create the sync product
       const syncProduct = await printfulClient.createSyncProduct(syncProductData)
 
-      console.log(`✅ Sync product created: ID ${syncProduct.id}`)
+      logger.info('Sync product created: ID ${syncProduct.id}')
 
       // Generate mockups (async, don't wait)
       let mockupUrls: string[] = []
       try {
         mockupUrls = await this.generateMockups(syncProduct.id, mapping.variantIds.slice(0, 2))
       } catch (mockupError) {
-        console.warn(`⚠️ Mockup generation failed, continuing:`, mockupError)
+        logger.warn('Mockup generation failed, continuing:', { data: mockupError })
       }
 
       return {
@@ -212,7 +213,7 @@ export class PrintfulSyncService {
         timestamp: new Date().toISOString()
       }
     } catch (error) {
-      console.error(`❌ Failed to create sync product:`, error)
+      logger.error('Failed to create sync product:', error)
       return {
         success: false,
         designName: design.name,
@@ -229,7 +230,7 @@ export class PrintfulSyncService {
    */
   async generateMockups(syncProductId: number, variantIds: number[]): Promise<string[]> {
     try {
-      console.log(`🎨 Generating mockups for product ${syncProductId}...`)
+      logger.info('Generating mockups for product ${syncProductId}...')
 
       // Get sync product details to retrieve file URL
       const syncProduct = await printfulClient.getSyncProduct(syncProductId)
@@ -259,11 +260,11 @@ export class PrintfulSyncService {
       const mockupResult = await printfulClient.getMockupResult(mockupTask.task_key)
 
       const mockupUrls = mockupResult.result.mockups?.map(m => m.mockup_url) || []
-      console.log(`✅ Generated ${mockupUrls.length} mockups`)
+      logger.info('Generated ${mockupUrls.length} mockups')
 
       return mockupUrls
     } catch (error) {
-      console.error(`❌ Failed to generate mockups:`, error)
+      logger.error('Failed to generate mockups:', error)
       return []
     }
   }
@@ -281,8 +282,8 @@ export class PrintfulSyncService {
 
       // Process each category
       for (const [category, designs] of Object.entries(manifest.categories)) {
-        for (const [designName, files] of Object.entries(designs as any)) {
-          for (const file of files as RenderedDesign[]) {
+        for (const [designName, files] of Object.entries(designs as Record<string, RenderedDesign[]>)) {
+          for (const file of files) {
             // Add category and name to the file object
             const design: RenderedDesign = {
               ...file,
@@ -290,7 +291,7 @@ export class PrintfulSyncService {
               name: designName
             }
 
-            console.log(`\n🚀 Processing: ${category} - ${designName} (${design.productType})`)
+            logger.info('n🚀 Processing: ${category} - ${designName} (${design.productType})')
 
             try {
               // Add delay to respect rate limits (120 requests/min = 2/sec)
@@ -304,12 +305,12 @@ export class PrintfulSyncService {
               results.push(result)
 
               if (result.success) {
-                console.log(`✅ Successfully synced: ${result.syncProductId}`)
+                logger.info('Successfully synced: ${result.syncProductId}')
               } else {
-                console.log(`❌ Failed to sync: ${result.error}`)
+                logger.info('Failed to sync: ${result.error}')
               }
             } catch (error) {
-              console.error(`❌ Error processing ${designName}:`, error)
+              logger.error('Error processing ${designName}:', error)
               results.push({
                 success: false,
                 designName,
@@ -333,10 +334,10 @@ export class PrintfulSyncService {
         results
       }, null, 2))
 
-      console.log(`\n💾 Sync results saved to: ${outputPath}`)
+      logger.info('n💾 Sync results saved to: ${outputPath}')
 
     } catch (error) {
-      console.error('❌ Fatal error during sync:', error)
+      logger.error('Fatal error during sync:', error)
     }
 
     return results
@@ -366,7 +367,7 @@ export class PrintfulSyncService {
         throw new Error(`Design ${designName} not found in category ${category}`)
       }
 
-      const file = designData.find((f: any) => f.productType === productType)
+      const file = designData.find((f: RenderedDesign) => f.productType === productType)
       if (!file) {
         throw new Error(`Product type ${productType} not found for design ${designName}`)
       }
@@ -377,7 +378,7 @@ export class PrintfulSyncService {
         name: designName
       }
 
-      console.log(`\n🚀 Syncing single design: ${category} - ${designName} (${productType})`)
+      logger.info('n🚀 Syncing single design: ${category} - ${designName} (${productType})')
 
       // Upload file
       const fileId = await this.uploadDesignFile(design.absolutePath)
@@ -391,7 +392,7 @@ export class PrintfulSyncService {
 
       return result
     } catch (error) {
-      console.error('❌ Failed to sync single design:', error)
+      logger.error('Failed to sync single design:', error)
       return {
         success: false,
         designName,

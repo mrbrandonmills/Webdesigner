@@ -17,22 +17,70 @@ import { generateOrganizationSchema, generateWebSiteSchema } from '@/lib/json-ld
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'Brandon Mills | Model · Actor · Creative',
-  description: 'Fashion model, actor, and creative exploring the intersection of performance, embodiment, and human expression.',
-  keywords: 'Brandon Mills, model, actor, fashion, modeling, acting, performance, creative, Los Angeles, editorial, commercial',
+  metadataBase: new URL('https://brandonmills.com'),
+  title: {
+    default: 'Brandon Mills | Author, Philosopher & Sacred Geometry Artist',
+    template: '%s | Brandon Mills',
+  },
+  description: 'Explore philosophy essays, mental health blog, meditation guides, luxury canvas prints featuring sacred geometry art, and AI tools by Brandon Mills.',
+  keywords: [
+    'Brandon Mills',
+    'sacred geometry art',
+    'luxury canvas prints',
+    'philosophy essays',
+    'mental health blog',
+    'meditation guides',
+    'AI tools',
+    'self-actualization',
+    'consciousness',
+    'Brandon Mills author',
+  ],
+  authors: [{ name: 'Brandon Mills', url: 'https://brandonmills.com' }],
+  creator: 'Brandon Mills',
+  publisher: 'Brandon Mills',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
-    title: 'Brandon Mills | Model · Actor · Creative',
-    description: 'Where performance meets presence — modeling, acting, and creative expression',
+    title: 'Brandon Mills | Author, Philosopher & Sacred Geometry Artist',
+    description: 'Philosophy essays, mental health blog, meditation guides, luxury canvas prints, and AI tools.',
     type: 'website',
     locale: 'en_US',
+    url: 'https://brandonmills.com',
+    siteName: 'Brandon Mills',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Brandon Mills - Author, Philosopher & Sacred Geometry Artist',
+      },
+    ],
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-    viewportFit: 'cover',
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Brandon Mills | Author, Philosopher & Sacred Geometry Artist',
+    description: 'Philosophy essays, mental health blog, meditation guides, luxury canvas prints, and AI tools.',
+    creator: '@brandonmills',
+    images: ['/og-image.jpg'],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
+  category: 'Art & Philosophy',
 }
 
 export default function RootLayout({

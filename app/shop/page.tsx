@@ -8,8 +8,46 @@ import { generateAggregateOfferSchema, generateBreadcrumbSchema } from '@/lib/js
 import { UnifiedProduct } from '@/lib/types/shop'
 
 export const metadata: Metadata = {
-  title: 'Shop | Brandon Mills',
-  description: 'Museum-quality products: custom merchandise, philosophy books, premium tech. Every item tells a story.',
+  title: 'Shop Luxury Canvas Prints & Sacred Geometry Art | Brandon Mills',
+  description: 'Shop museum-quality luxury canvas prints featuring sacred geometry art, philosophy books on self-actualization, and premium curated products. Free shipping on select items.',
+  keywords: [
+    'luxury canvas prints',
+    'sacred geometry art',
+    'museum quality prints',
+    'philosophy books',
+    'self-actualization books',
+    'premium merchandise',
+    'Brandon Mills shop',
+    'art prints',
+    'canvas wall art',
+    'geometric art',
+    'spiritual art',
+    'meditation products',
+  ],
+  alternates: {
+    canonical: 'https://brandonmills.com/shop',
+  },
+  openGraph: {
+    title: 'Shop Luxury Canvas Prints & Sacred Geometry Art | Brandon Mills',
+    description: 'Museum-quality luxury canvas prints, sacred geometry art, philosophy books, and premium curated products.',
+    type: 'website',
+    url: 'https://brandonmills.com/shop',
+    siteName: 'Brandon Mills',
+    images: [
+      {
+        url: 'https://brandonmills.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Brandon Mills Shop - Luxury Canvas Prints & Sacred Geometry Art',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Shop Luxury Canvas Prints & Sacred Geometry Art | Brandon Mills',
+    description: 'Museum-quality luxury canvas prints, sacred geometry art, and philosophy books.',
+    images: ['https://brandonmills.com/og-image.jpg'],
+  },
 }
 
 async function getProducts() {
@@ -46,7 +84,7 @@ async function getProducts() {
   } catch (error) {
     console.error('Error fetching products:', error)
     // Fallback to theme factory + Amazon products if API fails
-    return mergeShopProducts(themeFactoryProducts.products, affiliateProducts)
+    return mergeShopProducts(themeFactoryProducts.products as any, affiliateProducts)
   }
 }
 

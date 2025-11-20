@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Mic, MicOff } from 'lucide-react';
+import { clientLogger } from '@/lib/client-logger'
 
 interface VoiceInputProps {
   onTranscript: (text: string) => void;
@@ -80,7 +81,7 @@ export function VoiceInput({ onTranscript, disabled = false, className = '' }: V
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-      console.error('Speech recognition error:', event.error);
+      clientLogger.error('Speech recognition error:', event.error);
       setError(event.error);
       setIsRecording(false);
     };
@@ -92,7 +93,7 @@ export function VoiceInput({ onTranscript, disabled = false, className = '' }: V
           recognitionRef.current.start();
         } catch (e) {
           // Recognition might already be started
-          console.log('Recognition restart skipped:', e);
+          clientLogger.info('Recognition restart skipped:', { data: e });
         }
       }
     };
@@ -124,7 +125,7 @@ export function VoiceInput({ onTranscript, disabled = false, className = '' }: V
           recognition.start();
           setIsRecording(true);
         } catch (e) {
-          console.error('Failed to start recognition:', e);
+          clientLogger.error('Failed to start recognition:', e);
           setError('Failed to start voice input');
         }
       }
@@ -149,7 +150,7 @@ export function VoiceInput({ onTranscript, disabled = false, className = '' }: V
           try {
             recognitionRef.current.start();
           } catch (e) {
-            console.log('Recognition restart skipped:', e);
+            clientLogger.info('Recognition restart skipped:', { data: e });
           }
         }
       };

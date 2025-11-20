@@ -3,10 +3,18 @@ import logger from './logger'
 
 // Session configuration
 const SESSION_DURATION_HOURS = 4
-const JWT_SECRET = process.env.JWT_SECRET || process.env.ADMIN_PASSWORD_HASH || 'fallback-secret-key-change-in-production'
 
-// Convert secret to Uint8Array for jose
-const getSecretKey = () => new TextEncoder().encode(JWT_SECRET)
+// Convert secret to Uint8Array for jose - CRITICAL: No fallbacks allowed
+function getSecretKey(): Uint8Array {
+  const secret = process.env.JWT_SECRET
+
+  if (!secret || secret.length < 32) {
+    logger.error('JWT_SECRET not configured or too short (minimum 32 characters required)')
+    throw new Error('CRITICAL: JWT_SECRET must be set in environment variables with at least 32 characters')
+  }
+
+  return new TextEncoder().encode(secret)
+}
 
 interface SessionPayload {
   username: string

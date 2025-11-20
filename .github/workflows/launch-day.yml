@@ -1,0 +1,119 @@
+name: Launch Day Automation
+
+on:
+  workflow_dispatch:
+    inputs:
+      product_hunt_url:
+        description: 'Product Hunt URL (e.g., https://www.producthunt.com/posts/dream-decoder)'
+        required: true
+        type: string
+      dry_run:
+        description: 'Dry run mode (no actual posts)'
+        required: false
+        type: boolean
+        default: false
+      skip_schedule:
+        description: 'Run all tasks immediately instead of on schedule'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  launch-day:
+    runs-on: ubuntu-latest
+    timeout-minutes: 720 # 12 hours for full day schedule
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Puppeteer browsers
+        run: npx puppeteer browsers install chrome
+
+      - name: Create .env.local
+        run: |
+          cat > .env.local << EOF
+          # Twitter credentials
+          TWITTER_API_KEY=${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET=${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN=${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET=${{ secrets.TWITTER_ACCESS_SECRET }}
+
+          # Reddit credentials
+          REDDIT_USERNAME=${{ secrets.REDDIT_USERNAME }}
+          REDDIT_PASSWORD=${{ secrets.REDDIT_PASSWORD }}
+          REDDIT_CLIENT_ID=${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET=${{ secrets.REDDIT_CLIENT_SECRET }}
+
+          # Hacker News credentials
+          HN_USERNAME=${{ secrets.HN_USERNAME }}
+          HN_PASSWORD=${{ secrets.HN_PASSWORD }}
+
+          # AI credentials (for any content generation)
+          OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
+          EOF
+
+      - name: Create required directories
+        run: |
+          mkdir -p logs
+          mkdir -p data
+
+      - name: Run launch day automation
+        run: |
+          ARGS="--ph-url=\"${{ inputs.product_hunt_url }}\""
+
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+
+          if [ "${{ inputs.skip_schedule }}" = "true" ]; then
+            ARGS="$ARGS --skip-schedule"
+          fi
+
+          echo "Running: npx tsx scripts/automation/launch-day.ts $ARGS"
+          npx tsx scripts/automation/launch-day.ts $ARGS
+        env:
+          NODE_ENV: production
+
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: launch-day-logs
+          path: logs/
+          retention-days: 30
+
+      - name: Upload state
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: launch-day-state
+          path: data/automation-state.json
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Launch Day Automation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Product Hunt URL:** ${{ inputs.product_hunt_url }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Dry Run:** ${{ inputs.dry_run }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Skip Schedule:** ${{ inputs.skip_schedule }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f logs/automation.log ]; then
+            echo "### Recent Logs" >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+            tail -50 logs/automation.log >> $GITHUB_STEP_SUMMARY
+            echo '```' >> $GITHUB_STEP_SUMMARY
+          fi

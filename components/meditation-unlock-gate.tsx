@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import type { Meditation } from '@/lib/meditations-data'
 import { storeUnlock } from '@/lib/meditation-unlock'
 import { trackBeginCheckout } from '@/lib/analytics'
+import { clientLogger } from '@/lib/client-logger'
 
 interface MeditationUnlockGateProps {
   meditation: Meditation
@@ -31,7 +32,7 @@ export function MeditationUnlockGate({ meditation, onUnlock }: MeditationUnlockG
         item_category: 'meditation',
         price: meditation.price,
         quantity: 1,
-      },
+      } as any,
     ])
 
     try {
@@ -54,7 +55,7 @@ export function MeditationUnlockGate({ meditation, onUnlock }: MeditationUnlockG
         setIsLoading(false)
       }
     } catch (err) {
-      console.error('Checkout error:', err)
+      clientLogger.error('Checkout error:', err)
       setError('Unable to process payment. Please try again.')
       setIsLoading(false)
     }
@@ -118,7 +119,7 @@ export function MeditationUnlockGate({ meditation, onUnlock }: MeditationUnlockG
         setIsLoading(false)
       }
     } catch (err) {
-      console.error('Promo unlock error:', err)
+      clientLogger.error('Promo unlock error:', err)
       setError('Unable to process promo code. Please try again.')
       setIsLoading(false)
     }

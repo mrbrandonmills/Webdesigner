@@ -13,7 +13,7 @@ export const logger = {
   /**
    * Log informational messages
    */
-  info: (message: string, ...args: any[]) => {
+  info: (message: string, ...args: unknown[]) => {
     if (isDevelopment) {
       console.log(`[INFO] ${message}`, ...args)
     }
@@ -22,7 +22,7 @@ export const logger = {
   /**
    * Log warning messages
    */
-  warn: (message: string, ...args: any[]) => {
+  warn: (message: string, ...args: unknown[]) => {
     if (isDevelopment) {
       console.warn(`[WARN] ${message}`, ...args)
     }
@@ -32,7 +32,7 @@ export const logger = {
    * Log error messages (always logged even in production)
    * In production, these should go to an error tracking service
    */
-  error: (message: string, error?: any) => {
+  error: (message: string, error?: unknown) => {
     const errorMessage = `[ERROR] ${message}`
 
     if (isDevelopment) {
@@ -47,7 +47,7 @@ export const logger = {
   /**
    * Log debug messages (only in development)
    */
-  debug: (message: string, ...args: any[]) => {
+  debug: (message: string, ...args: unknown[]) => {
     if (isDevelopment && process.env.DEBUG === 'true') {
       console.debug(`[DEBUG] ${message}`, ...args)
     }
@@ -56,9 +56,9 @@ export const logger = {
   /**
    * Log success messages
    */
-  success: (message: string, ...args: any[]) => {
+  success: (message: string, ...args: unknown[]) => {
     if (isDevelopment) {
-      console.log(`✅ ${message}`, ...args)
+      console.log(`[SUCCESS] ${message}`, ...args)
     }
   },
 
@@ -87,7 +87,7 @@ export const logger = {
    * Sanitize sensitive data before logging
    * Use this to remove passwords, tokens, etc. from objects
    */
-  sanitize: (obj: any): any => {
+  sanitize: (obj: Record<string, unknown>): Record<string, unknown> => {
     if (!obj || typeof obj !== 'object') return obj
 
     const sensitiveKeys = [
@@ -109,8 +109,8 @@ export const logger = {
       const lowerKey = key.toLowerCase()
       if (sensitiveKeys.some(sensitive => lowerKey.includes(sensitive))) {
         sanitized[key] = '[REDACTED]'
-      } else if (typeof sanitized[key] === 'object') {
-        sanitized[key] = logger.sanitize(sanitized[key])
+      } else if (typeof sanitized[key] === 'object' && sanitized[key] !== null) {
+        sanitized[key] = logger.sanitize(sanitized[key] as Record<string, unknown>)
       }
     })
 

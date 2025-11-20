@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger'
 /**
  * Printful V2 API Client
  * Documentation: https://developers.printful.com/
@@ -104,7 +105,7 @@ interface SyncVariantFile {
 
 interface FileOption {
   id: string
-  value: any
+  value: string | number | boolean
 }
 
 interface SyncVariantOption {
@@ -194,6 +195,17 @@ interface PrintfileResult {
   printfile_url: string
 }
 
+interface ShippingRateResponse {
+  id: string
+  name: string
+  rate: string
+  currency: string
+  minDeliveryDays: number
+  maxDeliveryDays: number
+  minDeliveryDate?: string
+  maxDeliveryDate?: string
+}
+
 interface Order {
   id: number
   external_id?: string
@@ -264,7 +276,7 @@ class PrintfulClient {
       const errorText = await response.text()
 
       // Log detailed error server-side for debugging
-      console.error(`Printful API Error [${response.status}]:`, {
+      logger.error('Printful API Error [${response.status}]:', {
         endpoint,
         status: response.status,
         error: errorText,
@@ -356,7 +368,7 @@ class PrintfulClient {
       const errorText = await response.text()
 
       // Log detailed error server-side
-      console.error(`Printful File Upload Error [${response.status}]:`, errorText)
+      logger.error('Printful File Upload Error [${response.status}]:', errorText)
 
       // Throw sanitized error
       throw new Error(`File upload failed with status ${response.status}`)
@@ -425,8 +437,8 @@ class PrintfulClient {
       catalog_variant_id: number
       quantity: number
     }[]
-  }): Promise<any> {
-    return this.request<any>('/v2/shipping-rates', {
+  }): Promise<ShippingRateResponse[]> {
+    return this.request<ShippingRateResponse[]>('/v2/shipping-rates', {
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -452,8 +464,8 @@ class PrintfulClient {
   /**
    * Get mockup task result
    */
-  async getMockupTask(taskKey: string): Promise<any> {
-    return this.request<any>(`/v2/mockup-tasks?task_key=${taskKey}`)
+  async getMockupTask(taskKey: string): Promise<MockupTaskResult> {
+    return this.request<MockupTaskResult>(`/v2/mockup-tasks?task_key=${taskKey}`)
   }
 
   // ============================================
@@ -477,7 +489,15 @@ class PrintfulClient {
     const query = queryParams.toString()
     const endpoint = query ? `/sync/products?${query}` : '/sync/products'
 
-    const response = await this.request<{ result: SyncProduct[]; paging: any }>(endpoint)
+    interface SyncProductsResponse {
+      result: SyncProduct[]
+      paging: {
+        total: number
+        offset: number
+        limit: number
+      }
+    }
+    const response = await this.request<SyncProductsResponse>(endpoint)
     return response.result || []
   }
 
@@ -603,12 +623,12 @@ class PrintfulClient {
     externalId?: string
   }): Promise<{ product: SyncProduct; mockupUrl?: string }> {
     try {
-      console.log('📦 Creating sync product with design:', params.name)
+      logger.info('Creating sync product with design:', { data: params.name })
 
       // Step 1: Upload design file to Printful
-      console.log('📤 Uploading design to Printful...')
+      logger.info('Uploading design to Printful...')
       const uploadedFile = await this.uploadFileFromUrl(params.designUrl, `${params.externalId || Date.now()}-design.png`)
-      console.log('✅ Design uploaded:', uploadedFile.id)
+      logger.info('Design uploaded:', { data: uploadedFile.id })
 
       // Step 2: Create sync product
       const syncProductData: CreateSyncProductRequest = {
@@ -632,14 +652,14 @@ class PrintfulClient {
         ]
       }
 
-      console.log('📦 Creating sync product...')
+      logger.info('Creating sync product...')
       const syncProduct = await this.createSyncProduct(syncProductData)
-      console.log('✅ Sync product created:', syncProduct.id)
+      logger.info('Sync product created:', { data: syncProduct.id })
 
       // Step 3: Generate mockup
       let mockupUrl: string | undefined
       try {
-        console.log('🎨 Generating mockup...')
+        logger.info('Generating mockup...')
         const mockupTask = await this.generateMockup({
           variant_ids: [params.variantId],
           format: 'jpg',
@@ -653,14 +673,14 @@ class PrintfulClient {
 
         const mockupResult = await this.getMockupResult(mockupTask.task_key)
         mockupUrl = mockupResult.result.mockups?.[0]?.mockup_url
-        console.log('✅ Mockup generated:', mockupUrl)
+        logger.info('Mockup generated:', { data: mockupUrl })
       } catch (error) {
-        console.error('⚠️ Mockup generation failed, continuing without mockup:', error)
+        logger.error('Mockup generation failed, continuing without mockup:', error)
       }
 
       return { product: syncProduct, mockupUrl }
     } catch (error) {
-      console.error('❌ Failed to create product with design:', error)
+      logger.error('Failed to create product with design:', error)
       throw error
     }
   }

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { EditableField } from './editable-field'
+import { clientLogger } from '@/lib/client-logger'
 
 interface ReviewInterfaceProps {
   initialData: {
@@ -60,10 +61,10 @@ export function ReviewInterface({ initialData }: ReviewInterfaceProps) {
         const savedStyleGuide = localStorage.getItem('siteStyleGuide')
         if (savedStyleGuide) {
           styleGuide = JSON.parse(savedStyleGuide)
-          console.log('Using saved style guide for regeneration')
+          clientLogger.info('Using saved style guide for regeneration')
         }
       } catch (error) {
-        console.log('No style guide found, using default')
+        clientLogger.info('No style guide found, using default')
       }
 
       const response = await fetch('/api/generate-content', {
@@ -83,7 +84,7 @@ export function ReviewInterface({ initialData }: ReviewInterfaceProps) {
 
       alert('Content regenerated successfully!')
     } catch (error) {
-      console.error('Regeneration error:', error)
+      clientLogger.error('Regeneration error:', error)
       alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsPublishing(false)
@@ -111,7 +112,7 @@ export function ReviewInterface({ initialData }: ReviewInterfaceProps) {
       const result = await response.json()
 
       alert('Draft saved successfully! ✓')
-      console.log('Draft saved:', result)
+      clientLogger.info('Draft saved:', { data: result })
 
       // Clear session storage
       sessionStorage.removeItem('pending-upload')
@@ -119,7 +120,7 @@ export function ReviewInterface({ initialData }: ReviewInterfaceProps) {
       // Redirect to success page or gallery
       window.location.href = '/gallery'
     } catch (error) {
-      console.error('Save draft error:', error)
+      clientLogger.error('Save draft error:', error)
       alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsPublishing(false)
@@ -151,7 +152,7 @@ export function ReviewInterface({ initialData }: ReviewInterfaceProps) {
       const result = await response.json()
 
       alert('Published successfully! 🎉')
-      console.log('Published:', result)
+      clientLogger.info('Published:', { data: result })
 
       // Clear session storage
       sessionStorage.removeItem('pending-upload')
@@ -159,7 +160,7 @@ export function ReviewInterface({ initialData }: ReviewInterfaceProps) {
       // Redirect to success page
       window.location.href = '/gallery'
     } catch (error) {
-      console.error('Publish error:', error)
+      clientLogger.error('Publish error:', error)
       alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setIsPublishing(false)

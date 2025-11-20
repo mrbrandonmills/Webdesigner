@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger'
 /**
  * Webflow CMS API Client
  * Fetches portfolio content for the gallery experience
@@ -53,7 +54,7 @@ const WEBFLOW_COLLECTION_ID = process.env.WEBFLOW_COLLECTION_ID
  */
 export async function fetchProjects(): Promise<WebflowProject[]> {
   if (!WEBFLOW_API_TOKEN || !WEBFLOW_COLLECTION_ID) {
-    console.warn('Missing Webflow credentials - returning empty array for build')
+    logger.warn('Missing Webflow credentials - returning empty array for build')
     return []
   }
 
@@ -72,7 +73,7 @@ export async function fetchProjects(): Promise<WebflowProject[]> {
     )
 
     if (!response.ok) {
-      console.warn(`Webflow API error: ${response.statusText}`)
+      logger.warn('Webflow API error: ${response.statusText}')
       return []
     }
 
@@ -94,7 +95,7 @@ export async function fetchProjects(): Promise<WebflowProject[]> {
       lastUpdated: item.lastUpdated,
     }))
   } catch (error) {
-    console.warn('Error fetching Webflow projects:', error)
+    logger.warn('Error fetching Webflow projects:', { data: error })
     return []
   }
 }

@@ -1,4 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { TextToSpeechSchema, formatZodErrors } from '@/lib/validations'
+import { logger } from '@/lib/logger'
 
 // Cartesia voices - Premium storytelling voices for meditation, poetry, and narration
 // Chosen for depth, warmth, and soothing quality (like David Attenborough, Barry White, Denzel Washington, Deepak Chopra)
@@ -11,11 +14,18 @@ const VOICES = {
 
 export async function POST(request: NextRequest) {
   try {
-    const { contentId, text, voice = 'male' } = await request.json()
+    const body = await request.json()
 
-    if (!text) {
-      return NextResponse.json({ error: 'Text content is required' }, { status: 400 })
+    // Validate input with Zod
+    const validationResult = TextToSpeechSchema.safeParse(body)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        formatZodErrors(validationResult.error),
+        { status: 400 }
+      )
     }
+
+    const { contentId, text, voice } = validationResult.data
 
     // Check if we have Cartesia API key
     const apiKey = process.env.CARTESIA_API_KEY
@@ -63,7 +73,7 @@ export async function POST(request: NextRequest) {
     const audioBuffer = await response.arrayBuffer()
 
     // Log audio size for debugging
-    console.log('Generated audio size:', audioBuffer.byteLength, 'bytes')
+    logger.info('Generated audio size', { bytes: audioBuffer.byteLength })
 
     // Verify it's valid MP3 data by checking for either:
     // 1. MP3 frame header (0xFF 0xE0-0xFF) - raw MP3 audio
@@ -73,15 +83,15 @@ export async function POST(request: NextRequest) {
     const hasId3Tag = uint8Array[0] === 0x49 && uint8Array[1] === 0x44 && uint8Array[2] === 0x33
     const isValidMp3 = hasMp3FrameHeader || hasId3Tag
 
-    console.log('Valid MP3 format:', {
+    logger.info('Valid MP3 format:', { data: {
       hasMp3FrameHeader,
       hasId3Tag,
       isValid: isValidMp3
-    })
+    } })
 
     if (!isValidMp3) {
-      console.error('Invalid MP3 data received from Cartesia API')
-      console.error('First 10 bytes:', Array.from(uint8Array.slice(0, 10)).map(b => `0x${b.toString(16)}`).join(' '))
+      logger.error('Invalid MP3 data received from Cartesia API')
+      logger.error('First 10 bytes:', Array.from(uint8Array.slice(0, 10)).map(b => `0x${b.toString(16)}`).join(' '))
       throw new Error('Invalid audio format received')
     }
 
@@ -96,7 +106,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Text-to-speech error:', error)
+    logger.error('Text-to-speech error:', error)
     return NextResponse.json(
       { error: 'Failed to generate audio', details: String(error) },
       { status: 500 }

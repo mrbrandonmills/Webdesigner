@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { generateText } from 'ai'
 import { anthropic } from '@ai-sdk/anthropic'
 import OpenAI from 'openai'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300 // 5 minutes for long essays
@@ -22,10 +23,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No audio file provided' }, { status: 400 })
     }
 
-    console.log('Processing voice memo:', audioFile.name, `(${(audioFile.size / 1024 / 1024).toFixed(2)} MB)`)
+    logger.info('Processing voice memo:', { data: `${audioFile.name} (${(audioFile.size / 1024 / 1024 ).toFixed(2)} MB)` })
 
     // Step 1: Transcribe audio using OpenAI Whisper
-    console.log('Transcribing audio...')
+    logger.info('Transcribing audio...')
     const transcription = await openai.audio.transcriptions.create({
       file: audioFile,
       model: 'whisper-1',
@@ -36,10 +37,10 @@ export async function POST(request: Request) {
     const transcribedText = transcription.text
     const wordCount = transcribedText.split(/\s+/).length
 
-    console.log(`Transcribed ${wordCount} words`)
+    logger.info('Transcribed ${wordCount} words')
 
     // Step 2: Format as professional essay with AI
-    console.log('Formatting as essay...')
+    logger.info('Formatting as essay...')
     const formattingPrompt = `
 You are an expert editor helping to transform a voice memo into a polished, professional essay.
 
@@ -66,7 +67,7 @@ Return ONLY the formatted essay text, no meta-commentary.
     })
 
     // Step 3: Generate title
-    console.log('Generating title...')
+    logger.info('Generating title...')
     const titlePrompt = `
 Based on this essay, generate a compelling, thought-provoking title (3-8 words).
 
@@ -108,7 +109,7 @@ Respond with ONLY one word: mind, body, creativity, or synthesis.
     }
 
     // Step 5: Generate SEO meta tags
-    console.log('Generating SEO...')
+    logger.info('Generating SEO...')
     const seoPrompt = `
 Generate SEO meta tags for this essay:
 
@@ -198,12 +199,12 @@ Respond with ONLY the image prompt, no explanation.
       published: false,
     }
 
-    console.log('Essay processed successfully:', title)
+    logger.info('Essay processed successfully:', { data: title })
 
     // Step 9: Auto-publish to Medium (if requested)
     let publishedUrl: string | undefined
     if (autoPublish) {
-      console.log('Auto-publishing to Medium...')
+      logger.info('Auto-publishing to Medium...')
       try {
         const mediumResponse = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/publish/medium`, {
           method: 'POST',
@@ -222,12 +223,12 @@ Respond with ONLY the image prompt, no explanation.
         if (mediumResponse.ok) {
           const mediumData = await mediumResponse.json()
           publishedUrl = mediumData.url
-          console.log('✅ Published to Medium:', publishedUrl)
+          logger.info('Published to Medium:', { data: publishedUrl })
         } else {
-          console.error('Medium publish failed:', await mediumResponse.text())
+          logger.error('Medium publish failed:', await mediumResponse.text())
         }
       } catch (error) {
-        console.error('Medium publish error:', error)
+        logger.error('Medium publish error:', error)
         // Don't fail the whole request if Medium publish fails
       }
     }
@@ -241,7 +242,7 @@ Respond with ONLY the image prompt, no explanation.
       message: `Successfully processed essay: "${title}"${publishedUrl ? ` and published to Medium: ${publishedUrl}` : ''}`,
     })
   } catch (error) {
-    console.error('Voice processing error:', error)
+    logger.error('Voice processing error:', error)
     return NextResponse.json(
       {
         success: false,

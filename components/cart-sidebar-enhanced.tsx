@@ -5,6 +5,7 @@ import { X, Plus, Minus, ShoppingBag, ArrowRight, Loader2, Truck, Gift, Tag } fr
 import { useEffect, useState } from 'react'
 import { RippleButton } from '@/components/ripple-button'
 import { motion, AnimatePresence } from 'framer-motion'
+import { clientLogger } from '@/lib/client-logger'
 
 export default function CartSidebarEnhanced() {
   const {
@@ -61,7 +62,7 @@ export default function CartSidebarEnhanced() {
         setRecommendedProducts(shuffled.slice(0, 3))
       }
     } catch (error) {
-      console.error('Failed to load recommendations:', error)
+      clientLogger.error('Failed to load recommendations:', error)
     }
   }
 
@@ -96,7 +97,7 @@ export default function CartSidebarEnhanced() {
       // Redirect to Stripe Checkout
       window.location.href = data.url
     } catch (error) {
-      console.error('Checkout error:', error)
+      clientLogger.error('Checkout error:', error)
       setCheckoutError(error instanceof Error ? error.message : 'Failed to start checkout')
       setIsCheckingOut(false)
     }
@@ -139,7 +140,12 @@ export default function CartSidebarEnhanced() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-md z-50"
+            className="fixed inset-0 z-50"
+            style={{
+              background: 'rgba(0, 0, 0, 0.8)',
+              backdropFilter: 'blur(24px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+            }}
             onClick={closeCart}
           />
         )}
@@ -150,12 +156,12 @@ export default function CartSidebarEnhanced() {
         initial={{ x: '100%' }}
         animate={{ x: isOpen ? 0 : '100%' }}
         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-        className="fixed top-0 right-0 h-full w-full md:w-[550px] bg-black border-l border-white/10 z-50 flex flex-col"
+        className="fixed top-0 right-0 h-full w-full md:w-[550px] glass-panel z-50 flex flex-col"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-accent-gold/10 border border-accent-gold/30 rounded-full">
+            <div className="p-3 glass-accent rounded-full">
               <ShoppingBag className="text-accent-gold" size={24} />
             </div>
             <div>
@@ -167,7 +173,7 @@ export default function CartSidebarEnhanced() {
           </div>
           <button
             onClick={closeCart}
-            className="p-3 hover:bg-white/5 transition-colors rounded-full border border-white/10"
+            className="p-3 glass-button rounded-full"
             aria-label="Close cart"
           >
             <X size={24} />
@@ -176,7 +182,7 @@ export default function CartSidebarEnhanced() {
 
         {/* Free Shipping Progress */}
         {items.length > 0 && totalPrice < freeShippingThreshold && (
-          <div className="p-6 bg-accent-gold/5 border-b border-accent-gold/20">
+          <div className="p-6 glass-accent border-b border-accent-gold/20">
             <div className="flex items-center gap-2 mb-3">
               <Truck className="text-accent-gold" size={20} />
               <span className="text-sm">
@@ -198,7 +204,7 @@ export default function CartSidebarEnhanced() {
         <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {items.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
-              <div className="p-8 bg-white/5 border border-white/10 rounded-3xl">
+              <div className="p-8 glass-card rounded-3xl">
                 <ShoppingBag size={64} className="text-white/20" />
               </div>
               <div>
@@ -209,7 +215,7 @@ export default function CartSidebarEnhanced() {
               </div>
               <button
                 onClick={closeCart}
-                className="px-8 py-4 bg-accent-gold text-black font-medium tracking-wider uppercase rounded-full hover:bg-accent-hover transition-colors shadow-xl shadow-accent-gold/30"
+                className="px-8 py-4 glass-button bg-accent-gold/90 text-black font-medium tracking-wider uppercase rounded-full hover:bg-accent-gold transition-colors shadow-xl shadow-accent-gold/30"
               >
                 Explore Collection
               </button>
@@ -225,7 +231,7 @@ export default function CartSidebarEnhanced() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
-                      className="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-5 space-y-4 hover:border-accent-gold/30 hover:bg-white/10 transition-all duration-300"
+                      className="group glass-card rounded-2xl p-5 space-y-4"
                     >
                       <div className="flex gap-4">
                         {/* Product Image */}
@@ -269,7 +275,7 @@ export default function CartSidebarEnhanced() {
 
                       {/* Quantity Controls */}
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full overflow-hidden">
+                        <div className="flex items-center gap-2 glass-input rounded-full overflow-hidden">
                           <button
                             onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
                             className="p-3 hover:bg-accent-gold/20 hover:text-accent-gold transition-all duration-300"
@@ -315,7 +321,7 @@ export default function CartSidebarEnhanced() {
                     {recommendedProducts.slice(0, 2).map((product) => (
                       <div
                         key={product.id}
-                        className="flex gap-3 p-3 bg-white/5 border border-white/10 rounded-xl hover:border-accent-gold/30 transition-all duration-300"
+                        className="flex gap-3 p-3 glass-card rounded-xl"
                       >
                         <div className="w-16 h-16 bg-white/5 rounded-lg overflow-hidden flex-shrink-0">
                           {product.image ? (
@@ -360,18 +366,18 @@ export default function CartSidebarEnhanced() {
                     placeholder="Promo code"
                     value={promoCode}
                     onChange={(e) => setPromoCode(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-full pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-accent-gold/50 transition-colors"
+                    className="w-full glass-input rounded-full pl-10 pr-4 py-3 text-sm"
                   />
                 </div>
                 <button
                   onClick={handleApplyPromo}
-                  className="px-6 py-3 bg-white/10 border border-white/10 rounded-full text-sm hover:bg-white/20 hover:border-accent-gold/30 transition-all duration-300"
+                  className="px-6 py-3 glass-button rounded-full text-sm"
                 >
                   Apply
                 </button>
               </div>
             ) : (
-              <div className="flex items-center justify-between p-3 bg-accent-gold/10 border border-accent-gold/30 rounded-full">
+              <div className="flex items-center justify-between p-3 glass-accent rounded-full">
                 <div className="flex items-center gap-2">
                   <Tag className="text-accent-gold" size={16} />
                   <span className="text-sm text-accent-gold font-medium">{promoCode}</span>
@@ -468,7 +474,7 @@ export default function CartSidebarEnhanced() {
             {/* Continue Shopping */}
             <button
               onClick={closeCart}
-              className="w-full py-4 border border-white/10 text-white rounded-full hover:bg-white/5 hover:border-accent-gold/30 transition-all duration-300 text-sm tracking-[0.15em] uppercase backdrop-blur-sm"
+              className="w-full py-4 glass-button text-white rounded-full text-sm tracking-[0.15em] uppercase"
             >
               Continue Shopping
             </button>

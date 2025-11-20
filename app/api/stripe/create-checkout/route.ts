@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import Stripe from 'stripe'
 import { getMeditationBySlug } from '@/lib/meditations-data'
+import { logger } from '@/lib/logger'
+import { CreateCheckoutSchema, formatZodErrors } from '@/lib/validations'
 
 export const dynamic = 'force-dynamic'
 
@@ -16,14 +19,17 @@ function getStripe() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { meditationId, slug, voice } = body
 
-    if (!meditationId || !slug || !voice) {
+    // Validate input with Zod
+    const validationResult = CreateCheckoutSchema.safeParse(body)
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }
+
+    const { meditationId, slug, voice } = validationResult.data
 
     // Get meditation details
     const meditation = getMeditationBySlug(slug)
@@ -66,7 +72,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (error) {
-    console.error('Stripe checkout error:', error)
+    logger.error('Stripe checkout error', error)
 
     // Provide more specific error messages
     let errorMessage = 'Failed to create checkout session'

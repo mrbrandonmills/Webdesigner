@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { generateText } from 'ai'
 import { anthropic } from '@ai-sdk/anthropic'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
     const body: ProcessContentRequest = await request.json()
     const { url, fileName, fileType, contentType, category, title, autoImage, autoPublish } = body
 
-    console.log('Processing content:', { fileName, fileType, contentType })
+    logger.info('Processing content:', { data: { fileName, fileType, contentType } })
 
     // Step 1: Extract text content from document (if applicable)
     let extractedText = ''
@@ -112,7 +113,7 @@ Keywords: keyword1, keyword2, keyword3, etc.
     if (autoImage && !fileType.startsWith('image/') && !fileType.startsWith('video/')) {
       // TODO: Integrate with image generation API (DALL-E, Midjourney, etc.)
       // For now, we'll skip this and implement in next iteration
-      console.log('Visual generation requested but not yet implemented')
+      logger.info('Visual generation requested but not yet implemented')
     }
 
     // Step 6: Save content metadata
@@ -132,13 +133,13 @@ Keywords: keyword1, keyword2, keyword3, etc.
       published: false,
     }
 
-    console.log('Content processed:', contentMetadata)
+    logger.info('Content processed:', { data: contentMetadata })
 
     // Step 7: Auto-publish to platforms (if requested)
     if (autoPublish) {
       // TODO: Implement Medium, LinkedIn, Instagram posting
       // For now, we'll log it and implement in next iteration
-      console.log('Auto-publish requested but not yet implemented')
+      logger.info('Auto-publish requested but not yet implemented')
     }
 
     return NextResponse.json({
@@ -147,7 +148,7 @@ Keywords: keyword1, keyword2, keyword3, etc.
       message: `Successfully processed "${finalTitle}"`,
     })
   } catch (error) {
-    console.error('Content processing error:', error)
+    logger.error('Content processing error:', error)
     return NextResponse.json(
       {
         success: false,

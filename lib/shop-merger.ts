@@ -2,6 +2,7 @@
 // Combines Printful and Amazon products into unified shop display
 
 import { UnifiedProduct, ProductSource } from './types/shop'
+import { RawPrintfulProduct, RawAmazonProduct } from '@/types/common'
 
 // Placeholder image for products without images
 const PLACEHOLDER_IMAGE = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&q=80'
@@ -23,8 +24,8 @@ function inferProductType(title: string, type?: string): UnifiedProduct['product
 }
 
 export function mergeShopProducts(
-  printfulProducts: any[],
-  amazonProducts: any[]
+  printfulProducts: RawPrintfulProduct[],
+  amazonProducts: RawAmazonProduct[]
 ): UnifiedProduct[] {
   const unified: UnifiedProduct[] = []
 

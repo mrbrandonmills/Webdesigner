@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { readFile } from 'fs/promises'
 import path from 'path'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const revalidate = 60 // Cache for 60 seconds
@@ -16,7 +17,7 @@ export async function GET() {
     const fileContent = await readFile(filePath, 'utf-8')
     const data = JSON.parse(fileContent)
 
-    console.log(`⚡ Loaded ${data.products.length} curated products (instant!)`)
+    logger.info('Loaded ${data.products.length} curated products (instant!)')
 
     return NextResponse.json({
       success: true,
@@ -25,7 +26,7 @@ export async function GET() {
       cached: true
     })
   } catch (error) {
-    console.error('Failed to load curated products:', error)
+    logger.error('Failed to load curated products:', error)
 
     // Return empty array if file doesn't exist yet
     return NextResponse.json({

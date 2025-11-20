@@ -5,6 +5,8 @@ import { writeFile, readFile, mkdir } from 'fs/promises'
 import path from 'path'
 import { printfulClient } from '@/lib/printful-client'
 import { sendOrderConfirmation, sendAdminNotification } from '@/lib/email'
+import { LocalOrder, CartItem, StripeShippingAddress, PrintfulOrderItem } from '@/types/common'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -30,7 +32,7 @@ export async function POST(request: Request) {
     try {
       event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET)
     } catch (err) {
-      console.error('❌ Webhook signature verification failed:', err)
+      logger.error('Webhook signature verification failed', err)
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
     }
 
@@ -39,14 +41,14 @@ export async function POST(request: Request) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
 
-        console.log('💰 Payment successful:', session.id)
+        logger.info('Payment successful', { sessionId: session.id })
 
         // Check if this is a meditation purchase
         const purchaseType = session.metadata?.type
 
         if (purchaseType === 'meditation_single' || purchaseType === 'meditation_bundle') {
           // Handle meditation unlock (already handled by unlock API route)
-          console.log('✅ Meditation purchase confirmed via webhook:', session.id)
+          logger.info('Meditation purchase confirmed via webhook', { sessionId: session.id })
         } else {
           // Create order from session data (for physical products)
           await createOrder(session)
@@ -57,23 +59,23 @@ export async function POST(request: Request) {
 
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        console.log('✅ PaymentIntent succeeded:', paymentIntent.id)
+        logger.info('PaymentIntent succeeded', { paymentIntentId: paymentIntent.id })
         break
       }
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        console.log('❌ PaymentIntent failed:', paymentIntent.id)
+        logger.warn('PaymentIntent failed', { paymentIntentId: paymentIntent.id })
         break
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`)
+        logger.debug('Unhandled event type', { eventType: event.type })
     }
 
     return NextResponse.json({ received: true })
   } catch (error) {
-    console.error('❌ Webhook handler error:', error)
+    logger.error('Webhook handler error', error)
     return NextResponse.json(
       { error: 'Webhook handler failed' },
       { status: 500 }
@@ -86,10 +88,18 @@ async function createOrder(session: Stripe.Checkout.Session) {
     // Parse items from session metadata
     const items = JSON.parse(session.metadata?.items || '[]')
 
-    // Get shipping address (with type assertion for compatibility)
-    const shippingAddress = (session as any).shipping_details?.address ||
-                           session.customer_details?.address ||
-                           null
+    // Get shipping address from session
+    // Note: shipping_details is available on Checkout.Session when shipping is collected
+    const sessionWithShipping = session as Stripe.Checkout.Session & {
+      shipping_details?: {
+        address?: StripeShippingAddress | null
+        name?: string | null
+      } | null
+    }
+    const shippingAddress: StripeShippingAddress | null =
+      sessionWithShipping.shipping_details?.address ||
+      session.customer_details?.address ||
+      null
 
     // Create order object
     const order = {
@@ -135,14 +145,14 @@ async function createOrder(session: Stripe.Checkout.Session) {
 
     await writeFile(indexFile, JSON.stringify(orders, null, 2))
 
-    console.log('✅ Order created:', order.id)
+    logger.info('Order created', { orderId: order.id })
 
     // Send order to Printful for fulfillment
     try {
       await fulfillOrder(order)
-      console.log('✅ Order sent to Printful for fulfillment')
+      logger.info('Order sent to Printful for fulfillment')
     } catch (fulfillError) {
-      console.error('❌ Failed to send order to Printful:', fulfillError)
+      logger.error('Failed to send order to Printful', fulfillError)
       // Don't throw - order is still saved, we can retry fulfillment manually
     }
 
@@ -156,7 +166,7 @@ async function createOrder(session: Stripe.Checkout.Session) {
         totalAmount: order.totalAmount,
         shippingAddress: order.shippingAddress,
       })
-      console.log('✅ Order confirmation email sent to customer')
+      logger.info('Order confirmation email sent to customer')
 
       await sendAdminNotification({
         orderId: order.id,
@@ -166,22 +176,22 @@ async function createOrder(session: Stripe.Checkout.Session) {
         totalAmount: order.totalAmount,
         shippingAddress: order.shippingAddress,
       })
-      console.log('✅ Admin notification email sent')
+      logger.info('Admin notification email sent')
     } catch (emailError) {
-      console.error('❌ Failed to send emails:', emailError)
+      logger.error('Failed to send emails', emailError)
       // Don't throw - emails are non-critical
     }
 
     return order
   } catch (error) {
-    console.error('❌ Failed to create order:', error)
+    logger.error('Failed to create order', error)
     throw error
   }
 }
 
-async function fulfillOrder(order: any) {
+async function fulfillOrder(order: LocalOrder) {
   try {
-    console.log('📦 Preparing Printful order for:', order.id)
+    logger.info('Preparing Printful order', { orderId: order.id })
 
     // Parse address from Stripe format to Printful format
     const shippingAddress = order.shippingAddress
@@ -190,7 +200,7 @@ async function fulfillOrder(order: any) {
     }
 
     // Build Printful order items from cart items
-    const orderItems = order.items.map((item: any) => {
+    const orderItems: PrintfulOrderItem[] = order.items.map((item: CartItem) => {
       // For catalog products (no custom designs), we just need variant ID
       // If you add custom designs later, you'll need to include file URLs
       return {
@@ -221,7 +231,7 @@ async function fulfillOrder(order: any) {
         email: order.customerEmail,
         phone: shippingAddress.phone || undefined,
       },
-      order_items: orderItems,
+      order_items: orderItems as any,
       retail_costs: {
         currency: order.currency.toUpperCase(),
         subtotal: order.totalAmount.toFixed(2),
@@ -231,11 +241,11 @@ async function fulfillOrder(order: any) {
       },
     })
 
-    console.log('✅ Printful order created:', printfulOrder.id)
+    logger.info('Printful order created', { printfulOrderId: printfulOrder.id })
 
     // Confirm the order for fulfillment (this sends it to production)
     const confirmedOrder = await printfulClient.confirmOrder(printfulOrder.id)
-    console.log('✅ Printful order confirmed for fulfillment:', confirmedOrder.id)
+    logger.info('Printful order confirmed for fulfillment', { confirmedOrderId: confirmedOrder.id })
 
     // Update our local order with Printful ID
     order.printfulOrderId = printfulOrder.id
@@ -249,7 +259,7 @@ async function fulfillOrder(order: any) {
 
     return printfulOrder
   } catch (error) {
-    console.error('❌ Printful fulfillment failed:', error)
+    logger.error('Printful fulfillment failed', error)
     throw error
   }
 }

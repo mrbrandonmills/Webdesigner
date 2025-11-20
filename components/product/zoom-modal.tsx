@@ -101,7 +101,12 @@ export default function ZoomModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed inset-0 z-[200] bg-black/98 backdrop-blur-xl"
+          className="fixed inset-0 z-[200]"
+          style={{
+            background: 'rgba(0, 0, 0, 0.95)',
+            backdropFilter: 'blur(40px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+          }}
           onClick={onClose}
         >
           {/* Top Bar - Controls */}
@@ -136,7 +141,7 @@ export default function ZoomModal({
                   e.stopPropagation()
                   setIsZoomed(!isZoomed)
                 }}
-                className="p-3 bg-white/10 border border-white/20 hover:border-accent-gold hover:bg-accent-gold/10 rounded-full transition-all duration-300 mr-3"
+                className="p-3 glass-button rounded-full mr-3"
                 aria-label={isZoomed ? 'Zoom out' : 'Zoom in'}
               >
                 {isZoomed ? (
@@ -149,7 +154,7 @@ export default function ZoomModal({
               {/* Close Button */}
               <button
                 onClick={onClose}
-                className="p-3 bg-white/10 border border-white/20 hover:border-accent-gold hover:bg-accent-gold/10 rounded-full transition-all duration-300 group"
+                className="p-3 glass-button rounded-full group"
                 aria-label="Close viewer"
               >
                 <X className="w-6 h-6 text-white group-hover:text-accent-gold transition-colors" strokeWidth={1.5} />
@@ -204,7 +209,7 @@ export default function ZoomModal({
                   e.stopPropagation()
                   prevImage()
                 }}
-                className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 border border-white/20 hover:border-accent-gold hover:bg-accent-gold/10 text-white rounded-full flex items-center justify-center transition-all duration-300 group"
+                className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 glass-button text-white rounded-full flex items-center justify-center group"
                 aria-label="Previous image"
               >
                 <ChevronLeft className="w-8 h-8 group-hover:text-accent-gold transition-colors" strokeWidth={1.5} />
@@ -219,7 +224,7 @@ export default function ZoomModal({
                   e.stopPropagation()
                   nextImage()
                 }}
-                className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 border border-white/20 hover:border-accent-gold hover:bg-accent-gold/10 text-white rounded-full flex items-center justify-center transition-all duration-300 group"
+                className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 glass-button text-white rounded-full flex items-center justify-center group"
                 aria-label="Next image"
               >
                 <ChevronRight className="w-8 h-8 group-hover:text-accent-gold transition-colors" strokeWidth={1.5} />
@@ -237,7 +242,7 @@ export default function ZoomModal({
           >
             <div className="container-wide flex items-center justify-between">
               {/* Image counter */}
-              <div className="px-6 py-3 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full">
+              <div className="px-6 py-3 glass-badge rounded-full">
                 <span className="text-white font-medium tracking-wider">
                   <span className="text-accent-gold">{currentIndex + 1}</span>
                   <span className="text-white/60 mx-2">/</span>
@@ -248,16 +253,16 @@ export default function ZoomModal({
               {/* Keyboard shortcuts hint */}
               <div className="hidden md:flex items-center gap-6 text-sm text-white/60">
                 <div className="flex items-center gap-2">
-                  <kbd className="px-2 py-1 bg-white/10 border border-white/20 rounded text-xs">←</kbd>
-                  <kbd className="px-2 py-1 bg-white/10 border border-white/20 rounded text-xs">→</kbd>
+                  <kbd className="px-2 py-1 glass-badge rounded text-xs">&#8592;</kbd>
+                  <kbd className="px-2 py-1 glass-badge rounded text-xs">&#8594;</kbd>
                   <span>Navigate</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <kbd className="px-2 py-1 bg-white/10 border border-white/20 rounded text-xs">Z</kbd>
+                  <kbd className="px-2 py-1 glass-badge rounded text-xs">Z</kbd>
                   <span>Zoom</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <kbd className="px-2 py-1 bg-white/10 border border-white/20 rounded text-xs">ESC</kbd>
+                  <kbd className="px-2 py-1 glass-badge rounded text-xs">ESC</kbd>
                   <span>Close</span>
                 </div>
               </div>

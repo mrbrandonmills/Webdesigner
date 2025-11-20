@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { anthropic } from '@ai-sdk/anthropic'
 import { generateObject } from 'ai'
 import { z } from 'zod'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300 // 5 minutes for full audit
@@ -61,7 +62,7 @@ export async function POST(request: Request) {
       )
     }
 
-    console.log(`Starting site audit for: ${url}`)
+    logger.info('Starting site audit for: ${url}')
 
     // Step 1: Fetch the homepage
     const response = await fetch(url, {
@@ -136,11 +137,11 @@ export async function POST(request: Request) {
           portfolioContent.push(pageText)
         }
       } catch (error) {
-        console.log(`Could not fetch ${link}:`, error)
+        logger.info('Could not fetch ${link}:', { data: error })
       }
     }
 
-    console.log(`Fetched ${portfolioContent.length} portfolio pages`)
+    logger.info('Fetched ${portfolioContent.length} portfolio pages')
 
     // Step 4: Analyze with Claude
     const prompt = `You are an expert brand strategist and content analyst. Analyze this photographer's website and create a comprehensive style guide that will help AI generate content that perfectly matches their brand voice, style, and business.
@@ -167,7 +168,7 @@ Be specific and actionable. Extract exact phrases they use. Identify their uniqu
       temperature: 0.3, // Lower temp for more consistent analysis
     })
 
-    console.log('Style guide generated successfully')
+    logger.info('Style guide generated successfully')
 
     return NextResponse.json({
       success: true,
@@ -177,7 +178,7 @@ Be specific and actionable. Extract exact phrases they use. Identify their uniqu
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('Site audit error:', error)
+    logger.error('Site audit error:', error)
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Audit failed',

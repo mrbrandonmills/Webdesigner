@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import Link from 'next/link'
 import { AudioReader } from '@/components/audio-reader'
+import { Twitter, Linkedin, Link as LinkIcon } from 'lucide-react'
 
 export default function SelfEsteemEssayPage() {
   useEffect(() => {
@@ -28,6 +29,18 @@ Practice positive self-talk. The way you talk to yourself can have a big impact 
 
 Contemplation: Cultivating a positive self-image is a process that takes time and effort, but it's worth it. By practicing self-compassion, self-care, focusing on your strengths, surrounding yourself with positivity, and practicing positive self-talk, you can build a more positive and confident self-image. Remember, the way you see yourself matters, and you have the power to shape that perception.
   `.trim()
+
+  const copyLink = () => {
+    navigator.clipboard.writeText(window.location.href)
+  }
+
+  const shareOnTwitter = () => {
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('Self-Esteem: Cultivating a Positive Self Image by Brandon Mills')}`, '_blank')
+  }
+
+  const shareOnLinkedIn = () => {
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`, '_blank')
+  }
 
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
@@ -82,6 +95,34 @@ Contemplation: Cultivating a positive self-image is a process that takes time an
                 <span>•</span>
                 <span>6 min read</span>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Author Info */}
+      <section className="pb-8 container-wide relative z-10">
+        <div className="max-w-3xl mx-auto">
+          <div className="flex items-center justify-between p-6 backdrop-blur-sm bg-white/[0.02] border border-white/10">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-accent-gold/20 rounded-full flex items-center justify-center">
+                <span className="text-accent-gold font-serif text-lg">BM</span>
+              </div>
+              <div>
+                <p className="text-white font-medium">Brandon Mills</p>
+                <p className="text-white/60 text-sm">Writer & Philosopher</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button onClick={shareOnTwitter} className="p-2 text-white/60 hover:text-accent-gold transition-colors" aria-label="Share on Twitter">
+                <Twitter size={18} />
+              </button>
+              <button onClick={shareOnLinkedIn} className="p-2 text-white/60 hover:text-accent-gold transition-colors" aria-label="Share on LinkedIn">
+                <Linkedin size={18} />
+              </button>
+              <button onClick={copyLink} className="p-2 text-white/60 hover:text-accent-gold transition-colors" aria-label="Copy link">
+                <LinkIcon size={18} />
+              </button>
             </div>
           </div>
         </div>
@@ -153,6 +194,29 @@ Contemplation: Cultivating a positive self-image is a process that takes time an
               </p>
             </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Reading */}
+      <section className="pb-16 container-wide relative z-10">
+        <div className="max-w-3xl mx-auto">
+          <h3 className="text-xl font-serif text-white mb-6">Related Reading</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <Link
+              href="/writing/essays/enlightenment-through-science"
+              className="p-6 backdrop-blur-sm bg-white/[0.02] border border-white/10 hover:border-accent-gold/50 transition-colors group"
+            >
+              <p className="text-accent-gold text-xs tracking-wider uppercase mb-2">Consciousness</p>
+              <p className="text-white group-hover:text-accent-gold transition-colors">Enlightenment Through Science</p>
+            </Link>
+            <Link
+              href="/writing/essays/intro-to-social-theory"
+              className="p-6 backdrop-blur-sm bg-white/[0.02] border border-white/10 hover:border-accent-gold/50 transition-colors group"
+            >
+              <p className="text-accent-gold text-xs tracking-wider uppercase mb-2">Philosophy</p>
+              <p className="text-white group-hover:text-accent-gold transition-colors">An Intro to "Social Theory" by Charles Lemert</p>
+            </Link>
           </div>
         </div>
       </section>

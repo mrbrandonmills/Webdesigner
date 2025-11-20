@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -12,7 +13,7 @@ export async function POST(request: Request) {
   try {
     const { productIds }: { productIds: string[] } = await request.json()
 
-    console.log(`🗑️  Removing ${productIds.length} underperforming products...`)
+    logger.info('Removing ${productIds.length} underperforming products...')
 
     const filePath = path.join(process.cwd(), 'data', 'curated-products.json')
 
@@ -36,7 +37,7 @@ export async function POST(request: Request) {
     // Save updated file
     await writeFile(filePath, JSON.stringify(data, null, 2))
 
-    console.log(`✅ Removed ${removed} products. ${data.products.length} remaining.`)
+    logger.info('Removed ${removed} products. ${data.products.length} remaining.')
 
     return NextResponse.json({
       success: true,
@@ -44,7 +45,7 @@ export async function POST(request: Request) {
       remaining: data.products.length
     })
   } catch (error) {
-    console.error('Product removal error:', error)
+    logger.error('Product removal error:', error)
     return NextResponse.json(
       {
         success: false,

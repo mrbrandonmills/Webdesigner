@@ -77,7 +77,7 @@ export function EnhancedProductCard({
   return (
     <motion.div
       ref={cardRef}
-      className={`group relative overflow-hidden bg-gradient-to-b from-white/5 to-white/0 border border-white/10 ${
+      className={`group relative overflow-hidden glass-card ${
         featured ? 'col-span-1 md:col-span-2 row-span-1 md:row-span-2' : ''
       }`}
       initial={{ opacity: 0, y: 40 }}
@@ -183,7 +183,7 @@ export function EnhancedProductCard({
             {/* Category Badge */}
             {badge && (
               <motion.div
-                className={`px-3 py-1 border backdrop-blur-md text-xs tracking-wider uppercase ${badge.color}`}
+                className={`px-3 py-1 glass-badge text-xs tracking-wider uppercase ${badge.color}`}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.2 }}
@@ -195,7 +195,7 @@ export function EnhancedProductCard({
             {/* Featured Badge */}
             {featured && (
               <motion.div
-                className="px-3 py-1 bg-accent-gold/90 backdrop-blur-md text-black text-xs tracking-wider uppercase flex items-center gap-1"
+                className="px-3 py-1 glass-badge bg-accent-gold/20 border-accent-gold/40 text-accent-gold text-xs tracking-wider uppercase flex items-center gap-1"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 }}
@@ -208,7 +208,7 @@ export function EnhancedProductCard({
             {/* Limited Edition Badge */}
             {product.tags?.includes('limited-edition') && (
               <motion.div
-                className="px-3 py-1 bg-red-500/90 backdrop-blur-md text-white text-xs tracking-wider uppercase"
+                className="px-3 py-1 glass-badge bg-red-500/20 border-red-500/40 text-red-400 text-xs tracking-wider uppercase"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.4 }}
@@ -221,7 +221,7 @@ export function EnhancedProductCard({
           {/* Discount Badge */}
           {hasDiscount && discount > 0 && (
             <motion.div
-              className="px-3 py-1 bg-green-500/90 backdrop-blur-md text-white text-xs tracking-wider uppercase"
+              className="px-3 py-1 glass-badge bg-green-500/20 border-green-500/40 text-green-400 text-xs tracking-wider uppercase"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
@@ -234,7 +234,7 @@ export function EnhancedProductCard({
         {/* Rating (Amazon products) */}
         {product.rating && (
           <motion.div
-            className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/80 backdrop-blur-sm px-3 py-1.5"
+            className="absolute bottom-4 left-4 flex items-center gap-2 glass-badge px-3 py-1.5"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
             transition={{ duration: 0.3 }}
@@ -255,7 +255,7 @@ export function EnhancedProductCard({
           transition={{ duration: 0.3 }}
         >
           <motion.button
-            className="px-6 py-3 bg-white text-black font-medium text-sm tracking-wider uppercase hover:bg-accent-gold transition-colors"
+            className="px-6 py-3 glass-button bg-white/90 text-black font-medium text-sm tracking-wider uppercase hover:bg-accent-gold/90 transition-colors"
             initial={{ y: 20 }}
             animate={{ y: isHovered ? 0 : 20 }}
             transition={{ duration: 0.3, delay: 0.1 }}
@@ -311,7 +311,7 @@ export function EnhancedProductCard({
               href={product.amazonUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 px-6 py-3 bg-accent-gold text-black hover:bg-accent-hover transition-colors text-center text-sm tracking-wider uppercase flex items-center justify-center gap-2 group/btn"
+              className="flex-1 px-6 py-3 glass-button bg-accent-gold/90 text-black hover:bg-accent-gold transition-colors text-center text-sm tracking-wider uppercase flex items-center justify-center gap-2 group/btn"
             >
               <span>View on Amazon</span>
               <ExternalLink size={16} className="group-hover/btn:translate-x-1 transition-transform" />
@@ -319,7 +319,7 @@ export function EnhancedProductCard({
           ) : (
             <>
               <motion.button
-                className="flex-1 px-6 py-3 border border-white/20 hover:border-accent-gold hover:bg-accent-gold/10 transition-all text-sm tracking-wider uppercase flex items-center justify-center gap-2"
+                className="flex-1 px-6 py-3 glass-button hover:border-accent-gold hover:bg-accent-gold/10 transition-all text-sm tracking-wider uppercase flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >

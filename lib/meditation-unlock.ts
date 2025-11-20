@@ -1,3 +1,4 @@
+import { clientLogger } from '@/lib/client-logger'
 'use client'
 
 /**
@@ -32,7 +33,7 @@ export function isMeditationUnlocked(slug: string): boolean {
     // Check if specific meditation is unlocked
     return unlocks.some(u => u.slug === slug)
   } catch (error) {
-    console.error('Error checking meditation unlock:', error)
+    clientLogger.error('Error checking meditation unlock:', error)
     return false
   }
 }
@@ -48,7 +49,7 @@ export function getLocalUnlocks(): UnlockedMeditation[] {
     if (!stored) return []
     return JSON.parse(stored)
   } catch (error) {
-    console.error('Error reading unlocks:', error)
+    clientLogger.error('Error reading unlocks:', error)
     return []
   }
 }
@@ -75,7 +76,7 @@ export function storeUnlock(slug: string, sessionId?: string): void {
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(unlocks))
   } catch (error) {
-    console.error('Error storing unlock:', error)
+    clientLogger.error('Error storing unlock:', error)
   }
 }
 
@@ -88,7 +89,7 @@ export function storeUserEmail(email: string): void {
   try {
     localStorage.setItem(EMAIL_KEY, email)
   } catch (error) {
-    console.error('Error storing email:', error)
+    clientLogger.error('Error storing email:', error)
   }
 }
 
@@ -101,7 +102,7 @@ export function getUserEmail(): string | null {
   try {
     return localStorage.getItem(EMAIL_KEY)
   } catch (error) {
-    console.error('Error reading email:', error)
+    clientLogger.error('Error reading email:', error)
     return null
   }
 }
@@ -142,7 +143,7 @@ export async function verifyUnlockToken(sessionId: string): Promise<{
       error: data.error || 'Unlock verification failed',
     }
   } catch (error) {
-    console.error('Error verifying unlock token:', error)
+    clientLogger.error('Error verifying unlock token:', error)
     return {
       success: false,
       error: 'Network error during verification',
@@ -165,7 +166,7 @@ export async function syncUnlocksWithServer(email: string): Promise<void> {
       })
     }
   } catch (error) {
-    console.error('Error syncing unlocks:', error)
+    clientLogger.error('Error syncing unlocks:', error)
   }
 }
 
@@ -179,7 +180,7 @@ export function clearUnlocks(): void {
     localStorage.removeItem(STORAGE_KEY)
     localStorage.removeItem(EMAIL_KEY)
   } catch (error) {
-    console.error('Error clearing unlocks:', error)
+    clientLogger.error('Error clearing unlocks:', error)
   }
 }
 

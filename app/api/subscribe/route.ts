@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { promises as fs } from 'fs'
 import path from 'path'
+import { SubscribeSchema, formatZodErrors } from '@/lib/validations'
+import { logger } from '@/lib/logger'
 
 interface Subscriber {
   email: string
@@ -46,24 +49,17 @@ async function saveSubscribers(data: SubscribersData): Promise<void> {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, source = 'unknown' } = body
 
-    // Validate email
-    if (!email || typeof email !== 'string') {
+    // Validate input with Zod
+    const validationResult = SubscribeSchema.safeParse(body)
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Email is required' },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Please enter a valid email address' },
-        { status: 400 }
-      )
-    }
+    const { email, source } = validationResult.data
 
     // Normalize email (lowercase, trim)
     const normalizedEmail = email.toLowerCase().trim()
@@ -107,7 +103,7 @@ export async function POST(request: NextRequest) {
     await saveSubscribers(data)
 
     // Log the new subscription (for monitoring)
-    console.log(`New subscriber: ${normalizedEmail} from ${source}`)
+    logger.info('New subscriber: ${normalizedEmail} from ${source}')
 
     return NextResponse.json({
       success: true,
@@ -116,7 +112,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Subscription error:', error)
+    logger.error('Subscription error:', error)
     return NextResponse.json(
       { error: 'Failed to process subscription. Please try again.' },
       { status: 500 }
@@ -160,7 +156,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error fetching subscribers:', error)
+    logger.error('Error fetching subscribers:', error)
     return NextResponse.json(
       { error: 'Failed to fetch subscriber data' },
       { status: 500 }

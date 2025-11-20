@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import {
   AFFILIATE_PROGRAMS,
   createAffiliateProduct,
   type AffiliateProduct
 } from '@/lib/affiliate-manager'
+import { logger } from '@/lib/logger'
+import {
+  CreateAffiliateProductSchema,
+  UpdateAffiliateProductSchema,
+  formatZodErrors
+} from '@/lib/validations'
 
 // Simulated database - in production, use Vercel KV or database
 let affiliateProducts: AffiliateProduct[] = [
@@ -113,7 +120,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(products)
   } catch (error) {
-    console.error('Error fetching affiliate products:', error)
+    logger.error('Error fetching affiliate products:', error)
     return NextResponse.json(
       { error: 'Failed to fetch affiliate products' },
       { status: 500 }
@@ -130,28 +137,31 @@ export async function POST(request: NextRequest) {
     //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     // }
 
-    const data = await request.json()
+    const body = await request.json()
 
-    // Validate required fields
-    if (!data.name || !data.url || !data.program) {
+    // Validate input with Zod
+    const validationResult = CreateAffiliateProductSchema.safeParse(body)
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Missing required fields: name, url, program' },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }
+
+    const data = validationResult.data
 
     // Create new product
     const newProduct = createAffiliateProduct({
       ...data,
       id: data.id || `${data.program}-${Date.now()}`,
-    })
+    } as any)
 
     // Add to collection
     affiliateProducts.push(newProduct)
 
     return NextResponse.json(newProduct, { status: 201 })
   } catch (error) {
-    console.error('Error creating affiliate product:', error)
+    logger.error('Error creating affiliate product:', error)
     return NextResponse.json(
       { error: 'Failed to create affiliate product' },
       { status: 500 }
@@ -164,14 +174,18 @@ export async function PUT(request: NextRequest) {
   try {
     // TODO: Add authentication check
 
-    const data = await request.json()
+    const body = await request.json()
 
-    if (!data.id) {
+    // Validate input with Zod
+    const validationResult = UpdateAffiliateProductSchema.safeParse(body)
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Product ID is required' },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }
+
+    const data = validationResult.data
 
     const index = affiliateProducts.findIndex(p => p.id === data.id)
     if (index === -1) {
@@ -185,11 +199,11 @@ export async function PUT(request: NextRequest) {
     affiliateProducts[index] = {
       ...affiliateProducts[index],
       ...data,
-    }
+    } as any
 
     return NextResponse.json(affiliateProducts[index])
   } catch (error) {
-    console.error('Error updating affiliate product:', error)
+    logger.error('Error updating affiliate product:', error)
     return NextResponse.json(
       { error: 'Failed to update affiliate product' },
       { status: 500 }
@@ -225,7 +239,7 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({ success: true, deleted })
   } catch (error) {
-    console.error('Error deleting affiliate product:', error)
+    logger.error('Error deleting affiliate product:', error)
     return NextResponse.json(
       { error: 'Failed to delete affiliate product' },
       { status: 500 }

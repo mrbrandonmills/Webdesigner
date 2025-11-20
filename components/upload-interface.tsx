@@ -5,6 +5,7 @@ import { upload } from '@vercel/blob/client'
 import { PhotoUploader } from './photo-uploader'
 import { VoiceMemoRecorder } from './voice-memo-recorder'
 import { UploadedFilesPreview } from './uploaded-files-preview'
+import { clientLogger } from '@/lib/client-logger'
 
 export interface UploadedPhoto {
   id: string
@@ -126,10 +127,10 @@ export function UploadInterface() {
         const savedStyleGuide = localStorage.getItem('siteStyleGuide')
         if (savedStyleGuide) {
           styleGuide = JSON.parse(savedStyleGuide)
-          console.log('Using saved style guide for content generation')
+          clientLogger.info('Using saved style guide for content generation')
         }
       } catch (error) {
-        console.log('No style guide found, using generic style')
+        clientLogger.info('No style guide found, using generic style')
       }
 
       const contentResponse = await fetch('/api/generate-content', {
@@ -160,7 +161,7 @@ export function UploadInterface() {
       window.location.href = '/review'
 
     } catch (error) {
-      console.error('Processing error:', error)
+      clientLogger.error('Processing error:', error)
       alert(`Error: ${error instanceof Error ? error.message : 'Unknown error'}`)
       setIsProcessing(false)
       setProcessingStep('')

@@ -4,14 +4,10 @@ import { z } from 'zod'
 import logger from '@/lib/logger'
 import { writeFile, readFile, mkdir } from 'fs/promises'
 import path from 'path'
+import { MeditationUnlockSchema, formatZodErrors } from '@/lib/validations'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-// Validation schema for unlock verification request
-const unlockRequestSchema = z.object({
-  sessionId: z.string().min(1, 'Session ID is required'),
-})
 
 export async function POST(request: Request) {
   try {
@@ -30,14 +26,11 @@ export async function POST(request: Request) {
 
     // Parse and validate request body
     const body = await request.json()
-    const validationResult = unlockRequestSchema.safeParse(body)
+    const validationResult = MeditationUnlockSchema.safeParse(body)
 
     if (!validationResult.success) {
       return NextResponse.json(
-        {
-          error: 'Invalid request data',
-          details: validationResult.error.flatten()
-        },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }

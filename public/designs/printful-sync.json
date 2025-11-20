@@ -1,17 +1,17 @@
 {
-  "syncDate": "2025-11-18T18:52:27.140Z",
+  "syncDate": "2025-11-20T21:31:57.707Z",
   "environment": "production",
   "siteUrl": "https://brandonmills.com",
   "totalDesigns": 20,
-  "successful": 20,
-  "failed": 0,
+  "successful": 10,
+  "failed": 10,
   "results": [
     {
       "category": "poetry",
       "name": "fine-lines",
       "productType": "mug",
       "success": true,
-      "syncProductId": 403330171,
+      "syncProductId": 403685962,
       "variantCount": 2,
       "mockupUrls": []
     },
@@ -20,7 +20,7 @@
       "name": "fine-lines",
       "productType": "poster",
       "success": true,
-      "syncProductId": 403330181,
+      "syncProductId": 403685966,
       "variantCount": 2,
       "mockupUrls": []
     },
@@ -29,7 +29,7 @@
       "name": "fine-lines",
       "productType": "t-shirt",
       "success": true,
-      "syncProductId": 403330187,
+      "syncProductId": 403685968,
       "variantCount": 3,
       "mockupUrls": []
     },
@@ -38,7 +38,7 @@
       "name": "poet-proponent",
       "productType": "mug",
       "success": true,
-      "syncProductId": 403330195,
+      "syncProductId": 403685969,
       "variantCount": 2,
       "mockupUrls": []
     },
@@ -47,7 +47,7 @@
       "name": "the-tourbillon",
       "productType": "mug",
       "success": true,
-      "syncProductId": 403330203,
+      "syncProductId": 403685970,
       "variantCount": 2,
       "mockupUrls": []
     },
@@ -56,7 +56,7 @@
       "name": "am-reed-aqua",
       "productType": "phone-case",
       "success": true,
-      "syncProductId": 403330210,
+      "syncProductId": 403685979,
       "variantCount": 2,
       "mockupUrls": []
     },
@@ -65,7 +65,7 @@
       "name": "am-reed-aqua",
       "productType": "poster",
       "success": true,
-      "syncProductId": 403330223,
+      "syncProductId": 403685987,
       "variantCount": 2,
       "mockupUrls": []
     },
@@ -74,7 +74,7 @@
       "name": "am-reed-aqua",
       "productType": "tote-bag",
       "success": true,
-      "syncProductId": 403330231,
+      "syncProductId": 403685990,
       "variantCount": 1,
       "mockupUrls": []
     },
@@ -83,7 +83,7 @@
       "name": "am-reed-aqua",
       "productType": "wall-art",
       "success": true,
-      "syncProductId": 403330239,
+      "syncProductId": 403685991,
       "variantCount": 2,
       "mockupUrls": []
     },
@@ -92,7 +92,7 @@
       "name": "am-reed-leather",
       "productType": "phone-case",
       "success": true,
-      "syncProductId": 403330246,
+      "syncProductId": 403685993,
       "variantCount": 2,
       "mockupUrls": []
     },
@@ -100,81 +100,71 @@
       "category": "photography",
       "name": "am-reed-leather",
       "productType": "poster",
-      "success": true,
-      "syncProductId": 403331308,
-      "variantCount": 2
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 58 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     },
     {
       "category": "photography",
       "name": "am-reed-leather",
       "productType": "tote-bag",
-      "success": true,
-      "syncProductId": 403331329,
-      "variantCount": 1
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 57 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     },
     {
       "category": "photography",
       "name": "am-reed-leather",
       "productType": "wall-art",
-      "success": true,
-      "syncProductId": 403331338,
-      "variantCount": 2
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 56 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     },
     {
       "category": "photography",
       "name": "am-reed-monochrome",
       "productType": "phone-case",
-      "success": true,
-      "syncProductId": 403331347,
-      "variantCount": 2
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 55 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     },
     {
       "category": "photography",
       "name": "am-reed-monochrome",
       "productType": "poster",
-      "success": true,
-      "syncProductId": 403331364,
-      "variantCount": 2
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 54 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     },
     {
       "category": "photography",
       "name": "am-reed-monochrome",
       "productType": "tote-bag",
-      "success": true,
-      "syncProductId": 403331378,
-      "variantCount": 1
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 53 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     },
     {
       "category": "photography",
       "name": "am-reed-monochrome",
       "productType": "wall-art",
-      "success": true,
-      "syncProductId": 403331392,
-      "variantCount": 2
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 51 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     },
     {
       "category": "philosophy",
       "name": "enlightenment-science",
       "productType": "mug",
-      "success": true,
-      "syncProductId": 403331402,
-      "variantCount": 2
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 50 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     },
     {
       "category": "philosophy",
       "name": "self-esteem",
       "productType": "mug",
-      "success": true,
-      "syncProductId": 403331413,
-      "variantCount": 2
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 49 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     },
     {
       "category": "philosophy",
       "name": "social-theory",
       "productType": "mug",
-      "success": true,
-      "syncProductId": 403331427,
-      "variantCount": 2
+      "success": false,
+      "error": "{\"code\":429,\"result\":\"You've recently sent too many requests. Please try again after 48 seconds.\",\"error\":{\"reason\":\"TooManyRequests\",\"message\":\"You've recently sent too many requests. Please try agai"
     }
   ]
 }

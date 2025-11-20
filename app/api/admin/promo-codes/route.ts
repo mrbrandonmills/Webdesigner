@@ -7,21 +7,14 @@ import {
   updatePromoCode,
 } from '@/lib/promo-codes'
 import logger from '@/lib/logger'
+import {
+  CreatePromoCodeSchema,
+  UpdatePromoCodeSchema,
+  formatZodErrors
+} from '@/lib/validations'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-// Validation schema for creating promo codes
-const createPromoCodeSchema = z.object({
-  code: z.string().min(1, 'Code is required'),
-  type: z.enum(['meditation', 'book', 'all']),
-  target: z.string().optional(),
-  discount: z.number().min(1).max(100),
-  maxUses: z.number().optional(),
-  expiresAt: z.string().optional(),
-  description: z.string().optional(),
-  createdBy: z.string().default('admin'),
-})
 
 /**
  * GET /api/admin/promo-codes
@@ -58,15 +51,11 @@ export async function POST(request: Request) {
     // TODO: Add admin authentication check
 
     const body = await request.json()
-    const validationResult = createPromoCodeSchema.safeParse(body)
+    const validationResult = CreatePromoCodeSchema.safeParse(body)
 
     if (!validationResult.success) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Invalid request data',
-          details: validationResult.error.flatten(),
-        },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }
@@ -171,7 +160,16 @@ export async function PUT(request: Request) {
 
     const body = await request.json()
 
-    const updatedCode = updatePromoCode(code, body)
+    // Validate input with Zod
+    const validationResult = UpdatePromoCodeSchema.safeParse(body)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        formatZodErrors(validationResult.error),
+        { status: 400 }
+      )
+    }
+
+    const updatedCode = updatePromoCode(code, validationResult.data)
 
     if (!updatedCode) {
       return NextResponse.json(

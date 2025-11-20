@@ -6,7 +6,88 @@ import { useState, useRef, useEffect } from 'react';
 import { ConciergeMessageComponent } from './concierge-message';
 import { VoiceControls } from './voice-controls';
 import { BookingPreview } from './booking-preview';
-import { ConciergeMessage, VoiceState, VIPStatus, BookingData } from './types';
+import { ConciergeMessage, VoiceState, VIPStatus, BookingData, LeadData, QuickAction } from './types';
+
+// Sales keyword detection patterns
+const MENTORING_KEYWORDS = [
+  'mentor', 'coach', 'session', 'book', 'consultation',
+  'modeling', 'career', 'portfolio', 'agency',
+  'ai', 'architecture', 'llm', 'consulting',
+  'transformation', 'growth', 'personal development',
+  'guidance', 'advice', 'help with', 'learn'
+];
+
+const SOFTWARE_KEYWORDS = [
+  'software', 'app', 'build', 'develop', 'custom',
+  'pricing', 'quote', 'cost', 'estimate',
+  'demo', 'trial', 'see it work',
+  'jarvis', 'lead scraper', 'automation', 'tool'
+];
+
+const MENTORING_PACKAGES = [
+  {
+    id: 'single',
+    name: 'Single Session',
+    sessions: 1,
+    pricePerSession: 297,
+    totalPrice: 297,
+    savings: 0,
+    features: ['60-minute session', 'Session recording', 'Email follow-up']
+  },
+  {
+    id: 'starter',
+    name: 'Starter 3-Pack',
+    sessions: 3,
+    pricePerSession: 267,
+    totalPrice: 801,
+    savings: 90,
+    features: ['3 x 60-minute sessions', 'All recordings', 'Priority scheduling', 'Email support between sessions'],
+    popular: true
+  },
+  {
+    id: 'accelerator',
+    name: 'Accelerator Monthly',
+    sessions: 4,
+    pricePerSession: 247,
+    totalPrice: 988,
+    savings: 200,
+    features: ['4 sessions/month', 'Weekly check-ins', 'Unlimited email support', 'Resource library access', 'Goal tracking dashboard']
+  }
+];
+
+const SOFTWARE_PRODUCTS = [
+  {
+    id: 'jarvis',
+    name: 'Jarvis AI Assistant',
+    description: 'Your personal AI-powered business assistant',
+    price: 2997,
+    features: ['24/7 availability', 'Custom training', 'Multi-platform integration'],
+    demoAvailable: true
+  },
+  {
+    id: 'lead-scraper',
+    name: 'Lead Scraper Pro',
+    description: 'Automated lead generation and enrichment',
+    price: 1497,
+    features: ['Multi-source scraping', 'Email verification', 'CRM integration'],
+    demoAvailable: true
+  },
+  {
+    id: 'custom',
+    name: 'Custom Software Build',
+    description: 'Tailored solutions for your unique needs',
+    price: 0,
+    features: ['Discovery session', 'Custom architecture', 'Ongoing support'],
+    demoAvailable: false
+  }
+];
+
+const QUICK_ACTIONS: QuickAction[] = [
+  { id: 'book-mentoring', label: 'Book a mentoring session', action: 'mentoring', icon: 'calendar' },
+  { id: 'software-demos', label: 'See software demos', action: 'software', icon: 'play' },
+  { id: 'custom-quote', label: 'Get a custom quote', action: 'quote', icon: 'dollar' },
+  { id: 'browse-shop', label: 'Browse the shop', action: 'shop', icon: 'shopping' }
+];
 
 export function ConciergeWidget() {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,8 +114,100 @@ export function ConciergeWidget() {
     }
   });
 
+  // Conversation context for smarter responses
+  const [conversationContext, setConversationContext] = useState<{
+    currentTopic: 'general' | 'mentoring' | 'software' | 'lead-capture';
+    subTopic?: string;
+    awaitingEmail: boolean;
+    lastRecommendation?: string;
+  }>({
+    currentTopic: 'general',
+    awaitingEmail: false
+  });
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Helper function to detect keywords in input
+  const detectIntent = (input: string): { type: 'mentoring' | 'software' | 'general'; subType?: string } => {
+    const lowerInput = input.toLowerCase();
+
+    // Check for specific mentoring subtopics
+    if (lowerInput.includes('model') || lowerInput.includes('agency') || lowerInput.includes('portfolio')) {
+      return { type: 'mentoring', subType: 'modeling' };
+    }
+    if (lowerInput.includes('ai') || lowerInput.includes('llm') || lowerInput.includes('architecture')) {
+      return { type: 'mentoring', subType: 'ai-consulting' };
+    }
+    if (lowerInput.includes('career') || lowerInput.includes('growth') || lowerInput.includes('transformation')) {
+      return { type: 'mentoring', subType: 'career' };
+    }
+
+    // Check for software subtopics
+    if (lowerInput.includes('jarvis') || lowerInput.includes('assistant')) {
+      return { type: 'software', subType: 'jarvis' };
+    }
+    if (lowerInput.includes('lead') || lowerInput.includes('scraper')) {
+      return { type: 'software', subType: 'lead-scraper' };
+    }
+    if (lowerInput.includes('custom') || lowerInput.includes('build') || lowerInput.includes('develop')) {
+      return { type: 'software', subType: 'custom' };
+    }
+
+    // General keyword matching
+    if (MENTORING_KEYWORDS.some(keyword => lowerInput.includes(keyword))) {
+      return { type: 'mentoring' };
+    }
+    if (SOFTWARE_KEYWORDS.some(keyword => lowerInput.includes(keyword))) {
+      return { type: 'software' };
+    }
+
+    return { type: 'general' };
+  };
+
+  // Save lead to localStorage and track
+  const captureLead = (leadData: LeadData) => {
+    try {
+      const existingLeads = JSON.parse(localStorage.getItem('concierge_leads') || '[]');
+
+      // Add timestamp and enrich data
+      const enrichedLead = {
+        ...leadData,
+        capturedAt: new Date().toISOString(),
+        sessionId: Date.now().toString(),
+        conversationContext: {
+          topic: conversationContext.currentTopic,
+          subTopic: conversationContext.subTopic,
+          messages: messages.length
+        }
+      };
+
+      existingLeads.push(enrichedLead);
+      localStorage.setItem('concierge_leads', JSON.stringify(existingLeads));
+
+      // Track in analytics (placeholder for actual implementation)
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'lead_capture', {
+          event_category: 'concierge',
+          event_label: leadData.interest,
+          event_value: leadData.specificInterest,
+          value: 1
+        });
+      }
+
+      console.log('Lead captured successfully:', enrichedLead);
+      return true;
+    } catch (error) {
+      console.error('Failed to capture lead:', error);
+      return false;
+    }
+  };
+
+  // Validate email format
+  const isValidEmail = (email: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -46,9 +219,24 @@ export function ConciergeWidget() {
     if (isOpen && messages.length === 0) {
       setTimeout(() => {
         addAssistantMessage(
-          `Welcome back${vipStatus.isVIP ? ', valued client' : ''}! I'm your personal concierge. How may I assist you today? I can help you book a session with Brandon, recommend personalized styling, or create custom art.`,
+          `Welcome back${vipStatus.isVIP ? ', valued client' : ''}! I'm your personal concierge. How may I assist you today?\n\nI can help you with:\n- **Mentoring sessions** (modeling, AI consulting, career growth)\n- **Software solutions** (Jarvis AI, Lead Scraper, custom builds)\n- **Custom quotes** for specialized projects`,
           'system'
         );
+
+        // Add quick action buttons after welcome
+        setTimeout(() => {
+          const quickActionMessage: ConciergeMessage = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: 'What brings you here today?',
+            timestamp: new Date(),
+            type: 'quick-actions',
+            metadata: {
+              quickActions: QUICK_ACTIONS
+            }
+          };
+          setMessages(prev => [...prev, quickActionMessage]);
+        }, 800);
       }, 500);
     }
   }, [isOpen]);
@@ -65,34 +253,324 @@ export function ConciergeWidget() {
     setMessages(prev => [...prev, newMessage]);
   };
 
-  const handleSendMessage = async () => {
-    if (!inputValue.trim()) return;
+  // Extracted message processing logic
+  const processUserInput = (currentInput: string) => {
+    // Check if awaiting email
+      if (conversationContext.awaitingEmail) {
+        if (isValidEmail(currentInput)) {
+          const leadData: LeadData = {
+            email: currentInput,
+            interest: conversationContext.currentTopic === 'software' ? 'software' : 'mentoring',
+            specificInterest: conversationContext.subTopic,
+            capturedAt: new Date(),
+            source: 'concierge'
+          };
+          captureLead(leadData);
 
-    // Add user message
-    const userMessage: ConciergeMessage = {
-      id: Date.now().toString(),
-      role: 'user',
-      content: inputValue,
-      timestamp: new Date(),
-      type: 'text'
-    };
+          setConversationContext(prev => ({ ...prev, awaitingEmail: false }));
 
-    setMessages(prev => [...prev, userMessage]);
-    setInputValue('');
-    setIsTyping(true);
+          addAssistantMessage(
+            `Perfect! I've saved your email (${currentInput}). ${
+              conversationContext.currentTopic === 'mentoring'
+                ? "Let me show you our mentoring packages so you can book directly."
+                : "A team member will reach out within 24 hours to schedule your demo or discuss your project."
+            }`,
+            'text'
+          );
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      setIsTyping(false);
+          // Show booking or next steps based on context
+          if (conversationContext.currentTopic === 'mentoring') {
+            setTimeout(() => {
+              setActiveView('booking');
+            }, 1000);
+          }
 
-      // Demo responses based on keywords
-      if (inputValue.toLowerCase().includes('book') || inputValue.toLowerCase().includes('session')) {
-        setActiveView('booking');
+          // Proactive upsell after lead capture
+          setTimeout(() => {
+            const upsellMessage = conversationContext.currentTopic === 'mentoring'
+              ? "By the way, Brandon also offers custom software solutions. Many clients find that combining mentoring with automation tools accelerates their results significantly."
+              : "While you wait, have you considered Brandon's mentoring sessions? Many software clients benefit from strategic guidance on implementing their new tools effectively.";
+
+            addAssistantMessage(upsellMessage, 'text');
+          }, 3000);
+
+          return;
+        } else {
+          addAssistantMessage(
+            "That doesn't look like a valid email address. Could you please double-check and try again?",
+            'text'
+          );
+          return;
+        }
+      }
+
+      // Detect intent from input
+      const intent = detectIntent(currentInput);
+
+      // Handle mentoring inquiries
+      if (intent.type === 'mentoring') {
+        setConversationContext(prev => ({
+          ...prev,
+          currentTopic: 'mentoring',
+          subTopic: intent.subType
+        }));
+
+        let response = '';
+
+        if (intent.subType === 'modeling') {
+          response = `Excellent! Brandon has extensive experience with agencies like D&G and Armani.
+
+Are you looking for:
+- **Portfolio review** and feedback
+- **Agency relationship** guidance
+- **Career planning** and goals
+
+I can recommend the right session type based on your needs. Which area interests you most?`;
+        } else if (intent.subType === 'ai-consulting') {
+          response = `Great choice! Brandon specializes in AI architecture and LLM implementation.
+
+What's your primary focus?
+- **System architecture** design
+- **LLM integration** strategies
+- **AI workflow** optimization
+
+For complex AI projects, many clients start with the **Accelerator package** for ongoing support.`;
+        } else if (intent.subType === 'career') {
+          response = `I'd love to help with your growth journey!
+
+Brandon offers transformational coaching for:
+- **Personal brand** development
+- **Career pivots** and transitions
+- **Leadership** and mindset
+
+What specific transformation are you seeking?`;
+        } else {
+          response = `I'd be happy to help you find the right mentoring solution!
+
+Brandon offers sessions in:
+- **Modeling & Fashion** (portfolio, agencies, industry insights)
+- **AI & Technology** (architecture, LLMs, implementation)
+- **Personal Development** (career growth, transformation)
+
+Which area resonates most with your goals?`;
+        }
+
+        addAssistantMessage(response, 'text');
+
+        // Show packages after clarifying question with quick reply buttons
+        setTimeout(() => {
+          const packageMessage: ConciergeMessage = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: `Here are our mentoring packages:\n\n` +
+              `**Single Session** - $297\n` +
+              `Perfect for a focused consultation on one topic.\n\n` +
+              `**Starter 3-Pack** - $801 (Save $90!)\n` +
+              `Most popular! Build momentum with 3 sessions over time.\n` +
+              `💎 ${MENTORING_PACKAGES[1].pricePerSession}/session\n\n` +
+              `**Accelerator Monthly** - $988 (Save $200!)\n` +
+              `Best value for committed transformation. 4 sessions/month + ongoing support.\n` +
+              `💎 ${MENTORING_PACKAGES[2].pricePerSession}/session\n\n` +
+              `Which package interests you? I can help you book directly.`,
+            timestamp: new Date(),
+            type: 'text'
+          };
+          setMessages(prev => [...prev, packageMessage]);
+
+          // Add quick action buttons for package selection
+          setTimeout(() => {
+            const packageActionMessage: ConciergeMessage = {
+              id: (Date.now() + 2).toString(),
+              role: 'assistant',
+              content: 'Choose your preferred package:',
+              timestamp: new Date(),
+              type: 'quick-actions',
+              metadata: {
+                quickActions: [
+                  { id: 'single-session', label: '📅 Single Session', action: 'I want the single session' },
+                  { id: 'starter-pack', label: '🚀 Starter 3-Pack', action: 'I want the starter 3-pack' },
+                  { id: 'accelerator', label: '⚡ Accelerator Monthly', action: 'I want the accelerator package' },
+                  { id: 'learn-more', label: '📚 Tell me more', action: 'Tell me more about packages' }
+                ]
+              }
+            };
+            setMessages(prev => [...prev, packageActionMessage]);
+          }, 1000);
+        }, 2000);
+      }
+
+      // Handle software inquiries
+      else if (intent.type === 'software') {
+        setConversationContext(prev => ({
+          ...prev,
+          currentTopic: 'software',
+          subTopic: intent.subType
+        }));
+
+        let response = '';
+
+        if (intent.subType === 'jarvis') {
+          response = `**Jarvis AI Assistant** is our flagship product!
+
+Key features:
+- 24/7 AI-powered business assistance
+- Custom training on your business data
+- Multi-platform integration (Slack, email, CRM)
+
+**Starting at $2,997** with demos available.
+
+Would you like to schedule a live demo to see Jarvis in action?`;
+        } else if (intent.subType === 'lead-scraper') {
+          response = `**Lead Scraper Pro** is perfect for scaling your outreach!
+
+Features include:
+- Multi-source data extraction
+- Automatic email verification
+- Direct CRM integration
+
+**$1,497 one-time** or payment plans available.
+
+Want to see it pull leads in real-time? I can arrange a demo.`;
+        } else if (intent.subType === 'custom') {
+          response = `Custom software development is our specialty!
+
+We build:
+- **Business automation** tools
+- **AI-powered** applications
+- **Integration** solutions
+
+Every project starts with a free **discovery call** to understand your needs.
+
+What problem are you trying to solve? I can give you a rough estimate.`;
+        } else {
+          response = `We have several software solutions that might help:
+
+**Jarvis AI** - Personal AI assistant ($2,997)
+**Lead Scraper Pro** - Automated lead gen ($1,497)
+**Custom Build** - Tailored to your needs (Quote)
+
+What's the main challenge you're facing? I'll recommend the best fit.`;
+        }
+
+        addAssistantMessage(response, 'software');
+
+        // Offer demo or quote with quick action buttons
+        setTimeout(() => {
+          const actionMessage: ConciergeMessage = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: intent.subType === 'custom'
+              ? 'What would you like to do next?'
+              : 'How would you like to proceed?',
+            timestamp: new Date(),
+            type: 'quick-actions',
+            metadata: {
+              quickActions: intent.subType === 'custom'
+                ? [
+                    { id: 'schedule-discovery', label: '📞 Schedule Discovery Call', action: 'Schedule discovery call' },
+                    { id: 'get-quote', label: '💬 Get Custom Quote', action: 'Get a custom quote' },
+                    { id: 'view-portfolio', label: '👁️ View Portfolio', action: 'Show me your portfolio' },
+                    { id: 'email-brandon', label: '📧 Email Brandon', action: 'Send email to Brandon' }
+                  ]
+                : [
+                    { id: 'watch-demo', label: '▶️ Watch Demo', action: 'I want to see a demo' },
+                    { id: 'get-pricing', label: '💰 Get Pricing', action: 'Show me pricing' },
+                    { id: 'schedule-call', label: '📅 Schedule Call', action: 'Schedule a call' },
+                    { id: 'ask-question', label: '❓ Ask Question', action: 'I have a question' }
+                  ]
+            }
+          };
+          setMessages(prev => [...prev, actionMessage]);
+        }, 2000);
+
+        // Request email for follow-up
+        setTimeout(() => {
+          setConversationContext(prev => ({ ...prev, awaitingEmail: true }));
+          addAssistantMessage(
+            `To ${intent.subType === 'custom' ? 'schedule your free discovery call' : 'send you demo access and pricing details'}, I just need your email address.\n\nWhat's the best email to reach you?`,
+            'lead-capture'
+          );
+        }, 3500);
+      }
+
+      // Handle package selection intents
+      else if (
+        currentInput.toLowerCase().includes('starter') ||
+        currentInput.toLowerCase().includes('3-pack') ||
+        currentInput.toLowerCase().includes('accelerator') ||
+        currentInput.toLowerCase().includes('single session')
+      ) {
+        let selectedPkg = '';
+        if (currentInput.toLowerCase().includes('starter') || currentInput.toLowerCase().includes('3-pack')) {
+          selectedPkg = 'starter';
+        } else if (currentInput.toLowerCase().includes('accelerator')) {
+          selectedPkg = 'accelerator';
+        } else {
+          selectedPkg = 'single';
+        }
+
+        const pkg = MENTORING_PACKAGES.find(p => p.id === selectedPkg);
+        if (pkg) {
+          addAssistantMessage(
+            `Excellent choice! The **${pkg.name}** is perfect for ${
+              selectedPkg === 'starter' ? 'building momentum and seeing real transformation' :
+              selectedPkg === 'accelerator' ? 'committed growth with comprehensive support' :
+              'trying out a focused consultation first'
+            }.\n\n` +
+            `Here's what's included:\n${pkg.features.map(f => `✓ ${f}`).join('\n')}\n\n` +
+            `Total investment: **$${pkg.totalPrice}**${pkg.savings > 0 ? ` (Save $${pkg.savings})` : ''}\n` +
+            `Per session: **$${pkg.pricePerSession}**\n\n` +
+            `Before we proceed to booking, I'll need your email to send you the confirmation and session details.`,
+            'text'
+          );
+
+          setTimeout(() => {
+            setConversationContext(prev => ({
+              ...prev,
+              currentTopic: 'mentoring',
+              awaitingEmail: true,
+              lastRecommendation: selectedPkg
+            }));
+            addAssistantMessage(
+              'What email address should I use for your booking confirmation?',
+              'lead-capture'
+            );
+          }, 2000);
+        }
+      }
+
+      // Handle booking/session requests
+      else if (currentInput.toLowerCase().includes('book') || currentInput.toLowerCase().includes('session')) {
         addAssistantMessage(
-          "Excellent! I'd be delighted to help you schedule a personalized session with Brandon. Let me show you our à la carte options.",
-          'booking'
+          "Excellent! I'd be delighted to help you schedule a personalized session with Brandon.\n\n" +
+          "Would you like to:\n" +
+          "• View our **mentoring packages** (recommended for multiple sessions)\n" +
+          "• Book a **single session** to get started\n" +
+          "• Customize your own experience",
+          'text'
         );
-      } else if (inputValue.toLowerCase().includes('style') || inputValue.toLowerCase().includes('clothing')) {
+
+        setTimeout(() => {
+          const bookingActionMessage: ConciergeMessage = {
+            id: (Date.now() + 1).toString(),
+            role: 'assistant',
+            content: 'Choose your booking approach:',
+            timestamp: new Date(),
+            type: 'quick-actions',
+            metadata: {
+              quickActions: [
+                { id: 'view-packages', label: '📦 View Packages', action: 'Show me mentoring packages' },
+                { id: 'book-single', label: '📅 Book Single Session', action: 'I want the single session' },
+                { id: 'custom-booking', label: '⚙️ Custom Experience', action: 'I want a custom session' }
+              ]
+            }
+          };
+          setMessages(prev => [...prev, bookingActionMessage]);
+        }, 1500);
+      }
+
+      // Handle style/clothing requests
+      else if (currentInput.toLowerCase().includes('style') || currentInput.toLowerCase().includes('clothing')) {
         addAssistantMessage(
           "Based on your sophisticated taste in contemporary and minimalist design, I have some exquisite recommendations for you.",
           'styling'
@@ -144,18 +622,114 @@ export function ConciergeWidget() {
           };
           setMessages(prev => [...prev, stylingMessage]);
         }, 1000);
-      } else if (inputValue.toLowerCase().includes('art')) {
+      }
+
+      // Handle art requests
+      else if (currentInput.toLowerCase().includes('art')) {
         addAssistantMessage(
           "I can create a unique piece of art tailored to your personality and aesthetic preferences. What style resonates with you today?",
           'art'
         );
-      } else {
+      }
+
+      // Handle price/cost inquiries
+      else if (currentInput.toLowerCase().includes('price') || currentInput.toLowerCase().includes('cost') || currentInput.toLowerCase().includes('how much')) {
         addAssistantMessage(
-          "I understand. How else may I assist you today? I can help with booking sessions, personal styling recommendations, or creating custom art pieces.",
+          `Here's a quick overview of our services:\n\n` +
+          `**Mentoring Sessions**\n` +
+          `- Single: $297\n` +
+          `- 3-Pack: $801 (Save $90)\n` +
+          `- Monthly: $988 (Save $200)\n\n` +
+          `**Software Products**\n` +
+          `- Jarvis AI: $2,997\n` +
+          `- Lead Scraper: $1,497\n` +
+          `- Custom: Quote based\n\n` +
+          `What are you most interested in? I can provide more details.`,
           'text'
         );
       }
+
+      // Handle shop/browse requests
+      else if (currentInput.toLowerCase().includes('shop') || currentInput.toLowerCase().includes('browse')) {
+        addAssistantMessage(
+          "I'd be happy to show you around! Our shop features:\n\n" +
+          "- **Digital Products** (templates, guides, tools)\n" +
+          "- **Software Licenses** (Jarvis, Lead Scraper)\n" +
+          "- **Session Packages** (mentoring bundles)\n\n" +
+          "Would you like me to recommend something based on your goals?",
+          'text'
+        );
+      }
+
+      // Handle demo requests
+      else if (currentInput.toLowerCase().includes('demo') || currentInput.toLowerCase().includes('trial')) {
+        setConversationContext(prev => ({
+          ...prev,
+          currentTopic: 'software',
+          awaitingEmail: true
+        }));
+        addAssistantMessage(
+          "Great! We offer live demos of both Jarvis AI and Lead Scraper Pro. To schedule your demo, I just need your email address. What's the best way to reach you?",
+          'lead-capture'
+        );
+      }
+
+      // Default fallback with helpful suggestions
+      else {
+        addAssistantMessage(
+          "I'd be happy to help! Here are the most popular ways I can assist:\n\n" +
+          "- **Book a mentoring session** with Brandon\n" +
+          "- **Explore our software** solutions\n" +
+          "- **Get a custom quote** for your project\n" +
+          "- **Browse the shop** for digital products\n\n" +
+          "What sounds most relevant to you?",
+          'text'
+        );
+      }
+  };
+
+  const handleSendMessage = async () => {
+    if (!inputValue.trim()) return;
+
+    // Add user message
+    const userMessage: ConciergeMessage = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: inputValue,
+      timestamp: new Date(),
+      type: 'text'
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    const currentInput = inputValue;
+    setInputValue('');
+    setIsTyping(true);
+
+    // Simulate AI response (replace with actual API call)
+    setTimeout(() => {
+      setIsTyping(false);
+      processUserInput(currentInput);
     }, 1500);
+  };
+
+  // Handle quick action button clicks
+  const handleQuickAction = (action: string) => {
+    // Add user message immediately
+    const userMessage: ConciergeMessage = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: action,
+      timestamp: new Date(),
+      type: 'text'
+    };
+    setMessages(prev => [...prev, userMessage]);
+
+    // Process as if user typed the message
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      processUserInput(action);
+    }, 800);
   };
 
   const handleStartRecording = () => {
@@ -332,6 +906,7 @@ export function ConciergeWidget() {
                           key={message.id}
                           message={message}
                           onPlayAudio={handlePlayAudio}
+                          onQuickAction={handleQuickAction}
                           isPlaying={voiceState.isPlaying && voiceState.currentAudioId === message.audioUrl}
                         />
                       ))}

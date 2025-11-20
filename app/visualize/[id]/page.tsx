@@ -1,11 +1,23 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Share2, Download, Heart, ArrowRight, Sparkles } from 'lucide-react'
+import { Share2, Download, Heart, ArrowRight, Sparkles, CheckCircle2, XCircle, AlertCircle } from 'lucide-react'
 import { ShareCard, ShareButton } from '@/components/social-proof/share-card'
+import { ErrorBoundary } from '@/components/error-boundary'
+
+// Analytics tracking helper
+function trackEvent(eventName: string, properties?: Record<string, any>) {
+  try {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', eventName, properties)
+    }
+  } catch (err) {
+    console.warn('Analytics tracking failed:', err)
+  }
+}
 
 interface VisualizationData {
   id: string
@@ -19,17 +31,36 @@ interface VisualizationData {
   }
 }
 
-export default function VisualizationResultPage() {
+function VisualizationResultPageContent() {
   const params = useParams()
   const [data, setData] = useState<VisualizationData | null>(null)
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [showShareCard, setShowShareCard] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  // Fetch visualization data from sessionStorage
+  // Track page view
+  useEffect(() => {
+    if (data) {
+      trackEvent('visualization_viewed', {
+        visualization_id: data.id,
+        dominant_archetype: data.analysis.dominantArchetype,
+        concept_count: data.analysis.conceptCount,
+        connection_count: data.analysis.connectionCount
+      })
+    }
+  }, [data])
+
+  // Fetch visualization data from sessionStorage with localStorage backup
   useEffect(() => {
     const id = params.id as string
-    const stored = sessionStorage.getItem(`visualization_${id}`)
+
+    // Try sessionStorage first (temporary, session-scoped)
+    let stored = sessionStorage.getItem(`visualization_${id}`)
+
+    // Fallback to localStorage (persistent across sessions)
+    if (!stored) {
+      stored = localStorage.getItem(`visualization_${id}`)
+    }
 
     if (stored) {
       try {
@@ -45,10 +76,18 @@ export default function VisualizationResultPage() {
               'Growth mindset is evident in your language'
             ],
             recommendedMeditation: parsed.analysis?.recommendedMeditation || 'deep-focus',
-            conceptCount: parsed.analysis?.concepts?.length || 12,
-            connectionCount: parsed.analysis?.connections?.length || 18
+            conceptCount: parsed.analysis?.conceptCount || parsed.analysis?.concepts?.length || 12,
+            connectionCount: parsed.analysis?.connectionCount || parsed.analysis?.connections?.length || 18
           }
         })
+
+        // Ensure data is in both storage locations for redundancy
+        if (sessionStorage.getItem(`visualization_${id}`) !== stored) {
+          sessionStorage.setItem(`visualization_${id}`, stored)
+        }
+        if (localStorage.getItem(`visualization_${id}`) !== stored) {
+          localStorage.setItem(`visualization_${id}`, stored)
+        }
       } catch (e) {
         console.error('Failed to parse visualization data:', e)
         // Fallback to error state
@@ -121,16 +160,34 @@ export default function VisualizationResultPage() {
         {/* Overlay controls */}
         <div className="absolute bottom-4 right-4 flex gap-2">
           <button
-            onClick={() => setShowShareCard(true)}
-            className="p-3 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors"
+            onClick={() => {
+              setShowShareCard(true)
+              trackEvent('share_button_clicked', { visualization_id: data.id })
+            }}
+            className="p-3 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A050]/50"
+            aria-label="Share visualization"
           >
-            <Share2 className="w-5 h-5" />
+            <Share2 className="w-5 h-5" aria-hidden="true" />
           </button>
-          <button className="p-3 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors">
-            <Download className="w-5 h-5" />
+          <button
+            onClick={() => {
+              trackEvent('download_button_clicked', { visualization_id: data.id })
+              // Download functionality would go here
+            }}
+            className="p-3 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A050]/50"
+            aria-label="Download visualization"
+          >
+            <Download className="w-5 h-5" aria-hidden="true" />
           </button>
-          <button className="p-3 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors">
-            <Heart className="w-5 h-5" />
+          <button
+            onClick={() => {
+              trackEvent('favorite_button_clicked', { visualization_id: data.id })
+              // Favorite functionality would go here
+            }}
+            className="p-3 bg-black/50 backdrop-blur-sm rounded-full hover:bg-black/70 transition-colors focus:outline-none focus:ring-2 focus:ring-[#C9A050]/50"
+            aria-label="Favorite visualization"
+          >
+            <Heart className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
       </div>
@@ -217,26 +274,75 @@ export default function VisualizationResultPage() {
   )
 }
 
+// Export wrapped with ErrorBoundary
+export default function VisualizationResultPage() {
+  return (
+    <ErrorBoundary
+      onReset={() => {
+        // Navigate back to visualize page on error
+        if (typeof window !== 'undefined') {
+          window.location.href = '/visualize'
+        }
+      }}
+    >
+      <VisualizationResultPageContent />
+    </ErrorBoundary>
+  )
+}
+
+type SubmissionStatus = 'idle' | 'submitting' | 'success' | 'error'
+
 function EmailCaptureModal({ onClose }: { onClose: () => void }) {
   const [email, setEmail] = useState('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [status, setStatus] = useState<SubmissionStatus>('idle')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
+    setStatus('submitting')
+    setErrorMessage('')
+    setSuccessMessage('')
 
     try {
-      await fetch('/api/newsletter/subscribe', {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 15000) // 15s timeout for email
+
+      const response = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'mind-visualizer' })
+        body: JSON.stringify({ email, source: 'mind-visualizer' }),
+        signal: controller.signal
       })
 
+      clearTimeout(timeoutId)
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Subscription failed')
+      }
+
+      setStatus('success')
+      setSuccessMessage(data.message || 'Successfully subscribed! Check your email.')
       localStorage.setItem('visualize_email', email)
-      onClose()
+
+      // Auto-close after 3 seconds on success
+      setTimeout(() => {
+        onClose()
+      }, 3000)
     } catch (err) {
-      console.error(err)
-      setIsSubmitting(false)
+      setStatus('error')
+
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          setErrorMessage('Request timed out. Please check your connection and try again.')
+        } else {
+          setErrorMessage(err.message)
+        }
+      } else {
+        setErrorMessage('An unexpected error occurred. Please try again.')
+      }
     }
   }
 
@@ -261,22 +367,58 @@ function EmailCaptureModal({ onClose }: { onClose: () => void }) {
             placeholder="Enter your email"
             className="w-full p-4 bg-white/5 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A050]/50 mb-4"
             required
+            disabled={status === 'submitting' || status === 'success'}
+            aria-label="Email address"
+            aria-describedby={errorMessage ? 'email-error' : undefined}
           />
+
+          <AnimatePresence mode="wait">
+            {status === 'error' && errorMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mb-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg flex items-start gap-2"
+                role="alert"
+                id="email-error"
+              >
+                <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-red-300">{errorMessage}</p>
+              </motion.div>
+            )}
+
+            {status === 'success' && successMessage && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mb-4 p-3 bg-green-500/10 border border-green-500/30 rounded-lg flex items-start gap-2"
+                role="status"
+              >
+                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-green-300">{successMessage}</p>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="w-full py-4 bg-[#C9A050] text-black font-medium rounded-lg hover:bg-[#D4B861] transition-colors disabled:opacity-50"
+            disabled={status === 'submitting' || status === 'success'}
+            className="w-full py-4 bg-[#C9A050] text-black font-medium rounded-lg hover:bg-[#D4B861] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-busy={status === 'submitting'}
           >
-            {isSubmitting ? 'Subscribing...' : 'Get Free Report'}
+            {status === 'submitting' && 'Subscribing...'}
+            {status === 'success' && 'Subscribed!'}
+            {(status === 'idle' || status === 'error') && 'Get Free Report'}
           </button>
         </form>
 
         <button
           onClick={onClose}
           className="mt-4 w-full py-2 text-gray-500 hover:text-white transition-colors"
+          disabled={status === 'submitting'}
         >
-          Maybe later
+          {status === 'success' ? 'Close' : 'Maybe later'}
         </button>
       </motion.div>
     </div>

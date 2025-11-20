@@ -8,6 +8,7 @@ import {
   isDatabaseAvailable,
 } from '@/lib/db/client'
 import type { OrderFilters, PaginationParams } from '@/lib/db/types'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -54,7 +55,7 @@ export async function GET(request: Request) {
     // Fallback to filesystem
     return await getOrdersFromFilesystem()
   } catch (error) {
-    console.error('Failed to load orders:', error)
+    logger.error('Failed to load orders:', error)
     return NextResponse.json(
       {
         success: false,
@@ -73,7 +74,7 @@ async function getOrdersFromDatabase(
   pagination: PaginationParams
 ) {
   try {
-    console.log('📊 Loading orders from database...')
+    logger.info('Loading orders from database...')
 
     // Get orders and stats in parallel
     const [orders, stats] = await Promise.all([
@@ -81,11 +82,11 @@ async function getOrdersFromDatabase(
       getOrderStats(filters),
     ])
 
-    console.log(`✅ Loaded ${orders.length} orders from database`)
+    logger.info('Loaded ${orders.length} orders from database')
 
     return NextResponse.json({
       success: true,
-      orders: orders.map((order) => ({
+      orders: orders.map((order: any) => ({
         id: order.id,
         email: order.customer_email,
         total: order.total_amount,
@@ -109,7 +110,7 @@ async function getOrdersFromDatabase(
       dataSource: 'database',
     })
   } catch (error) {
-    console.error('❌ Database query failed, falling back to filesystem:', error)
+    logger.error('Database query failed, falling back to filesystem:', error)
     // Fallback to filesystem
     return await getOrdersFromFilesystem()
   }
@@ -120,7 +121,7 @@ async function getOrdersFromDatabase(
  */
 async function getOrdersFromFilesystem() {
   try {
-    console.log('📊 Loading orders from filesystem...')
+    logger.info('Loading orders from filesystem...')
 
     const indexFile = path.join(process.cwd(), 'data', 'orders', 'index.json')
 
@@ -149,7 +150,7 @@ async function getOrdersFromFilesystem() {
       pendingOrders: orders.filter((order: any) => order.status === 'pending' || order.status === 'paid').length,
     }
 
-    console.log(`✅ Loaded ${orders.length} orders from filesystem`)
+    logger.info('Loaded ${orders.length} orders from filesystem')
 
     return NextResponse.json({
       success: true,
@@ -158,7 +159,7 @@ async function getOrdersFromFilesystem() {
       dataSource: 'filesystem',
     })
   } catch (error) {
-    console.error('❌ Failed to load orders from filesystem:', error)
+    logger.error('Failed to load orders from filesystem:', error)
     throw error
   }
 }

@@ -1,17 +1,84 @@
 import { fetchProjects } from '@/lib/webflow-client'
 import { Hero } from '@/components/gallery/hero'
 import { ProjectGrid } from '@/components/gallery/project-grid'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateBreadcrumbSchema } from '@/lib/json-ld'
 
 export const metadata = {
-  title: 'Portfolio | Brandon Mills',
-  description: 'Fashion model, actor, author, cognitive researcher, and AI engineer. Explore a multifaceted portfolio of creative work.',
+  title: 'Model Portfolio & Fashion Photography | Brandon Mills',
+  description: 'Professional modeling portfolio featuring editorial, runway, and campaign photography. Fashion model and creative based in Los Angeles.',
+  keywords: [
+    'Brandon Mills model',
+    'fashion photography',
+    'model portfolio',
+    'editorial photography',
+    'runway model',
+    'Los Angeles model',
+    'fashion editorial',
+    'campaign photography',
+    'male model',
+    'creative portfolio',
+  ],
+  alternates: {
+    canonical: 'https://brandonmills.com/gallery',
+  },
+  openGraph: {
+    title: 'Model Portfolio & Fashion Photography | Brandon Mills',
+    description: 'Professional modeling portfolio featuring editorial, runway, and campaign photography.',
+    type: 'website',
+    url: 'https://brandonmills.com/gallery',
+    siteName: 'Brandon Mills',
+    images: [
+      {
+        url: 'https://brandonmills.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Brandon Mills Model Portfolio',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Model Portfolio | Brandon Mills',
+    description: 'Professional modeling portfolio - editorial, runway, and campaign photography.',
+    images: ['https://brandonmills.com/og-image.jpg'],
+  },
+}
+
+// Generate ImageGallery schema
+function generatePortfolioSchema(projectCount: number) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Brandon Mills Model Portfolio',
+    description: 'Professional modeling portfolio featuring editorial, runway, and campaign photography',
+    url: 'https://brandonmills.com/gallery',
+    mainEntity: {
+      '@type': 'ImageGallery',
+      name: 'Brandon Mills Photography Portfolio',
+      description: `${projectCount} professional photography projects showcasing editorial, runway, and campaign work`,
+      about: {
+        '@type': 'Person',
+        name: 'Brandon Mills',
+        jobTitle: 'Model',
+      },
+    },
+  }
 }
 
 export default async function GalleryPage() {
   const projects = await fetchProjects()
 
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Gallery', url: '/gallery' },
+  ])
+  const portfolioSchema = generatePortfolioSchema(projects.length)
+
   return (
-    <main className="min-h-screen bg-black">
+    <>
+      <JsonLd data={[breadcrumbSchema, portfolioSchema]} />
+      <main className="min-h-screen bg-black">
       <Hero />
 
       {/* Latest Work */}
@@ -80,5 +147,6 @@ export default async function GalleryPage() {
         </div>
       </footer>
     </main>
+    </>
   )
 }

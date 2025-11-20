@@ -1,21 +1,59 @@
 # robots.txt for brandonmills.com
-# Allow all search engines to crawl the site
+# Author: Brandon Mills
+# Last updated: 2024
 
 User-agent: *
 Allow: /
 
-# Priority pages for crawling
+# Priority pages - key content areas
 Allow: /shop
 Allow: /shop/*
 Allow: /meditations
 Allow: /meditations/*
 Allow: /writing
 Allow: /writing/*
+Allow: /blog
+Allow: /blog/*
+Allow: /gallery
+Allow: /gallery/*
 
-# Disallow admin/API routes
+# Disallow admin, API, and system routes
 Disallow: /api/
 Disallow: /admin/
 Disallow: /_next/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /*?*
+
+# Allow specific API endpoints for SEO
+Allow: /api/og
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1
+
+# Specific bot rules
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
 
 # Sitemap location
 Sitemap: https://brandonmills.com/sitemap.xml
+
+# Host directive
+Host: https://brandonmills.com

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
+import { logger } from '@/lib/logger'
 
 /**
  * Get pre-generated audio URLs for poems and meditations
@@ -27,7 +28,7 @@ function loadAudioMappings(): AudioMapping[] {
     audioMappings = JSON.parse(data)
     return audioMappings!
   } catch (error) {
-    console.warn('Audio mappings file not found. Run: npx tsx scripts/pre-generate-all-audio.ts')
+    logger.warn('Audio mappings file not found. Run: npx tsx scripts/pre-generate-all-audio.ts')
     return []
   }
 }

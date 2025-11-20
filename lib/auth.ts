@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import bcrypt from 'bcryptjs'
-import logger from './logger'
 import { createSession, validateSession, deleteSession } from './session-jwt'
+import { logger } from '@/lib/logger'
 
 // SECURITY: Use environment variables and never hardcode credentials
 // In production, store hashed passwords in a secure database
@@ -96,7 +96,7 @@ export async function requireAuth() {
 // Example usage: node -e "require('./lib/auth').generatePasswordHash('yourpassword')"
 export async function generatePasswordHash(password: string) {
   const hash = await hashPassword(password)
-  console.log('Add this to your .env.local file:')
-  console.log(`ADMIN_PASSWORD_HASH=${hash}`)
+  logger.info('Add this to your .env.local file:')
+  logger.info('ADMIN_PASSWORD_HASH=${hash}')
   return hash
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { affiliateProducts, AffiliateProduct } from '@/lib/affiliate-products'
+import { logger } from '@/lib/logger'
 
 // Map categories to our product database categories
 const categoryMapping: Record<string, string[]> = {
@@ -69,7 +70,7 @@ export async function GET(request: NextRequest) {
       recommendations: transformedResults,
     })
   } catch (error) {
-    console.error('Error fetching recommendations:', error)
+    logger.error('Error fetching recommendations:', error)
     return NextResponse.json(
       { error: 'Failed to fetch recommendations' },
       { status: 500 }

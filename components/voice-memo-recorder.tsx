@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import type { UploadedAudio } from './upload-interface'
+import { clientLogger } from '@/lib/client-logger'
 
 interface VoiceMemoRecorderProps {
   onAudioAdded: (audio: File) => void
@@ -56,7 +57,7 @@ export function VoiceMemoRecorder({
       }, 1000)
 
     } catch (error) {
-      console.error('Error accessing microphone:', error)
+      clientLogger.error('Error accessing microphone:', error)
       alert('Could not access microphone. Please check permissions.')
     }
   }, [onAudioAdded])

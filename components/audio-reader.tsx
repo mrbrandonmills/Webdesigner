@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Play, Pause, Volume2, VolumeX, User } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { trackAudioPlay, trackAudioComplete } from '@/lib/analytics'
+import { clientLogger } from '@/lib/client-logger'
 
 interface AudioReaderProps {
   contentId: string
@@ -49,7 +50,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
     const cachedUrl = localStorage.getItem(`audio-${contentId}-${selectedVoice}`)
 
     if (cachedUrl) {
-      console.log('Clearing old cached audio format:', cachedUrl.substring(0, 30) + '...')
+      clientLogger.info('Clearing old cached audio format', { data: cachedUrl.substring(0, 30) + '...' })
       localStorage.removeItem(`audio-${contentId}-${selectedVoice}`)
     }
 
@@ -72,11 +73,11 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
     // CRITICAL: Ensure volume is set to maximum and audio is unmuted
     audio.volume = 1.0
     audio.muted = false
-    console.log('Audio initialized - Volume:', audio.volume, 'Muted:', audio.muted)
+    clientLogger.info('Audio initialized', { volume: audio.volume, muted: audio.muted })
 
     const updateTime = () => setCurrentTime(audio.currentTime)
     const updateDuration = () => {
-      console.log('Audio duration loaded:', audio.duration)
+      clientLogger.info('Audio duration loaded:', { data: audio.duration })
       setDuration(audio.duration)
     }
     const handleEnded = () => {
@@ -85,16 +86,16 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       trackAudioComplete(contentType, contentId, audio.duration)
     }
     const handleError = (e: Event) => {
-      console.error('Audio error:', e)
+      clientLogger.error('Audio error:', e)
       const audioElement = e.target as HTMLAudioElement
       if (audioElement.error) {
-        console.error('Audio error code:', audioElement.error.code)
-        console.error('Audio error message:', audioElement.error.message)
+        clientLogger.error('Audio error code:', audioElement.error.code)
+        clientLogger.error('Audio error message:', audioElement.error.message)
       }
     }
     const handleCanPlay = () => {
-      console.log('Audio can play - ready to start')
-      console.log('Volume at canPlay:', audio.volume, 'Muted:', audio.muted)
+      clientLogger.info('Audio can play - ready to start')
+      clientLogger.info('Volume at canPlay', { volume: audio.volume, muted: audio.muted })
     }
 
     audio.addEventListener('timeupdate', updateTime)
@@ -104,9 +105,9 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
     audio.addEventListener('canplay', handleCanPlay)
 
     // Log audio element properties
-    console.log('Audio element src:', audio.src.substring(0, 100) + '...')
-    console.log('Audio element readyState:', audio.readyState)
-    console.log('Audio element networkState:', audio.networkState)
+    clientLogger.info('Audio element src', { data: audio.src.substring(0, 100) + '...' })
+    clientLogger.info('Audio element readyState', { data: audio.readyState })
+    clientLogger.info('Audio element networkState', { data: audio.networkState })
 
     return () => {
       audio.removeEventListener('timeupdate', updateTime)
@@ -130,7 +131,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
               setJustGenerated(false) // Reset flag
             })
             .catch(err => {
-              console.error('Auto-play failed:', err)
+              clientLogger.error('Auto-play failed:', err)
               setJustGenerated(false) // Reset flag even on error
               // Some browsers block auto-play, that's okay
             })
@@ -144,7 +145,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
 
     try {
       // First, try to get pre-generated audio
-      console.log('Checking for pre-generated audio...')
+      clientLogger.info('Checking for pre-generated audio...')
       const preGenResponse = await fetch(
         `/api/get-poem-audio?contentId=${contentId}&voice=${selectedVoice}`
       )
@@ -153,7 +154,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
         const data = await preGenResponse.json()
 
         if (data.audioUrl && data.preGenerated) {
-          console.log('Using pre-generated audio from blob storage')
+          clientLogger.info('Using pre-generated audio from blob storage')
           setAudioUrl(data.audioUrl)
           // Don't auto-play pre-generated audio
           setJustGenerated(false)
@@ -163,10 +164,10 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       }
 
       // Fall back to on-demand generation
-      console.log('No pre-generated audio found, generating on-demand...')
+      clientLogger.info('No pre-generated audio found, generating on-demand...')
       await generateAudioOnDemand()
     } catch (error) {
-      console.error('Failed to load audio:', error)
+      clientLogger.error('Failed to load audio:', error)
       const errorMsg = error instanceof Error
         ? `❌ GENERATION ERROR: ${error.message}`
         : `❌ GENERATION ERROR: ${String(error)}`
@@ -194,11 +195,11 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
 
       // Get the audio as a blob
       const audioBlob = await response.blob()
-      console.log('Received audio blob:', audioBlob.size, 'bytes', audioBlob.type)
+      clientLogger.info('Received audio blob', { size: audioBlob.size, type: audioBlob.type })
 
       // Create a blob URL for the audio
       const blobUrl = URL.createObjectURL(audioBlob)
-      console.log('Created blob URL:', blobUrl)
+      clientLogger.info('Created blob URL:', { data: blobUrl })
 
       setAudioUrl(blobUrl)
       setJustGenerated(true) // Mark that we just generated audio (for auto-play)
@@ -206,7 +207,7 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       // Don't store in localStorage - blob URLs are session-specific and invalid after refresh
       // Later we'll use pre-generated audio from Vercel Blob Storage for instant loading
     } catch (error) {
-      console.error('Failed to generate audio:', error)
+      clientLogger.error('Failed to generate audio:', error)
       throw error
     } finally {
       setIsGenerating(false)
@@ -221,18 +222,18 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
 
     const audio = audioRef.current
     if (!audio) {
-      console.error('Audio element not found')
+      clientLogger.error('Audio element not found')
       setErrorMessage('Audio element not found')
       return
     }
 
-    console.log('Toggle play - current state:', isPlaying)
-    console.log('Audio paused:', audio.paused)
-    console.log('Audio volume:', audio.volume)
-    console.log('Audio muted:', audio.muted)
-    console.log('Audio src:', audio.src.substring(0, 100) + '...')
-    console.log('Audio readyState:', audio.readyState)
-    console.log('Audio currentTime:', audio.currentTime)
+    clientLogger.info('Toggle play - current state', { data: isPlaying })
+    clientLogger.info('Audio paused', { data: audio.paused })
+    clientLogger.info('Audio volume', { data: audio.volume })
+    clientLogger.info('Audio muted', { data: audio.muted })
+    clientLogger.info('Audio src', { data: audio.src.substring(0, 100) + '...' })
+    clientLogger.info('Audio readyState', { data: audio.readyState })
+    clientLogger.info('Audio currentTime', { data: audio.currentTime })
 
     if (isPlaying) {
       audio.pause()
@@ -244,22 +245,22 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
       // Ensure volume is set before playing
       audio.volume = 1.0
       audio.muted = false
-      console.log('Playing with volume:', audio.volume, 'muted:', audio.muted)
+      clientLogger.info('Playing with volume', { volume: audio.volume, muted: audio.muted })
 
       audio.play()
         .then(() => {
-          console.log('Play started successfully')
-          console.log('After play - volume:', audio.volume, 'muted:', audio.muted, 'currentTime:', audio.currentTime)
+          clientLogger.info('Play started successfully')
+          clientLogger.info('After play - volume', { volume: audio.volume, muted: audio.muted, currentTime: audio.currentTime })
           setIsPlaying(true)
           setErrorMessage(null)
           // Track audio play event
           trackAudioPlay(contentType, contentId, title)
         })
         .catch(err => {
-          console.error('Play failed:', err)
+          clientLogger.error('Play failed:', err)
           const errorMsg = `❌ PLAYBACK ERROR: ${err.name} - ${err.message}`
           setErrorMessage(errorMsg)
-          console.error('Full error:', err)
+          clientLogger.error('Full error:', err)
         })
     }
   }
@@ -456,8 +457,8 @@ export function AudioReader({ contentId, title, textContent, voicePreference = '
           src={audioUrl}
           className="hidden"
           preload="auto"
-          onLoadedData={() => console.log('Audio data loaded')}
-          onLoadedMetadata={() => console.log('Audio metadata loaded')}
+          onLoadedData={() => clientLogger.info('Audio data loaded')}
+          onLoadedMetadata={() => clientLogger.info('Audio metadata loaded')}
         />
       )}
 

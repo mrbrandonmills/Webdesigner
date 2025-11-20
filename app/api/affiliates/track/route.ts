@@ -1,21 +1,49 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { TrackAffiliateClickSchema, formatZodErrors } from '@/lib/validations'
+import { logger } from '@/lib/logger'
+
+/**
+ * Affiliate click data structure
+ */
+interface AffiliateClick {
+  id: string
+  productId: string
+  program: string
+  timestamp: string
+  referrer: string | null
+  userAgent: string | null
+  ip: string | null
+  sessionId?: string
+}
 
 // In production, store in database
-const clickData: any[] = []
+const clickData: AffiliateClick[] = []
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
+    // Validate input with Zod
+    const validationResult = TrackAffiliateClickSchema.safeParse(body)
+    if (!validationResult.success) {
+      return NextResponse.json(
+        formatZodErrors(validationResult.error),
+        { status: 400 }
+      )
+    }
+
+    const data = validationResult.data
+
     const click = {
       id: `click-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      productId: body.productId,
-      program: body.program,
+      productId: data.productId,
+      program: data.program,
       timestamp: new Date().toISOString(),
-      referrer: body.referrer || request.headers.get('referer'),
-      userAgent: body.userAgent || request.headers.get('user-agent'),
+      referrer: data.referrer || request.headers.get('referer'),
+      userAgent: data.userAgent || request.headers.get('user-agent'),
       ip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip'),
-      sessionId: body.sessionId,
+      sessionId: data.sessionId,
     }
 
     // Store click data
@@ -32,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, clickId: click.id })
   } catch (error) {
-    console.error('Error tracking affiliate click:', error)
+    logger.error('Error tracking affiliate click:', error)
     return NextResponse.json(
       { error: 'Failed to track click' },
       { status: 500 }
@@ -61,7 +89,7 @@ export async function GET(request: NextRequest) {
     // Aggregate data
     const stats = {
       totalClicks: clicks.length,
-      clicksByProgram: clicks.reduce((acc: any, click) => {
+      clicksByProgram: clicks.reduce((acc: Record<string, number>, click) => {
         acc[click.program] = (acc[click.program] || 0) + 1
         return acc
       }, {}),
@@ -71,7 +99,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(stats)
   } catch (error) {
-    console.error('Error fetching click stats:', error)
+    logger.error('Error fetching click stats:', error)
     return NextResponse.json(
       { error: 'Failed to fetch stats' },
       { status: 500 }
@@ -79,7 +107,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-function aggregateByDay(clicks: any[]) {
+function aggregateByDay(clicks: AffiliateClick[]) {
   const byDay: Record<string, number> = {}
 
   clicks.forEach(click => {

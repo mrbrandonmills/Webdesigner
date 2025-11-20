@@ -78,7 +78,7 @@ export default function FeaturedCollections() {
               >
                 <Link
                   href={collection.href}
-                  className="group block relative overflow-hidden bg-white/5 border border-white/10 hover:border-accent-gold transition-all duration-500"
+                  className="group block relative overflow-hidden glass-card"
                 >
                   {/* Image Container */}
                   <div className="relative aspect-[4/5] overflow-hidden">
@@ -95,7 +95,7 @@ export default function FeaturedCollections() {
                     </div>
 
                     {/* Item count badge */}
-                    <div className="absolute top-4 right-4 px-4 py-2 bg-black/80 backdrop-blur-sm text-white/90 text-xs tracking-wider">
+                    <div className="absolute top-4 right-4 px-4 py-2 glass-badge text-white/90 text-xs tracking-wider">
                       {collection.items}
                     </div>
                   </div>

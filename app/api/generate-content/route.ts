@@ -4,6 +4,8 @@ import { generateObject } from 'ai'
 import { z } from 'zod'
 import { getBrandVoiceDirective } from '@/lib/voice-profile'
 import { getCategoryVoiceDirective } from '@/lib/category-prompts'
+import { GenerateContentSchema, formatZodErrors } from '@/lib/validations'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -26,14 +28,18 @@ const ContentSchema = z.object({
 
 export async function POST(request: Request) {
   try {
-    const { transcription, photoUrls, styleGuide } = await request.json()
+    const body = await request.json()
 
-    if (!photoUrls || photoUrls.length === 0) {
+    // Validate input with Zod
+    const validationResult = GenerateContentSchema.safeParse(body)
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'No photos provided' },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }
+
+    const { transcription, photoUrls, styleGuide } = validationResult.data
 
     // Build style-aware prompt with custom voice profile
     const brandVoiceDirective = getBrandVoiceDirective()
@@ -155,7 +161,7 @@ Generate content with category-specific voice applied throughout.`
 
     return NextResponse.json(object)
   } catch (error) {
-    console.error('Content generation error:', error)
+    logger.error('Content generation error:', error)
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Content generation failed',

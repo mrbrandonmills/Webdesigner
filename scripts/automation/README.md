@@ -8,6 +8,7 @@ This system automatically:
 - Posts to Reddit (1 post per day)
 - Posts to Twitter (1-2 tweets per day)
 - Posts to Quora (1 answer per day)
+- Posts to Instagram (@dopamills) - ✅ Configured
 - Generates fresh content using AI (weekly)
 
 ## Quick Start
@@ -39,6 +40,13 @@ TWITTER_ACCESS_SECRET=your_access_secret
 QUORA_EMAIL=your_email
 QUORA_PASSWORD=your_password
 
+# Instagram (@dopamills) - ✅ CONFIGURED
+META_APP_ID=1322977046248770
+META_APP_SECRET=176dc5e6afaabc9c22e59708218a1f14
+INSTAGRAM_BUSINESS_ACCOUNT_ID=17841478404116551
+FACEBOOK_PAGE_ID=918484411342370
+INSTAGRAM_ACCESS_TOKEN=your_token_here
+
 # AI (for content generation)
 OPENAI_API_KEY=your_key
 # or
@@ -68,6 +76,7 @@ npm run automate:status
 | `npm run automate:reddit` | Post to Reddit only |
 | `npm run automate:twitter` | Post to Twitter only |
 | `npm run automate:quora` | Post to Quora only |
+| `npm run automate:instagram` | Post to Instagram (@dopamills) only |
 | `npm run automate:generate` | Generate new content |
 
 ## Schedule (UTC)
@@ -169,6 +178,37 @@ Can be multiple paragraphs.
 Quora doesn't have a public API, so we use browser automation:
 1. Just use your regular Quora login credentials
 2. The system uses Puppeteer to automate the browser
+
+### Instagram (Dopamills Account) - ✅ Configured
+
+Instagram posting uses the Facebook/Meta Graph API:
+
+**Account:** @dopamills (Instagram Business Account: 17841478404116551)
+**Facebook Page:** Dopamills (918484411342370)
+**App:** Dopamills Automation (1322977046248770)
+
+**Setup Complete:**
+- ✅ Instagram Business Account linked to Facebook Page
+- ✅ @dopamills added as Instagram Tester
+- ✅ Token with full permissions (instagram_basic, instagram_content_publish, instagram_manage_comments, instagram_manage_insights)
+- ✅ Token expires: 2026
+
+**Test Connection:**
+```bash
+npx tsx scripts/automation/instagram-diagnose.ts
+```
+
+**Renew Token (When Expired):**
+1. Visit: `https://www.facebook.com/v21.0/dialog/oauth?client_id=1322977046248770&redirect_uri=https://localhost&scope=instagram_basic,instagram_content_publish,instagram_manage_comments,instagram_manage_insights,pages_show_list,pages_read_engagement&response_type=token`
+2. Approve permissions
+3. Copy token from redirect URL (after `access_token=`)
+4. Update `INSTAGRAM_ACCESS_TOKEN` in `.env.local`
+5. Test: `npx tsx scripts/automation/instagram-diagnose.ts`
+
+**Important:**
+- @dopamills must remain an "Instagram Tester" in the app
+- App is in Development Mode (not publicly published)
+- Token renewal required before 2026 expiration
 
 ## Logs
 

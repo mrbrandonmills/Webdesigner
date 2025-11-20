@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { login } from '@/lib/auth'
 import rateLimiter, { getClientIP } from '@/lib/rate-limiter'
 import logger from '@/lib/logger'
+import { LoginSchema, formatZodErrors } from '@/lib/validations'
 
 export async function POST(request: NextRequest) {
   const clientIP = getClientIP(request)
@@ -31,15 +33,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { username, password } = await request.json()
+    const body = await request.json()
 
-    // Validate input
-    if (!username || !password) {
+    // Validate input with Zod
+    const validationResult = LoginSchema.safeParse(body)
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Username and password are required' },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }
+
+    const { username, password } = validationResult.data
 
     const success = await login(username, password)
 

@@ -7,6 +7,19 @@
 import { contentThemes } from './store-curator'
 import fs from 'fs/promises'
 import path from 'path'
+import { logger } from '@/lib/logger'
+
+/**
+ * Theme object structure from store-curator
+ */
+interface ContentTheme {
+  name: string
+  essence: string
+  mood: string
+  colorPalette?: string[]
+  keywords?: string[]
+  [key: string]: unknown
+}
 
 export interface ProductVariant {
   id: string
@@ -113,7 +126,7 @@ export class ThemeProductGenerator {
       throw new Error(`Category not found: ${category}`)
     }
 
-    const theme = (themeCategory as any)[themeName]
+    const theme = (themeCategory as Record<string, ContentTheme>)[themeName]
     if (!theme) {
       throw new Error(`Theme not found: ${category}/${themeName}`)
     }
@@ -185,7 +198,7 @@ export class ThemeProductGenerator {
    * Generate compelling product description
    */
   private generateDescription(
-    theme: any, // Simplified type for theme object
+    theme: ContentTheme,
     productType: string,
     category: string
   ): string {
@@ -305,7 +318,7 @@ export class ThemeProductGenerator {
    * Generate product metadata
    */
   private generateMetadata(
-    theme: any, // Simplified type for theme object
+    theme: ContentTheme,
     productType: string,
     category: string
   ): ProductMetadata {
@@ -413,7 +426,7 @@ export class ThemeProductGenerator {
    * Generate SEO-optimized tags
    */
   private generateTags(
-    theme: any, // Simplified type for theme object
+    theme: ContentTheme,
     category: string,
     productType: string
   ): string[] {
@@ -491,7 +504,7 @@ export class ThemeProductGenerator {
               )
               products.push(product)
             } catch (error) {
-              console.error(`Error generating product for ${syncKey}:`, error)
+              logger.error('Error generating product for ${syncKey}:', error)
             }
           }
         }
@@ -508,7 +521,7 @@ export class ThemeProductGenerator {
       })
 
     } catch (error) {
-      console.error('Error loading source files:', error)
+      logger.error('Error loading source files:', error)
       throw error
     }
 
@@ -541,8 +554,8 @@ export class ThemeProductGenerator {
     // Write file
     await fs.writeFile(outputPath, JSON.stringify(catalog, null, 2))
 
-    console.log(`✅ Catalog saved to ${outputPath}`)
-    console.log(`   Total products: ${products.length}`)
-    console.log(`   Categories:`, categories)
+    logger.info('Catalog saved to ${outputPath}')
+    logger.info('Total products: ${products.length}')
+    logger.info('Categories:', { data: categories })
   }
 }

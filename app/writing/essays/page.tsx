@@ -1,13 +1,47 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { mediumEssays, getAllCategories } from '@/data/medium-essays'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateBreadcrumbSchema } from '@/lib/json-ld'
 
 export const metadata: Metadata = {
-  title: 'Essays | Brandon Mills',
-  description: 'Philosophical essays on identity, embodiment, consciousness, and the human condition. From social theory to self-actualization.',
+  title: 'Philosophy Essays on Consciousness & Self-Actualization | Brandon Mills',
+  description: 'Deep philosophical essays exploring identity, consciousness, social theory, and self-actualization. Original writings on the human condition by Brandon Mills.',
+  keywords: [
+    'philosophy essays',
+    'consciousness essays',
+    'self-actualization',
+    'social theory',
+    'identity philosophy',
+    'human condition',
+    'Brandon Mills essays',
+    'philosophical writing',
+    'existential philosophy',
+    'personal growth essays',
+  ],
+  alternates: {
+    canonical: 'https://brandonmills.com/writing/essays',
+  },
   openGraph: {
-    title: 'Essays | Brandon Mills',
-    description: 'Exploring philosophy, consciousness, and what it means to be human',
+    title: 'Philosophy Essays on Consciousness & Self-Actualization | Brandon Mills',
+    description: 'Deep philosophical essays exploring identity, consciousness, social theory, and self-actualization.',
+    type: 'website',
+    url: 'https://brandonmills.com/writing/essays',
+    siteName: 'Brandon Mills',
+    images: [
+      {
+        url: 'https://brandonmills.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Brandon Mills Philosophy Essays',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Philosophy Essays | Brandon Mills',
+    description: 'Deep philosophical essays on consciousness, identity, and self-actualization.',
+    images: ['https://brandonmills.com/og-image.jpg'],
   },
 }
 
@@ -21,9 +55,47 @@ const essays = mediumEssays.map((essay) => ({
   readTime: essay.readTime,
 }))
 
+// Generate CollectionPage schema for essays listing
+function generateEssayCollectionSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'Philosophy Essays by Brandon Mills',
+    description: 'Deep philosophical essays exploring identity, consciousness, social theory, and self-actualization',
+    url: 'https://brandonmills.com/writing/essays',
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: mediumEssays.map((essay, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Article',
+          headline: essay.title,
+          description: essay.excerpt,
+          datePublished: essay.date,
+          url: `https://brandonmills.com/writing/essays/${essay.slug}`,
+          author: {
+            '@type': 'Person',
+            name: 'Brandon Mills',
+          },
+        },
+      })),
+    },
+  }
+}
+
 export default function EssaysPage() {
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Writing', url: '/writing' },
+    { name: 'Essays', url: '/writing/essays' },
+  ])
+  const essayCollectionSchema = generateEssayCollectionSchema()
+
   return (
-    <div className="min-h-screen bg-black text-white">
+    <>
+      <JsonLd data={[breadcrumbSchema, essayCollectionSchema]} />
+      <div className="min-h-screen bg-black text-white">
       {/* Hero Section */}
       <section className="pt-32 pb-20 container-wide relative overflow-hidden">
         <div
@@ -121,5 +193,6 @@ export default function EssaysPage() {
         </div>
       </section>
     </div>
+    </>
   )
 }

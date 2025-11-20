@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Check, Sparkles, Zap, Crown } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { clientLogger } from '@/lib/client-logger'
 
 interface MeditationBundleOfferProps {
   onClose?: () => void
@@ -32,7 +33,7 @@ export function MeditationBundleOffer({ onClose }: MeditationBundleOfferProps) {
         setIsLoading(false)
       }
     } catch (err) {
-      console.error('Bundle checkout error:', err)
+      clientLogger.error('Bundle checkout error:', err)
       setError('Unable to process payment. Please try again.')
       setIsLoading(false)
     }

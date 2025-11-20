@@ -8,6 +8,7 @@ import { StoreCurator } from '@/lib/store-curator'
 import { DesignGenerator } from '@/lib/design-generator'
 import { writeFile } from 'fs/promises'
 import path from 'path'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -30,18 +31,18 @@ interface CuratedProduct {
 
 export async function POST() {
   try {
-    console.log('🎨 Starting curated store generation...')
+    logger.info('Starting curated store generation...')
 
     // Get all curated recommendations from the curator
     const recommendations = StoreCurator.getCuratedCollection()
 
-    console.log(`📋 Curator selected ${recommendations.length} products`)
+    logger.info('Curator selected ${recommendations.length} products')
 
     // Generate designs for each recommendation
     const curatedProducts: CuratedProduct[] = []
 
     for (const rec of recommendations) {
-      console.log(`🎨 Generating design for: ${rec.themeName} (${rec.productType})`)
+      logger.info('Generating design for: ${rec.themeName} (${rec.productType})')
 
       let designSvg: string
 
@@ -57,7 +58,7 @@ export async function POST() {
         const essayId = rec.contentId.replace('essay-', '')
         designSvg = DesignGenerator.generatePhilosophyDesign(essayId, rec.productType)
       } else {
-        console.warn(`Unknown content type: ${rec.contentId}`)
+        logger.warn('Unknown content type: ${rec.contentId}')
         continue
       }
 
@@ -85,7 +86,7 @@ export async function POST() {
       }
 
       curatedProducts.push(product)
-      console.log(`✅ Created product: ${product.title}`)
+      logger.info('Created product: ${product.title}')
     }
 
     // Sort by priority
@@ -100,7 +101,7 @@ export async function POST() {
       'utf-8'
     )
 
-    console.log(`📦 Wrote ${curatedProducts.length} curated products to file`)
+    logger.info('Wrote ${curatedProducts.length} curated products to file')
 
     return NextResponse.json({
       success: true,
@@ -125,7 +126,7 @@ export async function POST() {
       },
     })
   } catch (error) {
-    console.error('Failed to generate curated store:', error)
+    logger.error('Failed to generate curated store:', error)
     return NextResponse.json(
       {
         success: false,

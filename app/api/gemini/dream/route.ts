@@ -1,8 +1,11 @@
 // /app/api/gemini/dream/route.ts
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { geminiModel } from '@/lib/gemini-client'
 import { put } from '@vercel/blob'
 import { nanoid } from 'nanoid'
+import { GeminiDreamSchema, formatZodErrors } from '@/lib/validations'
+import { logger } from '@/lib/logger'
 
 // Dream analysis response interface
 interface DreamAnalysis {
@@ -44,32 +47,20 @@ export async function POST(request: NextRequest) {
     let dream: string
     try {
       const body = await request.json()
-      dream = body.dream
+
+      // Validate input with Zod
+      const validationResult = GeminiDreamSchema.safeParse(body)
+      if (!validationResult.success) {
+        return NextResponse.json(
+          formatZodErrors(validationResult.error),
+          { status: 400 }
+        )
+      }
+
+      dream = validationResult.data.dream
     } catch {
       return NextResponse.json(
         { error: 'Invalid JSON in request body' },
-        { status: 400 }
-      )
-    }
-
-    // Validate dream input
-    if (!dream || typeof dream !== 'string') {
-      return NextResponse.json(
-        { error: 'Dream text is required' },
-        { status: 400 }
-      )
-    }
-
-    if (dream.length < 20) {
-      return NextResponse.json(
-        { error: 'Dream description must be at least 20 characters' },
-        { status: 400 }
-      )
-    }
-
-    if (dream.length > 5000) {
-      return NextResponse.json(
-        { error: 'Dream description must be under 5,000 characters' },
         { status: 400 }
       )
     }
@@ -298,7 +289,7 @@ Return ONLY the JavaScript code, no markdown or explanations.`
     })
 
   } catch (error) {
-    console.error('Dream analysis error:', error)
+    logger.error('Dream analysis error:', error)
 
     // Provide more helpful error messages
     if (error instanceof Error) {

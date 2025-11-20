@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 import { readFile, writeFile } from 'fs/promises'
 import path from 'path'
 import logger from '@/lib/logger'
+import { ReplicateProductsSchema, formatZodErrors } from '@/lib/validations'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -50,41 +52,16 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
 
-    // Validate input data
-    if (!body || typeof body !== 'object') {
+    // Validate input with Zod
+    const validationResult = ReplicateProductsSchema.safeParse(body)
+    if (!validationResult.success) {
       return NextResponse.json(
-        {
-          success: false,
-          error: 'Invalid request body'
-        },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }
 
-    const { products, variationsPerProduct } = body
-
-    // Validate products array exists and is valid
-    if (!products || !Array.isArray(products) || products.length === 0) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Products array is required and must not be empty'
-        },
-        { status: 400 }
-      )
-    }
-
-    // Validate variationsPerProduct
-    if (!variationsPerProduct || typeof variationsPerProduct !== 'number' ||
-        variationsPerProduct < 1 || variationsPerProduct > 10) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Variations per product must be a number between 1 and 10'
-        },
-        { status: 400 }
-      )
-    }
+    const { products, variationsPerProduct } = validationResult.data
 
     logger.info(`Creating ${variationsPerProduct} variations for ${products.length} top performers`)
 

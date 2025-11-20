@@ -4,6 +4,7 @@ import { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Share2, Twitter, Facebook, Link2, Check, Download, X } from 'lucide-react'
 import html2canvas from 'html2canvas'
+import { clientLogger } from '@/lib/client-logger'
 
 interface ShareCardProps {
   type: 'dream' | 'archetype' | 'visualization'
@@ -35,7 +36,7 @@ export function ShareCard({ type, title, subtitle, description, id, onClose }: S
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy:', err)
+      clientLogger.error('Failed to copy:', err)
     }
   }, [shareUrl])
 
@@ -66,7 +67,7 @@ export function ShareCard({ type, title, subtitle, description, id, onClose }: S
       link.href = canvas.toDataURL('image/png')
       link.click()
     } catch (err) {
-      console.error('Failed to generate image:', err)
+      clientLogger.error('Failed to generate image:', err)
     } finally {
       setIsGenerating(false)
     }

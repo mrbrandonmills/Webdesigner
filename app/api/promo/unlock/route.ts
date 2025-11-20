@@ -4,17 +4,10 @@ import { validatePromoCode, recordPromoCodeUsage } from '@/lib/promo-codes'
 import { writeFile, readFile, mkdir } from 'fs/promises'
 import path from 'path'
 import logger from '@/lib/logger'
+import { UnlockPromoSchema, formatZodErrors } from '@/lib/validations'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
-
-// Validation schema
-const unlockRequestSchema = z.object({
-  code: z.string().min(1, 'Promo code is required'),
-  contentType: z.enum(['meditation', 'book']),
-  contentId: z.string().min(1, 'Content ID is required'),
-  email: z.string().email('Valid email is required'),
-})
 
 /**
  * POST /api/promo/unlock
@@ -23,15 +16,11 @@ const unlockRequestSchema = z.object({
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const validationResult = unlockRequestSchema.safeParse(body)
+    const validationResult = UnlockPromoSchema.safeParse(body)
 
     if (!validationResult.success) {
       return NextResponse.json(
-        {
-          success: false,
-          message: 'Invalid request data',
-          details: validationResult.error.flatten(),
-        },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }

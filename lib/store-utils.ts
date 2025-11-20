@@ -2,7 +2,27 @@
  * Utility functions for the luxury e-commerce store
  */
 
-import { Product, ProductVariant } from '@/types/store'
+import { Product, ProductVariant, WishlistItem, RecentlyViewed } from '@/types/store'
+import { logger } from '@/lib/logger'
+
+/**
+ * Wishlist item with product reference
+ */
+interface WishlistStorageItem {
+  id: string
+  productId: number
+  product: Product
+  addedAt: string
+  priceAtTimeOfAdd: string
+}
+
+/**
+ * Recently viewed storage item
+ */
+interface RecentlyViewedStorageItem {
+  productId: number
+  viewedAt: string
+}
 
 /**
  * Strategic pricing based on product type
@@ -236,14 +256,14 @@ export function formatDeliveryDate(daysFromNow: number): string {
  * Wishlist management
  */
 export const wishlistUtils = {
-  add: (productId: number, product: any): void => {
+  add: (productId: number, product: Product): void => {
     if (typeof window === 'undefined') return
 
     try {
       const existing = localStorage.getItem('wishlist')
-      const wishlist = existing ? JSON.parse(existing) : []
+      const wishlist: WishlistStorageItem[] = existing ? JSON.parse(existing) : []
 
-      const newItem = {
+      const newItem: WishlistStorageItem = {
         id: `${productId}-${Date.now()}`,
         productId,
         product,
@@ -254,7 +274,7 @@ export const wishlistUtils = {
       wishlist.push(newItem)
       localStorage.setItem('wishlist', JSON.stringify(wishlist))
     } catch (error) {
-      console.error('Failed to add to wishlist:', error)
+      logger.error('Failed to add to wishlist:', error)
     }
   },
 
@@ -265,11 +285,11 @@ export const wishlistUtils = {
       const existing = localStorage.getItem('wishlist')
       if (!existing) return
 
-      const wishlist = JSON.parse(existing)
-      const filtered = wishlist.filter((item: any) => item.id !== itemId)
+      const wishlist: WishlistStorageItem[] = JSON.parse(existing)
+      const filtered = wishlist.filter((item: WishlistStorageItem) => item.id !== itemId)
       localStorage.setItem('wishlist', JSON.stringify(filtered))
     } catch (error) {
-      console.error('Failed to remove from wishlist:', error)
+      logger.error('Failed to remove from wishlist:', error)
     }
   },
 
@@ -280,22 +300,22 @@ export const wishlistUtils = {
       const existing = localStorage.getItem('wishlist')
       if (!existing) return false
 
-      const wishlist = JSON.parse(existing)
-      return wishlist.some((item: any) => item.productId === productId)
+      const wishlist: WishlistStorageItem[] = JSON.parse(existing)
+      return wishlist.some((item: WishlistStorageItem) => item.productId === productId)
     } catch (error) {
-      console.error('Failed to check wishlist:', error)
+      logger.error('Failed to check wishlist:', error)
       return false
     }
   },
 
-  getAll: (): any[] => {
+  getAll: (): WishlistStorageItem[] => {
     if (typeof window === 'undefined') return []
 
     try {
       const existing = localStorage.getItem('wishlist')
       return existing ? JSON.parse(existing) : []
     } catch (error) {
-      console.error('Failed to get wishlist:', error)
+      logger.error('Failed to get wishlist:', error)
       return []
     }
   },
@@ -310,10 +330,10 @@ export const recentlyViewedUtils = {
 
     try {
       const existing = localStorage.getItem('recentlyViewed')
-      const viewed = existing ? JSON.parse(existing) : []
+      const viewed: RecentlyViewedStorageItem[] = existing ? JSON.parse(existing) : []
 
       // Remove if already exists
-      const filtered = viewed.filter((item: any) => item.productId !== productId)
+      const filtered = viewed.filter((item: RecentlyViewedStorageItem) => item.productId !== productId)
 
       // Add to beginning
       filtered.unshift({
@@ -326,18 +346,18 @@ export const recentlyViewedUtils = {
 
       localStorage.setItem('recentlyViewed', JSON.stringify(trimmed))
     } catch (error) {
-      console.error('Failed to add to recently viewed:', error)
+      logger.error('Failed to add to recently viewed:', error)
     }
   },
 
-  getAll: (): any[] => {
+  getAll: (): RecentlyViewedStorageItem[] => {
     if (typeof window === 'undefined') return []
 
     try {
       const existing = localStorage.getItem('recentlyViewed')
       return existing ? JSON.parse(existing) : []
     } catch (error) {
-      console.error('Failed to get recently viewed:', error)
+      logger.error('Failed to get recently viewed:', error)
       return []
     }
   },
@@ -348,7 +368,7 @@ export const recentlyViewedUtils = {
     try {
       localStorage.removeItem('recentlyViewed')
     } catch (error) {
-      console.error('Failed to clear recently viewed:', error)
+      logger.error('Failed to clear recently viewed:', error)
     }
   },
 }

@@ -8,12 +8,14 @@ import { format } from 'date-fns';
 interface ConciergeMessageProps {
   message: ConciergeMessage;
   onPlayAudio?: (audioUrl: string) => void;
+  onQuickAction?: (action: string) => void;
   isPlaying?: boolean;
 }
 
 export function ConciergeMessageComponent({
   message,
   onPlayAudio,
+  onQuickAction,
   isPlaying = false
 }: ConciergeMessageProps) {
   const isAssistant = message.role === 'assistant';
@@ -43,9 +45,31 @@ export function ConciergeMessageComponent({
         </div>
 
         {/* Message Content */}
-        <p className="text-white/90 leading-relaxed font-light mb-3">
+        <div className="text-white/90 leading-relaxed font-light mb-3 whitespace-pre-line">
           {message.content}
-        </p>
+        </div>
+
+        {/* Quick Action Buttons */}
+        {message.metadata?.quickActions && message.metadata.quickActions.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="mt-4 flex flex-wrap gap-2"
+          >
+            {message.metadata.quickActions.map((quickAction) => (
+              <motion.button
+                key={quickAction.id}
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onQuickAction?.(quickAction.action)}
+                className="px-4 py-2 bg-gradient-to-r from-accent-gold/20 to-accent-gold/10 hover:from-accent-gold/30 hover:to-accent-gold/20 border border-accent-gold/30 hover:border-accent-gold/50 rounded-lg text-xs font-medium text-white/90 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-accent-gold/20"
+              >
+                {quickAction.label}
+              </motion.button>
+            ))}
+          </motion.div>
+        )}
 
         {/* Art Preview */}
         {message.metadata?.artPreview && (

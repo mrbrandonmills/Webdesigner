@@ -8,7 +8,7 @@
 /**
  * Track a custom event in Google Analytics
  */
-export const trackEvent = (eventName: string, eventParams?: Record<string, any>) => {
+export const trackEvent = (eventName: string, eventParams?: Record<string, unknown>) => {
   if (typeof window !== 'undefined' && window.gtag) {
     window.gtag('event', eventName, eventParams)
   }
@@ -156,12 +156,22 @@ export const trackAddToCart = (
 }
 
 /**
+ * Checkout item structure for analytics
+ */
+interface CheckoutItem {
+  item_id: string
+  item_name: string
+  price: number
+  quantity: number
+}
+
+/**
  * Track checkout initiation
  *
  * @param value - Total cart value
  * @param items - Array of items in cart
  */
-export const trackBeginCheckout = (value: number, items: any[]) => {
+export const trackBeginCheckout = (value: number, items: CheckoutItem[]) => {
   trackEvent('begin_checkout', {
     currency: 'USD',
     value: value,

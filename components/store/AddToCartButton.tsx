@@ -77,7 +77,7 @@ export default function AddToCartButton({
       {/* Quantity Selector */}
       <div className="space-y-3">
         <div className="text-sm tracking-[0.2em] uppercase text-white/40">Quantity</div>
-        <div className="flex items-center gap-2 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full p-2 w-fit">
+        <div className="flex items-center gap-2 glass-input rounded-full p-2 w-fit">
           <button
             onClick={() => setQuantity(Math.max(1, quantity - 1))}
             className="p-3 hover:bg-accent-gold/20 hover:text-accent-gold transition-all duration-300 rounded-full"
@@ -159,7 +159,7 @@ export default function AddToCartButton({
         {inStock && (
           <button
             onClick={handleBuyNow}
-            className="w-full py-5 border-2 border-accent-gold text-accent-gold rounded-full hover:bg-accent-gold hover:text-black transition-all duration-300 font-medium tracking-[0.2em] uppercase backdrop-blur-xl"
+            className="w-full py-5 glass-button border-accent-gold/50 text-accent-gold rounded-full hover:bg-accent-gold/20 hover:border-accent-gold transition-all duration-300 font-medium tracking-[0.2em] uppercase"
           >
             Buy Now
           </button>
@@ -169,13 +169,13 @@ export default function AddToCartButton({
         <button
           onClick={handleWishlist}
           className={`
-            w-full py-5 border border-white/10 rounded-full transition-all duration-300
-            font-medium tracking-[0.2em] uppercase backdrop-blur-xl
+            w-full py-5 glass-button rounded-full transition-all duration-300
+            font-medium tracking-[0.2em] uppercase
             flex items-center justify-center gap-3
             ${
               isWishlisted
-                ? 'border-red-500 bg-red-500/10 text-red-400'
-                : 'hover:bg-white/5 hover:border-accent-gold/30 text-white/80'
+                ? 'border-red-500/50 bg-red-500/10 text-red-400'
+                : 'hover:bg-white/10 hover:border-accent-gold/30 text-white/80'
             }
           `}
         >
@@ -191,7 +191,7 @@ export default function AddToCartButton({
 
       {/* Additional Info */}
       {inStock && quantity > 1 && (
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4">
+        <div className="glass-accent rounded-2xl p-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-white/60">Total for {quantity} items:</span>
             <span className="text-2xl font-light text-accent-gold">

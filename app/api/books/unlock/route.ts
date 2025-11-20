@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import Stripe from 'stripe'
+import { BookUnlockSchema, formatZodErrors } from '@/lib/validations'
+import { logger } from '@/lib/logger'
 
 // Mark as dynamic to prevent static generation
 export const dynamic = 'force-dynamic'
@@ -16,14 +19,17 @@ function getStripe() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { bookId, title, price } = body
 
-    if (!bookId || !title || !price) {
+    // Validate input with Zod
+    const validationResult = BookUnlockSchema.safeParse(body)
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        formatZodErrors(validationResult.error),
         { status: 400 }
       )
     }
+
+    const { bookId, title, price } = validationResult.data
 
     // Create Stripe Checkout Session for book purchase
     const stripe = getStripe()
@@ -54,7 +60,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ checkoutUrl: session.url })
   } catch (error) {
-    console.error('Book unlock error:', error)
+    logger.error('Book unlock error:', error)
     return NextResponse.json(
       { error: 'Failed to create checkout session' },
       { status: 500 }

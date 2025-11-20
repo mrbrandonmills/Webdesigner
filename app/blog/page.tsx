@@ -6,11 +6,45 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { generateBreadcrumbSchema } from '@/lib/json-ld'
 
 export const metadata: Metadata = {
-  title: 'Blog | Brandon Mills',
-  description: 'Writing on modeling, photography collaborations, creative process, and the intersection of art and performance.',
+  title: 'Mental Health Blog & Philosophy Essays | Brandon Mills',
+  description: 'Explore 74+ articles on mental health, Jungian psychology, dream interpretation, self-actualization, and consciousness. Expert insights for deep thinkers.',
+  keywords: [
+    'mental health blog',
+    'philosophy essays',
+    'Jungian psychology',
+    'dream interpretation',
+    'self-actualization',
+    'consciousness blog',
+    'Brandon Mills blog',
+    'psychology articles',
+    'personal development',
+    'shadow work',
+    'archetypes',
+    'meditation articles',
+  ],
+  alternates: {
+    canonical: 'https://brandonmills.com/blog',
+  },
   openGraph: {
-    title: 'Blog | Brandon Mills',
-    description: 'Essays, reflections, and stories from the creative journey',
+    title: 'Mental Health Blog & Philosophy Essays | Brandon Mills',
+    description: 'Explore 74+ articles on mental health, Jungian psychology, dream interpretation, and self-actualization.',
+    type: 'website',
+    url: 'https://brandonmills.com/blog',
+    siteName: 'Brandon Mills',
+    images: [
+      {
+        url: 'https://brandonmills.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Brandon Mills Blog - Mental Health & Philosophy',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Mental Health Blog & Philosophy Essays | Brandon Mills',
+    description: 'Explore 74+ articles on mental health, Jungian psychology, and self-actualization.',
+    images: ['https://brandonmills.com/og-image.jpg'],
   },
 }
 

@@ -93,9 +93,9 @@ export function ShopPageClient({ products }: ShopPageClientProps) {
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       filtered = filtered.filter(product =>
-        product.title.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query) ||
-        product.tags?.some(tag => tag.toLowerCase().includes(query))
+        product.title?.toLowerCase().includes(query) ||
+        product.description?.toLowerCase().includes(query) ||
+        product.tags?.some(tag => tag?.toLowerCase().includes(query))
       )
     }
 

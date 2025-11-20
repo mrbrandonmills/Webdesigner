@@ -1,6 +1,7 @@
 import { put } from '@vercel/blob'
 import { NextResponse } from 'next/server'
 import OpenAI from 'openai'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60 // Allow up to 60 seconds for transcription
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
       language: transcription.language,
     })
   } catch (error) {
-    console.error('Transcription error:', error)
+    logger.error('Transcription error:', error)
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Transcription failed',

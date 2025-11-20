@@ -7,6 +7,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 
 const REDDIT_CLIENT_ID = process.env.REDDIT_CLIENT_ID
 const REDDIT_CLIENT_SECRET = process.env.REDDIT_CLIENT_SECRET
@@ -141,7 +142,7 @@ export async function POST(request: NextRequest) {
       message: 'Post published successfully!',
     })
   } catch (error: any) {
-    console.error('Reddit post error:', error)
+    logger.error('Reddit post error:', error)
     return NextResponse.json(
       { error: error.message || 'Failed to post to Reddit' },
       { status: 500 }

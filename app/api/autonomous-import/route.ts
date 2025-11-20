@@ -5,6 +5,7 @@ import { z } from 'zod'
 import { BRAND_VOICE_PROFILE } from '@/lib/voice-profile'
 import fs from 'fs'
 import path from 'path'
+import { logger } from '@/lib/logger'
 
 // Portfolio post interface
 interface PortfolioPost {
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
     const post = portfolioContent[postIndex]
 
     // Enhance content with Claude using brand voice
-    console.log(`Enhancing content for: ${post.title}`)
+    logger.info('Enhancing content for: ${post.title}')
 
     const enhancementPrompt = `You are writing enhanced portfolio content for Brandon Mills.
 
@@ -96,7 +97,7 @@ ENHANCE this post while preserving its essence and elevating it with your unique
       temperature: 0.8, // More creative for content
     })
 
-    console.log('Enhanced content generated:', enhanced)
+    logger.info('Enhanced content generated:', { data: enhanced })
 
     // Now publish to Webflow
     const webflowToken = process.env.WEBFLOW_API_TOKEN
@@ -137,7 +138,7 @@ ENHANCE this post while preserving its essence and elevating it with your unique
       isArchived: false,
     }
 
-    console.log('Publishing to Webflow:', cmsItemData.fieldData.name)
+    logger.info('Publishing to Webflow:', { data: cmsItemData.fieldData.name })
 
     const webflowResponse = await fetch(
       `https://api.webflow.com/v2/collections/${collectionId}/items`,
@@ -154,12 +155,12 @@ ENHANCE this post while preserving its essence and elevating it with your unique
 
     if (!webflowResponse.ok) {
       const errorData = await webflowResponse.json()
-      console.error('Webflow API error:', errorData)
+      logger.error('Webflow API error:', errorData)
       throw new Error(`Webflow API error: ${JSON.stringify(errorData)}`)
     }
 
     const webflowData = await webflowResponse.json()
-    console.log('Published to Webflow successfully:', webflowData)
+    logger.info('Published to Webflow successfully:', { data: webflowData })
 
     return NextResponse.json({
       success: true,
@@ -173,7 +174,7 @@ ENHANCE this post while preserving its essence and elevating it with your unique
     })
 
   } catch (error: any) {
-    console.error('Autonomous import error:', error)
+    logger.error('Autonomous import error:', error)
     return NextResponse.json(
       {
         error: 'Import failed',

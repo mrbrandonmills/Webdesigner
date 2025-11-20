@@ -3,6 +3,7 @@ import { put } from '@vercel/blob'
 import { generateText } from 'ai'
 import { anthropic } from '@ai-sdk/anthropic'
 import OpenAI from 'openai'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 300 // 5 minutes for batch processing
@@ -45,10 +46,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No files provided' }, { status: 400 })
     }
 
-    console.log(`Processing ${files.length} files for ${collectionType} collection`)
+    logger.info('Processing ${files.length} files for ${collectionType} collection')
 
     // Step 1: Upload all files to Vercel Blob
-    console.log('Uploading files to storage...')
+    logger.info('Uploading files to storage...')
     const uploadedFiles = await Promise.all(
       files.map(async (file) => {
         const filename = `${collectionType}/${Date.now()}-${file.name}`
@@ -70,7 +71,7 @@ export async function POST(request: Request) {
     let transcription = ''
 
     if (audioFile) {
-      console.log('Transcribing voice memo...')
+      logger.info('Transcribing voice memo...')
       const whisperResponse = await openai.audio.transcriptions.create({
         file: audioFile,
         model: 'whisper-1',
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
       })
 
       transcription = whisperResponse.text
-      console.log(`Transcribed ${transcription.split(/\s+/).length} words`)
+      logger.info('Transcribed ${transcription.split(/\s+/).length} words')
 
       // Upload voice memo to storage
       const audioFilename = `${collectionType}/voice-memos/${Date.now()}-${audioFile.name}`
@@ -94,7 +95,7 @@ export async function POST(request: Request) {
     }
 
     // Step 3: Use AI to generate collection metadata
-    console.log('Generating collection metadata...')
+    logger.info('Generating collection metadata...')
 
     const fileTypes = uploadedFiles.map(f => f.type).join(', ')
     const hasVideo = uploadedFiles.some(f => f.type === 'video')
@@ -166,11 +167,11 @@ Keywords: keyword1, keyword2, keyword3, keyword4, keyword5
         const sizeInMB = file.size / 1024 / 1024
         // Rough heuristic: files over 50MB or certain naming patterns suggest reels
         const likelyReel = sizeInMB > 50 || file.filename.toLowerCase().includes('reel')
-        console.log(`Video ${file.filename}: ${sizeInMB.toFixed(2)}MB - ${likelyReel ? 'REEL' : 'CLIP'}`)
+        logger.info('Log message', { template: `Video ${file.filename}: ${sizeInMB.toFixed(2)}MB - ${likelyReel ? 'REEL' : 'CLIP'}` })
       })
     }
 
-    console.log(`✅ Collection created: "${collection.title}"`)
+    logger.info('Log message', { template: `✅ Collection created: "${collection.title}"` })
 
     // TODO: Save collection to database
     // For now, return the collection data
@@ -182,7 +183,7 @@ Keywords: keyword1, keyword2, keyword3, keyword4, keyword5
       message: `Successfully created ${collectionType} collection: "${collection.title}"`,
     })
   } catch (error) {
-    console.error('Collection upload error:', error)
+    logger.error('Collection upload error:', error)
     return NextResponse.json(
       {
         success: false,

@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react'
 import { UnifiedProduct } from '@/lib/types/shop'
 import { ProductGallery } from './product-gallery'
 import { MockupGenerator } from './mockup-generator'
+import { clientLogger } from '@/lib/client-logger'
 
 interface ProductDetailModalProps {
   product: UnifiedProduct | null
@@ -61,7 +62,7 @@ export function ProductDetailModal({
           url: window.location.href,
         })
       } catch (err) {
-        console.log('Error sharing:', err)
+        clientLogger.info('Error sharing:', { data: err })
       }
     }
   }
@@ -98,7 +99,12 @@ export function ProductDetailModal({
         >
           {/* Backdrop */}
           <motion.div
-            className="absolute inset-0 bg-black/95 backdrop-blur-xl"
+            className="absolute inset-0"
+            style={{
+              background: 'rgba(0, 0, 0, 0.9)',
+              backdropFilter: 'blur(40px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(40px) saturate(180%)',
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -106,7 +112,7 @@ export function ProductDetailModal({
 
           {/* Modal Content */}
           <motion.div
-            className="relative w-full max-w-7xl h-[90vh] mx-4 bg-gradient-to-br from-white/10 to-white/5 border border-white/20 overflow-hidden"
+            className="relative w-full max-w-7xl h-[90vh] mx-4 glass-modal overflow-hidden"
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
@@ -115,7 +121,7 @@ export function ProductDetailModal({
           >
             {/* Close Button */}
             <motion.button
-              className="absolute top-6 right-6 z-20 p-3 bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 transition-colors"
+              className="absolute top-6 right-6 z-20 p-3 glass-button rounded-full text-white"
               onClick={onClose}
               whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.9 }}
@@ -126,10 +132,10 @@ export function ProductDetailModal({
             {/* Action Buttons */}
             <div className="absolute top-6 right-20 z-20 flex gap-2">
               <motion.button
-                className={`p-3 backdrop-blur-sm transition-colors ${
+                className={`p-3 glass-button rounded-full transition-colors ${
                   isFavorited
-                    ? 'bg-red-500/80 text-white'
-                    : 'bg-black/60 text-white hover:bg-black/80'
+                    ? 'bg-red-500/30 border-red-500/50 text-red-400'
+                    : 'text-white'
                 }`}
                 onClick={() => setIsFavorited(!isFavorited)}
                 whileHover={{ scale: 1.1 }}
@@ -139,7 +145,7 @@ export function ProductDetailModal({
               </motion.button>
 
               <motion.button
-                className="p-3 bg-black/60 backdrop-blur-sm text-white hover:bg-black/80 transition-colors"
+                className="p-3 glass-button rounded-full text-white"
                 onClick={handleShare}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -284,10 +290,10 @@ export function ProductDetailModal({
                           {product.variants.map((variant, index) => (
                             <motion.button
                               key={variant.id}
-                              className={`px-6 py-3 border-2 transition-all ${
+                              className={`px-6 py-3 glass-button transition-all ${
                                 selectedVariant === index
                                   ? 'border-accent-gold bg-accent-gold/10 text-accent-gold'
-                                  : 'border-white/20 hover:border-white/40 text-white/80'
+                                  : 'text-white/80'
                               }`}
                               onClick={() => setSelectedVariant(index)}
                               whileHover={{ scale: 1.05 }}
@@ -308,7 +314,7 @@ export function ProductDetailModal({
                         </h3>
                         <div className="flex items-center gap-4">
                           <motion.button
-                            className="p-3 border border-white/20 hover:border-accent-gold hover:bg-accent-gold/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="p-3 glass-button rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                             onClick={() => setQuantity(Math.max(1, quantity - 1))}
                             disabled={quantity <= 1}
                             whileHover={{ scale: 1.05 }}
@@ -322,7 +328,7 @@ export function ProductDetailModal({
                           </span>
 
                           <motion.button
-                            className="p-3 border border-white/20 hover:border-accent-gold hover:bg-accent-gold/10 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                            className="p-3 glass-button rounded-lg transition-all disabled:opacity-30 disabled:cursor-not-allowed"
                             onClick={() => setQuantity(Math.min(99, quantity + 1))}
                             disabled={quantity >= 99}
                             whileHover={{ scale: 1.05 }}
@@ -342,7 +348,7 @@ export function ProductDetailModal({
                         href={product.amazonUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="block w-full px-8 py-4 bg-accent-gold text-black hover:bg-accent-hover transition-colors text-center text-lg tracking-wider uppercase font-medium flex items-center justify-center gap-3"
+                        className="block w-full px-8 py-4 glass-button bg-accent-gold/90 text-black hover:bg-accent-gold transition-colors text-center text-lg tracking-wider uppercase font-medium flex items-center justify-center gap-3"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
@@ -351,10 +357,10 @@ export function ProductDetailModal({
                       </motion.a>
                     ) : (
                       <motion.button
-                        className={`w-full px-8 py-4 transition-all text-lg tracking-wider uppercase font-medium flex items-center justify-center gap-3 ${
+                        className={`w-full px-8 py-4 glass-button transition-all text-lg tracking-wider uppercase font-medium flex items-center justify-center gap-3 ${
                           addedToCart
-                            ? 'bg-green-500 text-white'
-                            : 'bg-accent-gold text-black hover:bg-accent-hover'
+                            ? 'bg-green-500/90 border-green-500/50 text-white'
+                            : 'bg-accent-gold/90 border-accent-gold/50 text-black hover:bg-accent-gold'
                         }`}
                         onClick={handleAddToCart}
                         disabled={addedToCart}
@@ -369,7 +375,7 @@ export function ProductDetailModal({
                         ) : (
                           <>
                             <ShoppingBag size={20} />
-                            <span>Add to Cart • ${(product.price * quantity).toFixed(2)}</span>
+                            <span>Add to Cart - ${(product.price * quantity).toFixed(2)}</span>
                           </>
                         )}
                       </motion.button>

@@ -9,12 +9,52 @@ export interface ConciergeMessage {
   content: string;
   timestamp: Date;
   audioUrl?: string;
-  type?: 'text' | 'booking' | 'styling' | 'art' | 'system';
+  type?: 'text' | 'booking' | 'styling' | 'art' | 'system' | 'software' | 'lead-capture' | 'quick-actions';
   metadata?: {
     artPreview?: string;
     bookingData?: BookingData;
     stylingRecommendations?: StylingItem[];
+    quickActions?: QuickAction[];
+    softwareProducts?: SoftwareProduct[];
+    leadCaptureType?: 'mentoring' | 'software' | 'custom';
   };
+}
+
+export interface QuickAction {
+  id: string;
+  label: string;
+  action: string;
+  icon?: string;
+}
+
+export interface SoftwareProduct {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  features: string[];
+  demoAvailable: boolean;
+}
+
+export interface LeadData {
+  email: string;
+  name?: string;
+  phone?: string;
+  interest: 'mentoring' | 'software' | 'custom';
+  specificInterest?: string;
+  capturedAt: Date;
+  source: string;
+}
+
+export interface MentoringPackage {
+  id: string;
+  name: string;
+  sessions: number;
+  pricePerSession: number;
+  totalPrice: number;
+  savings: number;
+  features: string[];
+  popular?: boolean;
 }
 
 export interface BookingData {

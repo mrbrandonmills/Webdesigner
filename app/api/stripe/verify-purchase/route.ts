@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ valid: false, error: 'Payment not completed' }, { status: 400 })
   } catch (error) {
-    console.error('Stripe verification error:', error)
+    logger.error('Stripe verification error:', error)
     return NextResponse.json({ valid: false, error: 'Verification failed' }, { status: 500 })
   }
 }

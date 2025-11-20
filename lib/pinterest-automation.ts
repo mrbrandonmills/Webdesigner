@@ -8,6 +8,7 @@
 import { chromium, Browser, Page } from 'playwright'
 import { writeFile, readFile, mkdir } from 'fs/promises'
 import path from 'path'
+import { logger } from '@/lib/logger'
 
 interface PinterestCredentials {
   email: string
@@ -66,15 +67,15 @@ export class PinterestAutomation {
       // Check if session is expired
       const daysSinceLogin = (Date.now() - session.timestamp) / (1000 * 60 * 60 * 24)
       if (daysSinceLogin > SESSION_EXPIRY_DAYS) {
-        console.log('Pinterest session expired')
+        logger.info('Pinterest session expired')
         return false
       }
 
       await context.addCookies(session.cookies)
-      console.log('✅ Loaded Pinterest session from cache')
+      logger.info('Loaded Pinterest session from cache')
       return true
     } catch (error) {
-      console.log('No saved Pinterest session found')
+      logger.info('No saved Pinterest session found')
       return false
     }
   }
@@ -92,7 +93,7 @@ export class PinterestAutomation {
     const dataDir = path.dirname(PINTEREST_SESSION_FILE)
     await mkdir(dataDir, { recursive: true })
     await writeFile(PINTEREST_SESSION_FILE, JSON.stringify(session, null, 2))
-    console.log('✅ Saved Pinterest session')
+    logger.info('Saved Pinterest session')
   }
 
   /**
@@ -101,7 +102,7 @@ export class PinterestAutomation {
   async login(credentials: PinterestCredentials): Promise<void> {
     if (!this.page) throw new Error('Browser not initialized')
 
-    console.log('🔐 Logging into Pinterest...')
+    logger.info('Logging into Pinterest...')
 
     await this.page.goto('https://www.pinterest.com/login/')
     await this.page.waitForLoadState('networkidle')
@@ -123,7 +124,7 @@ export class PinterestAutomation {
     await this.page.waitForURL(/pinterest\.com\/(?!login)/, { timeout: 30000 })
     await this.page.waitForLoadState('networkidle')
 
-    console.log('✅ Successfully logged into Pinterest')
+    logger.info('Successfully logged into Pinterest')
 
     // Save session for reuse
     if (this.browser) {
@@ -165,7 +166,7 @@ export class PinterestAutomation {
     if (!this.page) throw new Error('Browser not initialized')
 
     try {
-      console.log(`📌 Creating Pin: ${pinData.title}`)
+      logger.info('Creating Pin: ${pinData.title}')
 
       // Go to Pin creation page
       await this.page.goto('https://www.pinterest.com/pin-builder/')
@@ -250,14 +251,14 @@ export class PinterestAutomation {
       const isSuccess = await successIndicator.isVisible().catch(() => false)
 
       if (isSuccess || currentUrl.includes('/pin/')) {
-        console.log(`✅ Pin created successfully: ${pinUrl}`)
+        logger.info('Pin created successfully: ${pinUrl}')
         return { success: true, pinUrl }
       } else {
         throw new Error('Pin creation did not complete successfully')
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      console.error('❌ Failed to create Pin:', errorMessage)
+      logger.error('Failed to create Pin:', errorMessage)
       return { success: false, error: errorMessage }
     }
   }
@@ -283,7 +284,7 @@ export class PinterestAutomation {
 
       return boards
     } catch (error) {
-      console.error('Failed to fetch boards:', error)
+      logger.error('Failed to fetch boards:', error)
       return []
     }
   }
@@ -297,7 +298,7 @@ export class PinterestAutomation {
     const screenshotPath = path.join(process.cwd(), 'data', 'screenshots', filename)
     await mkdir(path.dirname(screenshotPath), { recursive: true })
     await this.page.screenshot({ path: screenshotPath, fullPage: true })
-    console.log(`📸 Screenshot saved: ${screenshotPath}`)
+    logger.info('Screenshot saved: ${screenshotPath}')
   }
 
   /**
@@ -334,7 +335,7 @@ export async function createPinterestPin(
       }
       await automation.login(credentials)
     } else {
-      console.log('✅ Using existing Pinterest session')
+      logger.info('Using existing Pinterest session')
     }
 
     // Create the Pin

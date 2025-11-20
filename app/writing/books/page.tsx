@@ -2,10 +2,48 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Library, Lock, Unlock } from 'lucide-react'
 import { RippleButton } from '@/components/ripple-button'
+import { JsonLd } from '@/components/seo/JsonLd'
+import { generateBreadcrumbSchema } from '@/lib/json-ld'
 
 export const metadata: Metadata = {
-  title: 'Books | Brandon Mills',
-  description: 'Full-length works exploring consciousness, self-actualization, and transformation. Random Acts of Self-Actualization trilogy available for purchase.',
+  title: 'Self-Actualization Books - Random Acts Trilogy | Brandon Mills',
+  description: 'Purchase the Random Acts of Self-Actualization trilogy. Three transformative books on consciousness, personal growth, and breaking free from addictive patterns. $5 each.',
+  keywords: [
+    'self-actualization books',
+    'Brandon Mills author',
+    'consciousness books',
+    'personal transformation',
+    'philosophy books',
+    'Random Acts of Self-Actualization',
+    'self-help books',
+    'addiction recovery books',
+    'personal growth',
+    'spiritual books',
+  ],
+  alternates: {
+    canonical: 'https://brandonmills.com/writing/books',
+  },
+  openGraph: {
+    title: 'Self-Actualization Books - Random Acts Trilogy | Brandon Mills',
+    description: 'The Random Acts of Self-Actualization trilogy. Three transformative books on consciousness and personal growth. $5 each.',
+    type: 'website',
+    url: 'https://brandonmills.com/writing/books',
+    siteName: 'Brandon Mills',
+    images: [
+      {
+        url: 'https://brandonmills.com/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Brandon Mills Books - Random Acts of Self-Actualization',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Self-Actualization Books | Brandon Mills',
+    description: 'Random Acts of Self-Actualization trilogy - consciousness, transformation, and personal growth.',
+    images: ['https://brandonmills.com/og-image.jpg'],
+  },
 }
 
 const books = [
@@ -38,10 +76,100 @@ const books = [
   },
 ]
 
+// Generate Book schema for each book in the trilogy
+function generateBookListSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Random Acts of Self-Actualization Trilogy',
+    description: 'A three-part journey through consciousness, transformation, and integration',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        item: {
+          '@type': 'Book',
+          name: 'Random Acts of Self-Actualization: Block A',
+          description: 'Breaking Free from Addictive Patterns - The journey begins. An exploration of the foundations of consciousness, identity, and the first steps toward self-awareness.',
+          author: {
+            '@type': 'Person',
+            name: 'Brandon Mills',
+          },
+          numberOfPages: 85,
+          bookFormat: 'EBook',
+          inLanguage: 'en',
+          offers: {
+            '@type': 'Offer',
+            price: '5.00',
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock',
+            url: 'https://brandonmills.com/writing/books/block-a',
+          },
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        item: {
+          '@type': 'Book',
+          name: 'Random Acts of Self-Actualization: Block B',
+          description: 'The Path of Conscious Transformation - Deep dive into the mechanisms of transformation, exploring how we change, grow, and evolve through conscious practice.',
+          author: {
+            '@type': 'Person',
+            name: 'Brandon Mills',
+          },
+          numberOfPages: 57,
+          bookFormat: 'EBook',
+          inLanguage: 'en',
+          offers: {
+            '@type': 'Offer',
+            price: '5.00',
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock',
+            url: 'https://brandonmills.com/writing/books/block-b',
+          },
+        },
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        item: {
+          '@type': 'Book',
+          name: 'Random Acts of Self-Actualization: Block C',
+          description: 'The Laboratory of Living - Integration and embodiment. Where theory meets practice and consciousness becomes a lived experience.',
+          author: {
+            '@type': 'Person',
+            name: 'Brandon Mills',
+          },
+          numberOfPages: 120,
+          bookFormat: 'EBook',
+          inLanguage: 'en',
+          offers: {
+            '@type': 'Offer',
+            price: '5.00',
+            priceCurrency: 'USD',
+            availability: 'https://schema.org/InStock',
+            url: 'https://brandonmills.com/writing/books/block-c',
+          },
+        },
+      },
+    ],
+  }
+}
+
 export default function BooksPage() {
+  const breadcrumbSchema = generateBreadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Writing', url: '/writing' },
+    { name: 'Books', url: '/writing/books' },
+  ])
+  const bookListSchema = generateBookListSchema()
+
   return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Hero */}
+    <>
+      <JsonLd data={[breadcrumbSchema, bookListSchema]} />
+      <div className="min-h-screen bg-black text-white">
+        {/* Hero */}
       <section className="pt-32 pb-20 container-wide relative overflow-hidden">
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] opacity-[0.06] blur-[120px] pointer-events-none"
@@ -174,6 +302,7 @@ export default function BooksPage() {
           </div>
         </div>
       </section>
-    </div>
+      </div>
+    </>
   )
 }

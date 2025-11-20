@@ -10,6 +10,7 @@ import * as fs from 'fs/promises'
 import * as path from 'path'
 import { DesignGenerator } from './design-generator'
 import { contentThemes } from './store-curator'
+import { logger } from '@/lib/logger'
 
 // Initialize WASM for resvg
 let wasmInitialized = false
@@ -166,7 +167,7 @@ export class DesignRenderer {
         .png({ quality: 100, compressionLevel: 6 })
         .toBuffer()
     } catch (error) {
-      console.error('Error rendering SVG with Resvg, falling back to sharp:', error)
+      logger.error('Error rendering SVG with Resvg, falling back to sharp:', error)
 
       // Fallback: Use sharp directly to convert SVG
       const svgBuffer = Buffer.from(svg)
@@ -419,9 +420,9 @@ export class DesignRenderer {
       try {
         const path = await this.renderDesignForProduct(category, themeId, productType)
         renderedPaths.push(path)
-        console.log(`✅ Rendered ${themeId} → ${productType}`)
+        logger.info('Rendered ${themeId} → ${productType}')
       } catch (error) {
-        console.error(`❌ Failed to render ${themeId} → ${productType}:`, error)
+        logger.error('Failed to render ${themeId} → ${productType}:', error)
       }
     }
 
@@ -487,7 +488,7 @@ export class DesignRenderer {
           }
         }
       } catch (error) {
-        console.warn(`Category ${category} not found or empty`)
+        logger.warn('Category ${category} not found or empty')
       }
     }
 
@@ -498,8 +499,8 @@ export class DesignRenderer {
       JSON.stringify(manifest, null, 2)
     )
 
-    console.log(`\n📊 Manifest saved to ${manifestPath}`)
-    console.log(`   Total designs: ${manifest.totalDesigns}`)
-    console.log(`   Total size: ${(manifest.totalSizeBytes / 1024 / 1024).toFixed(2)} MB`)
+    logger.info('n📊 Manifest saved to ${manifestPath}')
+    logger.info('Total designs: ${manifest.totalDesigns}')
+    logger.info('Total size: ${(manifest.totalSizeBytes / 1024 / 1024).toFixed(2)} MB')
   }
 }

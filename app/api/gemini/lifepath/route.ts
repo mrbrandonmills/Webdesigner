@@ -1,8 +1,11 @@
 // /app/api/gemini/lifepath/route.ts
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { geminiModel } from '@/lib/gemini-client'
 import { put } from '@vercel/blob'
 import { nanoid } from 'nanoid'
+import { GeminiLifepathSchema, formatZodErrors } from '@/lib/validations'
+import { logger } from '@/lib/logger'
 
 // Quiz answers interface
 interface QuizAnswers {
@@ -65,7 +68,17 @@ export async function POST(request: NextRequest) {
     let answers: QuizAnswers
     try {
       const body = await request.json()
-      answers = body.answers
+
+      // Validate input with Zod
+      const validationResult = GeminiLifepathSchema.safeParse(body)
+      if (!validationResult.success) {
+        return NextResponse.json(
+          formatZodErrors(validationResult.error),
+          { status: 400 }
+        )
+      }
+
+      answers = validationResult.data.answers
     } catch {
       return NextResponse.json(
         { error: 'Invalid JSON in request body' },
@@ -73,38 +86,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate answers input
-    if (!answers || typeof answers !== 'object') {
-      return NextResponse.json(
-        { error: 'Quiz answers are required' },
-        { status: 400 }
-      )
-    }
-
-    // Check that at least 5 answers are provided
+    // Get answer fields for sanitization
     const answerFields = ['values', 'fears', 'goals', 'strengths', 'relationships', 'challenges', 'dreams', 'legacy']
-    const providedAnswers = answerFields.filter(field => {
-      const value = answers[field as keyof QuizAnswers]
-      return value && typeof value === 'string' && value.trim().length > 0
-    })
-
-    if (providedAnswers.length < 5) {
-      return NextResponse.json(
-        { error: 'At least 5 quiz answers must be provided' },
-        { status: 400 }
-      )
-    }
-
-    // Validate individual answer lengths
-    for (const field of providedAnswers) {
-      const value = answers[field as keyof QuizAnswers]
-      if (value && value.length > 2000) {
-        return NextResponse.json(
-          { error: `${field} must be under 2,000 characters` },
-          { status: 400 }
-        )
-      }
-    }
 
     // Step 1: Analyze quiz answers for life path reading
     // Sanitize user inputs to prevent prompt injection
@@ -367,7 +350,7 @@ Return ONLY the JavaScript code, no markdown or explanations.`
     })
 
   } catch (error) {
-    console.error('Life path analysis error:', error)
+    logger.error('Life path analysis error:', error)
 
     // Provide more helpful error messages
     if (error instanceof Error) {

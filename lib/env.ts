@@ -6,6 +6,7 @@
  */
 
 import { z } from 'zod'
+import { logger } from '@/lib/logger'
 
 // Define the complete environment schema
 const envSchema = z.object({
@@ -156,7 +157,7 @@ Refer to .env.example for the complete list of required variables.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 `
-      console.error(errorMessage)
+      logger.error('Environment validation failed', { message: errorMessage })
       throw new Error('Environment validation failed. See console for details.')
     }
     throw error
@@ -191,7 +192,7 @@ export const features = {
 if (process.env.NODE_ENV === 'production') {
   try {
     validateEnv()
-    console.log('✅ Environment variables validated successfully')
+    logger.info('Environment variables validated successfully')
   } catch (error) {
     // Exit process in production if env validation fails
     process.exit(1)

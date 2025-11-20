@@ -1,5 +1,6 @@
 import { handleUpload, type HandleUploadBody } from '@vercel/blob/client'
 import { NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60 // Allow up to 60 seconds for large file uploads
@@ -34,13 +35,13 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
       },
       onUploadCompleted: async ({ blob, tokenPayload }) => {
-        console.log('Upload completed:', blob.pathname)
+        logger.info('Upload completed:', { data: blob.pathname })
       },
     })
 
     return NextResponse.json(jsonResponse)
   } catch (error) {
-    console.error('Upload error:', error)
+    logger.error('Upload error:', error)
     return NextResponse.json(
       { error: 'Upload failed' },
       { status: 500 }

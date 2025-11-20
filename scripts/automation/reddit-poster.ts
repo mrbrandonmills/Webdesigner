@@ -114,17 +114,66 @@ export async function postToReddit(postCount: number = 1): Promise<void> {
     await page.setViewport({ width: 1280, height: 800 })
     await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36')
 
-    // Login to Reddit
+    // Login to Reddit using old.reddit.com (more stable for automation)
     logger.info('REDDIT', 'Logging in...')
-    await page.goto('https://www.reddit.com/login', { waitUntil: 'networkidle2' })
+    await page.goto('https://old.reddit.com/login', { waitUntil: 'networkidle2' })
 
-    // Fill login form
-    await page.waitForSelector('input[name="username"]', { timeout: 10000 })
-    await page.type('input[name="username"]', username, { delay: 50 })
-    await page.type('input[name="password"]', password, { delay: 50 })
+    await sleep(2000)
+
+    // Fill login form - old.reddit.com uses 'user' not 'username'
+    const usernameSelectors = [
+      'input[name="user"]',
+      'input[name="username"]',
+      'input[id="user_login"]',
+      '#loginUsername',
+      'input[type="text"]'
+    ]
+
+    let usernameFilled = false
+    for (const selector of usernameSelectors) {
+      const input = await page.$(selector)
+      if (input) {
+        await input.click()
+        await input.type(username, { delay: 50 })
+        usernameFilled = true
+        break
+      }
+    }
+
+    if (!usernameFilled) {
+      throw new Error('Could not find username input')
+    }
+
+    const passwordSelectors = [
+      'input[name="passwd"]',
+      'input[name="password"]',
+      'input[id="passwd_login"]',
+      '#loginPassword',
+      'input[type="password"]'
+    ]
+
+    for (const selector of passwordSelectors) {
+      const input = await page.$(selector)
+      if (input) {
+        await input.click()
+        await input.type(password, { delay: 50 })
+        break
+      }
+    }
 
     // Click login button
-    await page.click('button[type="submit"]')
+    const loginSelectors = [
+      'button[type="submit"]',
+      'button.login'
+    ]
+
+    for (const selector of loginSelectors) {
+      const btn = await page.$(selector)
+      if (btn) {
+        await btn.click()
+        break
+      }
+    }
 
     // Wait for login to complete
     await sleep(5000)
@@ -148,20 +197,21 @@ export async function postToReddit(postCount: number = 1): Promise<void> {
       logger.info('REDDIT', `Posting to r/${post.subreddit}: ${post.title.substring(0, 50)}...`)
 
       try {
-        // Navigate to submit page
-        await page.goto(`https://www.reddit.com/r/${post.subreddit}/submit?type=TEXT`, {
+        // Navigate to submit page (use old reddit for stability)
+        await page.goto(`https://old.reddit.com/r/${post.subreddit}/submit?selftext=true`, {
           waitUntil: 'networkidle2',
           timeout: 30000
         })
 
         await sleep(3000)
 
-        // Fill title - try multiple selectors
+        // Fill title - try multiple selectors (old reddit uses input, new uses textarea)
         const titleSelectors = [
+          'textarea[name="title"]',
+          'input[name="title"]',
           'textarea[placeholder*="Title"]',
           'input[placeholder*="Title"]',
-          '[data-test-id="title-text-area"]',
-          'div[slot="title"] textarea'
+          '[data-test-id="title-text-area"]'
         ]
 
         let titleFilled = false
@@ -181,8 +231,9 @@ export async function postToReddit(postCount: number = 1): Promise<void> {
 
         await sleep(1000)
 
-        // Fill body - try multiple selectors
+        // Fill body - try multiple selectors (old reddit uses textarea, new uses contenteditable)
         const bodySelectors = [
+          'textarea[name="text"]',
           'div[contenteditable="true"]',
           'textarea[placeholder*="Text"]',
           '[data-test-id="text-area"]',

@@ -9,6 +9,7 @@ import {
   isDatabaseAvailable,
 } from '@/lib/db/client'
 import type { CreateOrderInput } from '@/lib/db/types'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -34,7 +35,7 @@ export async function POST(request: Request) {
     try {
       event = stripe.webhooks.constructEvent(body, signature, process.env.STRIPE_WEBHOOK_SECRET)
     } catch (err) {
-      console.error('❌ Webhook signature verification failed:', err)
+      logger.error('Webhook signature verification failed:', err)
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
     }
 
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session
 
-        console.log('💰 Payment successful:', session.id)
+        logger.info('Payment successful:', { data: session.id })
 
         // Create order with fallback mechanism
         await createOrder(session)
@@ -53,23 +54,23 @@ export async function POST(request: Request) {
 
       case 'payment_intent.succeeded': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        console.log('✅ PaymentIntent succeeded:', paymentIntent.id)
+        logger.info('PaymentIntent succeeded:', { data: paymentIntent.id })
         break
       }
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent
-        console.log('❌ PaymentIntent failed:', paymentIntent.id)
+        logger.info('PaymentIntent failed:', { data: paymentIntent.id })
         break
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`)
+        logger.debug('Unhandled event type: ${event.type}')
     }
 
     return NextResponse.json({ received: true })
   } catch (error) {
-    console.error('❌ Webhook handler error:', error)
+    logger.error('Webhook handler error:', error)
     return NextResponse.json(
       { error: 'Webhook handler failed' },
       { status: 500 }
@@ -111,7 +112,7 @@ async function createOrder(session: Stripe.Checkout.Session) {
     if (shouldUseDatabase) {
       // Store in database
       try {
-        console.log('💾 Storing order in database...')
+        logger.info('Storing order in database...')
 
         const dbInput: CreateOrderInput = {
           stripeSessionId: orderData.stripeSessionId,
@@ -127,30 +128,30 @@ async function createOrder(session: Stripe.Checkout.Session) {
         }
 
         const dbOrder = await createOrderInDb(dbInput)
-        console.log('✅ Order stored in database:', dbOrder.id)
+        logger.info('Order stored in database:', { data: dbOrder.id })
 
         // Also save to filesystem as backup during transition
         await saveOrderToFilesystem(orderData)
-        console.log('💾 Backup copy saved to filesystem')
+        logger.info('Backup copy saved to filesystem')
 
         return dbOrder
       } catch (dbError) {
-        console.error('❌ Database storage failed, falling back to filesystem:', dbError)
+        logger.error('Database storage failed, falling back to filesystem:', dbError)
         // Fall through to filesystem storage
       }
     }
 
     // Fallback to filesystem storage
-    console.log('💾 Storing order in filesystem...')
+    logger.info('Storing order in filesystem...')
     await saveOrderToFilesystem(orderData)
-    console.log('✅ Order created:', orderData.id)
+    logger.info('Order created:', { data: orderData.id })
 
     // TODO: Send order to Printful for fulfillment
     // await fulfillOrder(orderData)
 
     return orderData
   } catch (error) {
-    console.error('❌ Failed to create order:', error)
+    logger.error('Failed to create order:', error)
     throw error
   }
 }
@@ -186,7 +187,7 @@ async function saveOrderToFilesystem(order: any) {
 
     await writeFile(indexFile, JSON.stringify(orders, null, 2))
   } catch (error) {
-    console.error('❌ Failed to save order to filesystem:', error)
+    logger.error('Failed to save order to filesystem:', error)
     throw error
   }
 }

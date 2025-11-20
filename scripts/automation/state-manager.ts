@@ -34,12 +34,17 @@ interface AutomationState {
   reddit: PlatformState
   twitter: PlatformState
   quora: PlatformState
+  linkedin: PlatformState
+  pinterest: PlatformState
+  hackernews: PlatformState
   postHistory: PostRecord[]
   generatedContent: {
     lastGenerated: string
     count: number
   }
 }
+
+type PlatformName = 'reddit' | 'twitter' | 'quora' | 'linkedin' | 'pinterest' | 'hackernews'
 
 const defaultState: AutomationState = {
   reddit: {
@@ -57,6 +62,27 @@ const defaultState: AutomationState = {
     lastDayReset: new Date().toDateString(),
   },
   quora: {
+    lastPostIndex: -1,
+    lastPostTime: '',
+    totalPosts: 0,
+    postsToday: 0,
+    lastDayReset: new Date().toDateString(),
+  },
+  linkedin: {
+    lastPostIndex: -1,
+    lastPostTime: '',
+    totalPosts: 0,
+    postsToday: 0,
+    lastDayReset: new Date().toDateString(),
+  },
+  pinterest: {
+    lastPostIndex: -1,
+    lastPostTime: '',
+    totalPosts: 0,
+    postsToday: 0,
+    lastDayReset: new Date().toDateString(),
+  },
+  hackernews: {
     lastPostIndex: -1,
     lastPostTime: '',
     totalPosts: 0,
@@ -110,8 +136,18 @@ class StateManager {
   }
 
   // Reset daily counts if it's a new day
-  private checkDayReset(platform: 'reddit' | 'twitter' | 'quora'): void {
+  private checkDayReset(platform: PlatformName): void {
     const today = new Date().toDateString()
+    // Ensure platform exists in state
+    if (!this.state[platform]) {
+      this.state[platform] = {
+        lastPostIndex: -1,
+        lastPostTime: '',
+        totalPosts: 0,
+        postsToday: 0,
+        lastDayReset: today,
+      }
+    }
     if (this.state[platform].lastDayReset !== today) {
       this.state[platform].postsToday = 0
       this.state[platform].lastDayReset = today
@@ -120,7 +156,7 @@ class StateManager {
   }
 
   // Get the next content index for rotation
-  getNextIndex(platform: 'reddit' | 'twitter' | 'quora', totalItems: number): number {
+  getNextIndex(platform: PlatformName, totalItems: number): number {
     this.checkDayReset(platform)
     const nextIndex = (this.state[platform].lastPostIndex + 1) % totalItems
     return nextIndex
@@ -128,7 +164,7 @@ class StateManager {
 
   // Record a successful post
   recordPost(
-    platform: 'reddit' | 'twitter' | 'quora',
+    platform: PlatformName,
     contentId: string,
     success: boolean,
     details: {
@@ -137,6 +173,9 @@ class StateManager {
       url?: string
       error?: string
       index?: number
+      postId?: string
+      pinId?: string
+      hnId?: string
     }
   ): void {
     this.checkDayReset(platform)
@@ -177,13 +216,13 @@ class StateManager {
   }
 
   // Check if we've hit daily limit
-  canPostToday(platform: 'reddit' | 'twitter' | 'quora', limit: number): boolean {
+  canPostToday(platform: PlatformName, limit: number): boolean {
     this.checkDayReset(platform)
     return this.state[platform].postsToday < limit
   }
 
   // Get posts remaining today
-  getPostsRemaining(platform: 'reddit' | 'twitter' | 'quora', limit: number): number {
+  getPostsRemaining(platform: PlatformName, limit: number): number {
     this.checkDayReset(platform)
     return Math.max(0, limit - this.state[platform].postsToday)
   }
@@ -197,6 +236,13 @@ class StateManager {
     )
   }
 
+  // Get all posted content IDs for a platform
+  getPostedIds(platform: string): string[] {
+    return this.state.postHistory
+      .filter(record => record.platform === platform && record.success)
+      .map(record => record.contentId)
+  }
+
   // Get recent post history for a platform
   getRecentPosts(platform?: string, limit: number = 50): PostRecord[] {
     let records = this.state.postHistory
@@ -207,7 +253,7 @@ class StateManager {
   }
 
   // Get platform statistics
-  getStats(platform: 'reddit' | 'twitter' | 'quora'): PlatformState {
+  getStats(platform: PlatformName): PlatformState {
     this.checkDayReset(platform)
     return { ...this.state[platform] }
   }
@@ -218,6 +264,9 @@ class StateManager {
       reddit: this.getStats('reddit'),
       twitter: this.getStats('twitter'),
       quora: this.getStats('quora'),
+      linkedin: this.getStats('linkedin'),
+      pinterest: this.getStats('pinterest'),
+      hackernews: this.getStats('hackernews'),
     }
   }
 
@@ -234,7 +283,7 @@ class StateManager {
   }
 
   // Reset state for a platform (use with caution)
-  resetPlatform(platform: 'reddit' | 'twitter' | 'quora'): void {
+  resetPlatform(platform: PlatformName): void {
     this.state[platform] = { ...defaultState[platform] }
     this.saveState()
     logger.info('STATE', `Reset state for ${platform}`)
