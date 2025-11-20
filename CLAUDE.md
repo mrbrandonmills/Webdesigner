@@ -15,6 +15,35 @@ Brandon Mills' luxury personal brand website featuring photography portfolio, mo
 
 ---
 
+## 🚨 MANDATORY: Feature Review Process
+
+**CRITICAL REQUIREMENT:** Every new feature MUST be reviewed by both:
+
+1. **QA Engineer** (`qa-engineer` agent)
+   - Test coverage validation
+   - Edge case verification
+   - Performance testing
+   - User acceptance testing
+   - Cross-browser/device testing
+
+2. **Backend Code Developer** (`backend-developer` agent)
+   - API route security review
+   - Database query optimization
+   - Error handling validation
+   - Third-party integration verification
+   - Environment variable management
+
+**Process:**
+```bash
+# After implementing a feature, launch both review agents in parallel:
+# 1. Use Task tool with subagent_type="qa-engineer"
+# 2. Use Task tool with subagent_type="backend-developer"
+```
+
+**No feature may be deployed without passing both reviews.**
+
+---
+
 ## Critical Build Patterns
 
 ### API Routes with Third-Party SDKs (Stripe, Resend, etc.)
@@ -378,7 +407,7 @@ Just write the code and commit it. The user will ask if they need docs.
 
 **Location:** `/scripts/automation/`
 
-Fully automated posting to Reddit, Twitter, Quora. Runs via GitHub Actions.
+Fully automated posting to Reddit, Twitter, Quora, Instagram. Runs via GitHub Actions.
 
 **Required Secrets (add to GitHub):**
 ```
@@ -386,11 +415,48 @@ REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USERNAME, REDDIT_PASSWORD
 TWITTER_API_KEY, TWITTER_API_SECRET, TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_SECRET
 OPENAI_API_KEY
 SITE_URL=https://brandonmills.com
+
+# Instagram (Dopamills Account) - ✅ CONFIGURED
+META_APP_ID=1322977046248770
+META_APP_SECRET=176dc5e6afaabc9c22e59708218a1f14
+INSTAGRAM_BUSINESS_ACCOUNT_ID=17841478404116551
+FACEBOOK_PAGE_ID=918484411342370
+INSTAGRAM_ACCESS_TOKEN=(see .env.local - token expires Jan 20, 2025)
 ```
 
 **Commands:**
 - `npm run automate` - Run 24/7 scheduler locally
 - GitHub Actions run automatically once secrets are added
+
+#### Instagram Setup (Dopamills Account)
+
+**Status:** ✅ Fully Configured and Tested
+
+**Account:** @dopamills (Instagram Business Account: 17841478404116551)
+**Facebook Page:** Dopamills (918484411342370)
+**App:** Dopamills Automation (1322977046248770)
+
+**Permissions:**
+- instagram_basic
+- instagram_content_publish
+- instagram_manage_comments
+- instagram_manage_insights
+
+**Test Connection:**
+```bash
+npx tsx scripts/automation/instagram-diagnose.ts
+```
+
+**Renew Token (When Expired):**
+1. Visit: `https://www.facebook.com/v21.0/dialog/oauth?client_id=1322977046248770&redirect_uri=https://localhost&scope=instagram_basic,instagram_content_publish,instagram_manage_comments,instagram_manage_insights,pages_show_list,pages_read_engagement&response_type=token`
+2. Approve permissions
+3. Copy token from redirect URL
+4. Update `INSTAGRAM_ACCESS_TOKEN` in `.env.local`
+
+**Important Notes:**
+- @dopamills must remain an "Instagram Tester" in the Dopamills Automation app
+- Token expires: 2026 (need to renew before then)
+- App is in Development Mode (not published to public)
 
 ### Traffic Generation Content
 
