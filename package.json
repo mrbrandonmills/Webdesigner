@@ -139,7 +139,6 @@
     "pm2": "^6.0.13",
     "postcss": "^8.4.49",
     "puppeteer": "^24.30.0",
-    "puppeteer-screen-recorder": "^3.0.6",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2",
     "vercel": "^48.8.2"
