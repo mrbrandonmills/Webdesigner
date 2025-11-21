@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
     const isDemo = state?.startsWith('demo_')
 
     // Success! Return token data to appropriate demo page
-    const successUrl = new URL(isDemo ? '/pinterest-demo.html' : '/admin/pinterest-demo', request.url)
+    const successUrl = new URL(isDemo ? '/api/pinterest/demo' : '/admin/pinterest-demo', request.url)
     successUrl.searchParams.set('success', 'true')
     successUrl.searchParams.set('access_token', data.access_token)
     successUrl.searchParams.set('refresh_token', data.refresh_token || '')

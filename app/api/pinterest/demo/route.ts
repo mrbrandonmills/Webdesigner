@@ -1,0 +1,187 @@
+import { NextResponse } from 'next/server'
+
+export const dynamic = 'force-dynamic'
+
+export async function GET() {
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinterest OAuth Demo - Standard Access Approval</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(to bottom right, #fee2e2, #fecaca);
+            padding: 2rem;
+        }
+        .container {
+            max-width: 56rem;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #dc2626;
+            margin-bottom: 0.5rem;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .subtitle {
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+        }
+        ol {
+            list-style-type: decimal;
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+            color: #374151;
+            line-height: 1.75;
+        }
+        .btn {
+            width: 100%;
+            background: #dc2626;
+            color: white;
+            font-weight: bold;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background: #b91c1c;
+        }
+        .success {
+            color: #059669;
+        }
+        .token-box {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .token-label {
+            font-weight: 600;
+            color: #065f46;
+            margin-bottom: 0.5rem;
+        }
+        code {
+            display: block;
+            background: white;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            word-break: break-all;
+            border: 1px solid #d1d5db;
+        }
+        .error {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #991b1b;
+            font-weight: 500;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Pinterest OAuth Demo</h1>
+            <p class="subtitle">Standard Access Approval Video - Complete OAuth Flow + API Integration</p>
+        </div>
+
+        <div id="error-box" class="error hidden"></div>
+
+        <div id="step1" class="card">
+            <h2>Step 1: Start OAuth Flow</h2>
+            <p class="subtitle">
+                Click below to authenticate with Pinterest. You'll see:
+            </p>
+            <ol>
+                <li>Pinterest login page</li>
+                <li>Authorization screen (click "Allow")</li>
+                <li>Redirect back with code in URL bar</li>
+                <li>Automatic token exchange</li>
+            </ol>
+            <button class="btn" onclick="startOAuth()">
+                Connect to Pinterest
+            </button>
+        </div>
+
+        <div id="step2" class="card hidden">
+            <h2 class="success">OAuth Success!</h2>
+            <div class="token-box">
+                <p class="token-label">Access Token Received:</p>
+                <code id="token-display"></code>
+            </div>
+            <p class="subtitle">
+                Next: Use this token to create a pin via Pinterest API
+            </p>
+            <a id="create-pin-link" href="#" target="_blank" class="btn" style="text-decoration: none; display: block; text-align: center;">
+                Create Test Pin
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const APP_ID = '1537033';
+        const REDIRECT_URI = 'https://brandonmills.com/api/pinterest/oauth/callback';
+
+        function startOAuth() {
+            const scopes = 'boards:read,boards:write,pins:read,pins:write';
+            const authUrl = \`https://www.pinterest.com/oauth/?client_id=\${APP_ID}&redirect_uri=\${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=\${scopes}&state=demo_\${Date.now()}\`;
+            window.location.href = authUrl;
+        }
+
+        // Check URL parameters on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            const token = urlParams.get('access_token');
+            const error = urlParams.get('error');
+
+            if (error) {
+                const errorBox = document.getElementById('error-box');
+                errorBox.textContent = \`Error: \${error}\`;
+                errorBox.classList.remove('hidden');
+            }
+
+            if (success === 'true' && token) {
+                document.getElementById('step1').classList.add('hidden');
+                document.getElementById('step2').classList.remove('hidden');
+                document.getElementById('token-display').textContent = token;
+                document.getElementById('create-pin-link').href = \`https://brandonmills.com/api/pinterest/create-pin?demo=true&token=\${token}\`;
+            }
+        });
+    </script>
+</body>
+</html>`
+
+  return new NextResponse(html, {
+    headers: {
+      'Content-Type': 'text/html',
+    },
+  })
+}
