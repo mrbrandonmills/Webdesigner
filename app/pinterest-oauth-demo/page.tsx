@@ -1,10 +1,5 @@
 'use client'
 
-/**
- * PUBLIC Pinterest OAuth Demo (No Auth Required)
- * For recording Standard Access approval video
- */
-
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'next/navigation'
 
@@ -40,30 +35,30 @@ export default function PublicPinterestDemo() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 p-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <h1 className="text-3xl font-bold text-red-600 mb-2">
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #fee2e2, #fecaca)', padding: '2rem' }}>
+      <div style={{ maxWidth: '56rem', margin: '0 auto' }}>
+        <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '2rem', marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#dc2626', marginBottom: '0.5rem' }}>
             Pinterest OAuth Demo
           </h1>
-          <p className="text-gray-600">
+          <p style={{ color: '#4b5563' }}>
             Standard Access Approval Video - Complete OAuth Flow + API Integration
           </p>
         </div>
 
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-8">
-            <p className="text-red-700 font-medium">{error}</p>
+          <div style={{ background: '#fef2f2', borderLeft: '4px solid #ef4444', padding: '1rem', marginBottom: '2rem' }}>
+            <p style={{ color: '#991b1b', fontWeight: '500' }}>{error}</p>
           </div>
         )}
 
         {step === 1 && (
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold mb-4">Step 1: Start OAuth Flow</h2>
-            <p className="text-gray-600 mb-6">
+          <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '2rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Step 1: Start OAuth Flow</h2>
+            <p style={{ color: '#4b5563', marginBottom: '1.5rem' }}>
               Click below to authenticate with Pinterest. You'll see:
             </p>
-            <ol className="list-decimal list-inside space-y-2 mb-6 text-gray-700">
+            <ol style={{ listStyleType: 'decimal', marginLeft: '2rem', marginBottom: '1.5rem', color: '#374151', lineHeight: '1.75' }}>
               <li>Pinterest login page</li>
               <li>Authorization screen (click "Allow")</li>
               <li>Redirect back with code in URL bar</li>
@@ -71,7 +66,20 @@ export default function PublicPinterestDemo() {
             </ol>
             <button
               onClick={startOAuth}
-              className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-lg transition text-xl"
+              style={{
+                width: '100%',
+                background: '#dc2626',
+                color: 'white',
+                fontWeight: 'bold',
+                padding: '1rem 1.5rem',
+                borderRadius: '0.5rem',
+                border: 'none',
+                fontSize: '1.25rem',
+                cursor: 'pointer',
+                transition: 'background 0.2s'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.background = '#b91c1c'}
+              onMouseOut={(e) => e.currentTarget.style.background = '#dc2626'}
             >
               Connect to Pinterest
             </button>
@@ -79,21 +87,32 @@ export default function PublicPinterestDemo() {
         )}
 
         {step === 2 && accessToken && (
-          <div className="bg-white rounded-lg shadow-lg p-8">
-            <h2 className="text-2xl font-bold mb-4 text-green-600">OAuth Success!</h2>
-            <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
-              <p className="font-semibold text-green-900 mb-2">Access Token Received:</p>
-              <code className="block bg-white p-3 rounded text-xs break-all border">
+          <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', padding: '2rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#059669' }}>OAuth Success!</h2>
+            <div style={{ background: '#ecfdf5', borderLeft: '4px solid #10b981', padding: '1rem', marginBottom: '1.5rem' }}>
+              <p style={{ fontWeight: '600', color: '#065f46', marginBottom: '0.5rem' }}>Access Token Received:</p>
+              <code style={{ display: 'block', background: 'white', padding: '0.75rem', borderRadius: '0.25rem', fontSize: '0.75rem', wordBreak: 'break-all', border: '1px solid #d1d5db' }}>
                 {accessToken}
               </code>
             </div>
-            <p className="text-gray-600 mb-4">
+            <p style={{ color: '#4b5563', marginBottom: '1rem' }}>
               Next: Use this token to create a pin via Pinterest API
             </p>
             <a
               href={`https://brandonmills.com/api/pinterest/create-pin?demo=true&token=${accessToken}`}
               target="_blank"
-              className="block w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-6 rounded-lg text-center transition"
+              style={{
+                display: 'block',
+                width: '100%',
+                background: '#dc2626',
+                color: 'white',
+                fontWeight: 'bold',
+                padding: '1rem 1.5rem',
+                borderRadius: '0.5rem',
+                textAlign: 'center',
+                textDecoration: 'none',
+                transition: 'background 0.2s'
+              }}
             >
               Create Test Pin
             </a>
