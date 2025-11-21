@@ -20,6 +20,8 @@ export default function MeditationSuccessPage({ params }: PageProps) {
   const meditation = getMeditationBySlug(resolvedParams.slug)
   const [verifying, setVerifying] = useState(true)
   const [purchaseValid, setPurchaseValid] = useState(false)
+  const [meditationContent, setMeditationContent] = useState<string | null>(null)
+  const [contentLoading, setContentLoading] = useState(true)
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -58,6 +60,32 @@ export default function MeditationSuccessPage({ params }: PageProps) {
 
     verifyPurchase()
   }, [sessionId, resolvedParams.slug])
+
+  // Fetch the full meditation content after purchase is verified
+  useEffect(() => {
+    const fetchMeditationContent = async () => {
+      if (!purchaseValid || !resolvedParams.slug) {
+        setContentLoading(false)
+        return
+      }
+
+      try {
+        const response = await fetch(`/api/meditations/content?slug=${resolvedParams.slug}`)
+        if (response.ok) {
+          const data = await response.json()
+          setMeditationContent(data.content)
+        } else {
+          console.error('Failed to fetch meditation content')
+        }
+      } catch (error) {
+        console.error('Error fetching meditation content:', error)
+      } finally {
+        setContentLoading(false)
+      }
+    }
+
+    fetchMeditationContent()
+  }, [purchaseValid, resolvedParams.slug])
 
   if (!meditation) {
     return (
@@ -150,14 +178,20 @@ export default function MeditationSuccessPage({ params }: PageProps) {
             Your Meditation Audio
           </h3>
 
-          <AudioReader
-            contentId={meditation.slug}
-            title={meditation.title}
-            textContent={meditation.description}
-            voicePreference="male"
-            showVoiceSelector={true}
-            contentType="article"
-          />
+          {contentLoading ? (
+            <div className="text-center py-8 text-white/60">
+              Loading meditation content...
+            </div>
+          ) : (
+            <AudioReader
+              contentId={meditation.slug}
+              title={meditation.title}
+              textContent={meditationContent || meditation.description}
+              voicePreference="male"
+              showVoiceSelector={true}
+              contentType="article"
+            />
+          )}
         </div>
       </section>
 

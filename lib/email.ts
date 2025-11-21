@@ -319,3 +319,149 @@ export async function sendShippingNotification(data: {
     return { success: false, error }
   }
 }
+
+/**
+ * Send meditation purchase confirmation email
+ */
+export async function sendMeditationPurchaseConfirmation(data: {
+  customerEmail: string
+  meditationName: string
+  meditationSlug: string
+  pricePaid: number
+}) {
+  if (!resend) {
+    logger.warn('Resend not configured - skipping meditation purchase email')
+    return { success: false, error: 'Email service not configured' }
+  }
+
+  try {
+    const accessUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://brandonmills.com'}/meditations/${data.meditationSlug}/success`
+
+    const emailHtml = generateMeditationPurchaseHTML(data, accessUrl)
+
+    const result = await resend.emails.send({
+      from: 'Brandon Mills Meditations <meditations@brandonmills.com>',
+      to: data.customerEmail,
+      subject: `Your Meditation is Ready: ${data.meditationName}`,
+      html: emailHtml,
+    })
+
+    if (result.error) {
+      throw new Error(`Email failed: ${result.error.message}`)
+    }
+
+    logger.info('Meditation purchase confirmation sent:', { data: result.data.id })
+    return { success: true, emailId: result.data.id }
+  } catch (error) {
+    logger.error('Failed to send meditation purchase confirmation:', error)
+    return { success: false, error }
+  }
+}
+
+/**
+ * Generate meditation purchase confirmation email HTML
+ */
+function generateMeditationPurchaseHTML(
+  data: {
+    customerEmail: string
+    meditationName: string
+    meditationSlug: string
+    pricePaid: number
+  },
+  accessUrl: string
+): string {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meditation Purchase Confirmation</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9fafb;">
+
+  <!-- Header -->
+  <div style="text-align: center; margin-bottom: 40px;">
+    <h1 style="font-size: 32px; font-weight: 300; margin: 0; color: #000;">Brandon Mills</h1>
+    <p style="font-size: 14px; color: #666; margin: 8px 0 0 0; letter-spacing: 2px;">GUIDED MEDITATIONS</p>
+  </div>
+
+  <!-- Success Message -->
+  <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 40px 30px; border-radius: 12px; text-align: center; margin-bottom: 30px;">
+    <div style="font-size: 48px; margin-bottom: 15px;">🧘</div>
+    <h2 style="margin: 0 0 10px 0; font-size: 28px; font-weight: 400; font-family: Georgia, serif;">Your Meditation is Ready</h2>
+    <p style="margin: 0; opacity: 0.9; font-size: 16px;">Thank you for your purchase!</p>
+  </div>
+
+  <!-- Purchase Details -->
+  <div style="background: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 600; color: #1a1a2e;">Purchase Details</h3>
+
+    <div style="border-left: 4px solid #c9a227; padding-left: 16px; margin-bottom: 20px;">
+      <p style="margin: 0 0 8px 0; font-size: 20px; font-weight: 500; color: #1a1a2e;">${data.meditationName}</p>
+      <p style="margin: 0; color: #666;">Guided Meditation with Premium Audio</p>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; padding: 16px 0; border-top: 1px solid #eee;">
+      <span style="color: #666;">Amount Paid</span>
+      <span style="font-weight: 600; color: #1a1a2e;">$${data.pricePaid.toFixed(2)}</span>
+    </div>
+  </div>
+
+  <!-- What You Get -->
+  <div style="background: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <h3 style="margin: 0 0 20px 0; font-size: 18px; font-weight: 600; color: #1a1a2e;">What's Included</h3>
+
+    <ul style="margin: 0; padding: 0; list-style: none;">
+      <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #444;">
+        <span style="color: #c9a227; margin-right: 10px;">✓</span>
+        Full meditation script with premium narration
+      </li>
+      <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #444;">
+        <span style="color: #c9a227; margin-right: 10px;">✓</span>
+        4 premium voice options to choose from
+      </li>
+      <li style="padding: 10px 0; border-bottom: 1px solid #eee; color: #444;">
+        <span style="color: #c9a227; margin-right: 10px;">✓</span>
+        Instant streaming access - no downloads needed
+      </li>
+      <li style="padding: 10px 0; color: #444;">
+        <span style="color: #c9a227; margin-right: 10px;">✓</span>
+        Lifetime access - yours forever
+      </li>
+    </ul>
+  </div>
+
+  <!-- CTA Button -->
+  <div style="text-align: center; margin-bottom: 30px;">
+    <a href="${accessUrl}" style="display: inline-block; background: #c9a227; color: #000; padding: 16px 40px; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 16px; letter-spacing: 0.5px;">
+      Access Your Meditation
+    </a>
+  </div>
+
+  <!-- Tips -->
+  <div style="background: #fffbeb; border-left: 4px solid #c9a227; padding: 20px; margin-bottom: 30px; border-radius: 4px;">
+    <h4 style="margin: 0 0 12px 0; font-size: 16px; font-weight: 600; color: #92400e;">Tips for Your Practice</h4>
+    <ul style="margin: 0; padding-left: 20px; color: #78350f;">
+      <li style="margin: 8px 0;">Find a quiet, comfortable space where you won't be disturbed</li>
+      <li style="margin: 8px 0;">Use headphones for the best audio experience</li>
+      <li style="margin: 8px 0;">Bookmark the access link for easy return visits</li>
+      <li style="margin: 8px 0;">Practice regularly for best results</li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align: center; padding: 30px 0; border-top: 1px solid #eee; color: #666; font-size: 14px;">
+    <p style="margin: 8px 0;">Questions or need support?</p>
+    <p style="margin: 8px 0;">
+      <a href="mailto:hello@brandonmills.com" style="color: #c9a227; text-decoration: none;">hello@brandonmills.com</a>
+    </p>
+    <p style="margin: 20px 0 8px 0; color: #999; font-size: 12px;">
+      &copy; ${new Date().getFullYear()} Brandon Mills. All rights reserved.
+    </p>
+  </div>
+
+</body>
+</html>
+  `
+}

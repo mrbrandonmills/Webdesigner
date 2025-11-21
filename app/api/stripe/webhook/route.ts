@@ -4,7 +4,8 @@ import Stripe from 'stripe'
 import { writeFile, readFile, mkdir } from 'fs/promises'
 import path from 'path'
 import { printfulClient } from '@/lib/printful-client'
-import { sendOrderConfirmation, sendAdminNotification } from '@/lib/email'
+import { sendOrderConfirmation, sendAdminNotification, sendMeditationPurchaseConfirmation } from '@/lib/email'
+import { getMeditationBySlug } from '@/lib/meditations-data'
 import { LocalOrder, CartItem, StripeShippingAddress, PrintfulOrderItem } from '@/types/common'
 import { logger } from '@/lib/logger'
 
@@ -47,8 +48,40 @@ export async function POST(request: Request) {
         const purchaseType = session.metadata?.type
 
         if (purchaseType === 'meditation_single' || purchaseType === 'meditation_bundle') {
-          // Handle meditation unlock (already handled by unlock API route)
+          // Handle meditation purchase - send confirmation email
           logger.info('Meditation purchase confirmed via webhook', { sessionId: session.id })
+
+          const meditationSlug = session.metadata?.meditationSlug
+          const customerEmail = session.customer_details?.email
+
+          if (meditationSlug && customerEmail) {
+            const meditation = getMeditationBySlug(meditationSlug)
+
+            if (meditation) {
+              try {
+                await sendMeditationPurchaseConfirmation({
+                  customerEmail,
+                  meditationName: meditation.title,
+                  meditationSlug: meditation.slug,
+                  pricePaid: session.amount_total ? session.amount_total / 100 : meditation.price,
+                })
+                logger.info('Meditation purchase confirmation email sent', {
+                  email: customerEmail,
+                  meditation: meditationSlug,
+                })
+              } catch (emailError) {
+                logger.error('Failed to send meditation purchase confirmation email', emailError)
+                // Don't throw - email is non-critical
+              }
+            } else {
+              logger.warn('Meditation not found for email confirmation', { meditationSlug })
+            }
+          } else {
+            logger.warn('Missing data for meditation email confirmation', {
+              hasSlug: !!meditationSlug,
+              hasEmail: !!customerEmail,
+            })
+          }
         } else {
           // Create order from session data (for physical products)
           await createOrder(session)
