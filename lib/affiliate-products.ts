@@ -38,7 +38,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 12847,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Braun-i%C2%B7expert-Removal-Holiday-Trimmer/dp/B0CMVPMPZ8?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/61CWXy6PNXL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=800&q=80'],
     description: `The Braun Silk Expert Pro 7 is the world's #1 IPL device, offering professional-grade at-home laser hair removal for both women and men. With advanced SensoAdapt technology and 400,000 flashes, achieve permanent visible hair reduction in just 4 weeks.`,
     features: [
       'SensoAdapt™ Technology - Continuously adapts to your skin tone for optimal efficacy and safety',
@@ -94,7 +94,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 3421,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Mer-Moisturizing-Cream-Ounce/dp/B000C1XWN0?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/51zzxeOq5LL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=800&q=80'],
     description: 'The legendary Crème de la Mer. A transformative cream that renews skin with natural sea-sourced Miracle Broth™. The ultimate luxury in skincare.',
     features: [
       'Miracle Broth™ - Sea-sourced fermented ingredients for skin renewal',
@@ -135,7 +135,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 8934,
     inStock: true,
     amazonUrl: `https://www.amazon.com/SkinCeuticals-Ferulic-Vitamin-Antioxidant-Serum/dp/B00AA8D8U0?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/51aCFtmIfWL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?w=800&q=80'],
     description: 'The gold standard in vitamin C serums. Clinically proven to reduce fine lines, firm skin, and brighten complexion with 15% pure vitamin C.',
     features: [
       '15% L-Ascorbic Acid - Pure vitamin C for maximum efficacy',
@@ -178,7 +178,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 2145,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Apple-MacBook-Laptop-12%E2%80%91core-30%E2%80%91core/dp/B0CM5JV268?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/61aUBxqc5PL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80'],
     description: 'The most powerful MacBook Pro ever. M3 Max chip delivers unprecedented performance for creative professionals. Stunning Liquid Retina XDR display.',
     features: [
       'M3 Max Chip - 16-core CPU, 40-core GPU for extreme performance',
@@ -222,7 +222,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 12567,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Apple-iPhone-512GB-Natural-Titanium/dp/B0DGZR5G18?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/71657TiFeHL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=800&q=80'],
     description: 'The pinnacle of smartphone technology. A18 Pro chip, 48MP camera system, and titanium design. Pro-level photography and videography in your pocket.',
     features: [
       'A18 Pro Chip - Fastest smartphone processor ever',
@@ -267,7 +267,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 4231,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Godox-SL-60W-5600K-Bowens/dp/B01M0Z4H29?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/61BXZN-OVRL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80'],
     description: 'Professional continuous LED lighting for photography and videography. 60W output with Bowens mount for versatile light shaping.',
     features: [
       '60W LED Output - Powerful, consistent daylight-balanced light',
@@ -312,7 +312,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 87432,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Atomic-Habits-Proven-Build-Break/dp/0735211299?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/81wgcld4wxL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=800&q=80'],
     description: 'Transform your life with tiny changes that deliver remarkable results. The definitive guide to habit formation from bestselling author James Clear.',
     features: [
       'Proven Framework - 4 Laws of Behavior Change',
@@ -352,7 +352,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 15234,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Meditations-New-Translation-Marcus-Aurelius/dp/0812968255?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/71XHKV2Z5TL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=80'],
     description: 'The timeless Stoic philosophy of Roman Emperor Marcus Aurelius. Essential wisdom on resilience, virtue, and living with purpose. A polymath\'s foundational text.',
     features: [
       'Ancient Stoic Wisdom - Practical philosophy for modern life',
@@ -393,7 +393,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 42156,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Sapiens-Humankind-Yuval-Noah-Harari/dp/0062316117?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/713jIoMO3UL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&q=80'],
     description: 'A sweeping history of humanity from the Stone Age to AI. Harari\'s masterwork connects biology, history, and philosophy into a unified vision of human evolution.',
     features: [
       'Macro-Historical Perspective - 70,000 years of human history',
@@ -433,7 +433,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 8934,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Republic-Plato/dp/0140455116?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/51pIJ5FXE-L._AC_SL1200_.jpg'],
+    images: ['https://images.unsplash.com/photo-1476275466078-4007374efbbe?w=800&q=80'],
     description: 'Plato\'s foundational work on justice, the ideal state, and the philosopher-king. Required reading for anyone exploring political philosophy and ethics.',
     features: [
       'Socratic Dialogues - Interactive exploration of justice',
@@ -475,7 +475,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 8234,
     inStock: true,
     amazonUrl: `https://www.amazon.com/NASA-Vintage-Logo-Hoodie-Sweatshirt/dp/B0BQ1ZQXQN?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/61TbSeLd9ML._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800&q=80'],
     description: 'Iconic NASA "meatball" logo hoodie. Premium quality sweatshirt representing humanity\'s greatest scientific achievement. Perfect blend of style, intellect, and cosmic perspective.',
     features: [
       'Authentic NASA Logo - Classic "meatball" design from space race era',
@@ -516,7 +516,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 12456,
     inStock: true,
     amazonUrl: `https://www.amazon.com/NASA-Worm-Logo-T-Shirt-Black/dp/B08XYQH4VG?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/51QijwvwQWL._AC_SL1000_.jpg'],
+    images: ['https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&q=80'],
     description: 'The legendary NASA "worm" logo from 1975-1992. Minimalist, futuristic design representing the golden age of space exploration. A polymath\'s aesthetic statement.',
     features: [
       'Iconic Worm Logo - Revolutionary 1970s NASA branding',
@@ -559,7 +559,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 9234,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Spider-Farmer-Compatible-Spectrum-Hydroponic/dp/B07TS82HX6?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/71v+N-dJOhL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80'],
     description: 'Premium full-spectrum LED grow light for thriving indoor plants. Samsung LM301B diodes deliver optimal PAR output for all growth stages.',
     features: [
       'Samsung LM301B Diodes - Industry-leading efficiency',
@@ -603,7 +603,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 18234,
     inStock: true,
     amazonUrl: `https://www.amazon.com/New-Apple-AirPods-Max-Silver/dp/B08PZHYWJS?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/81QVBZRmLUL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?w=800&q=80'],
     description: `Apple AirPods Max combine sophisticated design with breakthrough audio technology. Featuring computational audio, Adaptive EQ, and Active Noise Cancellation, these premium over-ear headphones deliver an unparalleled listening experience for deep work, creative sessions, and immersive content consumption.`,
     features: [
       'Computational Audio - Apple H1 chip powers advanced audio features',
@@ -656,7 +656,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 3452,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Apple-iPad-Pro-13-Inch-Landscape/dp/B0D3J7FCFH?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/81c+9BOQNWL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&q=80'],
     description: `The most advanced iPad ever. M4 chip delivers desktop-class performance in an impossibly thin design. Pro camera system, Ultra Retina XDR display, and Apple Pencil Pro support make this the ultimate tool for polymaths - from digital art to code to content creation.`,
     features: [
       'M4 Chip - Desktop-class performance with AI acceleration',
@@ -710,7 +710,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 24183,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Sony-WH-1000XM5-Canceling-Headphones-Hands-Free/dp/B09XS7JWHH?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/51aXvjzcukL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=800&q=80'],
     description: `Sony's flagship noise-canceling headphones set the industry standard. With two processors controlling 8 microphones, adaptive sound, and 30-hour battery life, the WH-1000XM5 delivers unparalleled focus and audio quality for professionals and audiophiles.`,
     features: [
       'Industry-Leading ANC - Dual-processor, 8-microphone system for superior noise cancellation',
@@ -763,7 +763,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 8934,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Apple-Watch-Ultra-GPS-Cellular/dp/B0CHX3PQXY?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/81P7rQi8LpL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=800&q=80'],
     description: `Apple Watch Ultra 2 is engineered for endurance, exploration, and peak performance. Featuring titanium case, the brightest Apple display ever (3000 nits), precision dual-frequency GPS, and up to 36 hours of battery life - the ultimate tool for serious athletes and adventurers.`,
     features: [
       'S9 SiP - Faster processor with on-device Siri and precise health tracking',
@@ -818,7 +818,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 87234,
     inStock: true,
     amazonUrl: `https://www.amazon.com/YETI-Rambler-Vacuum-Insulated-Stainless/dp/B073WJQRGR?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/71kOFuPnqRL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&q=80'],
     description: `The YETI Rambler 30 oz is the gold standard in premium insulated drinkware. Double-wall vacuum insulation keeps drinks ice-cold (or piping hot) for hours. Built with kitchen-grade 18/8 stainless steel, this tumbler is virtually indestructible and designed for a lifetime of use.`,
     features: [
       'Double-Wall Vacuum Insulation - Keeps drinks cold for 7+ hours, hot for 3+ hours',
@@ -871,7 +871,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 14832,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Kindle-Oasis-adjustable-warm-light/dp/B07L5GDTYY?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/61fVHPPj8gL._AC_SL1000_.jpg'],
+    images: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80'],
     description: `The Kindle Oasis is Amazon's most premium e-reader, designed for serious readers and intellectuals. With a 7-inch high-resolution display, adjustable warm light, and ergonomic design, the Oasis delivers a reading experience that rivals physical books while offering the convenience of carrying thousands of titles.`,
     features: [
       '7-inch Glare-Free Display - 300 PPI resolution, reads like real paper',
@@ -924,7 +924,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 32418,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Moleskine-Classic-Notebook-Hard-Cover/dp/8883701127?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/61B8N00QaQL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=800&q=80'],
     description: `The legendary Moleskine notebook, favored by artists, writers, and thinkers for over two centuries. With acid-free paper, elastic closure, ribbon bookmark, and expandable inner pocket, the Moleskine Classic is the gold standard for analog note-taking and journaling.`,
     features: [
       'Premium Ivory Paper - 240 ruled pages, acid-free, 70 gsm',
@@ -977,7 +977,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 29847,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Rocketbook-Everlast-Reusable-Smart-Notebook/dp/B071Y3MSRK?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/71I9jKi6fOL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1517842645767-c639042777db?w=800&q=80'],
     description: `Rocketbook Everlast combines the joy of handwriting with digital organization. Write naturally with the included Pilot FriXion pen, scan with the Rocketbook app, then erase with a damp cloth. Your notes are backed up to cloud services while you reuse the same notebook infinitely.`,
     features: [
       'Infinitely Reusable - Write, scan, erase with damp cloth, repeat forever',
@@ -1031,7 +1031,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 45283,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Dr-Bronners-Pure-Castile-Liquid-Soap/dp/B0016BFD4K?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/71oj+m7ZPVL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&q=80'],
     description: `Dr. Bronner's Eucalyptus Pure-Castile Liquid Soap delivers an invigorating, energizing clean for body, home, and everything in between. Made with certified organic oils and no synthetic detergents or preservatives, this 18-in-1 soap replaces most cleaning products in your home while being safe enough for sensitive skin and gentle on the planet.`,
     features: [
       '18-in-1 Uses - Body, face, hair, dishes, laundry, floors, pets, and more',
@@ -1085,7 +1085,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 52847,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Dr-Bronners-Pure-Castile-Liquid-Soap/dp/B0009R16MA?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/71YF9VPuLsL._AC_SL1500_.jpg'],
+    images: ['https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80'],
     description: `Dr. Bronner's Lavender Pure-Castile Liquid Soap provides a calming, relaxing clean perfect for evening baths and unwinding after a long day. Made with certified organic oils and pure lavender essential oil, this 18-in-1 soap soothes body and mind while cleaning dishes, laundry, and surfaces without harsh chemicals.`,
     features: [
       '18-in-1 Uses - Body, face, hair, dishes, laundry, floors, pets, and more',
