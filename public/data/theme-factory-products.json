@@ -3,72 +3,92 @@
     {
       "name": "Poetry - Fine Lines - Art Print",
       "category": "poetry",
+      "productType": "poster",
       "syncProductId": 403685966,
       "image": "/designs/rendered/poetry/fine-lines/poster.jpg",
-      "price": "29.95"
+      "price": "29.95",
+      "description": "Original poetry from the Fine Lines collection. Museum-quality archival print on premium paper."
     },
     {
       "name": "Poetry - Fine Lines - Premium T-Shirt",
       "category": "poetry",
+      "productType": "tshirt",
       "syncProductId": 403685968,
       "image": "/designs/rendered/poetry/fine-lines/t-shirt.png",
-      "price": "39.95"
+      "price": "39.95",
+      "description": "Wear your poetry. Premium cotton t-shirt featuring original verse design."
     },
     {
       "name": "Poetry - Fine Lines - Ceramic Mug",
       "category": "poetry",
+      "productType": "mug",
       "syncProductId": 403685962,
       "image": "/designs/rendered/poetry/fine-lines/mug.png",
-      "price": "24.95"
+      "price": "24.95",
+      "description": "Start your day with poetry. High-quality ceramic mug with original verse."
     },
     {
       "name": "Poetry - Poet Proponent - Ceramic Mug",
       "category": "poetry",
+      "productType": "mug",
       "syncProductId": 403685969,
       "image": "/designs/rendered/poetry/poet-proponent/mug.png",
-      "price": "24.95"
+      "price": "24.95",
+      "description": "For the poetry advocate. Premium ceramic mug featuring original design."
     },
     {
       "name": "Poetry - The Tourbillon - Ceramic Mug",
       "category": "poetry",
+      "productType": "mug",
       "syncProductId": 403685970,
       "image": "/designs/rendered/poetry/the-tourbillon/mug.png",
-      "price": "24.95"
+      "price": "24.95",
+      "description": "The Tourbillon collection. Premium ceramic mug with elegant typography."
     },
     {
       "name": "Photography - Am Reed Aqua - Art Print",
       "category": "photography",
+      "productType": "poster",
       "syncProductId": 403685987,
       "image": "/designs/rendered/photography/am-reed-aqua/poster.jpg",
-      "price": "29.95"
+      "price": "29.95",
+      "description": "Professional fine art photography. Archival print on premium matte paper."
     },
     {
       "name": "Photography - Am Reed Aqua - Framed Print",
       "category": "photography",
+      "productType": "wall-art",
       "syncProductId": 403685991,
       "image": "/designs/rendered/photography/am-reed-aqua/wall-art.jpg",
-      "price": "89.95"
+      "price": "89.95",
+      "description": "Gallery-ready framed photography. Museum-quality frame with archival mat."
     },
     {
       "name": "Photography - Am Reed Aqua - Phone Case",
       "category": "photography",
+      "productType": "phone-case",
       "syncProductId": 403685979,
       "image": "/designs/rendered/photography/am-reed-aqua/phone-case.png",
-      "price": "34.95"
+      "price": "34.95",
+      "description": "Premium phone protection meets fine art. Durable case with vibrant print."
     },
     {
       "name": "Photography - Am Reed Aqua - Eco Tote",
       "category": "photography",
+      "productType": "totebag",
       "syncProductId": 403685990,
       "image": "/designs/rendered/photography/am-reed-aqua/tote-bag.png",
-      "price": "44.95"
+      "price": "44.95",
+      "description": "Sustainable style. Eco-friendly canvas tote with professional photography design."
     },
     {
       "name": "Photography - Am Reed Leather - Phone Case",
       "category": "photography",
+      "productType": "phone-case",
       "syncProductId": 403685993,
       "image": "/designs/rendered/photography/am-reed-leather/phone-case.png",
-      "price": "34.95"
+      "price": "34.95",
+      "description": "Leather aesthetic meets fine art photography. Premium protective case."
     }
   ]
 }

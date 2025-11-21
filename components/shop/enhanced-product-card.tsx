@@ -1,8 +1,9 @@
 'use client'
 
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { ExternalLink, ShoppingBag, Star, Sparkles } from 'lucide-react'
+import { ExternalLink, ShoppingBag, Star, Sparkles, Eye } from 'lucide-react'
 import { useState, useRef } from 'react'
+import Link from 'next/link'
 import { UnifiedProduct } from '@/lib/types/shop'
 import { MockupGenerator } from './mockup-generator'
 
@@ -10,6 +11,15 @@ interface EnhancedProductCardProps {
   product: UnifiedProduct
   onQuickView: (product: UnifiedProduct) => void
   featured?: boolean
+}
+
+// Generate a URL-friendly slug from product title
+function generateSlug(title: string, id: string): string {
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+  return `${slug}-${id}`
 }
 
 export function EnhancedProductCard({
@@ -70,9 +80,15 @@ export function EnhancedProductCard({
     ? undefined
     : product.productType as 'tshirt' | 'poster' | 'mug' | 'hoodie' | 'totebag' | undefined
 
-  // Use CSS mockup for Printful products, fallback to image for Amazon/others
-  const canUseMockup = product.source === 'printful' && mockupType
+  // Use CSS mockup for Printful/Prodigi products, fallback to image for Amazon/others
+  const canUseMockup = (product.source === 'printful' || product.source === 'prodigi') && mockupType
   const hoverImage = !canUseMockup && product.images && product.images.length > 1 ? product.images[1] : null
+
+  // Detect text-based designs that need object-contain instead of object-cover
+  const isTextDesign = product.tags?.includes('poetry') ||
+                       product.title.toLowerCase().includes('poetry') ||
+                       product.title.toLowerCase().includes('fine lines') ||
+                       product.tags?.includes('philosophy')
 
   return (
     <motion.div
@@ -117,15 +133,15 @@ export function EnhancedProductCard({
           transformStyle: 'preserve-3d',
         }}
       >
-        {/* Primary Image - Always visible, no opacity transition that could fail */}
+        {/* Primary Image - use object-contain for text designs to show full content */}
         <motion.img
           src={product.image}
           alt={product.title}
-          className="absolute inset-0 w-full h-full object-cover"
+          className={`absolute inset-0 w-full h-full ${isTextDesign ? 'object-contain bg-white p-4' : 'object-cover'}`}
           onLoad={() => setImageLoaded(true)}
           onError={() => setImageLoaded(true)} // Mark as loaded even on error to remove skeleton
           animate={{
-            scale: isHovered ? 1.1 : 1,
+            scale: isHovered ? 1.05 : 1,
           }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
           style={{ zIndex: 1 }}
@@ -248,22 +264,46 @@ export function EnhancedProductCard({
           </motion.div>
         )}
 
-        {/* Hover Overlay with CTA */}
+        {/* Hover Overlay with CTAs */}
         <motion.div
-          className="absolute inset-0 flex items-center justify-center"
+          className="absolute inset-0 flex items-center justify-center gap-3"
           initial={{ opacity: 0 }}
           animate={{ opacity: isHovered ? 1 : 0 }}
           transition={{ duration: 0.3 }}
+          style={{ zIndex: 10 }}
         >
+          {/* Quick View Button */}
           <motion.button
-            className="px-6 py-3 glass-button bg-white/90 text-black font-medium text-sm tracking-wider uppercase hover:bg-accent-gold/90 transition-colors"
+            className="px-5 py-3 glass-button bg-white/90 text-black font-medium text-sm tracking-wider uppercase hover:bg-accent-gold/90 transition-colors flex items-center gap-2"
             initial={{ y: 20 }}
             animate={{ y: isHovered ? 0 : 20 }}
             transition={{ duration: 0.3, delay: 0.1 }}
-            onClick={() => onQuickView(product)}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onQuickView(product)
+            }}
           >
+            <Eye size={16} />
             Quick View
           </motion.button>
+
+          {/* View Details Button - for Printful/Prodigi products */}
+          {(product.source === 'printful' || product.source === 'prodigi') && (
+            <motion.div
+              initial={{ y: 20 }}
+              animate={{ y: isHovered ? 0 : 20 }}
+              transition={{ duration: 0.3, delay: 0.15 }}
+            >
+              <Link
+                href={`/shop/product/${generateSlug(product.title, product.id)}`}
+                className="px-5 py-3 glass-button bg-accent-gold text-black font-medium text-sm tracking-wider uppercase hover:bg-accent-hover transition-colors inline-block"
+                onClick={(e) => e.stopPropagation()}
+              >
+                View Details
+              </Link>
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
 
@@ -318,16 +358,13 @@ export function EnhancedProductCard({
               <ExternalLink size={16} className="group-hover/btn:translate-x-1 transition-transform" />
             </a>
           ) : (
-            <>
-              <motion.button
-                className="flex-1 px-6 py-3 glass-button hover:border-accent-gold hover:bg-accent-gold/10 transition-all text-sm tracking-wider uppercase flex items-center justify-center gap-2"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <ShoppingBag size={16} />
-                <span>Add to Cart</span>
-              </motion.button>
-            </>
+            <Link
+              href={`/shop/product/${generateSlug(product.title, product.id)}`}
+              className="flex-1 px-6 py-3 glass-button bg-accent-gold/90 text-black hover:bg-accent-gold transition-colors text-center text-sm tracking-wider uppercase flex items-center justify-center gap-2 group/btn"
+            >
+              <ShoppingBag size={16} />
+              <span>View Product</span>
+            </Link>
           )}
         </div>
       </motion.div>

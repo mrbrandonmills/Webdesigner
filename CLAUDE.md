@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-Brandon Mills' luxury personal brand website featuring photography portfolio, modeling archive, writing collections, meditation products, and e-commerce store.
+Brandon Mills' luxury personal brand website featuring photography portfolio, modeling archive, writing collections, meditation products, e-commerce store, and AI-powered authentic social media automation.
 
 **Tech Stack:**
 - Next.js 15 (App Router)
@@ -10,8 +10,133 @@ Brandon Mills' luxury personal brand website featuring photography portfolio, mo
 - Tailwind CSS
 - Framer Motion
 - Stripe (Payments)
-- Printful (Print-on-demand)
-- Vercel (Hosting)
+- Prodigi (Premium Print-on-demand - Fine Art Trade Guild)
+- Printful (Print-on-demand backup)
+- Instagram Graph API (Auto-posting)
+- Google Gemini AI (Voice training & content generation)
+- Vercel (Hosting + Cron Jobs)
+
+---
+
+## 🎨 Authentic Voice Training System
+
+**NEW: Automated social posting with 95% authenticity threshold**
+
+### Overview
+
+This system scrapes @mrbrandonmills Instagram, analyzes Brandon's authentic voice with Gemini AI, and generates social media posts that sound **exactly like him** - not generic marketing.
+
+**Quality Control:** Posts are ONLY published if they score ≥95% "Brandon-ness"
+
+### Key Components
+
+**1. Voice Training (`lib/voice-training/`)**
+- `instagram-scraper.ts` - Scrapes @mrbrandonmills posts
+- `voice-profile-generator.ts` - Analyzes voice with Gemini 2.5 Pro
+- `authentic-content-generator.ts` - Generates posts (95% threshold)
+- `performance-tracker.ts` - Tracks engagement, learns what works
+
+**2. Auto Token Refresh (`lib/instagram-auto-refresh.ts`)**
+- Automatically refreshes Instagram tokens before expiry
+- NO MORE MANUAL TOKEN UPDATES
+- Saves token to `data/instagram-token.json` with expiry date
+- Checks before every use, refreshes if < 7 days remaining
+
+**3. Cron Automation (`app/api/cron/authentic-social-post/route.ts`)**
+- Runs 4x daily: 9am, 1pm, 5pm, 9pm PST
+- Loads voice profile
+- Generates 10 post options
+- Scores each for authenticity
+- Only posts if best option ≥95%
+- Tracks performance for learning
+
+### CLI Commands
+
+```bash
+# Train voice (scrape Instagram + create profile)
+npm run train-voice
+
+# Quick update (skip if profile < 7 days old)
+npm run train-voice:quick
+```
+
+### File Structure
+
+```
+data/
+  brandon-voice-profile.json      # Voice model (Gemini analysis)
+  instagram-token.json            # Token + expiry date
+  instagram-training-data.json    # Scraped posts
+  post-performance.json           # Engagement tracking
+
+lib/voice-training/
+  instagram-scraper.ts
+  voice-profile-generator.ts
+  authentic-content-generator.ts
+  performance-tracker.ts
+
+lib/instagram-auto-refresh.ts     # Auto token refresh
+```
+
+### Voice Profile Structure
+
+```typescript
+{
+  tone: {
+    primary: ['Minimalist', 'Poetic', 'Raw'],
+    intensity: 3,        // 1-10
+    authenticity: 9      // 1-10
+  },
+  style: {
+    sentenceStructure: 'Short, declarative statements',
+    punctuationStyle: 'Minimal, fragmented',
+    capitalization: 'lowercase, casual'
+  },
+  vocabulary: {
+    uniquePhrases: ['ok but the weight...tho?'],
+    avoidWords: ['excited to announce', 'check out']
+  },
+  themes: {
+    primary: ['art', 'philosophy', 'truth'],
+    taboo: ['superficial positivity', 'generic motivation']
+  }
+}
+```
+
+### Example Quality Scores
+
+❌ **42% Brandon-ness (REJECTED):**
+```
+"Excited to announce my new poetry collection! Check it out 🎉"
+```
+- Generic marketing language
+- Emoji spam
+- Not authentic
+
+✅ **99% Brandon-ness (POSTED):**
+```
+"ok but the weight on this paper tho? the ink.
+
+fine lines as physical object."
+```
+- Uses Brandon's unique phrase structure
+- Focuses on tangible qualities
+- Minimalist, lowercase, fragmented
+
+### Maintenance
+
+**Weekly:** Update voice profile
+```bash
+npm run train-voice:quick
+```
+
+**Check Health:**
+```bash
+# View token status, performance insights
+npm run train-voice
+```
+
+**Documentation:** See `VOICE-TRAINING-README.md` for full details
 
 ---
 

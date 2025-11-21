@@ -4,5 +4,11 @@
     "window": "lunch",
     "productId": "error",
     "success": false
+  },
+  {
+    "timestamp": "2025-11-21T17:11:04.040Z",
+    "window": "morning",
+    "productId": "error",
+    "success": false
   }
 ]

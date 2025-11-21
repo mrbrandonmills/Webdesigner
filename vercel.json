@@ -3,6 +3,33 @@
     "app/api/upload/route.ts": {
       "maxDuration": 60,
       "memory": 1024
+    },
+    "app/api/integrations/health/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/cron/social-post/route.ts": {
+      "maxDuration": 60
+    },
+    "app/api/cron/authentic-social-post/route.ts": {
+      "maxDuration": 60
     }
-  }
+  },
+  "crons": [
+    {
+      "path": "/api/integrations/health",
+      "schedule": "*/15 * * * *"
+    },
+    {
+      "path": "/api/cron/authentic-social-post?platform=twitter",
+      "schedule": "0 9,13,17,21 * * *"
+    },
+    {
+      "path": "/api/cron/authentic-social-post?platform=pinterest",
+      "schedule": "15 9,13,17,21 * * *"
+    },
+    {
+      "path": "/api/cron/authentic-social-post?platform=instagram",
+      "schedule": "30 9,13,17,21 * * *"
+    }
+  ]
 }

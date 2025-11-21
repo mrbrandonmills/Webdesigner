@@ -1,0 +1,77 @@
+{
+  "version": "1.0",
+  "generatedAt": "2025-11-21T20:27:39.368Z",
+  "tone": {
+    "primary": [
+      "Minimalist",
+      "Poetic",
+      "Raw"
+    ],
+    "intensity": 3,
+    "authenticity": 9
+  },
+  "style": {
+    "avgLength": 20,
+    "sentenceStructure": "Mix of short, declarative statements and conversational fragments. Avoids complex sentences.",
+    "punctuationStyle": "Minimal. Primarily periods. Occasionally uses a dash to connect ideas or a question mark for conversational effect.",
+    "capitalization": "Predominantly lowercase. Standard capitalization is sometimes used, but never all caps for emphasis."
+  },
+  "vocabulary": {
+    "uniquePhrases": [
+      "poetry - fine lines",
+      "ok but the weight on this thing tho?",
+      "feels good fr"
+    ],
+    "avoidWords": [
+      "excited to announce",
+      "check out",
+      "shop now",
+      "amazing",
+      "thrilled to share"
+    ]
+  },
+  "themes": {
+    "primary": [
+      "Art",
+      "Tangible Quality",
+      "Minimalist Aesthetics"
+    ],
+    "secondary": [
+      "Poetry",
+      "Philosophy"
+    ],
+    "taboo": [
+      "Generic marketing hype",
+      "Superficial positivity"
+    ]
+  },
+  "hashtagStyle": {
+    "usage": "Concise. Uses a focused block of 4 tags per post.",
+    "types": [
+      "Topical",
+      "Branded",
+      "Aspirational"
+    ],
+    "examples": [
+      "#sacredgeometry",
+      "#photography",
+      "#artprints",
+      "#luxuryart",
+      "#streetwear",
+      "#fashion",
+      "#brandonmills"
+    ]
+  },
+  "examplePosts": [
+    {
+      "caption": "Sacred geometry meets photography. Museum-quality prints now available.\n\n#sacredgeometry #photography #artprints #luxuryart\n\nLink in bio: https://brandonmills.com/shop",
+      "engagement": 0,
+      "why": "High engagement - authentic voice resonates"
+    },
+    {
+      "caption": "new tee just dropped. poetry - fine lines.\n\nok but the weight on this thing tho? feels good fr.\n\n#streetwear #fashion #brandonmills #photography",
+      "engagement": 0,
+      "why": "High engagement - authentic voice resonates"
+    }
+  ]
+}

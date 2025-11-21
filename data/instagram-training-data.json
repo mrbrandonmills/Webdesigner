@@ -1,0 +1,64 @@
+{
+  "posts": [
+    {
+      "id": "17883116499411601",
+      "caption": "Sacred geometry meets photography. Museum-quality prints now available.\n\n#sacredgeometry #photography #artprints #luxuryart\n\nLink in bio: https://brandonmills.com/shop",
+      "media_type": "IMAGE",
+      "permalink": "https://www.instagram.com/p/DRTyZLUEknw/",
+      "timestamp": "2025-11-21T06:54:22+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "engagement_rate": 0
+    },
+    {
+      "id": "17875773609440426",
+      "caption": "new tee just dropped. poetry - fine lines.\n\nok but the weight on this thing tho? feels good fr.\n\n#streetwear #fashion #brandonmills #photography",
+      "media_type": "IMAGE",
+      "permalink": "https://www.instagram.com/p/DRSf_bUjxsm/",
+      "timestamp": "2025-11-20T19:04:19+0000",
+      "like_count": 2,
+      "comments_count": 0,
+      "engagement_rate": 0
+    }
+  ],
+  "totalPosts": 2,
+  "avgEngagement": 0,
+  "topPerformers": [
+    {
+      "id": "17883116499411601",
+      "caption": "Sacred geometry meets photography. Museum-quality prints now available.\n\n#sacredgeometry #photography #artprints #luxuryart\n\nLink in bio: https://brandonmills.com/shop",
+      "media_type": "IMAGE",
+      "permalink": "https://www.instagram.com/p/DRTyZLUEknw/",
+      "timestamp": "2025-11-21T06:54:22+0000",
+      "like_count": 0,
+      "comments_count": 0,
+      "engagement_rate": 0
+    },
+    {
+      "id": "17875773609440426",
+      "caption": "new tee just dropped. poetry - fine lines.\n\nok but the weight on this thing tho? feels good fr.\n\n#streetwear #fashion #brandonmills #photography",
+      "media_type": "IMAGE",
+      "permalink": "https://www.instagram.com/p/DRSf_bUjxsm/",
+      "timestamp": "2025-11-20T19:04:19+0000",
+      "like_count": 2,
+      "comments_count": 0,
+      "engagement_rate": 0
+    }
+  ],
+  "linguisticPatterns": {
+    "avgWordCount": 20,
+    "sentimentTone": [
+      "questioning"
+    ],
+    "commonPhrases": [],
+    "hashtagStyle": [
+      "#sacredgeometry",
+      "#photography",
+      "#artprints",
+      "#luxuryart",
+      "#streetwear",
+      "#fashion",
+      "#brandonmills"
+    ]
+  }
+}

@@ -38,6 +38,8 @@
     "automate:twitter": "tsx scripts/automation/twitter-poster.ts",
     "automate:quora": "tsx scripts/automation/quora-poster.ts",
     "automate:hackernews": "tsx scripts/automation/hackernews-poster.ts",
+    "train-voice": "tsx scripts/train-voice.ts",
+    "train-voice:quick": "tsx scripts/train-voice.ts --quick",
     "automate:generate": "tsx scripts/automation/content-generator.ts",
     "automate:linkedin": "tsx scripts/automation/linkedin-poster.ts",
     "automate:pinterest": "tsx scripts/automation/pinterest-poster.ts",
@@ -110,6 +112,7 @@
     "swiper": "^12.0.3",
     "swr": "^2.3.6",
     "three": "^0.181.0",
+    "twitter-api-v2": "^1.28.0",
     "zod": "^3.24.1"
   },
   "devDependencies": {

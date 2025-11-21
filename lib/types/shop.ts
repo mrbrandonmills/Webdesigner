@@ -1,7 +1,7 @@
 // Unified Shop Product Types
 // Supports both Printful (custom merchandise) and Amazon (affiliate products)
 
-export type ProductSource = 'printful' | 'amazon'
+export type ProductSource = 'printful' | 'amazon' | 'prodigi' | 'local-curated'
 
 export interface ProductVariant {
   id: number | string
@@ -41,7 +41,7 @@ export interface UnifiedProduct {
   syncProductId?: number
   syncVariantId?: number
   tags?: string[]
-  productType?: 'tshirt' | 'poster' | 'mug' | 'hoodie' | 'totebag' | 'phone-case' | 'wall-art'
+  productType?: 'tshirt' | 'poster' | 'mug' | 'hoodie' | 'totebag' | 'phone-case' | 'wall-art' | 'art-print' | 'framed-print' | 'metal-print' | 'acrylic-print' | 'canvas' | string
 
   // Common
   category: string

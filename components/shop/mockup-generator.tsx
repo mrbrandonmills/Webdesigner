@@ -61,23 +61,31 @@ export function MockupGenerator({
     )
   }
 
-  // Poster Mockup
+  // Poster Mockup - optimized for text-based designs like poetry
   if (productType === 'poster') {
+    // Detect if this is a text-based design (poetry, philosophy)
+    const isTextDesign = productTitle.toLowerCase().includes('poetry') ||
+                         productTitle.toLowerCase().includes('fine lines') ||
+                         productTitle.toLowerCase().includes('philosophy')
+
     return (
-      <div className="relative w-full aspect-[2/3] bg-gradient-to-br from-neutral-100 to-neutral-200 p-8 md:p-12 overflow-hidden shadow-2xl">
-        {/* White mat border */}
+      <div className="relative w-full aspect-[3/4] bg-gradient-to-br from-neutral-200 to-neutral-300 p-6 md:p-10 overflow-hidden shadow-2xl">
+        {/* Frame shadow effect */}
+        <div className="absolute inset-4 md:inset-8 shadow-2xl" style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }} />
+
+        {/* White mat border - larger for text designs */}
         <motion.div
-          className="relative w-full h-full bg-white p-4 md:p-6 shadow-inner"
+          className={`relative w-full h-full bg-white shadow-inner ${isTextDesign ? 'p-6 md:p-10' : 'p-3 md:p-5'}`}
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: imageLoaded ? 1 : 0, scale: imageLoaded ? 1 : 0.95 }}
           transition={{ duration: 0.6 }}
         >
-          {/* Design in frame */}
-          <div className="relative w-full h-full border border-neutral-200">
+          {/* Design in frame - use object-contain for text designs */}
+          <div className={`relative w-full h-full border border-neutral-200 ${isTextDesign ? 'bg-white' : 'bg-neutral-50'}`}>
             <img
               src={designImage}
               alt={productTitle}
-              className="w-full h-full object-cover"
+              className={`w-full h-full ${isTextDesign ? 'object-contain p-4' : 'object-cover'}`}
               onLoad={() => setImageLoaded(true)}
             />
           </div>
@@ -85,18 +93,18 @@ export function MockupGenerator({
 
         {/* Loading skeleton */}
         {!imageLoaded && (
-          <div className="absolute inset-8 md:inset-12">
+          <div className="absolute inset-6 md:inset-10">
             <div className="w-full h-full bg-white/50 animate-pulse" />
           </div>
         )}
 
         {/* Mockup label */}
         <div className="absolute bottom-4 left-4 px-3 py-1 bg-black/60 backdrop-blur-sm text-white text-xs uppercase tracking-wider">
-          Framed Print Preview
+          {isTextDesign ? 'Art Print Preview' : 'Framed Print Preview'}
         </div>
 
-        {/* Wall texture overlay */}
-        <div className="absolute inset-0 opacity-5 mix-blend-multiply pointer-events-none"
+        {/* Subtle wall texture */}
+        <div className="absolute inset-0 opacity-3 mix-blend-multiply pointer-events-none"
           style={{
             backgroundImage: 'url("data:image/svg+xml,%3Csvg width="100" height="100" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noise"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" /%3E%3C/filter%3E%3Crect width="100" height="100" filter="url(%23noise)" /%3E%3C/svg%3E")',
           }}
