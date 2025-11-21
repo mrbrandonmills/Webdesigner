@@ -12,6 +12,12 @@ export function EmailPopup() {
 
   // Check if popup should show
   useEffect(() => {
+    // Don't show on Pinterest demo pages
+    if (window.location.pathname.includes('pinterest-demo') ||
+        window.location.pathname.includes('pinterest-oauth')) {
+      return
+    }
+
     // Don't show if already shown this session
     const hasShown = sessionStorage.getItem('email-popup-shown')
     if (hasShown) return
