@@ -53,6 +53,26 @@ export const metadata: Metadata = {
   },
 }
 
+// Transform theme factory products to match RawPrintfulProduct interface
+function transformThemeFactoryProducts(products: typeof themeFactoryProducts.products) {
+  return products.map(p => ({
+    id: p.syncProductId || `tf-${p.name.toLowerCase().replace(/\s+/g, '-')}`,
+    title: p.name,
+    description: `Premium ${p.category} product from our exclusive collection.`,
+    basePrice: p.price,
+    price: p.price,
+    currency: 'USD',
+    image: p.image,
+    images: [p.image],
+    syncProductId: p.syncProductId,
+    type: p.category,
+    category: p.category,
+    featured: true,
+    inStock: true,
+    source: 'local-curated'
+  }))
+}
+
 async function getProducts() {
   try {
     // Fetch Printful products from API
@@ -67,9 +87,12 @@ async function getProducts() {
       printfulProducts = printfulData.products || []
     }
 
+    // Transform theme factory products to match expected interface
+    const transformedThemeProducts = transformThemeFactoryProducts(themeFactoryProducts.products)
+
     // Create a set of sync product IDs from theme factory products
     const themeFactorySyncIds = new Set(
-      themeFactoryProducts.products.map(p => p.syncProductId).filter(id => id)
+      transformedThemeProducts.map(p => p.syncProductId).filter(id => id)
     )
 
     // Filter out Printful API products that already exist in theme factory
@@ -80,14 +103,15 @@ async function getProducts() {
 
     // Combine theme factory products with unique Printful API products
     // Theme factory products take precedence (they have local images for faster loading)
-    const allPrintfulProducts = [...themeFactoryProducts.products, ...uniquePrintfulProducts]
+    const allPrintfulProducts = [...transformedThemeProducts, ...uniquePrintfulProducts]
 
     // Merge with Amazon affiliate products
     return mergeShopProducts(allPrintfulProducts, affiliateProducts)
   } catch (error) {
     console.error('Error fetching products:', error)
     // Fallback to theme factory + Amazon products if API fails
-    return mergeShopProducts(themeFactoryProducts.products as any, affiliateProducts)
+    const transformedThemeProducts = transformThemeFactoryProducts(themeFactoryProducts.products)
+    return mergeShopProducts(transformedThemeProducts, affiliateProducts)
   }
 }
 
