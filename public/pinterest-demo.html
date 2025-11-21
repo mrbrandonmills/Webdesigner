@@ -146,7 +146,7 @@
 
         function startOAuth() {
             const scopes = 'boards:read,boards:write,pins:read,pins:write';
-            const authUrl = `https://www.pinterest.com/oauth/?client_id=${APP_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${scopes}&state=demo_${Date.now()}`;
+            const authUrl = `https://www.pinterest.com/oauth/?client_id=${APP_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${scopes}&state=html_${Date.now()}`;
             window.location.href = authUrl;
         }
 

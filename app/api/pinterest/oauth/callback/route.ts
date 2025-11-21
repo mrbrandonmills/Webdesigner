@@ -85,11 +85,22 @@ export async function GET(request: NextRequest) {
 
     console.log('[Pinterest OAuth] ✓ Token exchange successful!')
 
-    // Check if this is from the demo HTML page (state starts with "demo_")
-    const isDemo = state?.startsWith('demo_')
+    // Check which demo page this came from based on state parameter
+    const isHtmlDemo = state?.startsWith('html_')
+    const isCleanDemo = state?.startsWith('clean_')
+    const isDemoPage = state?.startsWith('demo_')
 
     // Success! Return token data to appropriate demo page
-    const successUrl = new URL(isDemo ? '/api/pinterest/demo' : '/admin/pinterest-demo', request.url)
+    let redirectPath = '/admin/pinterest-demo'
+    if (isHtmlDemo) {
+      redirectPath = '/pinterest-demo.html'
+    } else if (isCleanDemo) {
+      redirectPath = '/pinterest-demo-clean'
+    } else if (isDemoPage) {
+      redirectPath = '/api/pinterest/demo'
+    }
+
+    const successUrl = new URL(redirectPath, request.url)
     successUrl.searchParams.set('success', 'true')
     successUrl.searchParams.set('access_token', data.access_token)
     successUrl.searchParams.set('refresh_token', data.refresh_token || '')
