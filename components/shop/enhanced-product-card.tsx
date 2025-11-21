@@ -117,23 +117,23 @@ export function EnhancedProductCard({
           transformStyle: 'preserve-3d',
         }}
       >
-        {/* Primary Image */}
+        {/* Primary Image - Always visible, no opacity transition that could fail */}
         <motion.img
           src={product.image}
           alt={product.title}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="absolute inset-0 w-full h-full object-cover"
           onLoad={() => setImageLoaded(true)}
+          onError={() => setImageLoaded(true)} // Mark as loaded even on error to remove skeleton
           animate={{
             scale: isHovered ? 1.1 : 1,
           }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+          style={{ zIndex: 1 }}
         />
 
-        {/* Skeleton loader */}
+        {/* Skeleton loader - shows behind image while loading */}
         {!imageLoaded && (
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-white/5 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-gray-900 animate-pulse" style={{ zIndex: 0 }} />
         )}
 
         {/* CSS-based Mockup for Printful products */}
@@ -169,12 +169,13 @@ export function EnhancedProductCard({
           />
         )}
 
-        {/* Gradient Overlay */}
+        {/* Gradient Overlay - subtle by default, stronger on hover */}
         <motion.div
-          className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"
-          initial={{ opacity: 0.6 }}
-          animate={{ opacity: isHovered ? 0.8 : 0.6 }}
+          className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
+          initial={{ opacity: 0.4 }}
+          animate={{ opacity: isHovered ? 0.7 : 0.4 }}
           transition={{ duration: 0.4 }}
+          style={{ zIndex: 2 }}
         />
 
         {/* Badges */}
