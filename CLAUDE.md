@@ -583,6 +583,30 @@ npx tsx scripts/automation/instagram-diagnose.ts
 - Token expires: 2026 (need to renew before then)
 - App is in Development Mode (not published to public)
 
+#### Pinterest Standard Access - OAuth Demo
+
+**Status:** Pending Standard API Access Approval
+
+**Demo Page:** `/admin/pinterest-demo`
+
+Pinterest requires a video demonstration showing:
+1. Complete OAuth flow (login → authorize → code → token exchange)
+2. API integration (creating pins programmatically)
+3. Verification (showing created pins on Pinterest)
+
+**Setup:**
+1. Get app secret from https://developers.pinterest.com/apps/
+2. Update `.env.local` with `PINTEREST_APP_SECRET`
+3. Ensure redirect URI registered: `https://brandonmills.com/api/pinterest/oauth/callback`
+4. Follow `PINTEREST-VIDEO-GUIDE.md` to record approval video
+
+**Components:**
+- `/app/admin/pinterest-demo/page.tsx` - Interactive demo walkthrough
+- `/app/api/pinterest/oauth/callback/route.ts` - OAuth token exchange
+- `/app/api/pinterest/create-pin/route.ts` - Pin creation API
+
+Once approved, Pinterest automation will post 4x daily to drive traffic.
+
 ### Traffic Generation Content
 
 **Ready-to-post content locations:**
@@ -608,4 +632,4 @@ npx tsx scripts/automation/instagram-diagnose.ts
 
 ---
 
-Last Updated: 2025-11-18
+Last Updated: 2025-11-21
