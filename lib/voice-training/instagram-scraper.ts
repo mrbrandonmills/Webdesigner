@@ -63,7 +63,7 @@ export class InstagramVoiceScraper {
 
     try {
       while (nextUrl && posts.length < limit) {
-        const url = nextUrl.includes('?') ? nextUrl : `${nextUrl}?${params}`
+        const url: string = nextUrl.includes('?') ? nextUrl : `${nextUrl}?${params}`
 
         const response = await fetch(url)
 

@@ -75,7 +75,7 @@ export class PerformanceTracker {
     data.posts.push(performance)
     await this.saveData(data)
 
-    console.log(`✓ Recorded post: ${postId.substring(0, 20)}...`)
+    console.log(`✓ Recorded post: ${post.postId.substring(0, 20)}...`)
   }
 
   /**

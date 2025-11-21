@@ -22,9 +22,7 @@ export interface BrandonVoiceProfile {
     avgLength: number
     sentenceStructure: string // complex, simple, mixed
     punctuationStyle: string  // heavy, minimal, artistic
-    capitaliz
-
-ation: string  // standard, artistic, emphatic
+    capitalization: string  // standard, artistic, emphatic
   }
 
   // Vocabulary

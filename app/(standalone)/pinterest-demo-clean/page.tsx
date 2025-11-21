@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 
-export default function PinterestDemoClean() {
+function PinterestDemoContent() {
   const searchParams = useSearchParams()
   const [step, setStep] = useState(1)
   const [accessToken, setAccessToken] = useState('')
@@ -192,5 +192,17 @@ export default function PinterestDemoClean() {
         )}
       </div>
     </>
+  )
+}
+
+export default function PinterestDemoClean() {
+  return (
+    <Suspense fallback={
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom right, #fee2e2, #fecaca)', padding: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ color: '#dc2626', fontSize: '1.5rem' }}>Loading...</div>
+      </div>
+    }>
+      <PinterestDemoContent />
+    </Suspense>
   )
 }
