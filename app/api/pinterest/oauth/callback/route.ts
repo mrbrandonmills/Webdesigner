@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
     console.log('[Pinterest OAuth] ✓ Token exchange successful!')
 
     // Always redirect to public demo page for approval video
-    const redirectPath = '/pinterest-demo-clean'
+    const redirectPath = '/pinterest-demo'
 
     const successUrl = new URL(redirectPath, request.url)
     successUrl.searchParams.set('success', 'true')

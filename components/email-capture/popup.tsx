@@ -13,8 +13,8 @@ export function EmailPopup() {
   // Check if popup should show
   useEffect(() => {
     // Don't show on Pinterest demo pages
-    if (window.location.pathname.includes('pinterest-demo') ||
-        window.location.pathname.includes('pinterest-oauth')) {
+    if (window.location.pathname.includes('pinterest') ||
+        window.location.pathname.includes('oauth')) {
       return
     }
 
