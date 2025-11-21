@@ -226,5 +226,115 @@
     "priority": 30,
     "isNewArrival": true,
     "skipReason": "Text-based design on mug - poor Instagram composition"
+  },
+  {
+    "productId": "403685993",
+    "name": "Photography - Am Reed Leather - Phone Case",
+    "category": "Apparel",
+    "imageUrl": "https://brandonmills.com/designs/rendered/photography/am-reed-leather/phone-case.png",
+    "price": "34.95",
+    "addedAt": "2025-11-20T23:00:03.744Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
+  },
+  {
+    "productId": "403685991",
+    "name": "Photography - Am Reed Aqua - Framed Print",
+    "category": "Print",
+    "imageUrl": "https://brandonmills.com/designs/rendered/photography/am-reed-aqua/wall-art.jpg",
+    "price": "89.95",
+    "addedAt": "2025-11-20T23:00:04.479Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
+  },
+  {
+    "productId": "403685990",
+    "name": "Photography - Am Reed Aqua - Eco Tote",
+    "category": "Bag",
+    "imageUrl": "https://brandonmills.com/designs/rendered/photography/am-reed-aqua/tote-bag.png",
+    "price": "44.95",
+    "addedAt": "2025-11-20T23:00:05.287Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
+  },
+  {
+    "productId": "403685987",
+    "name": "Photography - Am Reed Aqua - Art Print",
+    "category": "Print",
+    "imageUrl": "https://brandonmills.com/designs/rendered/photography/am-reed-aqua/poster.jpg",
+    "price": "29.95",
+    "addedAt": "2025-11-20T23:00:06.007Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
+  },
+  {
+    "productId": "403685979",
+    "name": "Photography - Am Reed Aqua - Phone Case",
+    "category": "Apparel",
+    "imageUrl": "https://brandonmills.com/designs/rendered/photography/am-reed-aqua/phone-case.png",
+    "price": "34.95",
+    "addedAt": "2025-11-20T23:00:06.823Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
+  },
+  {
+    "productId": "403685970",
+    "name": "Poetry - The Tourbillon - Ceramic Mug",
+    "category": "Mug",
+    "imageUrl": "https://brandonmills.com/designs/rendered/poetry/the-tourbillon/mug.png",
+    "price": "24.95",
+    "addedAt": "2025-11-20T23:00:07.640Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
+  },
+  {
+    "productId": "403685969",
+    "name": "Poetry - Poet Proponent - Ceramic Mug",
+    "category": "Mug",
+    "imageUrl": "https://brandonmills.com/designs/rendered/poetry/poet-proponent/mug.png",
+    "price": "24.95",
+    "addedAt": "2025-11-20T23:00:08.351Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
+  },
+  {
+    "productId": "403685968",
+    "name": "Poetry - Fine Lines - Premium T-Shirt",
+    "category": "T-Shirt",
+    "imageUrl": "https://brandonmills.com/designs/rendered/poetry/fine-lines/t-shirt.png",
+    "price": "39.95",
+    "addedAt": "2025-11-20T23:00:09.139Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
+  },
+  {
+    "productId": "403685966",
+    "name": "Poetry - Fine Lines - Art Print",
+    "category": "Print",
+    "imageUrl": "https://brandonmills.com/designs/rendered/poetry/fine-lines/poster.jpg",
+    "price": "29.95",
+    "addedAt": "2025-11-20T23:00:09.877Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
+  },
+  {
+    "productId": "403685962",
+    "name": "Poetry - Fine Lines - Ceramic Mug",
+    "category": "Mug",
+    "imageUrl": "https://brandonmills.com/designs/rendered/poetry/fine-lines/mug.png",
+    "price": "24.95",
+    "addedAt": "2025-11-20T23:00:10.591Z",
+    "promotionCount": 0,
+    "priority": 100,
+    "isNewArrival": true
   }
 ]

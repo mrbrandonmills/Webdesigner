@@ -16,8 +16,10 @@ interface ContentTheme {
   name: string
   essence: string
   mood: string
-  colorPalette?: string[]
-  keywords?: string[]
+  aestheticDirection?: string
+  targetAudience?: string
+  colorPalette?: readonly string[]
+  keywords?: readonly string[]
   [key: string]: unknown
 }
 
@@ -325,7 +327,7 @@ export class ThemeProductGenerator {
     const base: ProductMetadata = {
       themeEssence: theme.essence,
       contentSource: `${category}-${theme.name.toLowerCase().replace(/\s+/g, '-')}`,
-      designStyle: theme.aestheticDirection,
+      designStyle: theme.aestheticDirection || 'Contemporary minimalism',
     }
 
     // Add product-specific metadata

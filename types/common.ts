@@ -445,14 +445,4 @@ export interface ThemeDefinition {
 // ============================================
 // Window Extensions
 // ============================================
-
-declare global {
-  interface Window {
-    gtag?: (
-      command: 'event' | 'config' | 'set',
-      eventName: string,
-      params?: Record<string, unknown>
-    ) => void
-    dataLayer?: unknown[]
-  }
-}
+// Note: gtag and dataLayer types are declared in types/analytics.d.ts

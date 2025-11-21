@@ -78,9 +78,9 @@ export function mergeShopProducts(
       reviewCount: p.reviewCount,
       features: p.features,
       brand: p.brand,
-      category: p.category,
+      category: p.category || '',
       featured: p.featured || false,
-      inStock: p.inStock,
+      inStock: p.inStock !== false,
     })
   }
 

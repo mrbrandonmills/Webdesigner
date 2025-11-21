@@ -7,6 +7,9 @@ import { JsonLd } from '@/components/seo/JsonLd'
 import { generateAggregateOfferSchema, generateBreadcrumbSchema } from '@/lib/json-ld'
 import { UnifiedProduct } from '@/lib/types/shop'
 
+// Force dynamic rendering to avoid build-time API fetch issues
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Shop Luxury Canvas Prints & Sacred Geometry Art | Brandon Mills',
   description: 'Shop museum-quality luxury canvas prints featuring sacred geometry art, philosophy books on self-actualization, and premium curated products. Free shipping on select items.',
