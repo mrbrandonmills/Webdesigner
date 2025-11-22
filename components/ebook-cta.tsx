@@ -125,7 +125,7 @@ export function EbookCTA({ variant = 'inline', source, className = '' }: EbookCT
                 Building a Non-Addictive Life
               </p>
               <a
-                href={ebookConfig.volumes[0].amazonUrl}
+                href={ebookConfig.volumes[0].amazonUrl || ebookConfig.amazonUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors"
@@ -143,7 +143,7 @@ export function EbookCTA({ variant = 'inline', source, className = '' }: EbookCT
                 Continuing the Journey
               </p>
               <a
-                href={ebookConfig.volumes[1].amazonUrl}
+                href={ebookConfig.volumes[1].amazonUrl || ebookConfig.amazonUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block w-full px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded-lg transition-colors"

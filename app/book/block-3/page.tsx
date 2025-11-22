@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowRight, BookOpen, Mail, Share2, ExternalLink } from 'lucide-react'
+import { ArrowRight, BookOpen, Mail, ExternalLink } from 'lucide-react'
 import { Block3SignupForm } from '@/components/email/block-3-signup-form'
 import { Block3Content } from '@/components/block-3-content'
 import { ReadingProgress } from '@/components/reading-progress'
@@ -8,6 +8,7 @@ import { EbookCTA } from '@/components/ebook-cta'
 import Navigation from '@/components/navigation'
 import { ebookConfig } from '@/lib/ebook-config'
 import { getFeaturedProducts } from '@/lib/affiliate-products'
+import { ShareButtonBlock3 } from '@/components/share-button-block3'
 
 export const metadata: Metadata = {
   title: 'Read Block 3 Free - Random Acts of Self-Actualization',
@@ -183,16 +184,6 @@ export default function Block3Page() {
                   href={volume.amazonUrl!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => {
-                    // Track clicks
-                    if (typeof window !== 'undefined' && (window as any).gtag) {
-                      (window as any).gtag('event', 'click', {
-                        event_category: 'affiliate',
-                        event_label: `Block 3 Page - ${volume.name}`,
-                        value: ebookConfig.price
-                      })
-                    }
-                  }}
                   className="bg-black/40 backdrop-blur-sm border border-gold/20 rounded-xl p-6 hover:border-gold/50 transition-all transform hover:scale-105 group"
                 >
                   <div className="flex items-start gap-4">
@@ -234,14 +225,14 @@ export default function Block3Page() {
             </div>
             <div className="flex items-center gap-3">
               <a
-                href={ebookConfig.volumes[0].amazonUrl}
+                href={ebookConfig.volumes[0].amazonUrl || ebookConfig.amazonUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-6 py-2 bg-gradient-to-r from-gold to-amber-600 text-black font-bold rounded-lg hover:from-amber-600 hover:to-gold transition-all text-sm"
               >
                 Buy on Amazon
               </a>
-              <ShareButton />
+              <ShareButtonBlock3 />
             </div>
           </div>
         </div>
@@ -279,16 +270,6 @@ export default function Block3Page() {
                   href={product.amazonUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  onClick={() => {
-                    // Track affiliate clicks
-                    if (typeof window !== 'undefined' && (window as any).gtag) {
-                      (window as any).gtag('event', 'click', {
-                        event_category: 'affiliate',
-                        event_label: `Block 3 - ${product.name}`,
-                        value: product.price
-                      })
-                    }
-                  }}
                   className="bg-black/60 backdrop-blur-sm border border-gray-800 rounded-xl overflow-hidden hover:border-gold/50 transition-all transform hover:scale-105 group"
                 >
                   <div className="aspect-square bg-gradient-to-br from-gray-800 to-gray-900 flex items-center justify-center">
@@ -333,7 +314,7 @@ export default function Block3Page() {
 
             <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
               <a
-                href={ebookConfig.volumes[0].amazonUrl}
+                href={ebookConfig.volumes[0].amazonUrl || ebookConfig.amazonUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex flex-col items-center gap-4 p-8 bg-gradient-to-br from-purple-900/20 to-blue-900/20 border border-purple-800/30 rounded-xl hover:border-gold/50 transition-all transform hover:scale-105"
@@ -367,43 +348,3 @@ export default function Block3Page() {
   )
 }
 
-// Share Button Component
-function ShareButton() {
-  const handleShare = async () => {
-    const shareData = {
-      title: 'Random Acts of Self-Actualization: Block 3',
-      text: 'Read Block 3 free online - The Laboratory of Living',
-      url: 'https://www.brandonmills.com/book/block-3',
-    }
-
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData)
-      } else {
-        // Fallback: Copy to clipboard
-        await navigator.clipboard.writeText(shareData.url)
-        alert('Link copied to clipboard!')
-      }
-
-      // Track share
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'share', {
-          event_category: 'engagement',
-          event_label: 'Block 3 Share',
-        })
-      }
-    } catch (error) {
-      console.error('Share failed:', error)
-    }
-  }
-
-  return (
-    <button
-      onClick={handleShare}
-      className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-      aria-label="Share"
-    >
-      <Share2 className="w-5 h-5 text-gray-400 hover:text-white" />
-    </button>
-  )
-}
