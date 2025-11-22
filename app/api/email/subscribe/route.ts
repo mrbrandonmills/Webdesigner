@@ -114,7 +114,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       message: 'Successfully subscribed to Block 3 notifications',
-      contactId: contact.id,
     })
   } catch (error: any) {
     console.error('Subscription error:', error)
