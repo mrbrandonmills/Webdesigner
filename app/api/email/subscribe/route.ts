@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(request: NextRequest) {
   try {
     const { email, name, source } = await request.json()
@@ -21,8 +19,17 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Add contact to Resend audience
+    // Initialize Resend inside handler (not at module level to avoid build errors)
+    const apiKey = process.env.RESEND_API_KEY
     const audienceId = process.env.RESEND_AUDIENCE_ID
+
+    if (!apiKey) {
+      console.error('RESEND_API_KEY is not configured')
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 500 }
+      )
+    }
 
     if (!audienceId) {
       console.error('RESEND_AUDIENCE_ID is not configured')
@@ -31,6 +38,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
+
+    const resend = new Resend(apiKey)
 
     // Add to audience with custom fields
     const contact = await resend.contacts.create({
