@@ -30,8 +30,15 @@ export default function PinterestDemo() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          accessToken: token,
-          demo: true
+          access_token: token,
+          title: 'Pinterest API Integration Demo',
+          description: 'This pin was created programmatically to demonstrate Pinterest API Standard Access. Created via brandonmills.com demo application.',
+          link: 'https://www.brandonmills.com/pinterest-demo',
+          media_source: {
+            source_type: 'image_url',
+            url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop'
+          },
+          board_id: process.env.NEXT_PUBLIC_PINTEREST_SANDBOX_BOARD_ID || '926263917051256124'
         })
       })
 
@@ -42,8 +49,8 @@ export default function PinterestDemo() {
       }
 
       addLog('✅ Pin created successfully!')
-      addLog(`Pin ID: ${data.id}`)
-      setPinUrl(data.url || `https://pinterest.com/pin/${data.id}/`)
+      addLog(`Pin ID: ${data.pin.id}`)
+      setPinUrl(data.pin.url)
 
     } catch (err: any) {
       addLog(`❌ Error: ${err.message}`)
