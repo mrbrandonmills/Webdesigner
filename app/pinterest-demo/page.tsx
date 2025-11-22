@@ -38,7 +38,7 @@ export default function PinterestDemo() {
             source_type: 'image_url',
             url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1000&auto=format&fit=crop'
           },
-          board_id: process.env.NEXT_PUBLIC_PINTEREST_SANDBOX_BOARD_ID || '926263917051256124'
+          board_id: '926263917051256124'
         })
       })
 
