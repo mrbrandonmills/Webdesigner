@@ -59,3 +59,8 @@ public/books/*.pdf
 # Automation (logs and state)
 logs/
 data/automation-state.json
+
+# Pinterest test files (contain API tokens - NEVER COMMIT!)
+pinterest-*.js
+test-pinterest.js
+public/pinterest-*.html
