@@ -5,12 +5,13 @@ import { Resend } from 'resend'
 import { NewsletterSubscribeSchema, formatZodErrors } from '@/lib/validations'
 import { logger } from '@/lib/logger'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(request: NextRequest) {
   try {
     // Check for required environment variables
-    if (!process.env.RESEND_API_KEY) {
+    const apiKey = process.env.RESEND_API_KEY
+    const audienceId = process.env.RESEND_AUDIENCE_ID
+
+    if (!apiKey) {
       logger.error('RESEND_API_KEY is not configured')
       return NextResponse.json(
         {
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (!process.env.RESEND_AUDIENCE_ID) {
+    if (!audienceId) {
       logger.error('RESEND_AUDIENCE_ID is not configured')
       return NextResponse.json(
         {
@@ -31,6 +32,9 @@ export async function POST(request: NextRequest) {
         { status: 503 }
       )
     }
+
+    // Initialize Resend inside handler to avoid build-time errors
+    const resend = new Resend(apiKey)
 
     const body = await request.json()
 
@@ -54,7 +58,7 @@ export async function POST(request: NextRequest) {
       try {
         await resend.contacts.create({
           email,
-          audienceId: process.env.RESEND_AUDIENCE_ID,
+          audienceId,
           unsubscribed: false,
           firstName: '',
           lastName: ''
