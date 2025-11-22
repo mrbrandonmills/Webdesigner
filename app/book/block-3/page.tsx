@@ -177,10 +177,10 @@ export default function Block3Page() {
             </p>
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {ebookConfig.volumes.map((volume, idx) => (
+              {ebookConfig.volumes.filter(v => v.amazonUrl).map((volume, idx) => (
                 <a
                   key={volume.asin}
-                  href={volume.amazonUrl}
+                  href={volume.amazonUrl!}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => {
