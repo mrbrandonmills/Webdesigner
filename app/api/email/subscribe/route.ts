@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
     if (error?.message?.includes('already exists') || error?.statusCode === 400) {
       return NextResponse.json({
         success: true,
-        message: 'You're already subscribed!',
+        message: "You're already subscribed!",
       })
     }
 
