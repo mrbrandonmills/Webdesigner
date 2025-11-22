@@ -31,7 +31,7 @@ function PinterestDemoContent() {
   const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost'
   const REDIRECT_URI = isLocalhost
     ? 'http://localhost:8889/callback'
-    : 'https://brandonmills.com/api/pinterest/oauth/callback'
+    : 'https://www.brandonmills.com/api/pinterest/oauth/callback'
 
   const startOAuth = () => {
     const scopes = 'boards:read,boards:write,pins:read,pins:write'
