@@ -11,7 +11,7 @@ import { ErrorBoundary } from '@/components/error-boundary'
 import { ConciergeWidget } from '@/components/concierge/concierge-widget'
 import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
 import PageBackground from '@/components/ui/page-background'
-import { EmailPopup } from '@/components/email-capture'
+// import { EmailPopup } from '@/components/email-capture'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { generateOrganizationSchema, generateWebSiteSchema } from '@/lib/json-ld'
 import './globals.css'
@@ -113,7 +113,7 @@ export default function RootLayout({
             </SmoothScroll>
             <CartSidebar />
             <ConciergeWidget />
-            <EmailPopup />
+            {/* <EmailPopup /> */}
             <ToastWrapper />
             <Analytics />
             <GoogleAnalytics />
