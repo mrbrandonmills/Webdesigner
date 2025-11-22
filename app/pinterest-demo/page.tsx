@@ -26,11 +26,17 @@ function PinterestDemoContent() {
   }, [searchParams])
 
   const APP_ID = '1537033'
-  const REDIRECT_URI = 'https://brandonmills.com/api/pinterest/oauth/callback'
+
+  // Auto-detect if running on localhost or production
+  const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  const REDIRECT_URI = isLocalhost
+    ? 'http://localhost:8889/callback'
+    : 'https://brandonmills.com/api/pinterest/oauth/callback'
 
   const startOAuth = () => {
     const scopes = 'boards:read,boards:write,pins:read,pins:write'
     const authUrl = `https://www.pinterest.com/oauth/?client_id=${APP_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${scopes}&state=demo_${Date.now()}`
+    console.log('Starting OAuth with redirect:', REDIRECT_URI)
     window.location.href = authUrl
   }
 
