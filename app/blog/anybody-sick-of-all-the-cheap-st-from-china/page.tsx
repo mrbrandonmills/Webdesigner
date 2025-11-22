@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, Clock, Calendar, Tag } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Anybody Sick of All the Cheap S*%t from China? | Brandon Mills',
@@ -89,7 +91,9 @@ export default function BlogPost() {
               </div>
             </div>
           </footer>
-        </div>
+        
+      <EbookCTA variant="footer" source="anybody-sick-of-all-the-cheap-st-from-china" />
+</div>
       </article>
     </main>
   )

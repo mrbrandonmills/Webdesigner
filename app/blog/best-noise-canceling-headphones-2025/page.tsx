@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Check, X, Star, ExternalLink } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const dynamic = 'force-dynamic'
 
@@ -629,6 +631,8 @@ export default function BestNoiseCancelingHeadphones2025() {
           </div>
         </div>
       </article>
-    </div>
+    
+      <EbookCTA variant="footer" source="best-noise-canceling-headphones-2025" />
+</div>
   )
 }

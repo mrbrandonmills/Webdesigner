@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, Eye, Shield, Zap, Target, Heart, Compass } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Dream About Being Chased: Meaning & Interpretation | Brandon Mills',
@@ -425,7 +427,9 @@ export default function BeingChasedDreamPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="dream-about-being-chased" />
+</div>
       </footer>
     </article>
   )

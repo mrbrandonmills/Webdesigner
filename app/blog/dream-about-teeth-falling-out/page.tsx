@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, Smile, MessageCircle, Shield, Eye, Zap, Heart } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Dream About Teeth Falling Out: Complete Interpretation Guide | Brandon Mills',
@@ -421,7 +423,9 @@ export default function TeethFallingOutDreamPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="dream-about-teeth-falling-out" />
+</div>
       </footer>
     </article>
   )

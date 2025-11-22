@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Compass, Sparkles, Share2, Crown, Sword, Wand2, Heart, Moon, Eye, Target } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Jungian Archetypes Test: Discover Your Dominant Archetype | Brandon Mills',
@@ -451,7 +453,9 @@ export default function JungianArchetypesTestPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="jungian-archetypes-test" />
+</div>
       </footer>
     </article>
   )

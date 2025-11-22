@@ -3,6 +3,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { generateArticleSchema, generateBreadcrumbSchema } from '@/lib/json-ld'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 const AFFILIATE_TAG = process.env.NEXT_PUBLIC_AMAZON_AFFILIATE_TAG || 'brandonmil0e-20'
 const BRAUN_AMAZON_URL = `https://www.amazon.com/Braun-i%C2%B7expert-Removal-Holiday-Trimmer/dp/B0CMVPMPZ8?tag=${AFFILIATE_TAG}`
@@ -530,7 +532,9 @@ export default function BraunIPLFirstWeekPage() {
               </Link>
             </div>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="braun-ipl-first-week" />
+</div>
       </article>
     </>
   )

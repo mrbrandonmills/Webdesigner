@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, Clock, Calendar, BookOpen, ArrowRight } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'The Science of Enlightenment: How Quantum Physics Validates Buddhist Wisdom | Brandon Mills',
@@ -168,7 +170,9 @@ export default function BlogPost() {
               </div>
             </div>
           </footer>
-        </div>
+        
+      <EbookCTA variant="footer" source="quantum-consciousness-buddhist-enlightenment-science" />
+</div>
       </article>
     </main>
   )

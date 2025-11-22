@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, Eye, EyeOff, Zap, Heart, Compass, Shield, Sun } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Shadow Self Psychology: Understanding Your Dark Side | Brandon Mills',
@@ -464,7 +466,9 @@ export default function ShadowSelfPsychologyPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="shadow-self-psychology" />
+</div>
       </footer>
     </article>
   )

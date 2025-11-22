@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Compass, Sparkles, Share2, Crown, Sword, Wand2, Heart, Star, Zap, Target, Layers } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Life Path Oracle: Discover Your Archetype & Future Paths | Brandon Mills',
@@ -397,7 +399,9 @@ export default function LifePathOracleBlogPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="life-path-oracle-archetype-quiz" />
+</div>
       </footer>
     </article>
   )

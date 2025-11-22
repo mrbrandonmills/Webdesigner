@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, ArrowRight, Clock, Calendar, Sword, Shield, Target, Flame, Crown, Brain, Heart, Zap } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Discover Your Warrior Archetype: The Psychology of Inner Strength | Brandon Mills',
@@ -239,7 +241,9 @@ export default function WarriorArchetypeBlogPost() {
               <span className="px-2 py-1 bg-white/5 text-white/40 text-xs">#personal-development</span>
             </div>
           </footer>
-        </div>
+        
+      <EbookCTA variant="footer" source="discover-your-warrior-archetype" />
+</div>
       </article>
     </main>
   )

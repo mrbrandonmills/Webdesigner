@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, Heart, Users, Compass, Zap, Eye, Star } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Anima and Animus Meaning: Jung\'s Inner Feminine and Masculine | Brandon Mills',
@@ -458,7 +460,9 @@ export default function AnimaAnimusMeaningPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="anima-animus-meaning" />
+</div>
       </footer>
     </article>
   )

@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, Clock, Calendar, Tag } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: '5 Integrative Approaches to Mental Health you Need to Know | Brandon Mills',
@@ -84,7 +86,9 @@ export default function BlogPost() {
               </div>
             </div>
           </footer>
-        </div>
+        
+      <EbookCTA variant="footer" source="5-integrative-approaches-to-mental-health-you-need-to-know" />
+</div>
       </article>
     </main>
   )

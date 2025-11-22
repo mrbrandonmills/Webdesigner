@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, Clock, Calendar, Tag } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'The Hero’s Journey: Which Stage Are You On? | Brandon Mills',
@@ -116,7 +118,9 @@ export default function BlogPost() {
               </div>
             </div>
           </footer>
-        </div>
+        
+      <EbookCTA variant="footer" source="the-heros-journey-which-stage-are-you-on" />
+</div>
       </article>
     </main>
   )

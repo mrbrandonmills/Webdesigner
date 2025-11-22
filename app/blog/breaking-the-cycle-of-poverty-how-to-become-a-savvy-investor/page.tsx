@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, Clock, Calendar, Tag } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Breaking the Cycle of Poverty: How to Become a Savvy Investor Despite Your Upbringing | Brandon Mills',
@@ -90,7 +92,9 @@ export default function BlogPost() {
               </div>
             </div>
           </footer>
-        </div>
+        
+      <EbookCTA variant="footer" source="breaking-the-cycle-of-poverty-how-to-become-a-savvy-investor" />
+</div>
       </article>
     </main>
   )

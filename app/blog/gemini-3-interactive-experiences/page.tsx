@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { Sparkles, Box, Gamepad2, Brain, Palette, ExternalLink, Rocket, Zap, ChevronRight } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const dynamic = 'force-dynamic'
 
@@ -337,6 +339,8 @@ export default function Gemini3BlogPost() {
 
         </div>
       </article>
-    </div>
+    
+      <EbookCTA variant="footer" source="gemini-3-interactive-experiences" />
+</div>
   )
 }

@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Brain, Sparkles, Share2 } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Visualize Your Mind: AI-Powered 3D Thought Mapping | Brandon Mills',
@@ -165,7 +167,9 @@ export default function VisualizeMindBlogPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="visualize-your-mind-ai" />
+</div>
       </footer>
     </article>
   )

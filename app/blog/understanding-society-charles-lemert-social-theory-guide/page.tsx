@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, Clock, Calendar, BookOpen, ArrowRight, Users } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Understanding Society: Your Guide to Charles Lemert\'s Social Theory | Brandon Mills',
@@ -221,7 +223,9 @@ export default function BlogPost() {
               </div>
             </div>
           </footer>
-        </div>
+        
+      <EbookCTA variant="footer" source="understanding-society-charles-lemert-social-theory-guide" />
+</div>
       </article>
     </main>
   )

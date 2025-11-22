@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, Clock, Calendar, Tag } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
 
 export const metadata: Metadata = {
   title: 'Learning Unconditional Love | Brandon Mills',
@@ -81,6 +82,9 @@ export default function BlogPost() {
             <p className="text-white/80 leading-relaxed mb-6">This doesn’t mean I don’t miss her or wish I was the one behind the camera. But I do understand the challenges of being apart and accepting that she might end up with another man. My love for this woman is unconditional. What a feeling to learn to love someone outside of yourself or expectations.</p>
             <p className="text-white/80 leading-relaxed mb-6">Life is a long journey and I look forward to just being in her presences, if ever that day may come. In the meantime, I find serenity in the true love and contentment I feel in just seeing her happy.</p>
           </div>
+
+          {/* Ebook CTA */}
+          <EbookCTA variant="footer" source="learning-unconditional-love" />
 
           {/* Footer */}
           <footer className="mt-16 pt-8 border-t border-white/10">

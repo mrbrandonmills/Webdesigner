@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, Waves, Droplets, CloudRain, Anchor, Heart, Compass } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Dream About Water Meaning: Ocean, River & Water Dream Interpretation | Brandon Mills',
@@ -453,7 +455,9 @@ export default function WaterDreamMeaningPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="dream-about-water-meaning" />
+</div>
       </footer>
     </article>
   )

@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, Clock, Calendar, BookOpen, ArrowRight, Heart } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Building Unshakeable Self-Esteem: A Deep Dive into Positive Self-Image | Brandon Mills',
@@ -201,7 +203,9 @@ export default function BlogPost() {
               </div>
             </div>
           </footer>
-        </div>
+        
+      <EbookCTA variant="footer" source="build-unshakeable-self-esteem-positive-self-image" />
+</div>
       </article>
     </main>
   )

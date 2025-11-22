@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, Eye, Zap, Brain, Target, Clock, Star, Compass } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Lucid Dreaming Guide: How to Control Your Dreams | Brandon Mills',
@@ -583,7 +585,9 @@ export default function LucidDreamingGuidePost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="lucid-dreaming-guide" />
+</div>
       </footer>
     </article>
   )

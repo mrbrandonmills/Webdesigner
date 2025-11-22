@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Navigation from '@/components/navigation'
 import { ArrowLeft, Clock, Calendar, Tag } from 'lucide-react'
 import Link from 'next/link'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Why Martial Arts Is the Perfect Fitness Regimen for People Over 40 | Brandon Mills',
@@ -107,7 +109,9 @@ export default function BlogPost() {
               </div>
             </div>
           </footer>
-        </div>
+        
+      <EbookCTA variant="footer" source="why-martial-arts-is-the-perfect-fitness-regimen-for-people-o" />
+</div>
       </article>
     </main>
   )

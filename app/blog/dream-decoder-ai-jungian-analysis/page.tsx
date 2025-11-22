@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, Eye, Layers, Compass } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Dream Decoder: AI-Powered Jungian Dream Analysis | Brandon Mills',
@@ -324,7 +326,9 @@ export default function DreamDecoderBlogPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="dream-decoder-ai-jungian-analysis" />
+</div>
       </footer>
     </article>
   )

@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, BookOpen, Home, Bird, Flame, Key, Mountain, Compass, Eye } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Dream Symbols List: 50+ Common Dream Symbols & Meanings | Brandon Mills',
@@ -460,7 +462,9 @@ export default function DreamSymbolsListPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="dream-symbols-list" />
+</div>
       </footer>
     </article>
   )

@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, Brain, Eye, Compass, BookOpen, Lightbulb, Heart } from 'lucide-react'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'What Does My Dream Mean? Complete Guide to Dream Interpretation | Brandon Mills',
@@ -403,7 +405,9 @@ export default function WhatDoesDreamMeanPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="what-does-my-dream-mean" />
+</div>
       </footer>
     </article>
   )

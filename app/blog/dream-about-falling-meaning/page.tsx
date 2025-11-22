@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Moon, Sparkles, Share2, TrendingDown, AlertCircle, Shield, Compass, Heart, Zap } from 'lucide-react'
 import { BlogEmailCTA } from '@/components/email-capture'
+import { EbookCTA } from '@/components/ebook-cta'
+
 
 export const metadata: Metadata = {
   title: 'Dream About Falling Meaning: What Falling Dreams Reveal | Brandon Mills',
@@ -413,7 +415,9 @@ export default function FallingDreamMeaningPost() {
               <Share2 className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        
+      <EbookCTA variant="footer" source="dream-about-falling-meaning" />
+</div>
       </footer>
     </article>
   )
