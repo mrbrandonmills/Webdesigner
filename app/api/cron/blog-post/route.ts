@@ -4,14 +4,11 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import fs from 'fs/promises'
-import path from 'path'
 import { blogPosts } from '@/lib/blog-posts'
+import { getBlogState, updateBlogState } from '@/lib/db/automation-state'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
-
-const STATE_PATH = './data/blog-automation-state.json'
 
 interface Article {
   title: string
@@ -19,11 +16,6 @@ interface Article {
   date: string
   excerpt: string
   keywords: string[]
-}
-
-interface AutomationState {
-  lastPostedIndex: number
-  lastPostedDate: string
 }
 
 export async function GET(request: NextRequest) {
@@ -51,18 +43,8 @@ export async function GET(request: NextRequest) {
       }, { status: 404 })
     }
 
-    // Load automation state
-    let state: AutomationState
-    try {
-      const stateData = await fs.readFile(STATE_PATH, 'utf-8')
-      state = JSON.parse(stateData)
-    } catch {
-      // Initialize state if doesn't exist
-      state = {
-        lastPostedIndex: -1,
-        lastPostedDate: ''
-      }
-    }
+    // Load automation state from database
+    const state = await getBlogState()
 
     // Check if already posted today
     const today = new Date().toISOString().split('T')[0]
@@ -89,11 +71,11 @@ export async function GET(request: NextRequest) {
       postToReddit(article, blogUrl)
     ])
 
-    // Update state
-    state.lastPostedIndex = nextIndex
-    state.lastPostedDate = today
-
-    await fs.writeFile(STATE_PATH, JSON.stringify(state, null, 2))
+    // Update state in database
+    await updateBlogState({
+      lastPostedIndex: nextIndex,
+      lastPostedDate: today
+    })
 
     return NextResponse.json({
       success: true,

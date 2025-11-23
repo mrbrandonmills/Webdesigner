@@ -39,60 +39,36 @@ interface LifePathResult {
   }
 }
 
-// Mock data for now
-const mockData: LifePathResult = {
-  archetype: {
-    name: 'Warrior',
-    emoji: '⚔️',
-    phase: 'The Phase of Mastery',
-    description: 'You embody the Warrior archetype - a force of determination, courage, and action. Warriors are driven by a deep sense of purpose and possess the mental fortitude to overcome any obstacle. Your path is one of continuous growth through challenge, transforming adversity into strength. You lead by example, inspiring others through your unwavering commitment to your values and goals.'
-  },
-  affirmation: 'I transform challenges into opportunities for growth. My courage illuminates the path forward, and my actions inspire those around me to reach their highest potential.',
-  paths: [
-    {
-      path: 'Leadership & Entrepreneurship',
-      score: 9,
-      description: 'Natural ability to lead and build'
-    },
-    {
-      path: 'Creative Expression',
-      score: 7,
-      description: 'Channel energy through creation'
-    },
-    {
-      path: 'Service & Healing',
-      score: 6,
-      description: 'Helping others find their strength'
-    },
-    {
-      path: 'Knowledge & Teaching',
-      score: 8,
-      description: 'Sharing wisdom from experience'
-    }
-  ],
-  strengths: [
-    'Unwavering determination',
-    'Natural leadership presence',
-    'Ability to take decisive action',
-    'Resilience in face of adversity',
-    'Strong sense of purpose'
-  ],
-  growthAreas: [
-    'Practicing patience with self and others',
-    'Embracing vulnerability as strength',
-    'Finding balance between action and reflection',
-    'Developing deeper emotional intelligence',
-    'Learning to delegate and trust others'
-  ],
-  recommendedMeditation: {
-    title: 'Inner Warrior Activation',
-    slug: 'inner-warrior'
-  }
+// Archetype emoji mapping
+const archetypeEmojis: Record<string, string> = {
+  Warrior: '⚔️',
+  King: '👑',
+  Magician: '🔮',
+  Lover: '💖'
+}
+
+// Phase prefix mapping
+const phasePrefixes: Record<string, string> = {
+  Awakening: 'The Phase of Awakening',
+  Building: 'The Phase of Building',
+  Mastering: 'The Phase of Mastery',
+  Transcending: 'The Phase of Transcendence'
+}
+
+// Meditation title mapping
+const meditationTitles: Record<string, string> = {
+  'inner-warrior': 'Inner Warrior Activation',
+  'deep-focus': 'Deep Focus Meditation',
+  'creative-flow': 'Creative Flow State',
+  'emotional-clarity': 'Emotional Clarity Practice',
+  'confidence-builder': 'Confidence Builder'
 }
 
 export default function LifePathResultPage() {
   const params = useParams()
   const [result, setResult] = useState<LifePathResult | null>(null)
+  const [visualizationUrl, setVisualizationUrl] = useState<string>('')
+  const [error, setError] = useState<string>('')
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [showShareCard, setShowShareCard] = useState(false)
   const [email, setEmail] = useState('')
@@ -100,8 +76,48 @@ export default function LifePathResultPage() {
   const [subscribeStatus, setSubscribeStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
   useEffect(() => {
-    // Load mock data (replace with API call later)
-    setResult(mockData)
+    // Load real data from localStorage (stored when redirected from oracle page)
+    const loadResult = () => {
+      try {
+        const storedData = localStorage.getItem(`oracle_result_${params.id}`)
+        if (!storedData) {
+          setError('Result not found. Please complete the quiz again.')
+          return
+        }
+
+        const data = JSON.parse(storedData)
+
+        // Transform API response to component format
+        const transformedResult: LifePathResult = {
+          archetype: {
+            name: data.analysis.archetype,
+            emoji: archetypeEmojis[data.analysis.archetype] || '✨',
+            phase: phasePrefixes[data.analysis.currentPhase] || data.analysis.currentPhase,
+            description: data.analysis.archetypeDescription
+          },
+          affirmation: data.analysis.affirmation,
+          paths: data.analysis.potentialPaths.map((path: { name: string; description: string; alignment: number }) => ({
+            path: path.name,
+            score: path.alignment,
+            description: path.description
+          })),
+          strengths: data.analysis.strengths,
+          growthAreas: data.analysis.growthAreas,
+          recommendedMeditation: {
+            title: meditationTitles[data.analysis.recommendedMeditation] || 'Guided Meditation',
+            slug: data.analysis.recommendedMeditation
+          }
+        }
+
+        setResult(transformedResult)
+        setVisualizationUrl(data.url)
+      } catch (err) {
+        console.error('Error loading result:', err)
+        setError('Failed to load your results. Please try again.')
+      }
+    }
+
+    loadResult()
 
     // Check if email modal should be shown
     const hasSeenModal = localStorage.getItem('oracle_email')
@@ -149,10 +165,31 @@ export default function LifePathResultPage() {
     localStorage.setItem('oracle_email', 'true')
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <div className="text-center max-w-md px-6">
+          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="font-serif text-2xl mb-4">Error Loading Results</h2>
+          <p className="text-gray-400 mb-6">{error}</p>
+          <a
+            href="/oracle"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[#C9A050] text-black font-medium rounded-lg hover:bg-[#D4B861] transition-colors"
+          >
+            Start New Reading
+          </a>
+        </div>
+      </div>
+    )
+  }
+
   if (!result) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#C9A050]" />
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[#C9A050] mx-auto mb-4" />
+          <p className="text-gray-400">Loading your life path...</p>
+        </div>
       </div>
     )
   }
@@ -161,11 +198,21 @@ export default function LifePathResultPage() {
     <div className="min-h-screen bg-black text-white">
       {/* Visualization Iframe */}
       <div className="h-[50vh] bg-black border-b border-white/10 relative">
-        <iframe
-          src={`/visualizations/archetype?type=${result.archetype.name.toLowerCase()}`}
-          className="w-full h-full"
-          title="Archetype Visualization"
-        />
+        {visualizationUrl ? (
+          <iframe
+            src={visualizationUrl}
+            className="w-full h-full"
+            title="Archetype Visualization"
+            sandbox="allow-scripts allow-same-origin"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="text-center">
+              <Loader2 className="w-8 h-8 animate-spin text-[#C9A050] mx-auto mb-4" />
+              <p className="text-gray-400">Loading visualization...</p>
+            </div>
+          </div>
+        )}
 
         {/* Share overlay */}
         <div className="absolute bottom-4 right-4">

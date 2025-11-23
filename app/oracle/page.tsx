@@ -106,6 +106,10 @@ export default function LifePathOraclePage() {
       }
 
       const result = await response.json()
+
+      // Store result in localStorage for the results page to access
+      localStorage.setItem(`oracle_result_${result.id}`, JSON.stringify(result))
+
       router.push(`/oracle/${result.id}`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')

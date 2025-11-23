@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Moon, Share2, Download, Heart, ArrowRight } from 'lucide-react'
+import { Moon, Share2, Download, Heart, ArrowRight, Loader2, AlertCircle } from 'lucide-react'
 import { ShareCard, ShareButton } from '@/components/social-proof/share-card'
 
 interface DreamSymbol {
@@ -26,56 +26,60 @@ interface DreamData {
   }
 }
 
+// Meditation title mapping
+const meditationTitles: Record<string, string> = {
+  'sleep-sanctuary': 'Sleep Sanctuary',
+  'emotional-clarity': 'Emotional Clarity',
+  'inner-warrior': 'Inner Warrior',
+  'deep-focus': 'Deep Focus',
+  'creative-flow': 'Creative Flow'
+}
+
 export default function DreamResultPage() {
   const params = useParams()
   const [data, setData] = useState<DreamData | null>(null)
+  const [error, setError] = useState<string>('')
   const [showEmailModal, setShowEmailModal] = useState(false)
   const [showShareCard, setShowShareCard] = useState(false)
 
   useEffect(() => {
-    const id = params.id as string
-
-    // Mock data - in production this would be fetched from API/database
-    setData({
-      id,
-      url: `https://your-blob-url.public.blob.vercel-storage.com/dreams/${id}.html`,
-      emotionalTone: 'Transformative',
-      interpretation: 'Your dream reveals a journey of profound transformation. The recurring water imagery suggests emotional cleansing and renewal, while the presence of unknown figures points to unexplored aspects of your psyche seeking integration. The labyrinthine structures represent your current life path - complex but purposeful. This dream is calling you to embrace change and trust the process of becoming who you are meant to be.',
-      symbols: [
-        {
-          name: 'Water',
-          archetype: 'The Unconscious',
-          meaning: 'Represents emotions, intuition, and the depths of your psyche. Flowing water suggests emotional movement and change.'
-        },
-        {
-          name: 'Unknown Figure',
-          archetype: 'The Shadow',
-          meaning: 'Symbolizes repressed aspects of yourself seeking acknowledgment and integration into consciousness.'
-        },
-        {
-          name: 'Labyrinth',
-          archetype: 'The Journey',
-          meaning: 'Represents life\'s complexity and your path toward self-discovery. Finding the center means finding your true self.'
-        },
-        {
-          name: 'Light',
-          archetype: 'The Self',
-          meaning: 'Symbolizes enlightenment, awareness, and the integration of conscious and unconscious aspects.'
+    // Load real data from localStorage (stored when redirected from dreams page)
+    const loadResult = () => {
+      try {
+        const storedData = localStorage.getItem(`dream_result_${params.id}`)
+        if (!storedData) {
+          setError('Result not found. Please analyze your dream again.')
+          return
         }
-      ],
-      themes: [
-        'Transformation',
-        'Self-Discovery',
-        'Emotional Processing',
-        'Integration',
-        'Renewal',
-        'Inner Wisdom'
-      ],
-      recommendedMeditation: {
-        title: 'Shadow Integration Meditation',
-        slug: 'shadow-integration'
+
+        const result = JSON.parse(storedData)
+
+        // Transform API response to component format
+        const transformedData: DreamData = {
+          id: result.id,
+          url: result.url,
+          emotionalTone: result.analysis.emotionalTone.charAt(0).toUpperCase() + result.analysis.emotionalTone.slice(1),
+          interpretation: result.analysis.interpretation,
+          symbols: result.analysis.symbols.map((symbol: { name: string; archetype: string; meaning: string }) => ({
+            name: symbol.name,
+            archetype: symbol.archetype,
+            meaning: symbol.meaning
+          })),
+          themes: result.analysis.themes,
+          recommendedMeditation: {
+            title: meditationTitles[result.analysis.recommendedMeditation] || 'Guided Meditation',
+            slug: result.analysis.recommendedMeditation
+          }
+        }
+
+        setData(transformedData)
+      } catch (err) {
+        console.error('Error loading result:', err)
+        setError('Failed to load your dream analysis. Please try again.')
       }
-    })
+    }
+
+    loadResult()
 
     // Show email modal after 8 seconds
     const timer = setTimeout(() => {
@@ -88,10 +92,31 @@ export default function DreamResultPage() {
     return () => clearTimeout(timer)
   }, [params.id])
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0f] text-white flex items-center justify-center">
+        <div className="text-center max-w-md px-6">
+          <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="font-serif text-2xl mb-4">Error Loading Results</h2>
+          <p className="text-gray-400 mb-6">{error}</p>
+          <Link
+            href="/dreams"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-500 transition-colors"
+          >
+            Analyze Another Dream
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   if (!data) {
     return (
       <div className="min-h-screen bg-[#0a0a0f] flex items-center justify-center">
-        <div className="text-purple-500">Loading dream analysis...</div>
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 animate-spin text-purple-500 mx-auto mb-4" />
+          <p className="text-purple-400">Loading dream analysis...</p>
+        </div>
       </div>
     )
   }
@@ -99,12 +124,22 @@ export default function DreamResultPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white">
       {/* Visualization iframe */}
-      <div className="h-[50vh] relative">
-        <iframe
-          src={data.url}
-          className="w-full h-full border-0"
-          title="Dream Visualization"
-        />
+      <div className="h-[50vh] relative bg-[#0a0a0f] border-b border-white/10">
+        {data.url ? (
+          <iframe
+            src={data.url}
+            className="w-full h-full border-0"
+            title="Dream Visualization"
+            sandbox="allow-scripts allow-same-origin"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <div className="text-center">
+              <Loader2 className="w-8 h-8 animate-spin text-purple-500 mx-auto mb-4" />
+              <p className="text-gray-400">Loading visualization...</p>
+            </div>
+          </div>
+        )}
 
         {/* Overlay controls */}
         <div className="absolute bottom-4 right-4 flex gap-2">
