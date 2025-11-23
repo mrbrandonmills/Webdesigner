@@ -34,6 +34,9 @@ export function AffiliateProductCard({
   const commission = calculateCommission(product.price, product.program)
 
   const handleClick = async () => {
+    // Only run on client side (not during SSR)
+    if (typeof window === 'undefined') return
+
     // Track the click in our database
     await trackAffiliateClick(product.id, product.program, {
       referrer: window.location.href,
