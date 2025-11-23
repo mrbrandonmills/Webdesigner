@@ -15,6 +15,9 @@
     },
     "app/api/cron/blog-post/route.ts": {
       "maxDuration": 60
+    },
+    "app/api/cron/jesse-book-post/route.ts": {
+      "maxDuration": 60
     }
   },
   "crons": [
@@ -37,6 +40,10 @@
     {
       "path": "/api/cron/blog-post",
       "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/jesse-book-post",
+      "schedule": "45 9,13,17,21 * * *"
     }
   ]
 }

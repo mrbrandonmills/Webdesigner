@@ -1,0 +1,76 @@
+{
+  "quotes": [
+    {
+      "text": "Self-actualization isn't a destination - it's the ruthless practice of observing yourself without judgment.",
+      "book": "Block 3: The Laboratory of Living",
+      "theme": "core_philosophy",
+      "tags": ["awareness", "observation", "practice"]
+    },
+    {
+      "text": "Breaking addiction starts when you build a life you don't need to escape from.",
+      "book": "Volume 1: Building a Non-Addictive Life",
+      "theme": "addiction_recovery",
+      "tags": ["addiction", "recovery", "life_design"]
+    },
+    {
+      "text": "Your resistance is information. Your discomfort is data. Stop fighting it. Start studying it.",
+      "book": "Block B",
+      "theme": "emotional_intelligence",
+      "tags": ["emotions", "resistance", "self_study"]
+    },
+    {
+      "text": "The polymath doesn't know everything. They know how to learn anything worth knowing.",
+      "book": "Volume 1",
+      "theme": "learning",
+      "tags": ["polymath", "learning", "growth"]
+    },
+    {
+      "text": "Philosophy without action is mental masturbation. Action without philosophy is chaos.",
+      "book": "Block B",
+      "theme": "praxis",
+      "tags": ["philosophy", "action", "balance"]
+    },
+    {
+      "text": "You can't think your way out of a problem you behaved your way into.",
+      "book": "Volume 1",
+      "theme": "behavior_change",
+      "tags": ["behavior", "action", "change"]
+    },
+    {
+      "text": "The Laboratory of Living: where self-actualization becomes the experiment itself.",
+      "book": "Block 3",
+      "theme": "core_philosophy",
+      "tags": ["experiment", "living", "practice"]
+    },
+    {
+      "text": "From NASA engineer to philosopher - because understanding consciousness is more interesting than rockets.",
+      "book": "Block 3: Author Bio",
+      "theme": "journey",
+      "tags": ["nasa", "philosophy", "consciousness"]
+    },
+    {
+      "text": "Intentional living means designing each day like you're building a life - because you are.",
+      "book": "Block B",
+      "theme": "intentionality",
+      "tags": ["intentional", "design", "daily_practice"]
+    },
+    {
+      "text": "Your Shadow isn't your enemy. It's your disowned power waiting to be integrated.",
+      "book": "Block 3",
+      "theme": "shadow_work",
+      "tags": ["shadow", "integration", "wholeness"]
+    },
+    {
+      "text": "Self-actualization is brutal honesty about who you are, not who you wish you were.",
+      "book": "Volume 1",
+      "theme": "honesty",
+      "tags": ["truth", "self_knowledge", "honesty"]
+    },
+    {
+      "text": "The non-addictive life isn't about willpower. It's about removing the need to escape.",
+      "book": "Volume 1",
+      "theme": "addiction_recovery",
+      "tags": ["addiction", "freedom", "life_design"]
+    }
+  ]
+}
