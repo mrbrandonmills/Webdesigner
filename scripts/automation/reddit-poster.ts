@@ -215,12 +215,22 @@ export async function postToReddit(postCount: number = 1): Promise<void> {
         await input.click()
         await input.type(username, { delay: 50 })
         usernameFilled = true
+        logger.info('REDDIT', `Found username input with selector: ${selector}`)
         break
       }
     }
 
     if (!usernameFilled) {
-      throw new Error('Could not find username input')
+      // Take screenshot for debugging
+      const screenshotPath = `logs/screenshots/reddit-login-fail-${new Date().toISOString().replace(/:/g, '-')}.png`
+      await page.screenshot({ path: screenshotPath, fullPage: true })
+      logger.error('REDDIT', `Could not find username input. Screenshot saved: ${screenshotPath}`)
+
+      // Log what's actually on the page
+      const pageContent = await page.content()
+      logger.error('REDDIT', `Page content (first 500 chars): ${pageContent.substring(0, 500)}`)
+
+      throw new Error('Could not find username input - see screenshot in logs/screenshots/')
     }
 
     const passwordSelectors = [
