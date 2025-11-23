@@ -475,7 +475,7 @@ export default function BraunIPLFirstWeekPage() {
               <h3 className="text-2xl font-bold text-zinc-900 dark:text-white mb-6">Related Products I Recommend</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <Link
-                  href="/shop/skinc euticals-ce-ferulic"
+                  href="/shop/skinceuticals-ce-ferulic"
                   className="group p-6 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-emerald-500 dark:hover:border-emerald-500 transition-all"
                 >
                   <h4 className="font-bold text-zinc-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 mb-2">
@@ -532,9 +532,9 @@ export default function BraunIPLFirstWeekPage() {
               </Link>
             </div>
           </div>
-        
-      <EbookCTA variant="footer" source="braun-ipl-first-week" />
-</div>
+        </div>
+
+        <EbookCTA variant="footer" source="braun-ipl-first-week" />
       </article>
     </>
   )
