@@ -73,6 +73,85 @@ function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+// Screenshot helper for debugging
+async function captureDebugScreenshot(page: any, filename: string): Promise<void> {
+  try {
+    const screenshotPath = path.join(pathsConfig.logsDir, 'screenshots', filename)
+    await page.screenshot({ path: screenshotPath, fullPage: true })
+    logger.info('REDDIT', `Debug screenshot saved: ${filename}`)
+  } catch (err: any) {
+    logger.warn('REDDIT', `Failed to capture screenshot: ${err.message}`)
+  }
+}
+
+// Robust login verification using multiple element-based checks
+async function verifyRedditLogin(page: any): Promise<{ loggedIn: boolean; reason: string }> {
+  try {
+    const currentUrl = page.url()
+
+    // Check 1: Not on login page anymore
+    if (currentUrl.includes('/login')) {
+      return { loggedIn: false, reason: 'Still on login page' }
+    }
+
+    // Check 2: Look for user account elements (old.reddit.com)
+    const hasUserMenu = await page.evaluate(() => {
+      // old.reddit.com shows username in top right
+      const userElement = document.querySelector('span.user a') ||
+                          document.querySelector('#header-bottom-right .user') ||
+                          document.querySelector('a[href*="/user/"]')
+      return !!userElement
+    })
+
+    if (hasUserMenu) {
+      return { loggedIn: true, reason: 'Found user menu element' }
+    }
+
+    // Check 3: Look for logout link (reliable indicator)
+    const hasLogout = await page.evaluate(() => {
+      const logoutLink = document.querySelector('a[href*="logout"]') ||
+                         Array.from(document.querySelectorAll('a')).find(a => a.textContent?.toLowerCase().includes('logout'))
+      return !!logoutLink
+    })
+
+    if (hasLogout) {
+      return { loggedIn: true, reason: 'Found logout link' }
+    }
+
+    // Check 4: Look for submit/create post button (secondary indicator)
+    const hasSubmitButton = await page.evaluate(() => {
+      const submitButton = document.querySelector('a[href*="/submit"]') ||
+                           document.querySelector('.submit') ||
+                           Array.from(document.querySelectorAll('a')).find(a => a.textContent?.includes('submit'))
+      return !!submitButton
+    })
+
+    if (hasSubmitButton) {
+      return { loggedIn: true, reason: 'Found submit button' }
+    }
+
+    // Check 5: Check if we're on reddit.com (not login)
+    if (currentUrl.includes('reddit.com') && !currentUrl.includes('/login')) {
+      // Wait a bit more for page to fully load
+      await sleep(2000)
+
+      // Recheck for user elements
+      const recheckUser = await page.evaluate(() => {
+        return !!document.querySelector('span.user a')
+      })
+
+      if (recheckUser) {
+        return { loggedIn: true, reason: 'Found user element after recheck' }
+      }
+    }
+
+    return { loggedIn: false, reason: 'No login indicators found' }
+
+  } catch (err: any) {
+    return { loggedIn: false, reason: `Verification error: ${err.message}` }
+  }
+}
+
 // Main posting function
 export async function postToReddit(postCount: number = 1): Promise<void> {
   logger.info('REDDIT', `Starting Reddit posting (count: ${postCount})`)
@@ -175,28 +254,65 @@ export async function postToReddit(postCount: number = 1): Promise<void> {
       }
     }
 
-    // Wait for login to complete
-    await sleep(5000)
+    // Wait for login to complete with timeout protection
+    logger.info('REDDIT', 'Waiting for login to complete...')
+    await Promise.race([
+      sleep(8000),
+      page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 8000 }).catch(() => {
+        // Navigation timeout is okay
+      })
+    ])
 
-    // Check if logged in by looking for user menu
-    const loggedIn = await page.evaluate(() => {
-      return document.body.innerText.includes('Create Post') ||
-             !window.location.href.includes('/login')
-    })
+    // Robust login verification with multiple attempts
+    const MAX_LOGIN_ATTEMPTS = 3
+    let loginAttempt = 0
+    let loginVerified = false
 
-    if (!loggedIn) {
-      logger.error('REDDIT', 'Login failed - check credentials')
+    while (loginAttempt < MAX_LOGIN_ATTEMPTS && !loginVerified) {
+      if (loginAttempt > 0) {
+        logger.info('REDDIT', `Login verification attempt ${loginAttempt + 1}/${MAX_LOGIN_ATTEMPTS}`)
+        await sleep(3000) // Wait before rechecking
+      }
+
+      const loginCheck = await verifyRedditLogin(page)
+
+      if (loginCheck.loggedIn) {
+        logger.info('REDDIT', `Login successful: ${loginCheck.reason}`)
+        loginVerified = true
+      } else {
+        logger.warn('REDDIT', `Login check failed: ${loginCheck.reason}`)
+        loginAttempt++
+
+        // Capture screenshot for debugging
+        if (loginAttempt === MAX_LOGIN_ATTEMPTS) {
+          const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+          await captureDebugScreenshot(page, `reddit-login-fail-${timestamp}.png`)
+        }
+      }
+    }
+
+    if (!loginVerified) {
+      logger.error('REDDIT', 'Login failed after multiple verification attempts - check credentials')
       await browser.close()
       return
     }
 
-    logger.info('REDDIT', 'Login successful')
-
-    // Post each item
+    // Post each item with retry logic
     for (const post of toPost) {
       logger.info('REDDIT', `Posting to r/${post.subreddit}: ${post.title.substring(0, 50)}...`)
 
-      try {
+      const MAX_POST_RETRIES = 2
+      let postRetry = 0
+      let posted = false
+
+      while (postRetry <= MAX_POST_RETRIES && !posted) {
+        if (postRetry > 0) {
+          const backoffTime = Math.min(30000 * Math.pow(2, postRetry - 1), 120000) // Max 2 min
+          logger.info('REDDIT', `Retry ${postRetry}/${MAX_POST_RETRIES} after ${backoffTime / 1000}s...`)
+          await sleep(backoffTime)
+        }
+
+        try {
         // Navigate to submit page (use old reddit for stability)
         await page.goto(`https://old.reddit.com/r/${post.subreddit}/submit?selftext=true`, {
           waitUntil: 'networkidle2',
@@ -281,8 +397,18 @@ export async function postToReddit(postCount: number = 1): Promise<void> {
           throw new Error('Could not find or click post button')
         }
 
-        // Wait for post to complete
-        await sleep(5000)
+        // Wait for post to complete with timeout
+        logger.info('REDDIT', 'Waiting for post submission...')
+        await Promise.race([
+          sleep(8000),
+          page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 8000 }).catch(() => {
+            // Navigation timeout is okay
+          })
+        ])
+
+        // Capture screenshot for debugging
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+        await captureDebugScreenshot(page, `reddit-post-${timestamp}.png`)
 
         // Check if successful
         const currentUrl = page.url()
@@ -292,28 +418,53 @@ export async function postToReddit(postCount: number = 1): Promise<void> {
             subreddit: post.subreddit,
             url: currentUrl
           })
-          logger.info('REDDIT', `Posted: ${currentUrl}`)
+          logger.info('REDDIT', `Posted successfully: ${currentUrl}`)
           successCount++
+          posted = true
         } else {
-          stateManager.recordPost('reddit', post.id, false, {
-            title: post.title,
-            error: 'URL did not change to post page'
+          // Check for error messages in page
+          const errorMessage = await page.evaluate(() => {
+            const errorDiv = document.querySelector('.error') ||
+                            document.querySelector('.status.error') ||
+                            document.querySelector('[class*="error"]')
+            return errorDiv ? errorDiv.textContent : 'Unknown error - URL did not change to post page'
           })
-          logger.warn('REDDIT', 'Post may have failed')
+
+          logger.error('REDDIT', `Post failed: ${errorMessage}`)
+          logger.info('REDDIT', `Current URL: ${currentUrl}`)
+
+          // Record failure on last retry
+          if (postRetry >= MAX_POST_RETRIES) {
+            stateManager.recordPost('reddit', post.id, false, {
+              title: post.title,
+              error: errorMessage,
+              url: currentUrl,
+              screenshot: `reddit-post-${timestamp}.png`
+            })
+          }
         }
 
-        // Wait between posts (Reddit rate limit)
-        if (toPost.indexOf(post) < toPost.length - 1) {
-          logger.info('REDDIT', 'Waiting 60s before next post...')
-          await sleep(60000)
-        }
+        postRetry++
 
       } catch (error: any) {
-        logger.error('REDDIT', `Failed: ${error.message}`)
-        stateManager.recordPost('reddit', post.id, false, {
-          title: post.title,
-          error: error.message
-        })
+        logger.error('REDDIT', `Exception during posting: ${error.message}`)
+
+        // Record failure on last retry
+        if (postRetry >= MAX_POST_RETRIES) {
+          stateManager.recordPost('reddit', post.id, false, {
+            title: post.title,
+            error: error.message
+          })
+        }
+
+        postRetry++
+      }
+    } // End retry loop
+
+      // Wait between posts (Reddit rate limit)
+      if (toPost.indexOf(post) < toPost.length - 1) {
+        logger.info('REDDIT', 'Waiting 60s before next post...')
+        await sleep(60000)
       }
     }
 

@@ -88,6 +88,80 @@ function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+// Screenshot helper for debugging
+async function captureDebugScreenshot(page: any, filename: string): Promise<void> {
+  try {
+    const screenshotPath = path.join(pathsConfig.logsDir, 'screenshots', filename)
+    await page.screenshot({ path: screenshotPath, fullPage: true })
+    logger.info('HN', `Debug screenshot saved: ${filename}`)
+  } catch (err: any) {
+    logger.warn('HN', `Failed to capture screenshot: ${err.message}`)
+  }
+}
+
+// Enhanced error detection with comprehensive HN error messages
+async function detectHNError(page: any): Promise<{ isError: boolean; message: string; pageText: string }> {
+  const result = await page.evaluate(() => {
+    const bodyText = document.body.innerText.toLowerCase()
+    const pageText = document.body.innerText.substring(0, 500) // First 500 chars for logging
+
+    // Comprehensive list of known HN error patterns
+    const errorPatterns = [
+      { pattern: 'submitted too fast', message: 'Rate limited - submitting too fast' },
+      { pattern: 'already been submitted', message: 'URL already submitted to HN' },
+      { pattern: 'not allowed to post', message: 'Account not allowed to post' },
+      { pattern: 'banned', message: 'Account or domain banned' },
+      { pattern: 'too many submissions', message: 'Too many submissions' },
+      { pattern: 'karma', message: 'Insufficient karma to post' },
+      { pattern: 'please wait', message: 'Rate limited - please wait' },
+      { pattern: 'try again', message: 'HN asking to try again' },
+      { pattern: 'invalid', message: 'Invalid submission' },
+      { pattern: 'error', message: 'HN reported an error' },
+      { pattern: 'cannot submit', message: 'Cannot submit' },
+      { pattern: 'throttled', message: 'Throttled by HN' },
+      { pattern: 'duplicate', message: 'Duplicate submission detected' }
+    ]
+
+    for (const { pattern, message } of errorPatterns) {
+      if (bodyText.includes(pattern)) {
+        return { isError: true, message, pageText }
+      }
+    }
+
+    return { isError: false, message: '', pageText }
+  })
+
+  return result
+}
+
+// Verify successful post with multiple indicators
+async function verifyHNSuccess(page: any): Promise<{ success: boolean; postId: string | null; url: string }> {
+  const currentUrl = page.url()
+
+  // Check 1: URL contains item?id= (redirected to post)
+  if (currentUrl.includes('item?id=')) {
+    const idMatch = currentUrl.match(/id=(\d+)/)
+    const postId = idMatch ? idMatch[1] : null
+    return { success: true, postId, url: currentUrl }
+  }
+
+  // Check 2: URL is newest page (successful submission redirects here sometimes)
+  if (currentUrl.includes('/newest')) {
+    return { success: true, postId: null, url: currentUrl }
+  }
+
+  // Check 3: Page doesn't contain submit form anymore
+  const hasSubmitForm = await page.evaluate(() => {
+    return document.querySelector('input[name="title"]') !== null
+  })
+
+  if (!hasSubmitForm && !currentUrl.includes('/submit')) {
+    return { success: true, postId: null, url: currentUrl }
+  }
+
+  return { success: false, postId: null, url: currentUrl }
+}
+
 // Main posting function
 export async function postToHackerNews(postCount: number = 1): Promise<void> {
   logger.info('HN', `Starting Hacker News posting (count: ${postCount})`)
@@ -157,11 +231,22 @@ export async function postToHackerNews(postCount: number = 1): Promise<void> {
 
     logger.info('HN', 'Login successful')
 
-    // Post each item
+    // Post each item with retry logic
     for (const post of toPost) {
       logger.info('HN', `Posting: ${post.title.substring(0, 50)}...`)
 
-      try {
+      const MAX_RETRIES = 2
+      let retryCount = 0
+      let posted = false
+
+      while (retryCount <= MAX_RETRIES && !posted) {
+        if (retryCount > 0) {
+          const backoffTime = Math.min(60000 * Math.pow(2, retryCount - 1), 300000) // Max 5 min
+          logger.info('HN', `Retry ${retryCount}/${MAX_RETRIES} after ${backoffTime / 1000}s...`)
+          await sleep(backoffTime)
+        }
+
+        try {
         // Navigate to submit page
         await page.goto('https://news.ycombinator.com/submit', {
           waitUntil: 'networkidle2',
@@ -206,54 +291,91 @@ export async function postToHackerNews(postCount: number = 1): Promise<void> {
           throw new Error('Could not find submit button')
         }
 
-        // Wait for submission
-        await sleep(5000)
+        // Wait for submission with timeout protection
+        logger.info('HN', 'Waiting for submission to process...')
+        await Promise.race([
+          sleep(8000), // Wait up to 8 seconds
+          page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 8000 }).catch(() => {
+            // Navigation timeout is okay - page might not navigate
+          })
+        ])
 
-        // Check if successful (URL should change to newest or item page)
-        const currentUrl = page.url()
-        const pageContent = await page.content()
+        // Capture screenshot for debugging
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
+        await captureDebugScreenshot(page, `hn-post-${timestamp}.png`)
 
-        if (currentUrl.includes('item?id=') || !pageContent.includes('submit')) {
-          // Extract post ID from URL if possible
-          const idMatch = currentUrl.match(/id=(\d+)/)
-          const postId = idMatch ? idMatch[1] : 'unknown'
+        // Check for success using enhanced verification
+        const successCheck = await verifyHNSuccess(page)
 
+        if (successCheck.success) {
+          const postId = successCheck.postId || 'unknown'
           stateManager.recordPost('hackernews', post.id, true, {
             title: post.title,
             hnId: postId,
-            url: currentUrl
+            url: successCheck.url
           })
-          logger.info('HN', `Posted successfully: ${currentUrl}`)
+          logger.info('HN', `Posted successfully: ${successCheck.url}`)
           successCount++
+          posted = true
         } else {
-          // Check for error messages
-          const errorText = await page.evaluate(() => {
-            const body = document.body.innerText
-            if (body.includes('submitted too many')) return 'Rate limited - too many submissions'
-            if (body.includes('already been submitted')) return 'URL already submitted'
-            if (body.includes('not allowed')) return 'Not allowed to post'
-            return 'Unknown error'
-          })
+          // Check for specific error messages
+          const errorCheck = await detectHNError(page)
 
-          stateManager.recordPost('hackernews', post.id, false, {
-            title: post.title,
-            error: errorText
-          })
-          logger.warn('HN', `Post may have failed: ${errorText}`)
+          if (errorCheck.isError) {
+            logger.error('HN', `Post failed: ${errorCheck.message}`)
+            logger.info('HN', `Page content (first 500 chars): ${errorCheck.pageText}`)
+
+            // Don't retry on certain permanent errors
+            if (errorCheck.message.includes('already been submitted') ||
+                errorCheck.message.includes('banned') ||
+                errorCheck.message.includes('not allowed')) {
+              logger.warn('HN', 'Permanent error detected - skipping retries')
+              stateManager.recordPost('hackernews', post.id, false, {
+                title: post.title,
+                error: errorCheck.message,
+                url: successCheck.url,
+                screenshot: `hn-post-${timestamp}.png`
+              })
+              break // Exit retry loop
+            }
+          } else {
+            logger.error('HN', 'Post failed: Unknown error - check screenshot for details')
+            logger.info('HN', `Current URL: ${successCheck.url}`)
+            logger.info('HN', `Page content (first 500 chars): ${errorCheck.pageText}`)
+          }
+
+          // Record failure if last retry
+          if (retryCount >= MAX_RETRIES) {
+            stateManager.recordPost('hackernews', post.id, false, {
+              title: post.title,
+              error: errorCheck.isError ? errorCheck.message : 'Unknown error - see logs',
+              url: successCheck.url,
+              screenshot: `hn-post-${timestamp}.png`
+            })
+          }
         }
 
-        // HN has strict rate limits - wait 10 minutes between posts
-        if (toPost.indexOf(post) < toPost.length - 1) {
-          logger.info('HN', 'Waiting 10 minutes before next post (HN rate limit)...')
-          await sleep(600000)
-        }
+        retryCount++
 
       } catch (error: any) {
-        logger.error('HN', `Failed: ${error.message}`)
-        stateManager.recordPost('hackernews', post.id, false, {
-          title: post.title,
-          error: error.message
-        })
+        logger.error('HN', `Exception during posting: ${error.message}`)
+
+        // Record failure if last retry
+        if (retryCount >= MAX_RETRIES) {
+          stateManager.recordPost('hackernews', post.id, false, {
+            title: post.title,
+            error: error.message
+          })
+        }
+
+        retryCount++
+      }
+    } // End retry loop
+
+      // HN has strict rate limits - wait 10 minutes between posts
+      if (toPost.indexOf(post) < toPost.length - 1) {
+        logger.info('HN', 'Waiting 10 minutes before next post (HN rate limit)...')
+        await sleep(600000)
       }
     }
 

@@ -20,6 +20,7 @@ interface PostRecord {
   postedAt: string
   success: boolean
   error?: string
+  screenshot?: string // Debug screenshot filename
 }
 
 interface PlatformState {
@@ -176,6 +177,7 @@ class StateManager {
       postId?: string
       pinId?: string
       hnId?: string
+      screenshot?: string
     }
   ): void {
     this.checkDayReset(platform)
@@ -203,6 +205,7 @@ class StateManager {
       postedAt: new Date().toISOString(),
       success,
       error: details.error,
+      screenshot: details.screenshot,
     }
 
     this.state.postHistory.push(record)
