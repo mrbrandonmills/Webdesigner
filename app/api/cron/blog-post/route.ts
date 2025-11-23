@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { blogPosts } from '@/lib/blog-posts'
 import { getBlogState, updateBlogState } from '@/lib/db/automation-state'
+import { hasPostedToday, markPostedToday } from '@/lib/db/daily-post-tracker'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -43,16 +44,16 @@ export async function GET(request: NextRequest) {
       }, { status: 404 })
     }
 
-    // Load automation state from database
-    const state = await getBlogState()
+    // Load automation state from database (or calculate from date if DB unavailable)
+    const state = await getBlogState(articles.length)
 
-    // Check if already posted today
+    // Check if already posted today (using both DB state and in-memory cache)
     const today = new Date().toISOString().split('T')[0]
-    if (state.lastPostedDate === today) {
+    if (state.lastPostedDate === today || hasPostedToday('blog-post')) {
       return NextResponse.json({
         success: false,
         message: 'Already posted today',
-        lastPosted: state.lastPostedDate
+        lastPosted: state.lastPostedDate || today
       }, { status: 200 })
     }
 
@@ -71,11 +72,12 @@ export async function GET(request: NextRequest) {
       postToReddit(article, blogUrl)
     ])
 
-    // Update state in database
+    // Update state in database and cache
     await updateBlogState({
       lastPostedIndex: nextIndex,
       lastPostedDate: today
     })
+    markPostedToday('blog-post')
 
     return NextResponse.json({
       success: true,
