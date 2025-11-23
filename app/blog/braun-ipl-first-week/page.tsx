@@ -97,10 +97,58 @@ const productReviewSchema = {
   reviewBody: 'After one week of using the Braun Silk Expert Pro 7, I\'m seeing measurable results: slower regrowth, patchy coverage, and finer hair texture. The device feels premium, the SensoAdapt technology works as advertised, and the German engineering shows. Would recommend for those with light to medium skin and dark hair.',
 }
 
+// FAQ schema for "People Also Ask" boxes
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Does Braun IPL work after one week?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes, after one week you can see measurable results: slower regrowth, patchy coverage, and finer hair texture. However, IPL requires 4-12 weeks of weekly treatments for full results as it targets hair in different growth phases.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is Braun IPL painful?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The Braun IPL Pro 7 has a pain level of about 2/10 - just mild warmth. It feels like a tiny rubber band snap followed by warmth, but is not painful. The SensoAdapt technology automatically adjusts intensity based on your skin tone for safety.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does Braun IPL treatment take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A full-body Braun IPL treatment takes 15-25 minutes depending on the areas treated. Arms take about 15 minutes, and adding legs and chest extends it to 25 minutes. This is faster than traditional shaving.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is Braun IPL worth the cost?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'At $499 (on sale from $699), Braun IPL is cost-effective compared to professional laser ($2,400-4,000 for 6-8 sessions) or lifetime waxing ($600-1,200 per year). The device lasts 20+ years with 400,000 flashes, making it a worthwhile investment for those with light to medium skin and dark hair.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Who should not use Braun IPL?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Braun IPL is not recommended for: very dark skin tones (IPL targets melanin and cannot safely differentiate), very light hair colors (blonde, red, gray lack melanin), or those who need instant results. It requires patience and 4-12 weeks of consistent weekly treatments.',
+      },
+    },
+  ],
+}
+
 export default function BraunIPLFirstWeekPage() {
   return (
     <>
-      <JsonLd data={[articleSchema, breadcrumbSchema, productReviewSchema]} />
+      <JsonLd data={[articleSchema, breadcrumbSchema, productReviewSchema, faqSchema]} />
 
       <article className="min-h-screen bg-gradient-to-br from-zinc-50 via-white to-zinc-100 dark:from-zinc-950 dark:via-black dark:to-zinc-900">
         {/* Hero Section */}
@@ -208,7 +256,7 @@ export default function BraunIPLFirstWeekPage() {
               I've been hairless since sixteen. Not by genetics—by choice.
             </p>
             <p>
-              Growing up watching Cristiano Ronaldo dominate the pitch, I noticed something beyond his skill: the aesthetic discipline. The clean lines. The deliberate smoothness. I wanted that—not for vanity, but for the same reason you polish a marble sculpture. Form matters.
+              Growing up watching Cristiano Ronaldo dominate the pitch, I noticed something beyond his skill: the aesthetic discipline. The clean lines. The deliberate smoothness. I wanted that—not for vanity, but for the same reason you polish a marble sculpture. <Link href="/blog" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 underline">Form matters</Link>.
             </p>
             <p>
               So I've shaved, waxed, trimmed, lasered—chasing permanence. When the{' '}
@@ -287,10 +335,10 @@ export default function BraunIPLFirstWeekPage() {
             <h2>What Surprised Me</h2>
             <h3>1. The Joy of Self-Curation</h3>
             <p>
-              There's something meditative about IPL. It's not rushed like shaving. You're deliberate. Methodical. Each pulse is a tiny decision—this area, that intensity, this angle.
+              There's something <Link href="/meditations" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 underline">meditative</Link> about IPL. It's not rushed like shaving. You're deliberate. Methodical. Each pulse is a tiny decision—this area, that intensity, this angle.
             </p>
             <p>
-              It's self-curation. The same satisfaction I get from choosing the right book, the right espresso blend, the right shirt. You're crafting your form, intentionally.
+              It's self-curation. The same satisfaction I get from choosing <Link href="/shop" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 dark:hover:text-emerald-300 underline">the right book, the right espresso blend, the right shirt</Link>. You're crafting your form, intentionally.
             </p>
 
             <h3>2. It's Not Instant (And That's Fine)</h3>
