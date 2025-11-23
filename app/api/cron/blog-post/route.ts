@@ -6,11 +6,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import fs from 'fs/promises'
 import path from 'path'
+import { blogPosts } from '@/lib/blog-posts'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
-const ARTICLES_PATH = './app/blog/articles.json'
 const STATE_PATH = './data/blog-automation-state.json'
 
 interface Article {
@@ -35,9 +35,14 @@ export async function GET(request: NextRequest) {
   console.log('[Blog Cron] Starting daily blog post automation...')
 
   try {
-    // Load articles
-    const articlesData = await fs.readFile(ARTICLES_PATH, 'utf-8')
-    const articles: Article[] = JSON.parse(articlesData)
+    // Convert blog posts to articles format
+    const articles: Article[] = blogPosts.map(post => ({
+      title: post.title,
+      slug: post.slug.replace('/blog/', ''),
+      date: post.datePublished || post.date,
+      excerpt: post.excerpt,
+      keywords: [post.category.toLowerCase().replace(/\s+/g, '-')]
+    }))
 
     if (articles.length === 0) {
       return NextResponse.json({
