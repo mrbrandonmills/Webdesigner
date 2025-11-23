@@ -5,18 +5,19 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { sql } from '@vercel/postgres'
+import { isAuthenticated } from '@/lib/auth'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 export async function POST(request: NextRequest) {
   try {
-    // Check for admin authorization
-    const authHeader = request.headers.get('authorization')
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    // Check for admin authentication
+    const authenticated = await isAuthenticated()
+    if (!authenticated) {
       return NextResponse.json({
         success: false,
-        error: 'Unauthorized'
+        error: 'Unauthorized - Admin access required'
       }, { status: 401 })
     }
 

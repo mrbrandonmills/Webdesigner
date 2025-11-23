@@ -11,10 +11,30 @@ export interface BlogAutomationState {
 }
 
 /**
+ * Ensure automation_state table exists
+ */
+async function ensureTableExists(): Promise<void> {
+  try {
+    await sql`
+      CREATE TABLE IF NOT EXISTS automation_state (
+        key VARCHAR(255) PRIMARY KEY,
+        value JSONB NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `
+  } catch (error) {
+    console.error('[DB] Error creating automation_state table:', error)
+  }
+}
+
+/**
  * Get blog automation state from database
  */
 export async function getBlogState(): Promise<BlogAutomationState> {
   try {
+    // Ensure table exists first
+    await ensureTableExists()
+
     const result = await sql`
       SELECT value
       FROM automation_state
