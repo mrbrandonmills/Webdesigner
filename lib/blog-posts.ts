@@ -17,7 +17,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'In an age of infinite distraction, deep work has become the ultimate luxury. How I built a focus system that delivers 10x productivity without burning out.',
     date: 'November 2025',
     datePublished: '2025-11-23',
-    coverImage: '/images/collaborations/am-reed-2024/IMG_0280.jpg', // Temporary - will add proper deep work image later
+    coverImage: '/images/collaborations/am-reed-2024/IMG_1207.jpg',
     readTime: '10 min read',
   },
   {
@@ -37,7 +37,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'I tested both for 30 days to find the best noise canceling headphones for deep focus and work. Complete comparison with definitive recommendations.',
     date: 'January 2025',
     datePublished: '2025-01-15',
-    coverImage: '/images/collaborations/am-reed-2024/IMG_0280.jpg', // Using placeholder until headphones image is added
+    coverImage: '/images/collaborations/am-reed-2024/IMG_1196.jpg',
     readTime: '9 min read',
   },
   {

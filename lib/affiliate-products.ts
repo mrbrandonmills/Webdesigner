@@ -267,7 +267,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 4231,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Godox-SL-60W-5600K-Bowens/dp/B01M0Z4H29?tag=${AFFILIATE_TAG}`,
-    images: ['https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=800&q=80'],
+    images: ['https://m.media-amazon.com/images/I/61JHoP7F1fL._AC_SL1001_.jpg'],
     description: 'Professional continuous LED lighting for photography and videography. 60W output with Bowens mount for versatile light shaping.',
     features: [
       '60W LED Output - Powerful, consistent daylight-balanced light',
@@ -475,7 +475,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 9234,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Spider-Farmer-Compatible-Spectrum-Hydroponic/dp/B07TS82HX6?tag=${AFFILIATE_TAG}`,
-    images: ['https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&q=80'],
+    images: ['https://m.media-amazon.com/images/I/61P9zKWLHqL._AC_SL1001_.jpg'],
     description: 'Premium full-spectrum LED grow light for thriving indoor plants. Samsung LM301B diodes deliver optimal PAR output for all growth stages.',
     features: [
       'Samsung LM301B Diodes - Industry-leading efficiency',
@@ -519,7 +519,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 18234,
     inStock: true,
     amazonUrl: `https://www.amazon.com/New-Apple-AirPods-Max-Silver/dp/B08PZHYWJS?tag=${AFFILIATE_TAG}`,
-    images: ['https://images.unsplash.com/photo-1613040809024-b4ef7ba99bc3?w=800&q=80'],
+    images: ['https://m.media-amazon.com/images/I/81bhSTrxLJL._AC_SL1500_.jpg'],
     description: `Apple AirPods Max combine sophisticated design with breakthrough audio technology. Featuring computational audio, Adaptive EQ, and Active Noise Cancellation, these premium over-ear headphones deliver an unparalleled listening experience for deep work, creative sessions, and immersive content consumption.`,
     features: [
       'Computational Audio - Apple H1 chip powers advanced audio features',
@@ -572,7 +572,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 3452,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Apple-iPad-Pro-13-Inch-Landscape/dp/B0D3J7FCFH?tag=${AFFILIATE_TAG}`,
-    images: ['https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=800&q=80'],
+    images: ['https://m.media-amazon.com/images/I/81Os0AcKj5L._AC_SL1500_.jpg'],
     description: `The most advanced iPad ever. M4 chip delivers desktop-class performance in an impossibly thin design. Pro camera system, Ultra Retina XDR display, and Apple Pencil Pro support make this the ultimate tool for polymaths - from digital art to code to content creation.`,
     features: [
       'M4 Chip - Desktop-class performance with AI acceleration',
