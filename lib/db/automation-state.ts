@@ -51,10 +51,12 @@ async function ensureTableExists(): Promise<void> {
 export async function getBlogState(totalPosts: number = 50): Promise<BlogAutomationState> {
   // Always use stateless mode for now (Postgres not configured in production)
   console.log('[Automation] Using date-based stateless mode')
-  const today = new Date().toISOString().split('T')[0]
+
+  // Note: lastPostedDate is not used in stateless mode
+  // Duplicate prevention is handled by the in-memory cache and cron schedule
   return {
     lastPostedIndex: calculateIndexFromDate(totalPosts) - 1, // -1 so next post is calculated correctly
-    lastPostedDate: ''  // Empty so it will post today
+    lastPostedDate: '' // Not used in stateless mode
   }
 
   /* Database mode disabled until Postgres is configured in Vercel
