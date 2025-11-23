@@ -27,7 +27,11 @@ function calculateIndexFromDate(totalPosts: number): number {
  */
 async function ensureTableExists(): Promise<void> {
   try {
-    const { sql } = await import('@vercel/postgres')
+    // Dynamic import to avoid loading postgres when not needed
+    const postgres = await import('@vercel/postgres').catch(() => null)
+    if (!postgres) return
+
+    const sql = postgres.sql
     await sql`
       CREATE TABLE IF NOT EXISTS automation_state (
         key VARCHAR(255) PRIMARY KEY,
@@ -59,7 +63,12 @@ export async function getBlogState(totalPosts: number = 50): Promise<BlogAutomat
     // Ensure table exists first
     await ensureTableExists()
 
-    const { sql } = await import('@vercel/postgres')
+    const postgres = await import('@vercel/postgres').catch(() => null)
+    if (!postgres) {
+      throw new Error('Postgres not available')
+    }
+
+    const sql = postgres.sql
     const result = await sql`
       SELECT value
       FROM automation_state
@@ -98,7 +107,10 @@ export async function updateBlogState(state: BlogAutomationState): Promise<void>
   }
 
   try {
-    const { sql } = await import('@vercel/postgres')
+    const postgres = await import('@vercel/postgres').catch(() => null)
+    if (!postgres) return
+
+    const sql = postgres.sql
     await sql`
       INSERT INTO automation_state (key, value)
       VALUES ('blog-post', ${JSON.stringify(state)}::jsonb)
