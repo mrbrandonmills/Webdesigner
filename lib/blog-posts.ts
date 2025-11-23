@@ -11,6 +11,16 @@ export interface BlogPost {
 
 export const blogPosts: BlogPost[] = [
   {
+    slug: '/blog/deep-work-philosophy-2025',
+    category: 'Philosophy',
+    title: 'Deep Work in 2025: Why Focus Is The New Luxury',
+    excerpt: 'In an age of infinite distraction, deep work has become the ultimate luxury. How I built a focus system that delivers 10x productivity without burning out.',
+    date: 'November 2025',
+    datePublished: '2025-11-23',
+    coverImage: '/og-deep-work.jpg',
+    readTime: '10 min read',
+  },
+  {
     slug: '/blog/braun-ipl-first-week',
     category: 'Personal Review',
     title: 'The Hairless Rabbit Diaries: My First Week With Braun IPL',
