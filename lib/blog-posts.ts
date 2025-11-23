@@ -17,7 +17,7 @@ export const blogPosts: BlogPost[] = [
     excerpt: 'In an age of infinite distraction, deep work has become the ultimate luxury. How I built a focus system that delivers 10x productivity without burning out.',
     date: 'November 2025',
     datePublished: '2025-11-23',
-    coverImage: '/og-deep-work.jpg',
+    coverImage: '/images/collaborations/am-reed-2024/IMG_0280.jpg', // Temporary - will add proper deep work image later
     readTime: '10 min read',
   },
   {
