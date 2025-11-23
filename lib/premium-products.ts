@@ -115,12 +115,33 @@ export function getCollections(): Record<string, ProductCollection> {
 }
 
 /**
- * Get all shop products (premium only - curated museum-quality items)
- * Amazon affiliate products removed - they had low-quality/mismatched images
+ * Get all shop products (Amazon affiliate products)
+ * Using getFeaturedProducts from affiliate-products.ts
  */
 export function getAllShopProducts(): UnifiedProduct[] {
-  // Only return curated premium products with proper images
-  return getPremiumProducts()
+  // Import and use Amazon affiliate products
+  const { getFeaturedProducts } = require('@/lib/affiliate-products')
+  const affiliateProducts = getFeaturedProducts()
+
+  // Transform to UnifiedProduct format
+  return affiliateProducts.map((product: any) => ({
+    id: product.asin,
+    title: product.name,
+    description: product.description || product.name,
+    image: product.images[0],
+    images: product.images,
+    price: product.price,
+    currency: 'USD',
+    inStock: true,
+    featured: product.featured || false,
+    source: 'amazon' as const,
+    productType: product.category,
+    category: product.category,
+    tags: product.tags || [],
+    amazonUrl: product.amazonUrl,
+    rating: product.rating,
+    reviewCount: product.reviews
+  }))
 }
 
 /**
