@@ -49,50 +49,46 @@ async function ensureTableExists(): Promise<void> {
  * Falls back to stateless date-based calculation if database unavailable
  */
 export async function getBlogState(totalPosts: number = 50): Promise<BlogAutomationState> {
+  // Always use stateless mode for now (Postgres not configured in production)
+  console.log('[Automation] Using date-based stateless mode')
+  const today = new Date().toISOString().split('T')[0]
+  return {
+    lastPostedIndex: calculateIndexFromDate(totalPosts) - 1, // -1 so next post is calculated correctly
+    lastPostedDate: ''  // Empty so it will post today
+  }
+
+  /* Database mode disabled until Postgres is configured in Vercel
   // Check if database is configured
   if (!process.env.POSTGRES_URL && !process.env.POSTGRES_PRISMA_URL) {
     console.log('[DB] No Postgres configured, using date-based stateless mode')
-    const today = new Date().toISOString().split('T')[0]
-    return {
-      lastPostedIndex: calculateIndexFromDate(totalPosts) - 1, // -1 so next post is calculated correctly
-      lastPostedDate: ''  // Empty so it will post today
-    }
-  }
-
-  try {
-    // Ensure table exists first
-    await ensureTableExists()
-
-    const postgres = await import('@vercel/postgres').catch(() => null)
-    if (!postgres) {
-      throw new Error('Postgres not available')
-    }
-
-    const sql = postgres.sql
-    const result = await sql`
-      SELECT value
-      FROM automation_state
-      WHERE key = 'blog-post'
-    `
-
-    if (result.rows.length === 0) {
-      // Initialize if doesn't exist
-      await sql`
-        INSERT INTO automation_state (key, value)
-        VALUES ('blog-post', '{"lastPostedIndex": -1, "lastPostedDate": ""}'::jsonb)
-      `
-      return { lastPostedIndex: -1, lastPostedDate: '' }
-    }
-
-    return result.rows[0].value as BlogAutomationState
-  } catch (error) {
-    console.error('[DB] Error getting blog state, falling back to date-based mode:', error)
     const today = new Date().toISOString().split('T')[0]
     return {
       lastPostedIndex: calculateIndexFromDate(totalPosts) - 1,
       lastPostedDate: ''
     }
   }
+
+  try {
+    await ensureTableExists()
+    const postgres = await import('@vercel/postgres').catch(() => null)
+    if (!postgres) throw new Error('Postgres not available')
+
+    const sql = postgres.sql
+    const result = await sql`SELECT value FROM automation_state WHERE key = 'blog-post'`
+
+    if (result.rows.length === 0) {
+      await sql`INSERT INTO automation_state (key, value) VALUES ('blog-post', '{"lastPostedIndex": -1, "lastPostedDate": ""}'::jsonb)`
+      return { lastPostedIndex: -1, lastPostedDate: '' }
+    }
+    return result.rows[0].value as BlogAutomationState
+  } catch (error) {
+    console.error('[DB] Error, falling back to date-based mode:', error)
+    return {
+      lastPostedIndex: calculateIndexFromDate(totalPosts) - 1,
+      lastPostedDate: ''
+    }
+  }
+  */
 }
 
 /**
@@ -100,9 +96,13 @@ export async function getBlogState(totalPosts: number = 50): Promise<BlogAutomat
  * Silently fails if database unavailable (stateless mode will continue working)
  */
 export async function updateBlogState(state: BlogAutomationState): Promise<void> {
-  // Skip if no database configured
+  // Stateless mode - no update needed
+  console.log('[Automation] Stateless mode - state not persisted')
+  return
+
+  /* Database mode disabled until Postgres is configured
   if (!process.env.POSTGRES_URL && !process.env.POSTGRES_PRISMA_URL) {
-    console.log('[DB] No Postgres configured, skipping state update (stateless mode)')
+    console.log('[DB] No Postgres configured, skipping state update')
     return
   }
 
@@ -111,14 +111,10 @@ export async function updateBlogState(state: BlogAutomationState): Promise<void>
     if (!postgres) return
 
     const sql = postgres.sql
-    await sql`
-      INSERT INTO automation_state (key, value)
-      VALUES ('blog-post', ${JSON.stringify(state)}::jsonb)
-      ON CONFLICT (key)
-      DO UPDATE SET value = ${JSON.stringify(state)}::jsonb
-    `
+    await sql`INSERT INTO automation_state (key, value) VALUES ('blog-post', ${JSON.stringify(state)}::jsonb)
+             ON CONFLICT (key) DO UPDATE SET value = ${JSON.stringify(state)}::jsonb`
   } catch (error) {
-    console.error('[DB] Error updating blog state (continuing in stateless mode):', error)
-    // Don't throw - allow automation to continue in stateless mode
+    console.error('[DB] Error updating blog state:', error)
   }
+  */
 }
