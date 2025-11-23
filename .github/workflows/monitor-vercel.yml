@@ -1,0 +1,114 @@
+name: Monitor Vercel Deployments
+
+on:
+  schedule:
+    # Run every 30 minutes
+    - cron: '*/30 * * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install -g vercel@latest
+
+      - name: Check Vercel Deployment Status
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+        run: |
+          echo "🔍 Checking latest Vercel deployment..."
+
+          # Get latest deployment
+          DEPLOYMENT=$(vercel ls --prod --token=$VERCEL_TOKEN | grep "https://" | head -1)
+
+          if echo "$DEPLOYMENT" | grep -q "Error"; then
+            echo "🔥 BUILD FAILED - Creating GitHub issue..."
+            exit 1
+          elif echo "$DEPLOYMENT" | grep -q "Ready"; then
+            echo "✅ Deployment successful"
+          else
+            echo "⚠️ Deployment in progress or unknown state"
+          fi
+
+      - name: Check Cron Job Health
+        env:
+          SITE_URL: https://brandonmills.com
+        run: |
+          echo "🔍 Checking cron job health endpoint..."
+
+          HEALTH_CHECK=$(curl -s "$SITE_URL/api/integrations/health" || echo "failed")
+
+          if echo "$HEALTH_CHECK" | grep -q "success"; then
+            echo "✅ Cron jobs are running"
+          else
+            echo "⚠️ Cron jobs may not be running - check manually"
+          fi
+
+      - name: Create Issue on Failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🚨 Vercel Deployment or Cron Job Failure Detected';
+            const body = `
+            ## Automated Monitoring Alert
+
+            **Time:** ${new Date().toISOString()}
+            **Status:** ❌ FAILURE DETECTED
+
+            ### What Happened
+            The automated monitoring system detected a failure in either:
+            - Vercel deployment build
+            - Cron job execution
+            - Health check endpoint
+
+            ### Immediate Actions Required
+            1. Check Vercel deployment logs: https://vercel.com/brandons-projects-c4dfa14a/webdesigner
+            2. Verify cron jobs are running: https://brandonmills.com/api/integrations/health
+            3. Check for TypeScript errors in latest commit
+            4. Review recent code changes
+
+            ### Revenue Impact
+            ⚠️ **Your automation systems may be down, affecting:**
+            - Instagram posting (4x/day)
+            - Twitter posting (4x/day)
+            - Pinterest posting (4x/day)
+            - Jesse's book promotion (@lab.of.living)
+            - Blog content distribution
+            - Affiliate product sales
+
+            **Ad spend continues while automation is down - fix ASAP!**
+
+            ---
+            *This issue was created automatically by GitHub Actions*
+            `;
+
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['automated-alert', 'deployment-failure']
+            });
+
+            // Only create new issue if one doesn't already exist
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['automated-alert', 'deployment-failure', 'critical']
+              });
+            }
