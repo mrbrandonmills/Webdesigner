@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { JourneyCanvas } from '@/components/journey/journey-canvas'
+import { LenisScrollWrapper } from '@/components/journey/lenis-scroll-wrapper'
 import { ProgressIndicator } from '@/components/journey/ui/progress-indicator'
 import { StopIndicator } from '@/components/journey/ui/stop-indicator'
 import { TransferModal } from '@/components/journey/ui/transfer-modal'
@@ -63,15 +64,6 @@ export default function JourneyPage() {
     setDevicePreference(device)
     setShowAccessibleNav(accessibility)
     setShowOnboarding(false)
-
-    // Refresh ScrollTrigger after onboarding completes
-    // This ensures it recalculates the scroll positions
-    if (typeof window !== 'undefined') {
-      const { ScrollTrigger } = require('gsap/ScrollTrigger')
-      setTimeout(() => {
-        ScrollTrigger.refresh()
-      }, 200)
-    }
   }
 
   // Update current stop when index changes
@@ -118,47 +110,58 @@ export default function JourneyPage() {
 
   // Handle continuing journey
   const handleContinueJourney = () => {
-    // Scroll to next stop
+    // Scroll to next stop using Lenis
     const nextIndex = Math.min(currentStopIndex + 1, JOURNEY_STOPS.length - 1)
     setCurrentStopIndex(nextIndex)
 
-    // Calculate scroll position
+    // Calculate scroll position with Lenis
     const stop = JOURNEY_STOPS[nextIndex]
-    const scrollDistance = Math.abs(stop.position.z) * 2
-    window.scrollTo({
-      top: scrollDistance,
-      behavior: 'smooth'
-    })
+    const totalDistance = Math.abs(JOURNEY_STOPS[JOURNEY_STOPS.length - 1].position.z)
+    const stopDistance = Math.abs(stop.position.z)
+    const scrollProgress = stopDistance / totalDistance
+    const scrollTarget = scrollProgress * (document.body.scrollHeight - window.innerHeight)
+
+    // @ts-ignore - Use Lenis for smooth scrolling
+    if (window.lenis) {
+      // @ts-ignore
+      window.lenis.scrollTo(scrollTarget, { duration: 2, easing: (t: number) => 1 - Math.pow(1 - t, 3) })
+    }
   }
 
   // Handle progress indicator click
   const handleProgressClick = (index: number) => {
     setCurrentStopIndex(index)
 
-    // Calculate and scroll to position
+    // Calculate and scroll to position with Lenis
     const stop = JOURNEY_STOPS[index]
-    const scrollDistance = Math.abs(stop.position.z) * 2
-    window.scrollTo({
-      top: scrollDistance,
-      behavior: 'smooth'
-    })
+    const totalDistance = Math.abs(JOURNEY_STOPS[JOURNEY_STOPS.length - 1].position.z)
+    const stopDistance = Math.abs(stop.position.z)
+    const scrollProgress = stopDistance / totalDistance
+    const scrollTarget = scrollProgress * (document.body.scrollHeight - window.innerHeight)
+
+    // @ts-ignore - Use Lenis for smooth scrolling
+    if (window.lenis) {
+      // @ts-ignore
+      window.lenis.scrollTo(scrollTarget, { duration: 2, easing: (t: number) => 1 - Math.pow(1 - t, 3) })
+    }
   }
 
   return (
-    <div className="relative w-full min-h-screen bg-black">
-      {/* Onboarding Overlay */}
-      <OnboardingOverlay
-        isOpen={showOnboarding}
-        onComplete={handleOnboardingComplete}
-      />
-
-      {/* Three.js Canvas - Fixed to viewport */}
-      <div className="fixed inset-0 z-0">
-        <JourneyCanvas
-          onStopReached={handleStopReached}
-          onMarkerClick={handleMarkerClick}
+    <LenisScrollWrapper>
+      <div className="relative w-full min-h-screen bg-black">
+        {/* Onboarding Overlay */}
+        <OnboardingOverlay
+          isOpen={showOnboarding}
+          onComplete={handleOnboardingComplete}
         />
-      </div>
+
+        {/* Three.js Canvas - Fixed to viewport */}
+        <div className="fixed inset-0 z-0">
+          <JourneyCanvas
+            onStopReached={handleStopReached}
+            onMarkerClick={handleMarkerClick}
+          />
+        </div>
 
       {/* Accessible Navigation (Optional) */}
       {showAccessibleNav && (
@@ -203,14 +206,15 @@ export default function JourneyPage() {
         </div>
       </div>
 
-      {/* Scroll container for GSAP ScrollTrigger */}
-      <div
-        className="relative z-0"
-        style={{
-          height: '600vh', // Extend page height for scroll
-          width: '100%'
-        }}
-      />
-    </div>
+        {/* Scroll container for Lenis smooth scroll */}
+        <div
+          className="relative z-0"
+          style={{
+            height: '600vh', // Extend page height for scroll
+            width: '100%'
+          }}
+        />
+      </div>
+    </LenisScrollWrapper>
   )
 }
