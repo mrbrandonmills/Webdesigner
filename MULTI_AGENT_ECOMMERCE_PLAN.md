@@ -793,7 +793,7 @@ Complete scroll-based 3D journey through Brandon's life with 8 stops, museum-qua
 - `/components/journey/camera-controller.tsx` - GSAP ScrollTrigger camera system
 
 **8 Museum-Quality Stop Markers:**
-1. `/components/journey/markers/camera-marker.tsx` - WORK (Gold camera with glass lens)
+1. `/components/journey/scenes/davinci-dojo-scene.tsx` - WORK (Da Vinci Renaissance Studio + Martial Arts Dojo) ⭐ AAA ENVIRONMENTAL SCENE
 2. `/components/journey/markers/frame-marker.tsx` - GALLERY (Cream picture frame)
 3. `/components/journey/markers/book-marker.tsx` - BLOG (Sage green open book)
 4. `/components/journey/markers/lotus-marker.tsx` - MEDITATION (Purple lotus flower)
@@ -801,6 +801,19 @@ Complete scroll-based 3D journey through Brandon's life with 8 stops, museum-qua
 6. `/components/journey/markers/brain-marker.tsx` - MIND TOOLS (Blue holographic brain) ⭐
 7. `/components/journey/markers/profile-marker.tsx` - ABOUT (Amber profile silhouette)
 8. `/components/journey/markers/envelope-marker.tsx` - CONTACT (Green envelope with seal)
+
+**Environmental Scenes (NEW - Video Game Quality):**
+- `/components/journey/scenes/davinci-dojo-scene.tsx` - Full 3D environment for WORK stop
+  - 30x20x25 unit scene with 60+ individual 3D objects
+  - Drafting table with Leonardo anatomical drawings, quills, ink, compass
+  - Wing Chun wooden dummy (Mook Jong) for martial arts training
+  - Wall-mounted art: framed anatomy studies, Japanese calligraphy scrolls
+  - Tatami mats blended with aged oak floorboards
+  - Stacked leather books, brass Buddha statue, meditation cushion
+  - Atmospheric effects: 300 floating dust particles, flickering candlelight
+  - Warm golden lighting (candlelit ambiance matching Kasane aesthetic)
+  - Represents fusion of creative mastery and physical discipline
+  - Documentation: `/components/journey/scenes/README.md` (comprehensive guide)
 
 **7 Waypoint Environments:**
 1. `/components/journey/waypoints/particle-tunnel.tsx` - Gold particle tunnel (10,000 particles)
@@ -836,7 +849,7 @@ Complete scroll-based 3D journey through Brandon's life with 8 stops, museum-qua
 
 **The 8 Stops:**
 ```
-1. WORK (z: -5000) → Camera3D → ParticleTunnel → /work
+1. WORK (z: -5000) → DaVinciDojoScene → ParticleTunnel → /work ⭐ ENVIRONMENTAL SCENE
 2. GALLERY (z: -12000) → PictureFrame3D → ColorMorphField → /gallery
 3. BLOG (z: -18000) → Book3D → GeometricShapes → /blog ⚡ TRANSFER
    - Sub-journeys: Cancer Journey, Philosophy Essays, Deep Work

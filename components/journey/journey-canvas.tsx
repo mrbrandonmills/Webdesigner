@@ -18,6 +18,9 @@ import { BrainMarker } from './markers/brain-marker'
 import { ProfileMarker } from './markers/profile-marker'
 import { EnvelopeMarker } from './markers/envelope-marker'
 
+// Import environmental scenes
+import { DaVinciDojoScene } from './scenes/davinci-dojo-scene'
+
 // Import all waypoints
 import { ParticleTunnel } from './waypoints/particle-tunnel'
 import { ColorMorphField } from './waypoints/color-morph'
@@ -33,7 +36,7 @@ interface JourneyCanvasProps {
 }
 
 const MARKER_COMPONENTS = {
-  Camera3D: CameraMarker,
+  Camera3D: DaVinciDojoScene, // Replaced with full environmental scene
   PictureFrame3D: FrameMarker,
   Book3D: BookMarker,
   Lotus3D: LotusMarker,
