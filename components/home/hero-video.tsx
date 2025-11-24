@@ -62,9 +62,41 @@ export default function HeroVideo() {
             Renaissance Man — Modern Era
           </motion.p>
 
-          {/* Main Title */}
+          {/* Main Title - Letter by Letter Animation */}
           <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-light font-serif leading-none text-white px-4">
-            Brandon Mills
+            <div className="flex flex-wrap justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8">
+              {['B', 'R', 'A', 'N', 'D', 'O', 'N'].map((letter, index) => (
+                <motion.span
+                  key={`first-${index}`}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 50 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 0.5 + index * 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="inline-block"
+                >
+                  {letter}
+                </motion.span>
+              ))}
+              <span className="w-4 sm:w-6 md:w-8" />
+              {['M', 'I', 'L', 'L', 'S'].map((letter, index) => (
+                <motion.span
+                  key={`last-${index}`}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: isLoaded ? 1 : 0, y: isLoaded ? 0 : 50 }}
+                  transition={{
+                    duration: 0.8,
+                    delay: 1.2 + index * 0.1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="inline-block"
+                >
+                  {letter}
+                </motion.span>
+              ))}
+            </div>
           </h1>
 
           {/* Divider */}
