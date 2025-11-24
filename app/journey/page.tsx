@@ -92,21 +92,23 @@ export default function JourneyPage() {
   }
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
-      {/* Three.js Canvas */}
-      <div className="absolute inset-0">
+    <div className="relative w-full min-h-screen bg-black">
+      {/* Three.js Canvas - Fixed to viewport */}
+      <div className="fixed inset-0 z-0">
         <JourneyCanvas
           onStopReached={handleStopReached}
           onMarkerClick={handleMarkerClick}
         />
       </div>
 
-      {/* UI Overlays */}
-      <StopIndicator stop={currentStop} isVisible={showStopIndicator} />
-      <ProgressIndicator
-        currentStopIndex={currentStopIndex}
-        onStopClick={handleProgressClick}
-      />
+      {/* UI Overlays - Above canvas */}
+      <div className="relative z-10">
+        <StopIndicator stop={currentStop} isVisible={showStopIndicator} />
+        <ProgressIndicator
+          currentStopIndex={currentStopIndex}
+          onStopClick={handleProgressClick}
+        />
+      </div>
 
       {/* Transfer Modal */}
       <TransferModal
