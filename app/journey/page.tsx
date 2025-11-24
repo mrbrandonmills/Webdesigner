@@ -6,8 +6,11 @@ import { JourneyCanvas } from '@/components/journey/journey-canvas'
 import { ProgressIndicator } from '@/components/journey/ui/progress-indicator'
 import { StopIndicator } from '@/components/journey/ui/stop-indicator'
 import { TransferModal } from '@/components/journey/ui/transfer-modal'
+import { OnboardingOverlay } from '@/components/journey/onboarding-overlay'
 import { JOURNEY_STOPS } from '@/lib/types/journey'
 import type { JourneyStop } from '@/lib/types/journey'
+import { shouldShowOnboarding, completeOnboarding, getPreferences, type DevicePreference } from '@/lib/journey/preferences'
+import { detectWebGL } from '@/lib/journey/webgl'
 
 /**
  * Journey Page - Brandon Mills Life Journey
@@ -20,6 +23,43 @@ export default function JourneyPage() {
   const [showStopIndicator, setShowStopIndicator] = useState(true)
   const [transferModalOpen, setTransferModalOpen] = useState(false)
   const [selectedTransferStop, setSelectedTransferStop] = useState<JourneyStop | null>(null)
+
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [hasWebGL, setHasWebGL] = useState(true)
+  const [showAccessibleNav, setShowAccessibleNav] = useState(false)
+  const [devicePreference, setDevicePreference] = useState<DevicePreference>('both')
+
+  // Check onboarding and WebGL on mount
+  useEffect(() => {
+    // Check WebGL support
+    const webglSupported = detectWebGL()
+    setHasWebGL(webglSupported)
+
+    if (!webglSupported) {
+      // Redirect to traditional navigation if WebGL not supported
+      router.push('/')
+      return
+    }
+
+    // Check if should show onboarding
+    if (shouldShowOnboarding()) {
+      setShowOnboarding(true)
+    } else {
+      // Load existing preferences
+      const prefs = getPreferences()
+      setDevicePreference(prefs.device)
+      setShowAccessibleNav(prefs.accessibility)
+    }
+  }, [router])
+
+  // Handle onboarding completion
+  const handleOnboardingComplete = (device: DevicePreference, accessibility: boolean) => {
+    completeOnboarding(device, accessibility)
+    setDevicePreference(device)
+    setShowAccessibleNav(accessibility)
+    setShowOnboarding(false)
+  }
 
   // Update current stop when index changes
   useEffect(() => {
@@ -93,6 +133,12 @@ export default function JourneyPage() {
 
   return (
     <div className="relative w-full min-h-screen bg-black">
+      {/* Onboarding Overlay */}
+      <OnboardingOverlay
+        isOpen={showOnboarding}
+        onComplete={handleOnboardingComplete}
+      />
+
       {/* Three.js Canvas - Fixed to viewport */}
       <div className="fixed inset-0 z-0">
         <JourneyCanvas
@@ -100,6 +146,24 @@ export default function JourneyPage() {
           onMarkerClick={handleMarkerClick}
         />
       </div>
+
+      {/* Accessible Navigation (Optional) */}
+      {showAccessibleNav && (
+        <nav className="fixed top-6 right-6 z-20 space-y-2">
+          <div className="bg-black/80 backdrop-blur-sm border border-white/20 rounded-2xl p-4 space-y-2">
+            <div className="text-white/60 text-xs mb-2 font-medium">Quick Access</div>
+            {JOURNEY_STOPS.map((stop, index) => (
+              <button
+                key={stop.id}
+                onClick={() => handleProgressClick(index)}
+                className="block w-full text-left px-4 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-lg transition-all text-sm"
+              >
+                {stop.name}
+              </button>
+            ))}
+          </div>
+        </nav>
+      )}
 
       {/* UI Overlays - Above canvas */}
       <div className="relative z-10">
