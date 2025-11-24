@@ -1,7 +1,7 @@
 'use client'
 
 import { Canvas } from '@react-three/fiber'
-import { Stars, Environment } from '@react-three/drei'
+import { Stars } from '@react-three/drei'
 import { Suspense, useState } from 'react'
 import * as THREE from 'three'
 import { CameraController } from './camera-controller'
@@ -112,8 +112,6 @@ export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasPro
         />
         {/* Background color - using manual color instead of HDRI environment */}
         <color attach="background" args={['#000000']} />
-        {/* Environment map for realistic reflections on metallic surfaces */}
-        <Environment preset="studio" environmentIntensity={0.5} />
       </Suspense>
 
       {/* Journey Stops (Markers) */}
