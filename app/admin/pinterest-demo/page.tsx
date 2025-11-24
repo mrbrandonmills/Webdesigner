@@ -28,9 +28,8 @@ export default function PinterestDemoPage() {
   const [error, setError] = useState('')
 
   const APP_ID = process.env.NEXT_PUBLIC_PINTEREST_APP_ID || '1537033'
-  const REDIRECT_URI = typeof window !== 'undefined'
-    ? `${window.location.origin}/api/pinterest/oauth/callback`
-    : 'https://brandonmills.com/api/pinterest/oauth/callback'
+  // Always use brandonmills.com (no www) to match Pinterest app settings
+  const REDIRECT_URI = 'https://brandonmills.com/api/pinterest/oauth/callback'
 
   // Check for OAuth callback success
   useEffect(() => {
