@@ -41,7 +41,7 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
       const duration = Math.max(2, distance / 500) // Minimum 2 seconds per stop
 
       return {
-        stop,
+        stopId: stop.id, // Store only the ID, not the entire object
         index,
         baseZ,
         nextZ,
@@ -93,11 +93,11 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
 
     // Build timeline for each stop with cinematic sequences
     cameraSequences.forEach((sequence, index) => {
-      const { stop, approach, arrival, lookAt, duration } = sequence
+      const { stopId, approach, arrival, lookAt, duration } = sequence
 
       // Calculate timeline position (normalized 0-1 based on stop position)
       const totalDistance = Math.abs(JOURNEY_STOPS[JOURNEY_STOPS.length - 1].position.z)
-      const stopDistance = Math.abs(stop.position.z)
+      const stopDistance = Math.abs(JOURNEY_STOPS[index].position.z)
       const timelinePosition = stopDistance / totalDistance
 
       // Store camera refs for timeline (avoid null checks in GSAP)
@@ -205,7 +205,7 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
         () => {
           if (currentStopIndex.current !== index) {
             currentStopIndex.current = index
-            onStopReached?.(stop.id, index)
+            onStopReached?.(stopId, index)
           }
         },
         [],
