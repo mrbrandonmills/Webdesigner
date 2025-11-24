@@ -150,12 +150,13 @@ export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasPro
       {/* Fog for depth */}
       <fog attach="fog" args={['#000000', 1000, 20000]} />
 
-      {/* Post-processing effects - Photorealistic with depth of field */}
+      {/* Post-processing effects - Award-winning film-quality */}
       <PostProcessingEffects
         enabled={true}
-        bloomIntensity={0.6}
+        bloomIntensity={0.5}
         chromaticAberrationStrength={0.0}
         depthOfFieldEnabled={true}
+        photorealisticMode={true}
       />
     </Canvas>
   )
