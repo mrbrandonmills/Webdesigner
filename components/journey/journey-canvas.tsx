@@ -103,7 +103,8 @@ export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasPro
           fade
           speed={0.5}
         />
-        <Environment preset="night" />
+        {/* Background color - using manual color instead of HDRI environment */}
+        <color attach="background" args={['#000000']} />
       </Suspense>
 
       {/* Journey Stops (Markers) */}
