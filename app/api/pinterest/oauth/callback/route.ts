@@ -77,9 +77,10 @@ export async function GET(request: NextRequest) {
     const data = await response.json()
 
     if (!response.ok) {
-      console.error('[Pinterest OAuth] Token exchange failed:', data)
+      console.error('[Pinterest OAuth] Token exchange failed:', JSON.stringify(data))
+      const errorDetail = data.error_description || data.message || data.error || 'token_exchange_failed'
       return NextResponse.redirect(
-        new URL(`/pinterest-oauth-demo?error=${data.error || 'token_exchange_failed'}`, request.url)
+        new URL(`/pinterest-oauth-demo?error=${encodeURIComponent(errorDetail)}`, request.url)
       )
     }
 
