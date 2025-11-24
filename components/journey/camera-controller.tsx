@@ -24,7 +24,8 @@ interface CameraControllerProps {
  */
 export function CameraController({ onStopReached }: CameraControllerProps) {
   const cameraRef = useRef<THREE.PerspectiveCamera>(null)
-  const targetRef = useRef(new THREE.Vector3(0, 0, -200))
+  // Store primitive data instead of THREE.Vector3 to avoid circular references
+  const targetPositionRef = useRef({ x: 0, y: 0, z: -200 })
   const currentStopIndex = useRef(0)
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
   const { camera } = useThree()
@@ -187,9 +188,9 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
         '<'
       )
 
-      // Update lookAt target
+      // Update lookAt target (primitive data, no circular refs)
       masterTimeline.to(
-        targetRef.current,
+        targetPositionRef.current,
         {
           x: lookAt.x,
           y: lookAt.y,
@@ -245,13 +246,20 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
   useFrame(() => {
     if (!cameraRef.current) return
 
+    // Reconstruct target Vector3 from primitive data (avoids circular refs)
+    const target = new THREE.Vector3(
+      targetPositionRef.current.x,
+      targetPositionRef.current.y,
+      targetPositionRef.current.z
+    )
+
     // Smoothly look at target
     const currentLookAt = new THREE.Vector3()
     cameraRef.current.getWorldDirection(currentLookAt)
     currentLookAt.multiplyScalar(200).add(cameraRef.current.position)
 
     // Lerp toward target
-    currentLookAt.lerp(targetRef.current, 0.05)
+    currentLookAt.lerp(target, 0.05)
     cameraRef.current.lookAt(currentLookAt)
 
     // Subtle camera breathing effect for life
