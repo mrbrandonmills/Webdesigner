@@ -88,11 +88,11 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
     cameraRef.current.position.x = Math.sin(Date.now() * 0.0001) * 2
     cameraRef.current.position.y = Math.cos(Date.now() * 0.00015) * 1.5
 
-    // Look far ahead to see markers (they're at large distances)
+    // Look ahead to see markers
     const lookAtTarget = new THREE.Vector3(
       cameraRef.current.position.x,
       cameraRef.current.position.y,
-      cameraRef.current.position.z - 1000
+      cameraRef.current.position.z - 500
     )
     cameraRef.current.lookAt(lookAtTarget)
   })
