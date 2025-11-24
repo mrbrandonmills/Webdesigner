@@ -44,7 +44,9 @@ function PinterestDemoContent() {
       setStep(1)
     }
 
-    if (success === 'true' && token) {
+    const successFlag = success === 'true' || success === '1'
+
+    if (successFlag && token) {
       setAccessToken(token)
       setRefreshToken(refresh || '')
       setExpiresIn(expires || '')
