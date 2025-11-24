@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     // Create pin using Pinterest v5 API
     // https://developers.pinterest.com/docs/api/v5/#operation/pins/create
 
-    const apiUrl = 'https://api-sandbox.pinterest.com/v5/pins' // Use sandbox for demo
+    const apiUrl = 'https://api.pinterest.com/v5/pins' // Production API for Standard Access
 
     const pinData = {
       title,
@@ -141,7 +141,7 @@ export async function GET(request: NextRequest) {
 
   try {
     // Fetch user's boards
-    const apiUrl = 'https://api-sandbox.pinterest.com/v5/boards'
+    const apiUrl = 'https://api.pinterest.com/v5/boards'
 
     const response = await fetch(apiUrl, {
       headers: {
