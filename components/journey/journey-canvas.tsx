@@ -125,15 +125,17 @@ export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasPro
               />
             )}
 
-            {/* Stop marker */}
-            <MarkerComponent
-              position={[0, 0, stop.position.z] as [number, number, number]}
-              color={stop.color}
-              isActive={currentStopIndex === index}
-              isHovered={hoveredMarker === stop.id}
-              onHover={(hovered) => setHoveredMarker(hovered ? stop.id : null)}
-              onClick={() => onMarkerClick?.(stop.id)}
-            />
+            {/* Stop marker - scaled up for visibility at large distances */}
+            <group scale={[100, 100, 100]}>
+              <MarkerComponent
+                position={[0, 0, stop.position.z / 100] as [number, number, number]}
+                color={stop.color}
+                isActive={currentStopIndex === index}
+                isHovered={hoveredMarker === stop.id}
+                onHover={(hovered) => setHoveredMarker(hovered ? stop.id : null)}
+                onClick={() => onMarkerClick?.(stop.id)}
+              />
+            </group>
           </group>
         )
       })}
