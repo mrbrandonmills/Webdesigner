@@ -17,10 +17,10 @@ import { useSearchParams } from 'next/navigation'
 
 function PinterestDemoContent() {
   const searchParams = useSearchParams()
-  const [step, setStep] = useState(1)
-  const [accessToken, setAccessToken] = useState('')
+  const [step, setStep] = useState(2)
+  const [accessToken, setAccessToken] = useState(process.env.NEXT_PUBLIC_PINTEREST_SANDBOX_TOKEN || '')
   const [refreshToken, setRefreshToken] = useState('')
-  const [expiresIn, setExpiresIn] = useState('')
+  const [expiresIn, setExpiresIn] = useState('24 hours')
   const [boards, setBoards] = useState<any[]>([])
   const [selectedBoard, setSelectedBoard] = useState('')
   const [pinCreated, setPinCreated] = useState<any>(null)
