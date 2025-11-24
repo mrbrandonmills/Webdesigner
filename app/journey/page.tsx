@@ -42,8 +42,12 @@ export default function JourneyPage() {
       return
     }
 
+    // Check for reset parameter in URL (for testing)
+    const urlParams = new URLSearchParams(window.location.search)
+    const forceReset = urlParams.has('reset')
+
     // Check if should show onboarding
-    if (shouldShowOnboarding()) {
+    if (forceReset || shouldShowOnboarding()) {
       setShowOnboarding(true)
     } else {
       // Load existing preferences

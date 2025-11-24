@@ -92,7 +92,7 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
     const lookAtTarget = new THREE.Vector3(
       cameraRef.current.position.x,
       cameraRef.current.position.y,
-      cameraRef.current.position.z - 500
+      cameraRef.current.position.z - 200
     )
     cameraRef.current.lookAt(lookAtTarget)
   })
