@@ -30,6 +30,14 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
   const timelineRef = useRef<gsap.core.Timeline | null>(null)
   const { camera } = useThree()
 
+  // CRITICAL: Proxy objects for GSAP animation (avoid animating Three.js objects directly)
+  // Three.js objects have parent/children circular refs that break React serialization
+  const cameraProxyRef = useRef({
+    position: { x: 0, y: 10, z: 0 },
+    rotation: { x: 0, y: 0, z: 0 },
+    fov: 75
+  })
+
   // Create cinematic camera sequences for each stop
   const cameraSequences = useMemo(() => {
     return JOURNEY_STOPS.map((stop, index) => {
@@ -101,16 +109,15 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
       const stopDistance = Math.abs(JOURNEY_STOPS[index].position.z)
       const timelinePosition = stopDistance / totalDistance
 
-      // Store camera refs for timeline (avoid null checks in GSAP)
+      // Guard check
       if (!cameraRef.current) return
 
-      const cameraPosition = cameraRef.current.position
-      const cameraRotation = cameraRef.current.rotation
-      const camera = cameraRef.current
+      // CRITICAL: Animate proxy object (primitives), not Three.js objects
+      const proxy = cameraProxyRef.current
 
       // APPROACH SEQUENCE - Dramatic entrance
       masterTimeline.to(
-        cameraPosition,
+        proxy.position,
         {
           x: approach.x,
           y: approach.y,
@@ -123,7 +130,7 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
 
       // Camera rotation during approach
       masterTimeline.to(
-        cameraRotation,
+        proxy.rotation,
         {
           x: approach.rotation.x,
           y: approach.rotation.y,
@@ -136,21 +143,18 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
 
       // FOV zoom out for drama
       masterTimeline.to(
-        camera,
+        proxy,
         {
           fov: approach.fov,
           duration: duration * 0.3,
           ease: 'power2.out',
-          onUpdate: () => {
-            camera.updateProjectionMatrix()
-          },
         },
         '<'
       )
 
       // ARRIVAL SEQUENCE - Settle and focus
       masterTimeline.to(
-        cameraPosition,
+        proxy.position,
         {
           x: arrival.x,
           y: arrival.y,
@@ -163,7 +167,7 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
 
       // Straighten camera rotation
       masterTimeline.to(
-        cameraRotation,
+        proxy.rotation,
         {
           x: arrival.rotation.x,
           y: arrival.rotation.y,
@@ -176,14 +180,11 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
 
       // FOV zoom in for focus (dolly zoom effect)
       masterTimeline.to(
-        camera,
+        proxy,
         {
           fov: arrival.fov,
           duration: duration * 0.4,
           ease: 'power2.inOut',
-          onUpdate: () => {
-            camera.updateProjectionMatrix()
-          },
         },
         '<'
       )
@@ -242,9 +243,22 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
     }
   }, [cameraSequences, onStopReached])
 
-  // Smooth lookAt animation in render loop
+  // Apply proxy values to camera and handle lookAt animation
   useFrame(() => {
     if (!cameraRef.current) return
+
+    const cam = cameraRef.current
+    const proxy = cameraProxyRef.current
+
+    // Copy proxy values to actual camera (GSAP animates proxy, this applies to Three.js)
+    cam.position.set(proxy.position.x, proxy.position.y, proxy.position.z)
+    cam.rotation.set(proxy.rotation.x, proxy.rotation.y, proxy.rotation.z)
+
+    // Update FOV if changed
+    if (cam.fov !== proxy.fov) {
+      cam.fov = proxy.fov
+      cam.updateProjectionMatrix()
+    }
 
     // Reconstruct target Vector3 from primitive data (avoids circular refs)
     const target = new THREE.Vector3(
@@ -255,17 +269,17 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
 
     // Smoothly look at target
     const currentLookAt = new THREE.Vector3()
-    cameraRef.current.getWorldDirection(currentLookAt)
-    currentLookAt.multiplyScalar(200).add(cameraRef.current.position)
+    cam.getWorldDirection(currentLookAt)
+    currentLookAt.multiplyScalar(200).add(cam.position)
 
     // Lerp toward target
     currentLookAt.lerp(target, 0.05)
-    cameraRef.current.lookAt(currentLookAt)
+    cam.lookAt(currentLookAt)
 
     // Subtle camera breathing effect for life
     const time = Date.now() * 0.0001
-    cameraRef.current.position.x += Math.sin(time * 2) * 0.05
-    cameraRef.current.position.y += Math.cos(time * 1.5) * 0.03
+    cam.position.x += Math.sin(time * 2) * 0.05
+    cam.position.y += Math.cos(time * 1.5) * 0.03
   })
 
   return (
