@@ -17,31 +17,27 @@ interface PostProcessingEffectsProps {
  */
 export function PostProcessingEffects({
   enabled = true,
-  bloomIntensity = 1.5,
-  chromaticAberrationStrength = 0.002,
+  bloomIntensity = 0.8,
+  chromaticAberrationStrength = 0.0,
   depthOfFieldEnabled = false
 }: PostProcessingEffectsProps) {
   if (!enabled) return null
 
   return (
     <EffectComposer>
+      {/* Subtle bloom for elegant glow (not technical viewport brightness) */}
       <Bloom
         intensity={bloomIntensity}
-        luminanceThreshold={0.1}
-        luminanceSmoothing={0.9}
-        radius={0.9}
+        luminanceThreshold={0.3}
+        luminanceSmoothing={0.7}
+        radius={0.6}
         blendFunction={BlendFunction.ADD}
       />
-      <ChromaticAberration
-        offset={new THREE.Vector2(
-          chromaticAberrationStrength,
-          chromaticAberrationStrength
-        )}
-        blendFunction={BlendFunction.NORMAL}
-      />
+      {/* Removed chromatic aberration - technical artifact, not luxury */}
+      {/* Subtle vignette for depth, not heavy technical effect */}
       <Vignette
-        offset={0.3}
-        darkness={0.6}
+        offset={0.5}
+        darkness={0.3}
         eskil={false}
         blendFunction={BlendFunction.NORMAL}
       />

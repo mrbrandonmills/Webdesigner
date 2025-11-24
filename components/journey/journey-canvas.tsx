@@ -81,16 +81,20 @@ export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasPro
       {/* Camera Controller */}
       <CameraController onStopReached={handleStopReached} />
 
-      {/* Lighting */}
-      <ambientLight intensity={0.3} />
+      {/* Lighting - Warm, cinematic product photography quality */}
+      <ambientLight intensity={0.4} color="#f5f1e8" />
       <directionalLight
         position={[10, 10, 5]}
-        intensity={1}
+        intensity={0.8}
+        color="#ffecd2"
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}
       />
-      <pointLight position={[0, 5, 0]} intensity={0.5} color="#ffffff" />
+      {/* Rim light for depth and luxury feel */}
+      <pointLight position={[-15, 8, -10]} intensity={0.6} color="#d4af37" />
+      {/* Fill light for softness */}
+      <pointLight position={[0, 5, 5]} intensity={0.3} color="#ffffff" />
 
       {/* Environment */}
       <Suspense fallback={null}>
@@ -143,11 +147,11 @@ export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasPro
       {/* Fog for depth */}
       <fog attach="fog" args={['#000000', 1000, 20000]} />
 
-      {/* Post-processing effects */}
+      {/* Post-processing effects - Kasane-inspired minimalist luxury */}
       <PostProcessingEffects
         enabled={true}
-        bloomIntensity={1.5}
-        chromaticAberrationStrength={0.002}
+        bloomIntensity={0.8}
+        chromaticAberrationStrength={0.0}
         depthOfFieldEnabled={false}
       />
     </Canvas>
