@@ -59,6 +59,15 @@ export default function JourneyPage() {
     setDevicePreference(device)
     setShowAccessibleNav(accessibility)
     setShowOnboarding(false)
+
+    // Refresh ScrollTrigger after onboarding completes
+    // This ensures it recalculates the scroll positions
+    if (typeof window !== 'undefined') {
+      const { ScrollTrigger } = require('gsap/ScrollTrigger')
+      setTimeout(() => {
+        ScrollTrigger.refresh()
+      }, 200)
+    }
   }
 
   // Update current stop when index changes

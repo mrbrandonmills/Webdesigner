@@ -30,40 +30,51 @@ export function CameraController({ onStopReached }: CameraControllerProps) {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    // Calculate total journey distance
-    const totalDistance = Math.abs(JOURNEY_STOPS[JOURNEY_STOPS.length - 1].position.z)
+    // Small delay to ensure page structure is ready
+    const initScrollTrigger = setTimeout(() => {
+      // Calculate total journey distance
+      const totalDistance = Math.abs(JOURNEY_STOPS[JOURNEY_STOPS.length - 1].position.z)
 
-    // Create scroll trigger for camera movement
-    const scrollTrigger = ScrollTrigger.create({
-      trigger: document.body,
-      start: 'top top',
-      end: `+=${totalDistance * 2}`,
-      scrub: 1,
-      onUpdate: (self) => {
-        // Calculate camera Z position based on scroll progress
-        const progress = self.progress
-        const zPosition = progress * totalDistance
+      // Refresh ScrollTrigger to recalculate page dimensions
+      ScrollTrigger.refresh()
 
-        targetPosition.current.z = -zPosition
+      // Create scroll trigger for camera movement
+      const scrollTrigger = ScrollTrigger.create({
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1,
+        markers: false, // Set to true for debugging
+        onUpdate: (self) => {
+          // Calculate camera Z position based on scroll progress
+          const progress = self.progress
+          const zPosition = progress * totalDistance
 
-        // Check which stop we're at
-        JOURNEY_STOPS.forEach((stop, index) => {
-          const stopDistance = Math.abs(stop.position.z)
-          const threshold = 500 // Distance threshold for "reaching" a stop
+          targetPosition.current.z = -zPosition
 
-          if (
-            Math.abs(zPosition - stopDistance) < threshold &&
-            currentStopIndex.current !== index
-          ) {
-            currentStopIndex.current = index
-            onStopReached?.(stop.id, index)
-          }
-        })
-      }
-    })
+          // Check which stop we're at
+          JOURNEY_STOPS.forEach((stop, index) => {
+            const stopDistance = Math.abs(stop.position.z)
+            const threshold = 500 // Distance threshold for "reaching" a stop
+
+            if (
+              Math.abs(zPosition - stopDistance) < threshold &&
+              currentStopIndex.current !== index
+            ) {
+              currentStopIndex.current = index
+              onStopReached?.(stop.id, index)
+            }
+          })
+        }
+      })
+
+      // Store for cleanup
+      return scrollTrigger
+    }, 100)
 
     return () => {
-      scrollTrigger.kill()
+      clearTimeout(initScrollTrigger)
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
     }
   }, [onStopReached])
 
