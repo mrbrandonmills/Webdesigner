@@ -76,6 +76,7 @@
     "@playwright/test": "^1.56.1",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.4.0",
+    "@react-three/postprocessing": "^3.0.4",
     "@resvg/resvg-js": "^2.6.2",
     "@stripe/stripe-js": "^8.4.0",
     "@types/bcryptjs": "^2.4.6",

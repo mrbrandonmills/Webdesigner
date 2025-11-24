@@ -1354,3 +1354,22 @@ html {
 .scrollbar-thumb-white\/20 {
   scrollbar-color: rgba(255, 255, 255, 0.2) rgba(255, 255, 255, 0.05);
 }
+
+
+/* Journey fade-out animation */
+@keyframes fade-out {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-fade-out {
+  animation: fade-out 5s ease-in-out forwards;
+}
+
