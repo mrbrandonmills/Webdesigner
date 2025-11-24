@@ -51,7 +51,14 @@ export async function GET(request: NextRequest) {
     // Step 2: Exchange code for access token
     // https://developers.pinterest.com/docs/getting-started/authentication/
 
-    const tokenUrl = 'https://api.pinterest.com/v5/oauth/token'
+    // Use SANDBOX OAuth endpoint for trial access
+    // Trial access requires: https://api-sandbox.pinterest.com/v5/oauth/token
+    const useSandbox = process.env.PINTEREST_USE_SANDBOX !== 'false'
+    const tokenUrl = useSandbox
+      ? 'https://api-sandbox.pinterest.com/v5/oauth/token'
+      : 'https://api.pinterest.com/v5/oauth/token'
+
+    console.log('[Pinterest OAuth] Using token endpoint:', tokenUrl)
 
     // Create Basic Auth header (app_id:app_secret as base64)
     const credentials = Buffer.from(`${appId}:${appSecret}`).toString('base64')
