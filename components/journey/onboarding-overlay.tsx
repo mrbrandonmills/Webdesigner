@@ -55,7 +55,7 @@ export function OnboardingOverlay({ isOpen, onComplete }: OnboardingOverlayProps
   }
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isOpen && (
         <motion.div
           initial={{ opacity: 0 }}

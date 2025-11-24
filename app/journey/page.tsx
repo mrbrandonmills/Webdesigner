@@ -192,9 +192,10 @@ export default function JourneyPage() {
 
       {/* Scroll container for GSAP ScrollTrigger */}
       <div
+        className="relative z-0"
         style={{
           height: '600vh', // Extend page height for scroll
-          pointerEvents: 'none'
+          width: '100%'
         }}
       />
     </div>
