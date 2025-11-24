@@ -46,12 +46,11 @@ export async function GET(request: NextRequest) {
 
   // 🔑 THIS is the make-or-break part:
   // client_id + client_secret MUST be in the x-www-form-urlencoded body
+  // Pinterest expects Basic auth header and a minimal form body
   const body = new URLSearchParams({
     grant_type: 'authorization_code',
     code,
     redirect_uri: redirectUri,
-    client_id: appId,
-    client_secret: appSecret,
   })
 
   const credentials = Buffer.from(`${appId}:${appSecret}`).toString('base64')
@@ -117,7 +116,7 @@ export async function GET(request: NextRequest) {
   const { access_token, refresh_token, expires_in } = data
 
   const redirect = new URL('/pinterest-oauth-demo', origin)
-  redirect.searchParams.set('success', '1')
+  redirect.searchParams.set('success', 'true')
   if (access_token) redirect.searchParams.set('access_token', access_token)
   if (refresh_token) redirect.searchParams.set('refresh_token', refresh_token)
   if (expires_in) redirect.searchParams.set('expires_in', String(expires_in))
