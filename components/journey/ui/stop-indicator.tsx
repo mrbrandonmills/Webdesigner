@@ -27,20 +27,23 @@ export function StopIndicator({ stop, isVisible }: StopIndicatorProps) {
             stiffness: 150,
             damping: 20
           }}
-          className="fixed top-8 left-1/2 -translate-x-1/2 z-40"
+          className="fixed top-20 left-1/2 -translate-x-1/2 z-40 max-w-[90vw]"
+          style={{
+            paddingTop: 'env(safe-area-inset-top)'
+          }}
         >
           <div
-            className="px-8 py-4 rounded-full backdrop-blur-md border-2"
+            className="px-6 py-3 rounded-full backdrop-blur-md border-2"
             style={{
               backgroundColor: stop.color + '20',
               borderColor: stop.color + '60',
               boxShadow: `0 0 40px ${stop.color}40`
             }}
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               {/* Animated dot */}
               <motion.div
-                className="w-3 h-3 rounded-full"
+                className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                 style={{ backgroundColor: stop.color }}
                 animate={{
                   scale: [1, 1.3, 1],
@@ -54,9 +57,9 @@ export function StopIndicator({ stop, isVisible }: StopIndicatorProps) {
               />
 
               {/* Stop info */}
-              <div>
+              <div className="flex-1 min-w-0">
                 <div
-                  className="text-2xl font-serif tracking-tight"
+                  className="text-xl md:text-2xl font-serif tracking-tight truncate"
                   style={{
                     color: stop.color,
                     fontFamily: 'var(--font-cormorant)'
@@ -64,7 +67,7 @@ export function StopIndicator({ stop, isVisible }: StopIndicatorProps) {
                 >
                   {stop.name}
                 </div>
-                <div className="text-sm text-white/60">{stop.description}</div>
+                <div className="text-xs md:text-sm text-white/60 truncate">{stop.description}</div>
               </div>
 
               {/* Type badge */}
