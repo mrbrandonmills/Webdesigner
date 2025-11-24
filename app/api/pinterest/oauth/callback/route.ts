@@ -25,14 +25,14 @@ export async function GET(request: NextRequest) {
   // Handle authorization errors
   if (error) {
     return NextResponse.redirect(
-      new URL(`/admin/pinterest-demo?error=${error}`, request.url)
+      new URL(`/pinterest-oauth-demo?error=${error}`, request.url)
     )
   }
 
   // Validate code exists
   if (!code) {
     return NextResponse.redirect(
-      new URL('/admin/pinterest-demo?error=no_code', request.url)
+      new URL('/pinterest-oauth-demo?error=no_code', request.url)
     )
   }
 
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
   if (!appId || !appSecret || !redirectUri) {
     console.error('[Pinterest OAuth] Missing app credentials')
     return NextResponse.redirect(
-      new URL('/admin/pinterest-demo?error=missing_credentials', request.url)
+      new URL('/pinterest-oauth-demo?error=missing_credentials', request.url)
     )
   }
 
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
     if (!response.ok) {
       console.error('[Pinterest OAuth] Token exchange failed:', data)
       return NextResponse.redirect(
-        new URL(`/admin/pinterest-demo?error=${data.error || 'token_exchange_failed'}`, request.url)
+        new URL(`/pinterest-oauth-demo?error=${data.error || 'token_exchange_failed'}`, request.url)
       )
     }
 
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[Pinterest OAuth] Unexpected error:', error)
     return NextResponse.redirect(
-      new URL('/admin/pinterest-demo?error=server_error', request.url)
+      new URL('/pinterest-oauth-demo?error=server_error', request.url)
     )
   }
 }
