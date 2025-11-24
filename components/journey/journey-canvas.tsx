@@ -4,9 +4,11 @@ import { Canvas } from '@react-three/fiber'
 import { Stars } from '@react-three/drei'
 import { Suspense, useState } from 'react'
 import * as THREE from 'three'
-import { CameraController } from './camera-controller'
+import { CameraAnimator } from './camera-animator'
+import { ScrollController } from './scroll-controller'
 import { PostProcessingEffects } from './effects/post-processing'
 import { JOURNEY_STOPS } from '@/lib/types/journey'
+import { usePerformanceMonitor, getQualitySettings } from '@/hooks/usePerformanceMonitor'
 
 // Import all markers
 import { CameraMarker } from './markers/camera-marker'
@@ -33,6 +35,10 @@ import { GoldenTunnel } from './waypoints/golden-tunnel'
 interface JourneyCanvasProps {
   onStopReached?: (stopId: string, index: number) => void
   onMarkerClick?: (stopId: string) => void
+  /**
+   * Enable debug UI (ScrollController with progress visualization)
+   */
+  debug?: boolean
 }
 
 const MARKER_COMPONENTS = {
@@ -61,28 +67,66 @@ const WAYPOINT_COMPONENTS = {
  * JourneyCanvas - Main Three.js scene
  * Renders all markers, waypoints, and effects
  */
-export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasProps) {
+export function JourneyCanvas({ onStopReached, onMarkerClick, debug = false }: JourneyCanvasProps) {
   const [currentStopIndex, setCurrentStopIndex] = useState(0)
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null)
 
-  const handleStopReached = (stopId: string, index: number) => {
-    setCurrentStopIndex(index)
-    onStopReached?.(stopId, index)
+  // Performance monitoring with adaptive quality
+  const { quality, metrics } = usePerformanceMonitor({
+    targetFps: 60,
+    autoAdjust: true,
+    onQualityChange: (newQuality) => {
+      if (debug && process.env.NODE_ENV === 'development') {
+        console.log(`[Performance] Quality adjusted to: ${newQuality}`)
+      }
+    },
+  })
+
+  const qualitySettings = getQualitySettings(quality)
+
+  const handleStopChange = (stopId: string) => {
+    const stopIndex = JOURNEY_STOPS.findIndex((s) => s.id === stopId)
+    if (stopIndex !== -1) {
+      setCurrentStopIndex(stopIndex)
+      onStopReached?.(stopId, stopIndex)
+    }
   }
 
   return (
-    <Canvas
-      shadows
-      gl={{
-        antialias: true,
-        toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.2,
-        outputColorSpace: THREE.SRGBColorSpace
-      }}
-      dpr={[1, 2]}
-    >
-      {/* Camera Controller */}
-      <CameraController onStopReached={handleStopReached} />
+    <>
+      {/* Debug UI - Scroll progress visualization */}
+      {debug && <ScrollController debug={debug} />}
+
+      {/* Performance stats overlay (dev mode) */}
+      {debug && process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 right-4 z-50 bg-black/80 text-white p-3 rounded-lg font-mono text-xs backdrop-blur-sm">
+          <div className="font-bold mb-2 border-b border-white/20 pb-1">
+            Performance
+          </div>
+          <div>FPS: {metrics.fps}</div>
+          <div>Avg: {metrics.avgFps}</div>
+          <div>Quality: {quality.toUpperCase()}</div>
+          {metrics.memory && <div>Memory: {metrics.memory}MB</div>}
+          <div>Frame: {metrics.frameTime.toFixed(2)}ms</div>
+        </div>
+      )}
+
+      <Canvas
+        shadows
+        gl={{
+          antialias: qualitySettings.antialias,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.2,
+          outputColorSpace: THREE.SRGBColorSpace,
+        }}
+        dpr={qualitySettings.pixelRatio}
+      >
+        {/* NEW: GSAP-based Camera Animator (replaces CameraController) */}
+        <CameraAnimator
+          smooth={true}
+          smoothFactor={0.1}
+          onStopChange={handleStopChange}
+        />
 
       {/* Lighting - Warm, cinematic product photography quality */}
       <ambientLight intensity={0.4} color="#f5f1e8" />
@@ -152,12 +196,13 @@ export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasPro
 
       {/* Post-processing effects - Award-winning film-quality */}
       <PostProcessingEffects
-        enabled={true}
+        enabled={qualitySettings.postProcessing}
         bloomIntensity={0.5}
         chromaticAberrationStrength={0.0}
-        depthOfFieldEnabled={true}
-        photorealisticMode={true}
+        depthOfFieldEnabled={quality === 'high'}
+        photorealisticMode={quality !== 'low'}
       />
-    </Canvas>
+      </Canvas>
+    </>
   )
 }

@@ -117,17 +117,21 @@ export function usePerformanceMonitor(
   const fpsHistoryRef = useRef<number[]>([])
   const rafIdRef = useRef<number | undefined>(undefined)
 
-  // Quality adjustment debounce
+  // Quality adjustment debounce and hysteresis
   const qualityAdjustTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const qualityRef = useRef<QualityLevel>('high')
+  const lastQualityChangeRef = useRef(Date.now())
 
   const setQuality = useCallback(
     (newQuality: QualityLevel) => {
-      if (newQuality !== quality) {
+      if (newQuality !== qualityRef.current) {
+        qualityRef.current = newQuality
         setQualityState(newQuality)
+        lastQualityChangeRef.current = Date.now()
         onQualityChange?.(newQuality)
       }
     },
-    [quality, onQualityChange]
+    [onQualityChange]
   )
 
   useEffect(() => {
@@ -138,6 +142,12 @@ export function usePerformanceMonitor(
     const fpsHistory: number[] = []
 
     const measurePerformance = () => {
+      // Skip measurement when tab is hidden to save battery
+      if (document.hidden) {
+        rafIdRef.current = requestAnimationFrame(measurePerformance)
+        return
+      }
+
       frames++
       const currentTime = performance.now()
       const deltaTime = currentTime - lastTime
@@ -168,7 +178,7 @@ export function usePerformanceMonitor(
         const newMetrics: PerformanceMetrics = {
           fps,
           avgFps,
-          quality,
+          quality: qualityRef.current,
           memory,
           frameTime,
         }
@@ -176,24 +186,52 @@ export function usePerformanceMonitor(
         setMetrics(newMetrics)
         onMetricsUpdate?.(newMetrics)
 
-        // Auto-adjust quality based on FPS
+        // Auto-adjust quality based on FPS with hysteresis
         if (autoAdjust) {
           // Clear existing timeout
           if (qualityAdjustTimeoutRef.current) {
             clearTimeout(qualityAdjustTimeoutRef.current)
           }
 
-          // Debounce quality changes (wait 2 seconds of consistent poor performance)
+          // Debounce quality changes (wait 2 seconds of consistent performance)
           qualityAdjustTimeoutRef.current = setTimeout(() => {
-            if (avgFps < targetFps * 0.5) {
-              // < 30fps → low quality
-              setQuality('low')
-            } else if (avgFps < targetFps * 0.8) {
-              // < 48fps → medium quality
-              setQuality('medium')
-            } else if (avgFps >= targetFps * 0.95) {
-              // >= 57fps → high quality
-              setQuality('high')
+            const timeSinceLastChange = Date.now() - lastQualityChangeRef.current
+            const MIN_QUALITY_CHANGE_INTERVAL = 5000 // 5 seconds minimum between changes
+
+            // Only adjust if enough time has passed
+            if (timeSinceLastChange > MIN_QUALITY_CHANGE_INTERVAL) {
+              const currentQuality = qualityRef.current
+
+              // Hysteresis: Wider thresholds to prevent oscillation
+              // Downgrade quickly, upgrade slowly
+              if (avgFps < targetFps * 0.5 && currentQuality !== 'low') {
+                // < 30fps → low quality
+                setQuality('low')
+              } else if (
+                avgFps < targetFps * 0.75 &&
+                currentQuality === 'high'
+              ) {
+                // < 45fps → medium quality (only from high)
+                setQuality('medium')
+              } else if (
+                avgFps < targetFps * 0.6 &&
+                currentQuality === 'medium'
+              ) {
+                // < 36fps → low quality (from medium)
+                setQuality('low')
+              } else if (
+                avgFps >= targetFps * 0.95 &&
+                currentQuality === 'medium'
+              ) {
+                // >= 57fps → high quality (only from medium)
+                setQuality('high')
+              } else if (
+                avgFps >= targetFps * 0.85 &&
+                currentQuality === 'low'
+              ) {
+                // >= 51fps → medium quality (from low)
+                setQuality('medium')
+              }
             }
           }, 2000)
         }
@@ -218,7 +256,7 @@ export function usePerformanceMonitor(
         clearTimeout(qualityAdjustTimeoutRef.current)
       }
     }
-  }, [autoAdjust, targetFps, sampleInterval, quality, setQuality, onMetricsUpdate])
+  }, [autoAdjust, targetFps, sampleInterval, setQuality, onMetricsUpdate])
 
   return {
     metrics,
@@ -231,6 +269,9 @@ export function usePerformanceMonitor(
  * Get quality-adjusted settings for Three.js
  */
 export function getQualitySettings(quality: QualityLevel) {
+  // SSR guard for window.devicePixelRatio
+  const devicePixelRatio = typeof window !== 'undefined' ? window.devicePixelRatio : 1
+
   switch (quality) {
     case 'low':
       return {
@@ -242,7 +283,7 @@ export function getQualitySettings(quality: QualityLevel) {
       }
     case 'medium':
       return {
-        pixelRatio: Math.min(window.devicePixelRatio, 1.5),
+        pixelRatio: Math.min(devicePixelRatio, 1.5),
         antialias: true,
         shadowMapSize: 1024,
         particleCount: 3000,
@@ -251,7 +292,7 @@ export function getQualitySettings(quality: QualityLevel) {
     case 'high':
     default:
       return {
-        pixelRatio: Math.min(window.devicePixelRatio, 2),
+        pixelRatio: Math.min(devicePixelRatio, 2),
         antialias: true,
         shadowMapSize: 2048,
         particleCount: 5000,
