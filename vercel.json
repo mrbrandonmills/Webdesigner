@@ -1,4 +1,17 @@
 {
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.brandonmills.com"
+        }
+      ],
+      "destination": "https://brandonmills.com/:path*",
+      "permanent": true
+    }
+  ],
   "functions": {
     "app/api/upload/route.ts": {
       "maxDuration": 60,
