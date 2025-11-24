@@ -112,6 +112,8 @@ export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasPro
         />
         {/* Background color - using manual color instead of HDRI environment */}
         <color attach="background" args={['#000000']} />
+        {/* Environment map for realistic reflections on metallic surfaces */}
+        <Environment preset="studio" environmentIntensity={0.5} />
       </Suspense>
 
       {/* Journey Stops (Markers) */}
@@ -150,12 +152,12 @@ export function JourneyCanvas({ onStopReached, onMarkerClick }: JourneyCanvasPro
       {/* Fog for depth */}
       <fog attach="fog" args={['#000000', 1000, 20000]} />
 
-      {/* Post-processing effects - Kasane-inspired minimalist luxury */}
+      {/* Post-processing effects - Photorealistic with depth of field */}
       <PostProcessingEffects
         enabled={true}
-        bloomIntensity={0.8}
+        bloomIntensity={0.6}
         chromaticAberrationStrength={0.0}
-        depthOfFieldEnabled={false}
+        depthOfFieldEnabled={true}
       />
     </Canvas>
   )

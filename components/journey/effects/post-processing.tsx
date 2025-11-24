@@ -25,22 +25,34 @@ export function PostProcessingEffects({
 
   return (
     <EffectComposer>
-      {/* Subtle bloom for elegant glow (not technical viewport brightness) */}
-      <Bloom
-        intensity={bloomIntensity}
-        luminanceThreshold={0.3}
-        luminanceSmoothing={0.7}
-        radius={0.6}
-        blendFunction={BlendFunction.ADD}
-      />
-      {/* Removed chromatic aberration - technical artifact, not luxury */}
-      {/* Subtle vignette for depth, not heavy technical effect */}
-      <Vignette
-        offset={0.5}
-        darkness={0.3}
-        eskil={false}
-        blendFunction={BlendFunction.NORMAL}
-      />
+      <>
+        {/* Subtle bloom for elegant glow (not technical viewport brightness) */}
+        <Bloom
+          intensity={bloomIntensity}
+          luminanceThreshold={0.3}
+          luminanceSmoothing={0.7}
+          radius={0.6}
+          blendFunction={BlendFunction.ADD}
+        />
+
+        {/* Photorealistic depth of field for cinematic focus */}
+        {depthOfFieldEnabled && (
+          <DepthOfField
+            focusDistance={0.02}
+            focalLength={0.05}
+            bokehScale={2.5}
+            height={480}
+          />
+        )}
+
+        {/* Subtle vignette for depth, not heavy technical effect */}
+        <Vignette
+          offset={0.5}
+          darkness={0.35}
+          eskil={false}
+          blendFunction={BlendFunction.NORMAL}
+        />
+      </>
     </EffectComposer>
   )
 }
