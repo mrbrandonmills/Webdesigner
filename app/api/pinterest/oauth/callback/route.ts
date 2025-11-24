@@ -63,10 +63,15 @@ export async function GET(request: NextRequest) {
     // Create Basic Auth header (app_id:app_secret as base64)
     const credentials = Buffer.from(`${appId}:${appSecret}`).toString('base64')
 
+    // Pinterest requires client_id and client_secret in body IN ADDITION to Basic Auth
+    // This is undocumented but required - without it you get "Authentication failed"
+    // See: https://stackoverflow.com/questions/73920854
     const body = new URLSearchParams({
       grant_type: 'authorization_code',
       code: code,
-      redirect_uri: redirectUri
+      redirect_uri: redirectUri,
+      client_id: appId,
+      client_secret: appSecret
     })
 
     console.log('[Pinterest OAuth] Exchanging code for token...')
