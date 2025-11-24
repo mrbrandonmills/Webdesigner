@@ -66,7 +66,13 @@ export async function POST(request: NextRequest) {
     // Create pin using Pinterest v5 API
     // https://developers.pinterest.com/docs/api/v5/#operation/pins/create
 
-    const apiUrl = 'https://api.pinterest.com/v5/pins' // Production API for Standard Access
+    // Use sandbox for trial access (can't write to production until Standard Access approved)
+    const useSandbox = process.env.PINTEREST_USE_SANDBOX !== 'false'
+    const apiUrl = useSandbox
+      ? 'https://api-sandbox.pinterest.com/v5/pins' // Sandbox for trial access
+      : 'https://api.pinterest.com/v5/pins' // Production (only after Standard Access approved)
+
+    console.log('[Pinterest] Using API:', useSandbox ? 'SANDBOX' : 'PRODUCTION')
 
     const pinData = {
       title,
@@ -141,7 +147,12 @@ export async function GET(request: NextRequest) {
 
   try {
     // Fetch user's boards
-    const apiUrl = 'https://api.pinterest.com/v5/boards'
+    const useSandbox = process.env.PINTEREST_USE_SANDBOX !== 'false'
+    const apiUrl = useSandbox
+      ? 'https://api-sandbox.pinterest.com/v5/boards'
+      : 'https://api.pinterest.com/v5/boards'
+
+    console.log('[Pinterest] Fetching boards from:', useSandbox ? 'SANDBOX' : 'PRODUCTION')
 
     const response = await fetch(apiUrl, {
       headers: {

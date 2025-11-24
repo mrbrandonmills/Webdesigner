@@ -63,7 +63,11 @@ export async function GET(request: NextRequest) {
     })
 
     console.log('[Pinterest OAuth] Exchanging code for token...')
+    console.log('[Pinterest OAuth] App ID:', appId)
+    console.log('[Pinterest OAuth] App Secret (first 10 chars):', appSecret?.substring(0, 10))
     console.log('[Pinterest OAuth] Redirect URI:', redirectUri)
+    console.log('[Pinterest OAuth] Code (first 20 chars):', code?.substring(0, 20))
+    console.log('[Pinterest OAuth] Request body:', body.toString())
 
     const response = await fetch(tokenUrl, {
       method: 'POST',
@@ -77,7 +81,9 @@ export async function GET(request: NextRequest) {
     const data = await response.json()
 
     if (!response.ok) {
-      console.error('[Pinterest OAuth] Token exchange failed:', JSON.stringify(data))
+      console.error('[Pinterest OAuth] Token exchange failed!')
+      console.error('[Pinterest OAuth] Status:', response.status)
+      console.error('[Pinterest OAuth] Response:', JSON.stringify(data, null, 2))
       const errorDetail = data.error_description || data.message || data.error || 'token_exchange_failed'
       return NextResponse.redirect(
         new URL(`/pinterest-oauth-demo?error=${encodeURIComponent(errorDetail)}`, request.url)

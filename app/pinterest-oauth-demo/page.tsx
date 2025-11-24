@@ -17,8 +17,9 @@ import { useSearchParams } from 'next/navigation'
 
 function PinterestDemoContent() {
   const searchParams = useSearchParams()
-  const [step, setStep] = useState(2)
-  const [accessToken, setAccessToken] = useState(process.env.NEXT_PUBLIC_PINTEREST_SANDBOX_TOKEN || '')
+  const [step, setStep] = useState(1)
+  const [accessToken, setAccessToken] = useState('')
+  const sandboxToken = process.env.NEXT_PUBLIC_PINTEREST_SANDBOX_TOKEN || ''
   const [refreshToken, setRefreshToken] = useState('')
   const [expiresIn, setExpiresIn] = useState('24 hours')
   const [boards, setBoards] = useState<any[]>([])
@@ -64,6 +65,7 @@ function PinterestDemoContent() {
 
     const authUrl = `https://www.pinterest.com/oauth/?client_id=${APP_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=${scopes}&state=demo_${Date.now()}`
 
+    console.log('[OAuth] Starting flow with redirect_uri:', REDIRECT_URI)
     window.location.href = authUrl
   }
 
