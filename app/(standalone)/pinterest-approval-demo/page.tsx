@@ -4,10 +4,11 @@ import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 
 const APP_ID = process.env.NEXT_PUBLIC_PINTEREST_APP_ID || '1537033'
-const DEFAULT_REDIRECT =
+const DEFAULT_REDIRECT = (
   process.env.NEXT_PUBLIC_PINTEREST_APPROVAL_REDIRECT_URI ||
   process.env.NEXT_PUBLIC_PINTEREST_REDIRECT_URI ||
-  'https://brandonmills.com/api/pinterest/approval-callback'
+  'https://webdesigner-jdffd1f8e-brandons-projects-c4dfa14a.vercel.app/api/pinterest/approval-callback'
+).trim()
 
 function truncateToken(token: string) {
   if (!token) return ''

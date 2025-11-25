@@ -21,10 +21,14 @@ export async function GET(request: NextRequest) {
   const appId =
     process.env.NEXT_PUBLIC_PINTEREST_APP_ID || process.env.PINTEREST_APP_ID
   const appSecret = process.env.PINTEREST_APP_SECRET
-  const redirectUri =
+
+  // Use dynamic origin from the current request instead of hardcoded domain
+  const redirectUri = (
     process.env.PINTEREST_APPROVAL_REDIRECT_URI ||
     process.env.PINTEREST_REDIRECT_URI ||
-    'https://brandonmills.com/api/pinterest/approval-callback'
+    `${origin}/api/pinterest/approval-callback`
+  ).trim()
+
   const useSandbox = process.env.PINTEREST_USE_SANDBOX !== 'false'
 
   if (!appId || !appSecret || !redirectUri) {
