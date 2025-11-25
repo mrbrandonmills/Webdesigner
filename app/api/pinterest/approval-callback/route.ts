@@ -4,17 +4,23 @@ export async function GET(request: NextRequest) {
   const url = new URL(request.url)
   const code = url.searchParams.get('code')
   const error = url.searchParams.get('error')
-  const origin = `${url.protocol}//${url.host}`
+
+  // Use X-Forwarded-Host for ngrok/proxy support
+  const forwardedHost = request.headers.get('x-forwarded-host')
+  const forwardedProto = request.headers.get('x-forwarded-proto') || 'https'
+  const origin = forwardedHost
+    ? `${forwardedProto}://${forwardedHost}`
+    : `${url.protocol}//${url.host}`
 
   if (error) {
     return NextResponse.redirect(
-      `${origin}/pinterest-approval-demo?error=${encodeURIComponent(error)}`
+      `${origin}/pinterest-approval.html?error=${encodeURIComponent(error)}`
     )
   }
 
   if (!code) {
     return NextResponse.redirect(
-      `${origin}/pinterest-approval-demo?error=${encodeURIComponent('missing_code')}`
+      `${origin}/pinterest-approval.html?error=${encodeURIComponent('missing_code')}`
     )
   }
 
@@ -22,12 +28,8 @@ export async function GET(request: NextRequest) {
     process.env.NEXT_PUBLIC_PINTEREST_APP_ID || process.env.PINTEREST_APP_ID
   const appSecret = process.env.PINTEREST_APP_SECRET
 
-  // Use dynamic origin from the current request instead of hardcoded domain
-  const redirectUri = (
-    process.env.PINTEREST_APPROVAL_REDIRECT_URI ||
-    process.env.PINTEREST_REDIRECT_URI ||
-    `${origin}/api/pinterest/approval-callback`
-  ).trim()
+  // ALWAYS use dynamic origin to match the authorization request
+  const redirectUri = `${origin}/api/pinterest/approval-callback`
 
   const useSandbox = process.env.PINTEREST_USE_SANDBOX !== 'false'
 
@@ -46,6 +48,8 @@ export async function GET(request: NextRequest) {
     grant_type: 'authorization_code',
     code,
     redirect_uri: redirectUri,
+    client_id: appId,
+    client_secret: appSecret,
   })
 
   const credentials = Buffer.from(`${appId}:${appSecret}`).toString('base64')
@@ -95,10 +99,11 @@ export async function GET(request: NextRequest) {
     )
   )
 
-  const redirect = new URL('/pinterest-approval-demo', origin)
+  const redirect = new URL('/pinterest-approval.html', origin)
   redirect.searchParams.set('success', '1')
   if (data.access_token) redirect.searchParams.set('access_token', data.access_token)
   if (data.expires_in) redirect.searchParams.set('expires_in', String(data.expires_in))
 
+  console.log('[Pinterest Approval] Redirecting to:', redirect.toString())
   return NextResponse.redirect(redirect.toString())
 }

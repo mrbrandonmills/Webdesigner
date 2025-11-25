@@ -133,9 +133,8 @@ Keywords: keyword1, keyword2, keyword3, keyword4, keyword5
 `
 
     const { text: metadataResult } = await generateText({
-      model: anthropic('claude-3-5-sonnet-20241022'),
+      model: anthropic('claude-3-5-sonnet-20241022') as any,
       prompt: metadataPrompt,
-      maxTokens: 1000,
     })
 
     // Parse AI response

@@ -129,7 +129,7 @@ This is a creative/intellectual portfolio, NOT selling services.
 CREATE original content that honors the title and images.`
 
     const { object: enhanced } = await generateObject({
-      model: anthropic('claude-sonnet-4-20250514'),
+      model: anthropic('claude-sonnet-4-20250514') as any,
       schema: EnhancedContentSchema,
       prompt: enhancementPrompt,
       temperature: hasRealContent ? 0.7 : 0.8, // More creative for generated content

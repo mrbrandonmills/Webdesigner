@@ -61,9 +61,8 @@ Return ONLY the formatted essay text, no meta-commentary.
 `
 
     const { text: formattedEssay } = await generateText({
-      model: anthropic('claude-3-5-sonnet-20241022'),
+      model: anthropic('claude-3-5-sonnet-20241022') as any,
       prompt: formattingPrompt,
-      maxTokens: 8000,
     })
 
     // Step 3: Generate title
@@ -78,7 +77,7 @@ Respond with ONLY the title, no quotes or explanation.
 `
 
     const { text: generatedTitle } = await generateText({
-      model: anthropic('claude-3-5-sonnet-20241022'),
+      model: anthropic('claude-3-5-sonnet-20241022') as any,
       prompt: titlePrompt,
     })
 
@@ -101,7 +100,7 @@ Respond with ONLY one word: mind, body, creativity, or synthesis.
 `
 
       const { text: categoryResult } = await generateText({
-        model: anthropic('claude-3-5-sonnet-20241022'),
+        model: anthropic('claude-3-5-sonnet-20241022') as any,
         prompt: categorizationPrompt,
       })
 
@@ -127,7 +126,7 @@ Keywords: keyword1, keyword2, keyword3
 `
 
     const { text: seoResult } = await generateText({
-      model: anthropic('claude-3-5-sonnet-20241022'),
+      model: anthropic('claude-3-5-sonnet-20241022') as any,
       prompt: seoPrompt,
     })
 
@@ -147,7 +146,7 @@ Make it engaging and thought-provoking. Respond with ONLY the excerpt.
 `
 
     const { text: excerpt } = await generateText({
-      model: anthropic('claude-3-5-sonnet-20241022'),
+      model: anthropic('claude-3-5-sonnet-20241022') as any,
       prompt: excerptPrompt,
     })
 
@@ -168,7 +167,7 @@ Respond with ONLY the image prompt, no explanation.
 `
 
       const { text: visualPromptResult } = await generateText({
-        model: anthropic('claude-3-5-sonnet-20241022'),
+        model: anthropic('claude-3-5-sonnet-20241022') as any,
         prompt: visualPromptGeneration,
       })
 

@@ -52,7 +52,7 @@ Respond with ONLY one word: mind, body, creativity, or synthesis.
 `
 
       const { text: categoryResult } = await generateText({
-        model: anthropic('claude-3-5-sonnet-20241022'),
+        model: anthropic('claude-3-5-sonnet-20241022') as any,
         prompt: categorizationPrompt,
       })
 
@@ -74,7 +74,7 @@ Respond with ONLY the title, no quotes or explanation.
 `
 
       const { text: titleResult } = await generateText({
-        model: anthropic('claude-3-5-sonnet-20241022'),
+        model: anthropic('claude-3-5-sonnet-20241022') as any,
         prompt: titlePrompt,
       })
 
@@ -98,7 +98,7 @@ Keywords: keyword1, keyword2, keyword3, etc.
 `
 
     const { text: seoResult } = await generateText({
-      model: anthropic('claude-3-5-sonnet-20241022'),
+      model: anthropic('claude-3-5-sonnet-20241022') as any,
       prompt: seoPrompt,
     })
 

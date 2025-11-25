@@ -583,29 +583,272 @@ npx tsx scripts/automation/instagram-diagnose.ts
 - Token expires: 2026 (need to renew before then)
 - App is in Development Mode (not published to public)
 
-#### Pinterest Standard Access - OAuth Demo
+#### Pinterest Standard Access - OAuth Integration
 
-**Status:** Pending Standard API Access Approval
+**Status:** ✅ OAuth Working - Application Submitted - Pending Approval
 
-**Demo Page:** `/admin/pinterest-demo`
+**App ID:** 1537033
+**Environment:** Sandbox API (`api-sandbox.pinterest.com`)
 
-Pinterest requires a video demonstration showing:
-1. Complete OAuth flow (login → authorize → code → token exchange)
-2. API integration (creating pins programmatically)
-3. Verification (showing created pins on Pinterest)
+---
+
+### Critical Bug Fixes (UNDOCUMENTED BY PINTEREST)
+
+**🔥 OAuth Error 29 Solution:**
+
+Pinterest's API has an undocumented requirement that caused weeks of debugging. The token exchange REQUIRES credentials in BOTH places:
+
+1. **Authorization Header** (documented)
+2. **POST Body** (UNDOCUMENTED ⚠️)
+
+#### ❌ Wrong (Causes Error 29)
+```typescript
+const body = new URLSearchParams({
+  grant_type: 'authorization_code',
+  code,
+  redirect_uri: redirectUri,
+  // Missing client_id and client_secret!
+})
+
+fetch(tokenUrl, {
+  method: 'POST',
+  headers: {
+    Authorization: `Basic ${base64credentials}`,
+  },
+  body,
+})
+```
+
+#### ✅ Correct (Works)
+```typescript
+const body = new URLSearchParams({
+  grant_type: 'authorization_code',
+  code,
+  redirect_uri: redirectUri,
+  client_id: appId,        // REQUIRED in body!
+  client_secret: appSecret, // REQUIRED in body!
+})
+
+fetch(tokenUrl, {
+  method: 'POST',
+  headers: {
+    Authorization: `Basic ${base64credentials}`,
+  },
+  body,
+})
+```
+
+**Error if missing:** `{code: 29, message: "You are not permitted to access that resource."}`
+
+---
+
+### OAuth Flow Components
+
+**Demo Page:** `https://074d0e2b2aa9.ngrok-free.app/pinterest-approval.html` (sandbox testing)
+
+**API Routes:**
+- `/app/api/pinterest/approval-callback/route.ts` - OAuth token exchange
+- `/app/api/pinterest/approval-boards/route.ts` - Fetch boards (sandbox)
+- `/app/api/pinterest/approval-pins/route.ts` - Create pins (sandbox)
+
+**Static Pages:**
+- `/public/pinterest-approval.html` - Full OAuth flow demo
+- `/public/pinterest-sandbox.html` - Direct token testing
+
+---
+
+### Environment Variables
+
+```bash
+# Pinterest App Credentials
+NEXT_PUBLIC_PINTEREST_APP_ID=1537033
+PINTEREST_APP_SECRET=0c8d589b25dd3b2c43b41fe01edaa70b110c5b28
+
+# Sandbox Mode (use sandbox API endpoints)
+PINTEREST_USE_SANDBOX=true
+
+# Redirect URIs (must match exactly in Pinterest Developer Console)
+PINTEREST_APPROVAL_REDIRECT_URI=https://074d0e2b2aa9.ngrok-free.app/api/pinterest/approval-callback
+```
+
+---
+
+### Redirect URI Configuration
+
+**CRITICAL:** Redirect URIs must match EXACTLY between:
+1. Authorization request (frontend)
+2. Token exchange (backend)
+3. Pinterest Developer Console registration
+
+**Dynamic Origin Detection:**
+
+The callback route uses `X-Forwarded-Host` header for proxy/ngrok support:
+
+```typescript
+// app/api/pinterest/approval-callback/route.ts
+const forwardedHost = request.headers.get('x-forwarded-host')
+const forwardedProto = request.headers.get('x-forwarded-proto') || 'https'
+const origin = forwardedHost
+  ? `${forwardedProto}://${forwardedHost}`
+  : `${url.protocol}//${url.host}`
+
+// ALWAYS use dynamic origin to match authorization request
+const redirectUri = `${origin}/api/pinterest/approval-callback`
+```
+
+This ensures ngrok URLs work correctly without hardcoded domains.
+
+---
+
+### Testing with Ngrok
+
+**Why Ngrok:** Pinterest OAuth requires publicly accessible HTTPS URLs. Local development needs tunneling.
 
 **Setup:**
-1. Get app secret from https://developers.pinterest.com/apps/
-2. Update `.env.local` with `PINTEREST_APP_SECRET`
-3. Ensure redirect URI registered: `https://brandonmills.com/api/pinterest/oauth/callback`
-4. Follow `PINTEREST-VIDEO-GUIDE.md` to record approval video
+```bash
+# Start dev server
+npm run dev  # Runs on port 3006
 
-**Components:**
-- `/app/admin/pinterest-demo/page.tsx` - Interactive demo walkthrough
-- `/app/api/pinterest/oauth/callback/route.ts` - OAuth token exchange
-- `/app/api/pinterest/create-pin/route.ts` - Pin creation API
+# Start ngrok tunnel (separate terminal)
+ngrok http 3006
+```
 
-Once approved, Pinterest automation will post 4x daily to drive traffic.
+**Register the ngrok URL in Pinterest Developer Console:**
+```
+https://[your-ngrok-id].ngrok-free.app/api/pinterest/approval-callback
+```
+
+**Test the flow:**
+1. Visit `https://[ngrok-url]/pinterest-approval.html`
+2. Click "Connect to Pinterest"
+3. Authorize the app
+4. Verify token exchange succeeds
+5. Test board fetching and pin creation
+
+---
+
+### Sandbox API Endpoints
+
+Pinterest provides sandbox-specific endpoints for Trial access:
+
+**Token Exchange:**
+```
+POST https://api-sandbox.pinterest.com/v5/oauth/token
+```
+
+**Boards API:**
+```
+GET https://api-sandbox.pinterest.com/v5/boards
+Authorization: Bearer {access_token}
+```
+
+**Pins API:**
+```
+POST https://api-sandbox.pinterest.com/v5/pins
+Authorization: Bearer {access_token}
+
+{
+  "board_id": "string",
+  "title": "string",
+  "description": "string",
+  "link": "https://your-website.com",
+  "media_source": {
+    "source_type": "image_url",
+    "url": "https://images.unsplash.com/photo-..."
+  }
+}
+```
+
+---
+
+### Standard Access Application
+
+**Requirements:**
+1. ✅ Working OAuth flow (authorization → token exchange)
+2. ✅ API integration demonstration (boards + pins)
+3. ✅ Video recording showing complete flow
+4. ✅ Application form submission
+
+**Use Cases Selected:**
+- Pin creation & scheduling
+- Reporting (analytics)
+- Pinner App (user experiences)
+
+**Target Audience:**
+- Pinners (general users)
+- Creators (content publishers)
+
+**Approval Timeline:** 1-2 weeks
+
+---
+
+### Common Pitfalls & Solutions
+
+**Problem:** "You are not permitted to access that resource" (Error 29)
+**Solution:** Add `client_id` and `client_secret` to POST body (see above)
+
+**Problem:** Redirect URI mismatch
+**Solution:** Use dynamic origin detection with `X-Forwarded-Host`
+
+**Problem:** Pin creation shows success but pin doesn't exist
+**Solution:** Check token expiration and API response errors
+
+**Problem:** View pin link redirects to website instead of Pinterest
+**Solution:** Construct Pinterest URL as `https://www.pinterest.com/pin/{pin_id}/`
+
+**Problem:** Image fails to load in pin
+**Solution:** Use publicly accessible image URL (Unsplash, Cloudinary, etc.)
+
+---
+
+### Files Reference
+
+**API Routes:**
+```
+app/api/pinterest/
+  approval-callback/route.ts  # OAuth token exchange (ERROR 29 FIX HERE)
+  approval-boards/route.ts    # Fetch boards from sandbox
+  approval-pins/route.ts      # Create pins in sandbox
+```
+
+**Demo Pages:**
+```
+public/
+  pinterest-approval.html     # Full OAuth flow demo
+  pinterest-sandbox.html      # Direct token testing
+```
+
+**Environment:**
+```
+.env.local                    # Pinterest credentials
+```
+
+---
+
+### Next Steps After Approval
+
+Once Standard Access is granted:
+
+1. **Switch to Production API:**
+   - Change `PINTEREST_USE_SANDBOX=false`
+   - Update endpoints from `api-sandbox.pinterest.com` to `api.pinterest.com`
+   - Update redirect URIs to production domain
+
+2. **Implement Automated Posting:**
+   - Schedule pins 4x daily
+   - Pull content from blog posts
+   - Include UTM tracking for analytics
+   - Monitor engagement metrics
+
+3. **Token Refresh:**
+   - Implement automatic token refresh (60-day expiry)
+   - Store refresh token securely
+   - Handle token expiration gracefully
+
+---
+
+**Last Updated:** 2025-11-24
+**Status:** Application submitted, awaiting Pinterest approval
 
 ### Traffic Generation Content
 

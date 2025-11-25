@@ -91,7 +91,7 @@ Enhance this portfolio post with the following requirements:
 ENHANCE this post while preserving its essence and elevating it with your unique voice.`
 
     const { object: enhanced } = await generateObject({
-      model: anthropic('claude-sonnet-4-20250514'),
+      model: anthropic('claude-sonnet-4-20250514') as any,
       schema: EnhancedContentSchema,
       prompt: enhancementPrompt,
       temperature: 0.8, // More creative for content
