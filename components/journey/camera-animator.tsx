@@ -1,142 +1,207 @@
 /**
- * Camera Animator Component
- *
- * Bridges GSAP ScrollTrigger progress to Three.js camera animation
- * Uses industry-standard pattern: GSAP controls timeline, Three.js renders
- *
- * Phase 2: 3D Integration - Camera animation driven by scroll
+ * Camera Animator
+ * GSAP-based camera animation using industry-standard patterns
+ * Avoids circular references by using proxy objects
  */
 
 'use client'
 
 import { useRef, useEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { useScrollProgress } from '@/hooks/useScrollProgress'
-import { getKeyframeAtProgress } from '@/constants/journey-keyframes'
+import { gsap, ScrollTrigger } from '@/utils/gsap-config'
 import * as THREE from 'three'
+import { JOURNEY_KEYFRAMES } from '@/constants/journey-keyframes'
 
-interface CameraAnimatorProps {
+export interface CameraAnimatorProps {
   /**
-   * Enable smooth camera transitions (lerp)
+   * Callback when camera reaches a stop
    */
-  smooth?: boolean
-
-  /**
-   * Lerp factor for smooth transitions (0-1)
-   * Lower = smoother but slower response
-   */
-  smoothFactor?: number
+  onStopReached?: (stopId: string, index: number) => void
 
   /**
-   * Callback when stop is reached
+   * Enable debug mode
    */
-  onStopChange?: (stopId: string) => void
+  debug?: boolean
 }
 
 /**
- * Camera Animator Component
+ * CRITICAL: Proxy Pattern for GSAP
  *
- * Animates the Three.js camera based on GSAP scroll progress
- * Uses primitive values to avoid circular reference errors
+ * ❌ WRONG: Animate Three.js objects directly (circular refs)
+ * const cameraPosition = camera.position // Vector3 with circular refs
+ * gsap.to(cameraPosition, { x, y, z })
  *
- * @example
- * ```tsx
- * <Canvas>
- *   <CameraAnimator smooth={true} smoothFactor={0.1} />
- *   <Scene />
- * </Canvas>
- * ```
+ * ✅ CORRECT: Animate primitive proxy objects
+ * const proxy = { position: { x: 0, y: 10, z: 0 } }
+ * gsap.to(proxy.position, { x, y, z })
+ * // Then apply proxy to camera in useFrame
  */
-export function CameraAnimator({
-  smooth = true,
-  smoothFactor = 0.1,
-  onStopChange,
-}: CameraAnimatorProps) {
-  const { camera } = useThree()
-  const { progress } = useScrollProgress({
-    start: 'top top',
-    end: 'bottom bottom',
-    scrub: 1,
+export function CameraAnimator({ onStopReached, debug = false }: CameraAnimatorProps) {
+  const { camera, scene } = useThree()
+
+  // CRITICAL: Proxy objects for GSAP (avoid Three.js circular refs)
+  const cameraProxy = useRef({
+    position: { x: 0, y: 15, z: 0 },
+    rotation: { x: -0.1, y: 0, z: 0 },
+    fov: 75
   })
 
-  // Track previous stop for change detection
-  const prevStopIdRef = useRef<string>('')
-
-  // Store props in refs to avoid stale closures in useFrame
-  const smoothRef = useRef(smooth)
-  const smoothFactorRef = useRef(smoothFactor)
-
-  useEffect(() => {
-    smoothRef.current = smooth
-    smoothFactorRef.current = smoothFactor
-  }, [smooth, smoothFactor])
-
-  // Target camera state (primitives only - no THREE objects)
-  const targetRef = useRef({
-    position: { x: 0, y: 50, z: 200 },
-    fov: 75,
-    lookAt: { x: 0, y: 0, z: 0 },
+  const lookAtProxy = useRef({
+    x: 0,
+    y: 5,
+    z: -500
   })
 
-  // Reusable THREE objects to avoid per-frame allocation
-  const tempVec3 = useRef(new THREE.Vector3())
-  const prevFov = useRef(75)
+  const currentStopIndex = useRef(0)
+  const masterTimeline = useRef<gsap.core.Timeline | null>(null)
 
-  // Update target from scroll progress
+  /**
+   * Setup GSAP timeline with ScrollTrigger
+   * THE KEY PATTERN: scrub: true for smooth scroll syncing
+   */
   useEffect(() => {
-    const keyframe = getKeyframeAtProgress(progress)
+    // Wait for DOM to be ready
+    if (typeof window === 'undefined') return
 
-    // Update target with new keyframe values (primitives only)
-    targetRef.current = {
-      position: { ...keyframe.position },
-      fov: keyframe.fov,
-      lookAt: { ...keyframe.lookAt },
-    }
+    // Create master timeline
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '.journey-container',
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 1, // THE KEY: 1-second smooth delay
+        pin: '.canvas-container',
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          // Detect which stop we're at based on progress
+          const totalStops = JOURNEY_KEYFRAMES.length
+          const currentIndex = Math.floor(self.progress * totalStops)
+          const clampedIndex = Math.min(currentIndex, totalStops - 1)
 
-    // Detect stop changes
-    if (keyframe.stopId !== prevStopIdRef.current) {
-      prevStopIdRef.current = keyframe.stopId
-      onStopChange?.(keyframe.stopId)
-    }
-  }, [progress, onStopChange])
+          if (clampedIndex !== currentStopIndex.current) {
+            currentStopIndex.current = clampedIndex
+            const stop = JOURNEY_KEYFRAMES[clampedIndex]
+            onStopReached?.(stop.stopId, clampedIndex)
 
-  // Apply camera animation every frame
-  useFrame(() => {
-    const target = targetRef.current
-    const isSmooth = smoothRef.current
-    const factor = smoothFactorRef.current
-
-    if (isSmooth) {
-      // Smooth lerp to target position using reusable Vector3
-      tempVec3.current.set(target.position.x, target.position.y, target.position.z)
-      camera.position.lerp(tempVec3.current, factor)
-
-      // Lerp FOV (only update projection matrix if changed significantly)
-      if (camera instanceof THREE.PerspectiveCamera) {
-        camera.fov += (target.fov - camera.fov) * factor
-
-        // Only update projection matrix if FOV changed noticeably
-        if (Math.abs(camera.fov - prevFov.current) >= 0.1) {
-          camera.updateProjectionMatrix()
-          prevFov.current = camera.fov
+            if (debug) {
+              console.log('[CameraAnimator] Reached stop:', stop.stopId, clampedIndex)
+            }
+          }
         }
       }
-    } else {
-      // Direct assignment (no smoothing)
-      camera.position.set(target.position.x, target.position.y, target.position.z)
+    })
 
-      if (camera instanceof THREE.PerspectiveCamera) {
-        camera.fov = target.fov
-        camera.updateProjectionMatrix()
-        prevFov.current = target.fov
-      }
+    // Add keyframe animations to timeline
+    JOURNEY_KEYFRAMES.forEach((keyframe, i) => {
+      // Calculate timeline position (normalized 0-1)
+      const position = i / (JOURNEY_KEYFRAMES.length - 1)
+
+      // Animate camera position
+      tl.to(
+        cameraProxy.current.position,
+        {
+          x: keyframe.camera.position.x,
+          y: keyframe.camera.position.y,
+          z: keyframe.camera.position.z,
+          duration: keyframe.duration,
+          ease: keyframe.ease
+        },
+        position
+      )
+
+      // Animate camera rotation
+      tl.to(
+        cameraProxy.current.rotation,
+        {
+          x: keyframe.camera.rotation.x,
+          y: keyframe.camera.rotation.y,
+          z: keyframe.camera.rotation.z,
+          duration: keyframe.duration,
+          ease: keyframe.ease
+        },
+        position
+      )
+
+      // Animate camera FOV
+      tl.to(
+        cameraProxy.current,
+        {
+          fov: keyframe.camera.fov,
+          duration: keyframe.duration,
+          ease: keyframe.ease
+        },
+        position
+      )
+
+      // Animate lookAt target
+      tl.to(
+        lookAtProxy.current,
+        {
+          x: keyframe.lookAt.x,
+          y: keyframe.lookAt.y,
+          z: keyframe.lookAt.z,
+          duration: keyframe.duration,
+          ease: keyframe.ease
+        },
+        position
+      )
+    })
+
+    masterTimeline.current = tl
+
+    // Cleanup
+    return () => {
+      tl.kill()
+      masterTimeline.current = null
+    }
+  }, [onStopReached, debug])
+
+  /**
+   * Apply proxy values to camera every frame
+   * This is where the magic happens - proxy → Three.js camera
+   */
+  useFrame(() => {
+    // Apply position
+    camera.position.set(
+      cameraProxy.current.position.x,
+      cameraProxy.current.position.y,
+      cameraProxy.current.position.z
+    )
+
+    // Apply rotation
+    camera.rotation.set(
+      cameraProxy.current.rotation.x,
+      cameraProxy.current.rotation.y,
+      cameraProxy.current.rotation.z
+    )
+
+    // Apply FOV (if PerspectiveCamera)
+    if (camera instanceof THREE.PerspectiveCamera) {
+      camera.fov = cameraProxy.current.fov
+      camera.updateProjectionMatrix()
     }
 
-    // Look at target point (this sets camera rotation automatically)
-    // Note: lookAt overrides any manual rotation, so we don't lerp rotation separately
-    tempVec3.current.set(target.lookAt.x, target.lookAt.y, target.lookAt.z)
-    camera.lookAt(tempVec3.current)
+    // Apply lookAt
+    const lookAtTarget = new THREE.Vector3(
+      lookAtProxy.current.x,
+      lookAtProxy.current.y,
+      lookAtProxy.current.z
+    )
+    camera.lookAt(lookAtTarget)
   })
 
-  return null // This is a controller component, renders nothing
+  // Debug helpers
+  useEffect(() => {
+    if (!debug) return
+
+    const helper = new THREE.CameraHelper(camera as THREE.PerspectiveCamera)
+    scene.add(helper)
+
+    return () => {
+      scene.remove(helper)
+    }
+  }, [debug, camera, scene])
+
+  return null
 }

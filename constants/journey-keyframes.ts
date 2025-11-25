@@ -1,210 +1,115 @@
 /**
  * Journey Camera Keyframes
- *
- * Defines cinematic camera paths for the 3D journey
- * Based on JOURNEY_STOPS positions from lib/types/journey.ts
+ * Cinematic camera paths for all 8 journey stops
+ * Positions based on JOURNEY_STOPS z-coordinates
  */
 
 import { JOURNEY_STOPS } from '@/lib/types/journey'
-import { customEases } from '@/utils/gsap-config'
 
 export interface CameraKeyframe {
-  /**
-   * Stop ID this keyframe is associated with
-   */
+  /** Stop ID this keyframe corresponds to */
   stopId: string
 
-  /**
-   * Progress value (0-1) when this keyframe is reached
-   */
-  progress: number
+  /** Index in journey sequence (0-7) */
+  index: number
 
-  /**
-   * Camera position in 3D space
-   */
-  position: {
-    x: number
-    y: number
-    z: number
+  /** Camera position */
+  camera: {
+    position: { x: number; y: number; z: number }
+    rotation: { x: number; y: number; z: number }
+    fov: number
   }
 
-  /**
-   * Camera rotation (Euler angles in radians)
-   */
-  rotation: {
-    x: number
-    y: number
-    z: number
-  }
+  /** Point camera should look at */
+  lookAt: { x: number; y: number; z: number }
 
-  /**
-   * Field of view (degrees)
-   */
-  fov: number
-
-  /**
-   * Look-at target position
-   */
-  lookAt: {
-    x: number
-    y: number
-    z: number
-  }
-
-  /**
-   * GSAP easing for this segment
-   */
-  ease: string
-
-  /**
-   * Duration hint (will be overridden by scrub)
-   */
+  /** Duration of transition to this keyframe (seconds) */
   duration: number
+
+  /** Easing function for transition */
+  ease: string
 }
 
 /**
- * Calculate normalized progress for each stop
- * Based on Z-position in the journey
+ * Camera keyframes for journey stops
+ * Each stop has cinematic camera positioning
  */
-function calculateStopProgress(stopIndex: number): number {
-  const totalDistance = Math.abs(JOURNEY_STOPS[JOURNEY_STOPS.length - 1].position.z)
-  const stopDistance = Math.abs(JOURNEY_STOPS[stopIndex].position.z)
-  return stopDistance / totalDistance
-}
+export const JOURNEY_KEYFRAMES: CameraKeyframe[] = JOURNEY_STOPS.map((stop, index) => {
+  // Base camera height - elevated view
+  const cameraHeight = 15
 
-/**
- * Generate cinematic camera keyframes for each journey stop
- * Alternates between left/right approaches for visual interest
- */
-export const CAMERA_KEYFRAMES: CameraKeyframe[] = JOURNEY_STOPS.map((stop, index) => {
-  const progress = calculateStopProgress(index)
-  const zPos = stop.position.z / 10 // Scale down for scene coordinates
-  const isEven = index % 2 === 0
+  // Camera looks ahead down the journey path
+  const lookAheadDistance = 500
+
+  // Slight camera offset for dynamic feel
+  const xOffset = index % 2 === 0 ? 5 : -5
 
   return {
     stopId: stop.id,
-    progress,
-    // Cinematic camera position - alternating sides
-    position: {
-      x: isEven ? 50 : -50, // Alternate left/right
-      y: 30 + Math.sin(index * 0.5) * 20, // Varying height
-      z: zPos + 100, // Offset from marker
+    index,
+    camera: {
+      position: {
+        x: xOffset,
+        y: cameraHeight,
+        z: stop.position.z + 300 // Camera positioned before the stop
+      },
+      rotation: {
+        x: -0.1, // Slight downward tilt
+        y: 0,
+        z: 0
+      },
+      fov: 75
     },
-    // Slight rotation toward center
-    rotation: {
-      x: -0.15, // Slight downward tilt
-      y: isEven ? 0.2 : -0.2, // Face toward marker
-      z: 0,
-    },
-    // Dynamic FOV for emphasis
-    fov: 60,
-    // Look at the marker position
     lookAt: {
       x: 0,
-      y: 0,
-      z: zPos,
+      y: 5, // Look at middle height
+      z: stop.position.z - lookAheadDistance
     },
-    // Smooth cinematic easing
-    ease: customEases.cinematic,
-    duration: 1,
+    duration: 2.5, // Smooth 2.5-second transitions
+    ease: 'power3.inOut'
   }
 })
 
 /**
- * Initial camera position (before journey starts)
+ * Get keyframe by stop ID
  */
-export const CAMERA_INITIAL: Omit<CameraKeyframe, 'stopId' | 'progress'> = {
-  position: { x: 0, y: 50, z: 200 },
-  rotation: { x: -0.2, y: 0, z: 0 },
-  fov: 75,
-  lookAt: { x: 0, y: 0, z: 0 },
-  ease: customEases.smoothOut,
-  duration: 2,
+export function getKeyframeByStopId(stopId: string): CameraKeyframe | undefined {
+  return JOURNEY_KEYFRAMES.find(kf => kf.stopId === stopId)
 }
 
 /**
- * Helper function to interpolate between two keyframes
- * For smooth camera movement between stops
+ * Get keyframe by index
+ */
+export function getKeyframeByIndex(index: number): CameraKeyframe | undefined {
+  return JOURNEY_KEYFRAMES[index]
+}
+
+/**
+ * Calculate interpolated camera state between two keyframes
  */
 export function interpolateKeyframes(
   from: CameraKeyframe,
   to: CameraKeyframe,
-  progress: number
-): Omit<CameraKeyframe, 'stopId' | 'progress' | 'ease' | 'duration'> {
-  const t = Math.max(0, Math.min(1, progress))
+  progress: number // 0-1
+) {
+  const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
   return {
     position: {
-      x: from.position.x + (to.position.x - from.position.x) * t,
-      y: from.position.y + (to.position.y - from.position.y) * t,
-      z: from.position.z + (to.position.z - from.position.z) * t,
+      x: lerp(from.camera.position.x, to.camera.position.x, progress),
+      y: lerp(from.camera.position.y, to.camera.position.y, progress),
+      z: lerp(from.camera.position.z, to.camera.position.z, progress)
     },
     rotation: {
-      x: from.rotation.x + (to.rotation.x - from.rotation.x) * t,
-      y: from.rotation.y + (to.rotation.y - from.rotation.y) * t,
-      z: from.rotation.z + (to.rotation.z - from.rotation.z) * t,
+      x: lerp(from.camera.rotation.x, to.camera.rotation.x, progress),
+      y: lerp(from.camera.rotation.y, to.camera.rotation.y, progress),
+      z: lerp(from.camera.rotation.z, to.camera.rotation.z, progress)
     },
-    fov: from.fov + (to.fov - from.fov) * t,
+    fov: lerp(from.camera.fov, to.camera.fov, progress),
     lookAt: {
-      x: from.lookAt.x + (to.lookAt.x - from.lookAt.x) * t,
-      y: from.lookAt.y + (to.lookAt.y - from.lookAt.y) * t,
-      z: from.lookAt.z + (to.lookAt.z - from.lookAt.z) * t,
-    },
-  }
-}
-
-/**
- * Get keyframe at specific scroll progress
- * Returns interpolated values between keyframes
- */
-export function getKeyframeAtProgress(progress: number): CameraKeyframe {
-  // Clamp progress
-  const p = Math.max(0, Math.min(1, progress))
-
-  // Find surrounding keyframes
-  let fromIndex = 0
-  let toIndex = 1
-
-  for (let i = 0; i < CAMERA_KEYFRAMES.length - 1; i++) {
-    if (p >= CAMERA_KEYFRAMES[i].progress && p <= CAMERA_KEYFRAMES[i + 1].progress) {
-      fromIndex = i
-      toIndex = i + 1
-      break
+      x: lerp(from.lookAt.x, to.lookAt.x, progress),
+      y: lerp(from.lookAt.y, to.lookAt.y, progress),
+      z: lerp(from.lookAt.z, to.lookAt.z, progress)
     }
   }
-
-  const from = CAMERA_KEYFRAMES[fromIndex]
-  const to = CAMERA_KEYFRAMES[toIndex]
-
-  // Calculate local progress between keyframes
-  const localProgress =
-    (p - from.progress) / (to.progress - from.progress || 0.0001)
-
-  const interpolated = interpolateKeyframes(from, to, localProgress)
-
-  return {
-    stopId: from.stopId,
-    progress: p,
-    ease: from.ease,
-    duration: from.duration,
-    ...interpolated,
-  }
-}
-
-/**
- * Get the closest stop index for given scroll progress
- */
-export function getClosestStopIndex(progress: number): number {
-  let closestIndex = 0
-  let minDistance = Math.abs(progress - CAMERA_KEYFRAMES[0].progress)
-
-  for (let i = 1; i < CAMERA_KEYFRAMES.length; i++) {
-    const distance = Math.abs(progress - CAMERA_KEYFRAMES[i].progress)
-    if (distance < minDistance) {
-      minDistance = distance
-      closestIndex = i
-    }
-  }
-
-  return closestIndex
 }

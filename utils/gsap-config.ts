@@ -1,58 +1,65 @@
 /**
- * GSAP Configuration - Industry Standard Setup
- *
- * Based on award-winning site patterns (kasane-keyboard.com, library.obys.agency)
- * Registers ScrollTrigger plugin and sets global defaults
+ * GSAP Configuration for Award-Winning 3D Journey
+ * Based on research from kasane-keyboard.com and themonolithproject.net
  */
 
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-// Client-side only initialization
+// Register ScrollTrigger plugin
 if (typeof window !== 'undefined') {
-  // Register ScrollTrigger plugin
   gsap.registerPlugin(ScrollTrigger)
-
-  // Global GSAP defaults for consistent animations
-  gsap.defaults({
-    ease: 'power2.inOut',
-    duration: 1,
-  })
-
-  // ScrollTrigger defaults
-  ScrollTrigger.defaults({
-    toggleActions: 'play none none reverse',
-    scroller: typeof window !== 'undefined' ? window : undefined,
-  })
-
-  // Refresh ScrollTrigger on window resize with debounce
-  let resizeTimer: ReturnType<typeof setTimeout>
-  window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer)
-    resizeTimer = setTimeout(() => {
-      ScrollTrigger.refresh()
-    }, 250)
-  })
 }
 
 /**
- * Custom easing curves used by award-winning sites
+ * Custom easing curves for luxury aesthetic
+ * Researched from award-winning sites
  */
 export const customEases = {
-  // Smooth entrance - speed up
-  smoothIn: 'power3.in',
+  luxury: 'power3.inOut',      // Smooth, sophisticated
+  cinematic: 'expo.out',        // Dramatic, film-like
+  smooth: 'power2.out',         // Natural deceleration
+  elastic: 'elastic.out(1, 0.5)' // Subtle bounce
+} as const
 
-  // Smooth exit - slow down
-  smoothOut: 'power3.out',
+/**
+ * Global GSAP defaults
+ * Sets baseline for all animations
+ */
+gsap.defaults({
+  ease: customEases.luxury,
+  duration: 1
+})
 
-  // Smooth both ways
-  smoothInOut: 'power3.inOut',
+/**
+ * ScrollTrigger configuration for 3D journey
+ * KEY PATTERN from research: scrub: true is the industry standard
+ */
+export const scrollTriggerDefaults = {
+  scrub: 1,                     // 1-second smooth delay
+  pin: true,                    // Pin canvas during scroll
+  anticipatePin: 1,             // Smooth pin animation
+  invalidateOnRefresh: true     // Recalculate on resize
+}
 
-  // Cinematic camera movements
-  cinematic: 'expo.out',
+/**
+ * Refresh ScrollTrigger
+ * Call after DOM changes or window resize
+ */
+export function refreshScrollTrigger() {
+  if (typeof window !== 'undefined') {
+    ScrollTrigger.refresh()
+  }
+}
 
-  // Elastic bounce (use sparingly)
-  elastic: 'elastic.out(1, 0.5)',
+/**
+ * Kill all ScrollTriggers
+ * Use for cleanup
+ */
+export function killAllScrollTriggers() {
+  if (typeof window !== 'undefined') {
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+  }
 }
 
 export { gsap, ScrollTrigger }
