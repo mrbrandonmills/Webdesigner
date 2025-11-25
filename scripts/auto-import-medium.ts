@@ -279,7 +279,7 @@ async function main() {
 
     // Take screenshot of error state
     const errorScreenshot = `/tmp/medium-import-error-${Date.now()}.png`
-    await page.screenshot({ path: errorScreenshot, fullPage: true })
+    await page.screenshot({ path: errorScreenshot as any, fullPage: true })
     console.log(`📸 Error screenshot saved: ${errorScreenshot}`)
 
     process.exit(1)

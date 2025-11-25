@@ -4,7 +4,7 @@
  * Tracks history to avoid patterns
  */
 
-import cron from 'node-cron';
+import cron, { ScheduledTask } from 'node-cron';
 import { logger } from '../logger';
 import fs from 'fs/promises';
 import path from 'path';
@@ -73,7 +73,7 @@ const DEFAULT_WINDOWS: PostingWindow[] = [
 class InstagramScheduler {
   private config: SchedulerConfig;
   private history: PostingHistory[] = [];
-  private scheduledJobs: Map<string, cron.ScheduledTask> = new Map();
+  private scheduledJobs: Map<string, ScheduledTask> = new Map();
 
   constructor(config?: Partial<SchedulerConfig>) {
     this.config = {
