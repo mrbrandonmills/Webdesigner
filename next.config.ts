@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  outputFileTracingRoot: '/Volumes/Super Mastery/Webdesigner',
   experimental: {
     serverActions: {
       bodySizeLimit: '50mb', // Allow larger uploads for photos

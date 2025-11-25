@@ -21,23 +21,23 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Deep Work in 2025: Why Focus Is The New Luxury',
     description: 'In an age of infinite distraction, deep work has become the ultimate luxury. My system for 10x productivity.',
-    images: ['/og-deep-work.jpg'],
+    images: ['/images/gallery/genesis/editorial/B.14.jpg'],
     type: 'article',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Deep Work in 2025: Why Focus Is The New Luxury',
     description: 'How I built a focus system that delivers 10x productivity without burning out.',
-    images: ['/og-deep-work.jpg'],
+    images: ['/images/gallery/genesis/editorial/B.14.jpg'],
   },
 }
 
 const articleSchema = generateArticleSchema({
   title: 'Deep Work in 2025: Why Focus Is The New Luxury',
   description: 'In an age of infinite distraction, deep work has become the ultimate luxury. How I built a focus system that delivers 10x productivity without burning out.',
-  image: '/og-deep-work.jpg',
+  image: '/images/gallery/genesis/editorial/B.14.jpg',
   datePublished: '2025-11-23',
-  dateModified: '2025-11-23',
+  dateModified: '2025-11-25',
   url: '/blog/deep-work-philosophy-2025',
   category: 'Philosophy',
   wordCount: 2100,
@@ -124,6 +124,18 @@ export default function DeepWorkPhilosophyPage() {
             </div>
           </div>
         </header>
+
+        <div className="relative w-full h-[50vh] min-h-[400px] max-h-[600px] overflow-hidden">
+          <Image
+            src="/images/gallery/genesis/editorial/B.14.jpg"
+            alt="Brandon Mills - Focus and Intentional Living"
+            fill
+            priority
+            className="object-cover object-center"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-white/20 to-transparent dark:from-black/90 dark:via-black/20" />
+        </div>
 
         <div className="max-w-4xl mx-auto px-6 py-12 sm:py-16">
           <div className="prose prose-lg prose-zinc dark:prose-invert max-w-none">
