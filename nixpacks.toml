@@ -5,7 +5,7 @@ nixPkgs = ["nodejs"]
 cmds = ["npm ci"]
 
 [phases.build]
-cmds = []
+cmd = "echo 'Skipping Next.js build - automation only'"
 
 [start]
 cmd = "npx tsx scripts/automation/watchdog.ts"
