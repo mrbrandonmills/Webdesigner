@@ -1,0 +1,99 @@
+# Vercel Environment Variables - Copy/Paste Ready
+
+## Go to: https://vercel.com/dashboard
+## Navigate to: Your Project → Settings → Environment Variables
+
+---
+
+## CRITICAL VARIABLES (Add these first)
+
+### 1. NEXT_PUBLIC_BASE_URL
+Key: NEXT_PUBLIC_BASE_URL
+Value: https://www.brandonmills.com
+Environment: ✓ Production ✓ Preview ✓ Development
+
+### 2. STRIPE_SECRET_KEY (from your .env.local)
+Key: STRIPE_SECRET_KEY
+Value: sk_test_... (copy from .env.local line 45)
+Environment: ✓ Production
+
+### 3. NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY (from your .env.local)
+Key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+Value: pk_test_... (copy from .env.local line 46)
+Environment: ✓ Production ✓ Preview ✓ Development
+
+### 4. STRIPE_WEBHOOK_SECRET (from your .env.local)
+Key: STRIPE_WEBHOOK_SECRET
+Value: whsec_... (copy from .env.local line 50)
+Environment: ✓ Production
+
+---
+
+## PRINTFUL (Required for Store - GET REAL KEYS)
+
+⚠️ IMPORTANT: Your .env.local has PLACEHOLDERS for Printful
+You need to get real keys from: https://www.printful.com/dashboard/store
+
+### 5. PRINTFUL_API_KEY
+Key: PRINTFUL_API_KEY
+Value: [GET FROM PRINTFUL DASHBOARD]
+Environment: ✓ Production
+
+### 6. PRINTFUL_STORE_ID
+Key: PRINTFUL_STORE_ID
+Value: [GET FROM PRINTFUL DASHBOARD]
+Environment: ✓ Production
+
+---
+
+## WEBFLOW (For Portfolio)
+
+### 7. WEBFLOW_API_TOKEN (from your .env.local)
+Key: WEBFLOW_API_TOKEN
+Value: 0a5123531d8b8dc7476a78b6a4ee6db31ff7526b4aae1647e39e617b62e5dc01 (copy from .env.local line 8)
+Environment: ✓ Production
+
+### 8. WEBFLOW_COLLECTION_ID (from your .env.local)
+Key: WEBFLOW_COLLECTION_ID
+Value: 69066dcc2e758df565b368af (copy from .env.local line 10)
+Environment: ✓ Production
+
+---
+
+## AI SERVICES (For Content Generation)
+
+### 9. ANTHROPIC_API_KEY (from your .env.local)
+Key: ANTHROPIC_API_KEY
+Value: sk-ant-... (copy from .env.local line 4)
+Environment: ✓ Production
+
+### 10. OPENAI_API_KEY (from your .env.local)
+Key: OPENAI_API_KEY
+Value: sk-... (copy from .env.local line 1)
+Environment: ✓ Production
+
+---
+
+## AFTER ADDING ALL VARIABLES
+
+1. Go to "Deployments" tab
+2. Click "..." on latest deployment
+3. Click "Redeploy"
+4. ⚠️ UNCHECK "Use existing Build Cache"
+5. Click "Redeploy"
+
+---
+
+## GET PRINTFUL KEYS (5 minutes)
+
+1. Go to: https://www.printful.com/dashboard
+2. Click: Settings → API
+3. Generate API Key
+4. Copy API Key → paste in Vercel as PRINTFUL_API_KEY
+5. Get Store ID from dashboard URL (number after /stores/)
+6. Paste Store ID in Vercel as PRINTFUL_STORE_ID
+
+---
+
+Total time: 15 minutes
+Priority: CRITICAL for checkout and store to work
