@@ -11,7 +11,15 @@
     "affiliate:create": "node scripts/affiliate-account-creator.js",
     "affiliate:manage": "node scripts/credential-manager.js",
     "affiliate:configure": "node scripts/configure-affiliate-accounts.js",
-    "affiliate:status": "node scripts/check-affiliate-status.js"
+    "affiliate:status": "node scripts/check-affiliate-status.js",
+    "campaign:schedule": "npx tsx scripts/schedule-alchemy-campaign.ts",
+    "campaign:status": "npx tsx scripts/automation/campaign-daemon.ts status",
+    "campaign:start": "npx tsx scripts/automation/campaign-daemon.ts start",
+    "campaign:stop": "npx tsx scripts/automation/campaign-daemon.ts stop",
+    "campaign:install": "./scripts/automation/install-daemon.sh",
+    "visuals:pinterest": "npx tsx scripts/generate-pinterest-pins.ts",
+    "visuals:instagram": "npx tsx scripts/generate-instagram-carousel.ts",
+    "visuals:all": "npm run visuals:pinterest && npm run visuals:instagram"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.0.0",

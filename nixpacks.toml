@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["nodejs-22_x"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[start]
+cmd = "npx tsx scripts/automation/watchdog.ts"
