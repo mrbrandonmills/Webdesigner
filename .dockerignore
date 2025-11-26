@@ -1,0 +1,21 @@
+# Exclude everything not needed for automation
+node_modules/
+.next/
+.git/
+.github/
+*.md
+*.log
+
+# Exclude large project files
+Webdesigner.backup/
+content-pipeline/
+public/
+app/
+components/
+styles/
+lib/
+
+# Keep only automation essentials
+!scripts/automation/
+!package*.json
+!tsconfig.json
