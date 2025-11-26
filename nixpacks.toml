@@ -4,5 +4,8 @@ nixPkgs = ["nodejs"]
 [phases.install]
 cmds = ["npm ci"]
 
+[phases.build]
+cmds = []
+
 [start]
 cmd = "npx tsx scripts/automation/watchdog.ts"
