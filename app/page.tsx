@@ -1,7 +1,6 @@
 import { Metadata } from 'next'
 import HeroVideo from '@/components/home/hero-video'
 import PhilosophySection from '@/components/home/philosophy-section'
-import GenesisArchiveSection from '@/components/home/genesis-archive-section'
 import SocialProofSection from '@/components/home/social-proof-section'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { generateBreadcrumbSchema } from '@/lib/json-ld'
@@ -106,7 +105,6 @@ export default function HomePage() {
         <HeroVideo />
         <PhilosophySection />
         <SocialProofSection />
-        <GenesisArchiveSection />
       </div>
     </>
   )
