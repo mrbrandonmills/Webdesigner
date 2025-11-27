@@ -341,7 +341,7 @@ export default function Navigation() {
               className="text-white/60 hover:text-white transition-colors relative min-w-[48px] min-h-[48px] flex items-center justify-center"
               aria-label="Shopping cart"
             >
-              <ShoppingBag size={28} />
+              <ShoppingBag size={40} />
               {totalItems > 0 && (
                 <span className="absolute top-0 right-0 min-w-[24px] min-h-[24px] bg-accent-gold text-black text-xs font-medium rounded-full flex items-center justify-center px-1.5">
                   {totalItems}
