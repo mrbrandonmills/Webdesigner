@@ -178,7 +178,12 @@ export async function GET(request: Request) {
           syncProductId: p.printfulSyncProductId || null,
           syncVariantId: p.printfulSyncVariantId || null,
           variantCount: 1,
-          variants: [],
+          variants: [{
+            id: 1,
+            name: 'Standard',
+            price: p.price,
+            image: p.mockupUrl || p.designUrl
+          }],
           tags: p.tags,
           source: 'local-curated',
           createdAt: p.createdAt
