@@ -45,51 +45,93 @@ function extractASINs(): Array<{ asin: string; url: string }> {
 }
 
 // Scrape image URL from Amazon product page
-async function scrapeProductImage(url: string): Promise<string | null> {
-  const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+async function scrapeProductImage(url: string, retries: number = 3): Promise<string | null> {
+  let lastError: Error | null = null;
 
-  try {
-    // Navigate to product page
-    await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
-
-    // Wait for image to load
-    await page.waitForSelector('#landingImage, #imgBlkFront, #main-image', { timeout: 10000 });
-
-    // Extract primary image URL (try multiple selectors)
-    const imageUrl = await page.evaluate(() => {
-      // Try main product image selectors
-      const selectors = [
-        '#landingImage',
-        '#imgBlkFront',
-        '#main-image',
-        'img[data-a-image-name="landingImage"]',
-        '.a-dynamic-image'
-      ];
-
-      for (const selector of selectors) {
-        const img = document.querySelector(selector) as HTMLImageElement;
-        if (img && img.src) {
-          // Get highest quality version of image
-          let src = img.src;
-
-          // Replace size constraints with large version
-          src = src.replace(/\._[A-Z]{2}[0-9]+_\./, '._SL1500_.');
-          src = src.replace(/\._[A-Z]{2}[0-9]+,/, '._SL1500_,');
-
-          return src;
-        }
-      }
-
-      return null;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    const browser = await chromium.launch({
+      headless: true,
+      args: [
+        '--disable-blink-features=AutomationControlled',
+        '--no-sandbox',
+        '--disable-setuid-sandbox'
+      ]
     });
 
-    await browser.close();
-    return imageUrl;
-  } catch (error) {
-    await browser.close();
-    throw error;
+    const context = await browser.newContext({
+      userAgent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+      viewport: { width: 1920, height: 1080 }
+    });
+
+    const page = await context.newPage();
+
+    try {
+      console.log(`      Attempt ${attempt}/${retries}...`);
+
+      // Navigate to product page with longer timeout
+      await page.goto(url, {
+        waitUntil: 'networkidle',
+        timeout: 45000
+      });
+
+      // Wait a bit for JavaScript to execute
+      await page.waitForTimeout(2000);
+
+      // Try to wait for image with longer timeout
+      await page.waitForSelector('#landingImage, #imgBlkFront, #main-image, img.a-dynamic-image', {
+        timeout: 20000
+      });
+
+      // Extract primary image URL (try multiple selectors)
+      const imageUrl = await page.evaluate(() => {
+        // Try main product image selectors
+        const selectors = [
+          '#landingImage',
+          '#imgBlkFront',
+          '#main-image',
+          'img[data-a-image-name="landingImage"]',
+          'img.a-dynamic-image',
+          '#imgTagWrapperId img',
+          '#main-image-container img'
+        ];
+
+        for (const selector of selectors) {
+          const img = document.querySelector(selector) as HTMLImageElement;
+          if (img && img.src && img.src.includes('media-amazon.com')) {
+            // Get highest quality version of image
+            let src = img.src;
+
+            // Replace size constraints with large version
+            src = src.replace(/\._[A-Z]{2}[0-9]+_\./, '._SL1500_.');
+            src = src.replace(/\._[A-Z]{2}[0-9]+\./, '._SL1500_.');
+            src = src.replace(/\._[A-Z]+[0-9]+,.*$/, '._SL1500_.jpg');
+
+            return src;
+          }
+        }
+
+        return null;
+      });
+
+      await browser.close();
+
+      if (imageUrl) {
+        return imageUrl;
+      } else {
+        throw new Error('No image found on page');
+      }
+    } catch (error) {
+      lastError = error as Error;
+      await browser.close();
+
+      if (attempt < retries) {
+        console.log(`      Failed, retrying in 3 seconds...`);
+        await new Promise(resolve => setTimeout(resolve, 3000));
+      }
+    }
   }
+
+  throw lastError || new Error('Failed after all retries');
 }
 
 // Update affiliate-products.ts with new image URLs
@@ -182,9 +224,9 @@ async function main() {
       });
     }
 
-    // Rate limiting: wait 2 seconds between requests
+    // Rate limiting: wait 4 seconds between requests to avoid detection
     if (i < products.length - 1) {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise(resolve => setTimeout(resolve, 4000));
     }
   }
 

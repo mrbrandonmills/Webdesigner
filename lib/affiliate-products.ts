@@ -1,6 +1,8 @@
 // Amazon Affiliate Products Database
 // Tracking ID: brandonmills.com-20
 
+import { WORKING_AMAZON_ASINS, extractASIN } from './working-products'
+
 export interface AffiliateProduct {
   id: string
   name: string
@@ -24,7 +26,8 @@ export interface AffiliateProduct {
 
 const AFFILIATE_TAG = 'brandonmills.com-20'
 
-export const affiliateProducts: AffiliateProduct[] = [
+// Full product list (including products with broken images)
+const allAffiliateProducts: AffiliateProduct[] = [
   // BEAUTY & SKINCARE
   {
     id: 'braun-ipl-pro-7',
@@ -2195,6 +2198,13 @@ export const affiliateProducts: AffiliateProduct[] = [
     featured: false,
   },
 ]
+
+// Filter to only export products with working image URLs
+// This ensures 100% working shop page - no broken images
+export const affiliateProducts: AffiliateProduct[] = allAffiliateProducts.filter(product => {
+  const asin = extractASIN(product.amazonUrl)
+  return asin ? WORKING_AMAZON_ASINS.includes(asin) : false
+})
 
 export function getProductBySlug(slug: string): AffiliateProduct | undefined {
   return affiliateProducts.find((p) => p.slug === slug)
