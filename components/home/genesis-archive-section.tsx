@@ -17,24 +17,24 @@ interface FeaturedPhoto {
 const featuredPhotos: FeaturedPhoto[] = [
   {
     src: '/images/gallery/genesis/campaigns/B.6.jpg',
-    title: 'Underwear Campaign',
+    title: 'Good Company w/Emma & Melida',
     category: 'CAMPAIGN',
-    year: '2019',
-    story: 'A major underwear campaign that required intense physical preparation and absolute confidence. The results spoke for themselves.',
+    year: '2025',
+    story: 'Laguna Beach—where the Pacific kisses the shore with a rhythmic pulse, and the golden light dances between waves and sky. This shoot wasn\'t just about capturing moments; it was about embodying them.',
   },
   {
     src: '/images/gallery/genesis/editorial/B.2.jpg',
-    title: 'TETU Magazine Cover',
+    title: 'Silver & Gold w/AM REED',
     category: 'EDITORIAL',
-    year: '2018',
-    story: 'Landing this French magazine cover was a career milestone. Shot in Paris, exploring modern masculinity.',
+    year: '2024',
+    story: 'After the storm comes a particular kind of light – the kind that transforms shadows into silver and scars into gold. This collaboration with AM Reed marks my return to the lens, where every frame tells a story of resilience.',
   },
   {
     src: '/images/gallery/genesis/campaigns/B.5.jpg',
-    title: 'Global Campaign',
+    title: 'Golden Touch w/ John Schell',
     category: 'CAMPAIGN',
-    year: '2020',
-    story: 'Shot for international markets, this campaign ran in over 30 countries. Seeing your face on billboards worldwide is surreal.',
+    year: '2025',
+    story: 'Every frame tells a story of resilience and artistic vision, captured in collaboration with John Schell.',
   },
 ]
 
