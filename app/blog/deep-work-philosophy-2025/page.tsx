@@ -21,21 +21,21 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Deep Work in 2025: Why Focus Is The New Luxury',
     description: 'In an age of infinite distraction, deep work has become the ultimate luxury. My system for 10x productivity.',
-    images: ['/images/gallery/genesis/editorial/B.14.jpg'],
+    images: ['https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1200&q=80'],
     type: 'article',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Deep Work in 2025: Why Focus Is The New Luxury',
     description: 'How I built a focus system that delivers 10x productivity without burning out.',
-    images: ['/images/gallery/genesis/editorial/B.14.jpg'],
+    images: ['https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1200&q=80'],
   },
 }
 
 const articleSchema = generateArticleSchema({
   title: 'Deep Work in 2025: Why Focus Is The New Luxury',
   description: 'In an age of infinite distraction, deep work has become the ultimate luxury. How I built a focus system that delivers 10x productivity without burning out.',
-  image: '/images/gallery/genesis/editorial/B.14.jpg',
+  image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1200&q=80',
   datePublished: '2025-11-23',
   dateModified: '2025-11-25',
   url: '/blog/deep-work-philosophy-2025',
@@ -127,8 +127,8 @@ export default function DeepWorkPhilosophyPage() {
 
         <div className="relative w-full h-[50vh] min-h-[400px] max-h-[600px] overflow-hidden">
           <Image
-            src="/images/gallery/genesis/editorial/B.14.jpg"
-            alt="Brandon Mills - Focus and Intentional Living"
+            src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=1920&q=80"
+            alt="Deep work and focused productivity"
             fill
             priority
             className="object-cover object-center"
