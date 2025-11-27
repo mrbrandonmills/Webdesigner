@@ -121,11 +121,23 @@ export function getCollections(): Record<string, ProductCollection> {
  * FILTERED to only include products with working image URLs
  */
 export function getAllShopProducts(): UnifiedProduct[] {
-  // Use imported filtered affiliate products (already filtered to working ASINs only)
-  const affiliateProductsList = getAffiliateProducts
+  // CRITICAL EMERGENCY FILTER: Only show products with verified working images
+  // This whitelist is inlined here to bypass any module caching issues
+  const WORKING_ASINS = [
+    'B0CMVPMPZ8', 'B0CM5JV268', '0735211299', '0812968255', '0062316117',
+    '0140455116', 'B08PZHYWJS', 'B09XS7JWHH', 'B07L5GDTYY', '8883701127',
+    'B071Y3MSRK', 'B0016BFD4K', 'B0009R16MA', '080701429X', '0380810336', '1631060171'
+  ];
+
+  // Apply whitelist filter DIRECTLY here to ensure it's executed
+  const filtered = getAffiliateProducts.filter(product => {
+    const asinMatch = product.amazonUrl.match(/\/(dp|gp\/product)\/([A-Z0-9]{10})/);
+    const asin = asinMatch ? asinMatch[2] : null;
+    return asin && WORKING_ASINS.includes(asin);
+  });
 
   // Transform to UnifiedProduct format
-  return affiliateProductsList.map((product: any) => ({
+  return filtered.map((product: any) => ({
     id: product.id,
     title: product.name,
     description: product.description || product.name,
