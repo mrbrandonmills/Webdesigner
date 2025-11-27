@@ -331,7 +331,7 @@ export default function Navigation() {
               onClick={() => setMobileMenuOpen(false)}
               aria-label="Instagram"
             >
-              <Instagram size={28} />
+              <Instagram size={40} />
             </a>
             <button
               onClick={() => {
