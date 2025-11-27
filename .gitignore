@@ -64,3 +64,4 @@ data/automation-state.json
 pinterest-*.js
 test-pinterest.js
 public/pinterest-*.html
+/.vercel

@@ -29,6 +29,7 @@ export function EnhancedProductCard({
 }: EnhancedProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
 
   // Magnetic hover effect
@@ -134,18 +135,30 @@ export function EnhancedProductCard({
         }}
       >
         {/* Primary Image - use object-contain for text designs to show full content */}
-        <motion.img
-          src={product.image}
-          alt={product.title}
-          className={`absolute inset-0 w-full h-full ${isTextDesign ? 'object-contain bg-white p-4' : 'object-cover'}`}
-          onLoad={() => setImageLoaded(true)}
-          onError={() => setImageLoaded(true)} // Mark as loaded even on error to remove skeleton
-          animate={{
-            scale: isHovered ? 1.05 : 1,
-          }}
-          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          style={{ zIndex: 1 }}
-        />
+        {!imageError ? (
+          <motion.img
+            src={product.image}
+            alt={product.title}
+            className={`absolute inset-0 w-full h-full ${isTextDesign ? 'object-contain bg-white p-4' : 'object-cover'}`}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => {
+              setImageLoaded(true)
+              setImageError(true)
+            }}
+            animate={{
+              scale: isHovered ? 1.05 : 1,
+            }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            style={{ zIndex: 1 }}
+          />
+        ) : (
+          // Fallback placeholder for broken images
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-white/10 to-white/5 flex flex-col items-center justify-center">
+            <ShoppingBag size={48} className="text-white/30 mb-4" />
+            <p className="text-white/50 text-sm font-medium">{product.title.substring(0, 40)}{product.title.length > 40 ? '...' : ''}</p>
+            <p className="text-white/30 text-xs mt-2">Image temporarily unavailable</p>
+          </div>
+        )}
 
         {/* Skeleton loader - shows behind image while loading */}
         {!imageLoaded && (
