@@ -211,7 +211,7 @@ export default function NavigationWith3D() {
                 className="text-white/60 hover:text-white transition-colors p-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 aria-label="Instagram"
               >
-                <Instagram size={20} />
+                <Instagram size={32} />
               </a>
               <button
                 onClick={openCart}
