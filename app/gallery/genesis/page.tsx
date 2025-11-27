@@ -597,7 +597,8 @@ export default function GenesisGallery() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover transition-all duration-500 group-hover:scale-105"
                   onLoad={() => handleImageLoad(photo.id)}
-                  quality={85}
+                  quality={75}
+                  loading="lazy"
                 />
 
                 {/* Hover Overlay */}
@@ -635,13 +636,13 @@ export default function GenesisGallery() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[9999] bg-black/98 backdrop-blur-sm flex items-center justify-center p-4 md:p-8"
+            className="fixed inset-0 z-[9999] bg-black/98 flex items-center justify-center p-4 md:p-8"
             onClick={closeModal}
           >
             {/* Close Button */}
             <button
               onClick={closeModal}
-              className="fixed top-4 md:top-8 right-4 md:right-8 text-white hover:text-accent-gold transition-colors z-[10001] p-2 bg-black/50 rounded-full backdrop-blur-sm"
+              className="fixed top-4 md:top-8 right-4 md:right-8 text-white hover:text-accent-gold transition-colors z-[10001] p-2 bg-black/80 rounded-full"
               aria-label="Close"
             >
               <X size={32} />
@@ -653,7 +654,7 @@ export default function GenesisGallery() {
                 e.stopPropagation()
                 navigatePhoto('prev')
               }}
-              className="fixed left-4 md:left-8 top-1/2 -translate-y-1/2 text-white hover:text-accent-gold transition-colors z-[10001] p-3 bg-black/50 rounded-full backdrop-blur-sm"
+              className="fixed left-4 md:left-8 top-1/2 -translate-y-1/2 text-white hover:text-accent-gold transition-colors z-[10001] p-3 bg-black/80 rounded-full"
               aria-label="Previous image"
             >
               <ChevronLeft size={32} />
@@ -664,7 +665,7 @@ export default function GenesisGallery() {
                 e.stopPropagation()
                 navigatePhoto('next')
               }}
-              className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 text-white hover:text-accent-gold transition-colors z-[10001] p-3 bg-black/50 rounded-full backdrop-blur-sm"
+              className="fixed right-4 md:right-8 top-1/2 -translate-y-1/2 text-white hover:text-accent-gold transition-colors z-[10001] p-3 bg-black/80 rounded-full"
               aria-label="Next image"
             >
               <ChevronRight size={32} />
@@ -677,7 +678,7 @@ export default function GenesisGallery() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="max-w-7xl w-full grid md:grid-cols-2 gap-8 md:gap-12 max-h-[90vh] overflow-hidden bg-black/70 backdrop-blur-md rounded-2xl border border-white/10 p-6 md:p-8"
+              className="max-w-7xl w-full grid md:grid-cols-2 gap-8 md:gap-12 max-h-[90vh] overflow-hidden bg-black/95 rounded-2xl border border-white/10 p-6 md:p-8"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Image */}
@@ -689,7 +690,7 @@ export default function GenesisGallery() {
                     width={800}
                     height={1200}
                     className="w-full h-full object-contain"
-                    quality={100}
+                    quality={90}
                     priority
                   />
                 </div>

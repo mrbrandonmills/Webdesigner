@@ -125,14 +125,14 @@ export function getAllShopProducts(): UnifiedProduct[] {
 
   // Transform to UnifiedProduct format
   return affiliateProducts.map((product: any) => ({
-    id: product.asin,
+    id: product.id,
     title: product.name,
     description: product.description || product.name,
     image: product.images[0],
     images: product.images,
     price: product.price,
     currency: 'USD',
-    inStock: true,
+    inStock: product.inStock,
     featured: product.featured || false,
     source: 'amazon' as const,
     productType: product.category,
@@ -140,7 +140,10 @@ export function getAllShopProducts(): UnifiedProduct[] {
     tags: product.tags || [],
     amazonUrl: product.amazonUrl,
     rating: product.rating,
-    reviewCount: product.reviews
+    reviewCount: product.reviewCount,
+    brand: product.brand,
+    originalPrice: product.originalPrice,
+    features: product.features
   }))
 }
 
