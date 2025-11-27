@@ -184,7 +184,7 @@ export function ShareCard({ type, title, subtitle, description, id, onClose }: S
                 onClick={shareToTwitter}
                 className="flex items-center justify-center gap-2 px-4 py-3 bg-[#1DA1F2]/10 border border-[#1DA1F2]/20 rounded-lg hover:bg-[#1DA1F2]/20 transition-colors"
               >
-                <Twitter className="w-4 h-4 text-[#1DA1F2]" />
+                <Twitter className="w-6 h-6 text-[#1DA1F2]" />
                 <span className="text-sm text-white">Twitter</span>
               </button>
 
@@ -192,7 +192,7 @@ export function ShareCard({ type, title, subtitle, description, id, onClose }: S
                 onClick={shareToFacebook}
                 className="flex items-center justify-center gap-2 px-4 py-3 bg-[#4267B2]/10 border border-[#4267B2]/20 rounded-lg hover:bg-[#4267B2]/20 transition-colors"
               >
-                <Facebook className="w-4 h-4 text-[#4267B2]" />
+                <Facebook className="w-6 h-6 text-[#4267B2]" />
                 <span className="text-sm text-white">Facebook</span>
               </button>
             </div>
