@@ -5,7 +5,7 @@
 
 import premiumProductsData from '@/public/data/premium-products.json'
 import { UnifiedProduct } from '@/lib/types/shop'
-import { getFeaturedProducts as getAffiliateProducts } from '@/lib/affiliate-products'
+import { affiliateProducts as getAffiliateProducts } from '@/lib/affiliate-products'
 
 export interface PremiumProduct {
   id: string
@@ -121,11 +121,11 @@ export function getCollections(): Record<string, ProductCollection> {
  * FILTERED to only include products with working image URLs
  */
 export function getAllShopProducts(): UnifiedProduct[] {
-  // Use imported filtered affiliate products
-  const affiliateProducts = getAffiliateProducts()
+  // Use imported filtered affiliate products (already filtered to working ASINs only)
+  const affiliateProductsList = getAffiliateProducts
 
   // Transform to UnifiedProduct format
-  return affiliateProducts.map((product: any) => ({
+  return affiliateProductsList.map((product: any) => ({
     id: product.id,
     title: product.name,
     description: product.description || product.name,
