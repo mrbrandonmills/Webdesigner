@@ -38,7 +38,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 12847,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Braun-i%C2%B7expert-Removal-Holiday-Trimmer/dp/B0CMVPMPZ8?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/71PoVE4MxJL._AC_SL1500_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/71SRTZ8QOvL._AC_SY300_SX300_QL70_FMwebp_.jpg'],
     description: `The Braun Silk Expert Pro 7 is the world's #1 IPL device, offering professional-grade at-home laser hair removal for both women and men. With advanced SensoAdapt technology and 400,000 flashes, achieve permanent visible hair reduction in just 4 weeks.`,
     features: [
       'SensoAdapt™ Technology - Continuously adapts to your skin tone for optimal efficacy and safety',
@@ -178,7 +178,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 2145,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Apple-MacBook-Laptop-12%E2%80%91core-30%E2%80%91core/dp/B0CM5JV268?tag=${AFFILIATE_TAG}`,
-    images: ['https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&q=80'],
+    images: ['https://m.media-amazon.com/images/I/61lsexTCOhL._AC_SX342_SY445_QL70_FMwebp_.jpg'],
     description: 'The most powerful MacBook Pro ever. M3 Max chip delivers unprecedented performance for creative professionals. Stunning Liquid Retina XDR display.',
     features: [
       'M3 Max Chip - 16-core CPU, 40-core GPU for extreme performance',
@@ -368,7 +368,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 87432,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Atomic-Habits-Proven-Build-Break/dp/0735211299?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/51B7kuGJDFL._SL1000_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/51b4CfdTSDL._SY445_SX342_FMwebp_.jpg'],
     description: 'Transform your life with tiny changes that deliver remarkable results. The definitive guide to habit formation from bestselling author James Clear.',
     features: [
       'Proven Framework - 4 Laws of Behavior Change',
@@ -408,7 +408,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 15234,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Meditations-New-Translation-Marcus-Aurelius/dp/0812968255?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/41UdVJIJr1L._SL1000_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/71wSz6VVk6L._SL1500_.jpg'],
     description: 'The timeless Stoic philosophy of Roman Emperor Marcus Aurelius. Essential wisdom on resilience, virtue, and living with purpose. A polymath\'s foundational text.',
     features: [
       'Ancient Stoic Wisdom - Practical philosophy for modern life',
@@ -449,7 +449,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 42156,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Sapiens-Humankind-Yuval-Noah-Harari/dp/0062316117?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/713jIoMO3UL._SL1000_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/71N3-FFSDxL._SL1500_.jpg'],
     description: 'A sweeping history of humanity from the Stone Age to AI. Harari\'s masterwork connects biology, history, and philosophy into a unified vision of human evolution.',
     features: [
       'Macro-Historical Perspective - 70,000 years of human history',
@@ -489,7 +489,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 8934,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Republic-Plato/dp/0140455116?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/41RH2G-fFqL._SL1000_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/417nh6E9wZL._SY445_SX342_FMwebp_.jpg'],
     description: 'Plato\'s foundational work on justice, the ideal state, and the philosopher-king. Required reading for anyone exploring political philosophy and ethics.',
     features: [
       'Socratic Dialogues - Interactive exploration of justice',
@@ -575,7 +575,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 18234,
     inStock: true,
     amazonUrl: `https://www.amazon.com/New-Apple-AirPods-Max-Silver/dp/B08PZHYWJS?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/81bhSTrxLJL._AC_SL1500_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/81jqUPkIVRL._AC_SX425_.jpg'],
     description: `Apple AirPods Max combine sophisticated design with breakthrough audio technology. Featuring computational audio, Adaptive EQ, and Active Noise Cancellation, these premium over-ear headphones deliver an unparalleled listening experience for deep work, creative sessions, and immersive content consumption.`,
     features: [
       'Computational Audio - Apple H1 chip powers advanced audio features',
@@ -682,7 +682,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 24183,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Sony-WH-1000XM5-Canceling-Headphones-Hands-Free/dp/B09XS7JWHH?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/61vJK24CpVL._AC_SL1500_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/51aXvjzcukL._AC_SX425_.jpg'],
     description: `Sony's flagship noise-canceling headphones set the industry standard. With two processors controlling 8 microphones, adaptive sound, and 30-hour battery life, the WH-1000XM5 delivers unparalleled focus and audio quality for professionals and audiophiles.`,
     features: [
       'Industry-Leading ANC - Dual-processor, 8-microphone system for superior noise cancellation',
@@ -843,7 +843,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 14832,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Kindle-Oasis-adjustable-warm-light/dp/B07L5GDTYY?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/51OnhHVqGoL._AC_SL1000_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/614TlIaYBvL._AC_SX425_.jpg'],
     description: `The Kindle Oasis is Amazon's most premium e-reader, designed for serious readers and intellectuals. With a 7-inch high-resolution display, adjustable warm light, and ergonomic design, the Oasis delivers a reading experience that rivals physical books while offering the convenience of carrying thousands of titles.`,
     features: [
       '7-inch Glare-Free Display - 300 PPI resolution, reads like real paper',
@@ -896,7 +896,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 32418,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Moleskine-Classic-Notebook-Hard-Cover/dp/8883701127?tag=${AFFILIATE_TAG}`,
-    images: ['https://images.unsplash.com/photo-1531346878377-a5be20888e57?w=800&q=80'],
+    images: ['https://m.media-amazon.com/images/I/81GN73tZ+aL._AC_SY679_.jpg'],
     description: `The legendary Moleskine notebook, favored by artists, writers, and thinkers for over two centuries. With acid-free paper, elastic closure, ribbon bookmark, and expandable inner pocket, the Moleskine Classic is the gold standard for analog note-taking and journaling.`,
     features: [
       'Premium Ivory Paper - 240 ruled pages, acid-free, 70 gsm',
@@ -949,7 +949,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 29847,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Rocketbook-Everlast-Reusable-Smart-Notebook/dp/B071Y3MSRK?tag=${AFFILIATE_TAG}`,
-    images: ['https://images.unsplash.com/photo-1517842645767-c639042777db?w=800&q=80'],
+    images: ['https://m.media-amazon.com/images/I/71hJbizdW8L._AC_SY300_SX300_QL70_FMwebp_.jpg'],
     description: `Rocketbook Everlast combines the joy of handwriting with digital organization. Write naturally with the included Pilot FriXion pen, scan with the Rocketbook app, then erase with a damp cloth. Your notes are backed up to cloud services while you reuse the same notebook infinitely.`,
     features: [
       'Infinitely Reusable - Write, scan, erase with damp cloth, repeat forever',
@@ -1003,7 +1003,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 45283,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Dr-Bronners-Pure-Castile-Liquid-Soap/dp/B0016BFD4K?tag=${AFFILIATE_TAG}`,
-    images: ['https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&q=80'],
+    images: ['https://m.media-amazon.com/images/I/41AI41-45eL._SY300_SX300_QL70_FMwebp_.jpg'],
     description: `Dr. Bronner's Eucalyptus Pure-Castile Liquid Soap delivers an invigorating, energizing clean for body, home, and everything in between. Made with certified organic oils and no synthetic detergents or preservatives, this 18-in-1 soap replaces most cleaning products in your home while being safe enough for sensitive skin and gentle on the planet.`,
     features: [
       '18-in-1 Uses - Body, face, hair, dishes, laundry, floors, pets, and more',
@@ -1057,7 +1057,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 52847,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Dr-Bronners-Pure-Castile-Liquid-Soap/dp/B0009R16MA?tag=${AFFILIATE_TAG}`,
-    images: ['https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80'],
+    images: ['https://m.media-amazon.com/images/I/41Ff6Y-kncL._SY300_SX300_QL70_FMwebp_.jpg'],
     description: `Dr. Bronner's Lavender Pure-Castile Liquid Soap provides a calming, relaxing clean perfect for evening baths and unwinding after a long day. Made with certified organic oils and pure lavender essential oil, this 18-in-1 soap soothes body and mind while cleaning dishes, laundry, and surfaces without harsh chemicals.`,
     features: [
       '18-in-1 Uses - Body, face, hair, dishes, laundry, floors, pets, and more',
@@ -1463,7 +1463,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 47821,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Mans-Search-Meaning-Viktor-Frankl/dp/080701429X?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/41s8VaiDl7L._SX331_BO1,204,203,200_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/41tMoJhbR9L._SY445_SX342_FMwebp_.jpg'],
     description: `A profound meditation on the human capacity for resilience and meaning in the face of extreme suffering. Viktor Frankl's memoir of surviving the Holocaust and his revolutionary psychotherapeutic method, logotherapy, has inspired millions worldwide. This slim volume delivers life-changing insights on finding purpose even in the darkest circumstances.`,
     features: [
       'Holocaust Memoir - First-hand account of survival in Nazi concentration camps',
@@ -1634,7 +1634,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 23847,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Feeling-Good-New-Mood-Therapy/dp/0380810336?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/51QGmVNC4BL._SX330_BO1,204,203,200_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/51PQO21sRzL._SY445_SX342_FMwebp_.jpg'],
     description: `The revolutionary Cognitive Behavioral Therapy (CBT) handbook that has helped millions overcome depression and anxiety without medication. Dr. Burns' evidence-based approach teaches you to identify and correct distorted thinking patterns that cause negative moods. Clinical studies show it works as well as antidepressants for many people.`,
     features: [
       'Cognitive Behavioral Therapy - Evidence-based approach proven effective as antidepressants',
@@ -2091,7 +2091,7 @@ export const affiliateProducts: AffiliateProduct[] = [
     reviewCount: 3247,
     inStock: true,
     amazonUrl: `https://www.amazon.com/Geeky-Chef-Cookbook-Unofficial-Recipes/dp/1631060171?tag=${AFFILIATE_TAG}`,
-    images: ['https://m.media-amazon.com/images/I/51xBRK7RTXL._SX398_BO1,204,203,200_.jpg'],
+    images: ['https://m.media-amazon.com/images/I/81mYtpguWYL._SL1500_.jpg'],
     description: `Bring your favorite fictional foods to life! The Geeky Chef recreates iconic dishes from Star Trek, Game of Thrones, Harry Potter, Lord of the Rings, and more. Real recipes inspired by sci-fi, fantasy, and gaming universes, complete with gorgeous photos and pop culture context.`,
     features: [
       '60+ Fictional Recipes - From Lembas Bread to Butter Beer to Klingon Blood Wine',

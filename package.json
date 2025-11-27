@@ -19,7 +19,9 @@
     "campaign:install": "./scripts/automation/install-daemon.sh",
     "visuals:pinterest": "npx tsx scripts/generate-pinterest-pins.ts",
     "visuals:instagram": "npx tsx scripts/generate-instagram-carousel.ts",
-    "visuals:all": "npm run visuals:pinterest && npm run visuals:instagram"
+    "visuals:all": "npm run visuals:pinterest && npm run visuals:instagram",
+    "refresh-amazon-products": "node scripts/refresh-amazon-products.js",
+    "scrape-amazon-images": "npx tsx scripts/scrape-amazon-images.ts"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.0.0",
@@ -54,6 +56,7 @@
     "next": "^15.1.0",
     "node-cron": "^4.2.1",
     "openai": "^4.77.0",
+    "paapi5-nodejs-sdk": "^1.1.0",
     "playwright": "^1.56.1",
     "postprocessing": "^6.38.0",
     "react": "^19.0.0",
