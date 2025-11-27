@@ -34,10 +34,10 @@ export default function SocialProofSection() {
   return (
     <section className="py-24 bg-black relative overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.02]"
+      <div className="absolute inset-0 opacity-[0.005]"
         style={{
-          backgroundImage: `radial-gradient(circle at 2px 2px, #c9a050 1px, transparent 0)`,
-          backgroundSize: '40px 40px',
+          backgroundImage: `radial-gradient(circle at 2px 2px, #c9a050 0.5px, transparent 0)`,
+          backgroundSize: '60px 60px',
         }}
       />
 
