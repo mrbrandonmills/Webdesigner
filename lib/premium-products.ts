@@ -5,6 +5,7 @@
 
 import premiumProductsData from '@/public/data/premium-products.json'
 import { UnifiedProduct } from '@/lib/types/shop'
+import { getFeaturedProducts as getAffiliateProducts } from '@/lib/affiliate-products'
 
 export interface PremiumProduct {
   id: string
@@ -117,11 +118,11 @@ export function getCollections(): Record<string, ProductCollection> {
 /**
  * Get all shop products (Amazon affiliate products)
  * Using getFeaturedProducts from affiliate-products.ts
+ * FILTERED to only include products with working image URLs
  */
 export function getAllShopProducts(): UnifiedProduct[] {
-  // Import and use Amazon affiliate products
-  const { getFeaturedProducts } = require('@/lib/affiliate-products')
-  const affiliateProducts = getFeaturedProducts()
+  // Use imported filtered affiliate products
+  const affiliateProducts = getAffiliateProducts()
 
   // Transform to UnifiedProduct format
   return affiliateProducts.map((product: any) => ({
