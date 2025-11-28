@@ -9,10 +9,22 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 function getStripe() {
-  if (!process.env.STRIPE_SECRET_KEY) {
+  const key = process.env.STRIPE_SECRET_KEY
+
+  // Detailed validation
+  if (!key || key.trim() === '') {
+    logger.error('STRIPE_SECRET_KEY environment variable is missing or empty')
     throw new Error('STRIPE_SECRET_KEY is not set')
   }
-  return new Stripe(process.env.STRIPE_SECRET_KEY)
+
+  // Check if using test key in production
+  if (key.startsWith('sk_test_')) {
+    logger.warn('Using Stripe TEST key - should use sk_live_ in production')
+  }
+
+  logger.info(`Initializing Stripe with key type: ${key.startsWith('sk_live_') ? 'LIVE' : key.startsWith('sk_test_') ? 'TEST' : 'UNKNOWN'}`)
+
+  return new Stripe(key)
 }
 
 export async function POST(request: NextRequest) {
