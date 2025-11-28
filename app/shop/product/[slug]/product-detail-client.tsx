@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { ShoppingBag, Check, Minus, Plus, ZoomIn, Truck, Shield, Award } from 'lucide-react'
 import Image from 'next/image'
+import { useCart } from '@/contexts/cart-context'
 
 interface Product {
   id: string
@@ -67,6 +68,7 @@ const PRODUCT_VARIANTS: Record<string, { name: string; price: number; dimensions
 }
 
 export function PrintfulProductDetail({ product }: PrintfulProductDetailProps) {
+  const { addItem } = useCart()
   const [selectedVariant, setSelectedVariant] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [addingToCart, setAddingToCart] = useState(false)
@@ -81,36 +83,27 @@ export function PrintfulProductDetail({ product }: PrintfulProductDetailProps) {
     setAddingToCart(true)
 
     try {
-      // Call Stripe checkout API
-      const response = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items: [{
-            name: `${product.title} - ${currentVariant.name}`,
-            price: totalPrice,
-            quantity,
-            image: product.image.startsWith('http') ? product.image : `${window.location.origin}${product.image}`,
-            syncProductId: product.syncProductId,
-            variant: currentVariant.name,
-          }],
-        }),
-      })
-
-      if (response.ok) {
-        const { url } = await response.json()
-        if (url) {
-          window.location.href = url
-        }
-      } else {
-        // Fallback to cart animation
-        setAddedToCart(true)
-        setTimeout(() => setAddedToCart(false), 3000)
+      // Add to cart using the unified cart context
+      // Add each quantity as individual item for proper cart management
+      for (let i = 0; i < quantity; i++) {
+        addItem({
+          productId: product.syncProductId || parseInt(product.id),
+          variantId: variants[selectedVariant].price ?
+            parseInt(`${product.syncProductId}${selectedVariant}`) :
+            parseInt(product.id),
+          productTitle: product.title,
+          variantName: currentVariant.name + (currentVariant.dimensions ? ` (${currentVariant.dimensions})` : ''),
+          image: product.image.startsWith('http') ? product.image : `${window.location.origin}${product.image}`,
+          price: totalPrice.toString(),
+          type: product.productType,
+          brand: 'Brandon Mills',
+        })
       }
-    } catch (error) {
-      console.error('Checkout error:', error)
+
       setAddedToCart(true)
       setTimeout(() => setAddedToCart(false), 3000)
+    } catch (error) {
+      console.error('Add to cart error:', error)
     } finally {
       setAddingToCart(false)
     }
@@ -321,13 +314,13 @@ export function PrintfulProductDetail({ product }: PrintfulProductDetailProps) {
                 ) : (
                   <>
                     <ShoppingBag size={24} />
-                    <span>Buy Now - ${(totalPrice * quantity).toFixed(2)}</span>
+                    <span>Add to Cart - ${(totalPrice * quantity).toFixed(2)}</span>
                   </>
                 )}
               </motion.button>
 
               <p className="text-xs text-white/40 text-center">
-                Secure checkout powered by Stripe
+                Added to cart • Proceed to checkout when ready
               </p>
             </div>
 

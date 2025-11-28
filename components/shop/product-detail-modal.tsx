@@ -7,6 +7,7 @@ import { UnifiedProduct } from '@/lib/types/shop'
 import { ProductGallery } from './product-gallery'
 import { MockupGenerator } from './mockup-generator'
 import { clientLogger } from '@/lib/client-logger'
+import { useCart } from '@/contexts/cart-context'
 
 interface ProductDetailModalProps {
   product: UnifiedProduct | null
@@ -19,6 +20,7 @@ export function ProductDetailModal({
   isOpen,
   onClose,
 }: ProductDetailModalProps) {
+  const { addItem } = useCart()
   const [selectedVariant, setSelectedVariant] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [addedToCart, setAddedToCart] = useState(false)
@@ -48,9 +50,29 @@ export function ProductDetailModal({
   if (!product) return null
 
   const handleAddToCart = async () => {
-    // TODO: Implement actual cart logic
+    if (!product.variants || product.variants.length === 0) return
+
+    const selectedVariantData = product.variants[selectedVariant]
+
+    // Add each quantity as separate cart item (for proper cart management)
+    for (let i = 0; i < quantity; i++) {
+      addItem({
+        productId: parseInt(product.id),
+        variantId: typeof selectedVariantData.id === 'string' ? parseInt(selectedVariantData.id) : selectedVariantData.id,
+        productTitle: product.title,
+        variantName: selectedVariantData.name || selectedVariantData.size || selectedVariantData.dimensions || 'Standard',
+        image: product.image,
+        price: product.price.toString(),
+        type: product.productType || 'product',
+        brand: 'Brandon Mills',
+      })
+    }
+
     setAddedToCart(true)
-    setTimeout(() => setAddedToCart(false), 3000)
+    setTimeout(() => {
+      setAddedToCart(false)
+      onClose() // Close modal after adding to cart
+    }, 1500)
   }
 
   const handleShare = async () => {
