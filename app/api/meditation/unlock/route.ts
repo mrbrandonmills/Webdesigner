@@ -20,9 +20,7 @@ export async function POST(request: Request) {
     }
 
     // Initialize Stripe
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-10-28.acacia' as any,
-    })
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
     // Parse and validate request body
     const body = await request.json()

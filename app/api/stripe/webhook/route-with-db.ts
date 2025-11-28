@@ -22,9 +22,7 @@ export async function POST(request: Request) {
     }
 
     // Initialize Stripe inside the handler
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-10-28.acacia' as any,
-    })
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
     const body = await request.text()
     const headersList = await headers()
