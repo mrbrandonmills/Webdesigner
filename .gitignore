@@ -28,6 +28,10 @@ yarn-error.log*
 .env.production
 .env.affiliate
 
+# Vercel environment setup with live keys (NEVER commit!)
+VERCEL_ENV_SETUP_LIVE.txt
+COPY_PASTE_TO_VERCEL.txt
+
 # Vercel
 .vercel
 
