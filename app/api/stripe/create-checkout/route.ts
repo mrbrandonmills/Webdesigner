@@ -9,26 +9,10 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 function getStripe() {
-  const stripeKey = process.env.STRIPE_SECRET_KEY
-
-  if (!stripeKey) {
-    logger.error('STRIPE_SECRET_KEY environment variable is not set')
+  if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('STRIPE_SECRET_KEY is not set')
   }
-
-  try {
-    // Initialize Stripe - let SDK use its default apiVersion
-    // Using type assertion to bypass incorrect type override in codebase
-    const stripe = new Stripe(stripeKey, {
-      typescript: true,
-    } as any)
-
-    logger.info('Stripe client initialized successfully')
-    return stripe
-  } catch (error) {
-    logger.error('Failed to initialize Stripe client', error)
-    throw error
-  }
+  return new Stripe(process.env.STRIPE_SECRET_KEY)
 }
 
 export async function POST(request: NextRequest) {
