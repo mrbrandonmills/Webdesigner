@@ -213,7 +213,15 @@ function getStripe() {
 export async function POST(request: Request) {
   // Initialize Stripe inside the handler
   const stripe = getStripe()
-  const session = await stripe.checkout.sessions.create({...})
+
+  // IMPORTANT: Always .trim() environment variables used in URLs
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://brandonmills.com').trim()
+
+  const session = await stripe.checkout.sessions.create({
+    // ... other options
+    success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${baseUrl}/cancel`,
+  })
 }
 ```
 
@@ -413,6 +421,33 @@ git commit -m "Description of changes"
 git push
 ```
 
+### Stripe Checkout Failing with "Not a valid URL"
+
+**Symptom:** Stripe checkout endpoint returns `{"error":"Not a valid URL"}` even with correct environment variables set
+
+**Cause:** Environment variables in Vercel can have trailing whitespace (especially newlines `\n`) that make URLs invalid when concatenated
+
+**Example of the bug:**
+```typescript
+// If NEXT_PUBLIC_BASE_URL = "https://www.brandonmills.com\n"
+const successUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/meditations/${slug}/success`
+// Result: "https://www.brandonmills.com\n/meditations/..." ❌ INVALID URL
+```
+
+**Fix:** Always use `.trim()` when reading environment variables that will be used in URLs:
+
+```typescript
+// app/api/stripe/create-checkout/route.ts
+const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`).trim()
+const successUrl = `${baseUrl}/meditations/${slug}/success?session_id={CHECKOUT_SESSION_ID}`
+```
+
+**How to prevent:** When setting environment variables in Vercel dashboard, ensure no trailing whitespace. However, always use `.trim()` defensively in code.
+
+**Related files:**
+- `app/api/stripe/create-checkout/route.ts:61`
+- `app/api/webhooks/stripe/route.ts` (applies to all URL construction from env vars)
+
 ---
 
 ## Development Workflow
@@ -456,6 +491,7 @@ git push
 - Validate all inputs with Zod or similar
 - Return proper HTTP status codes
 - Use try/catch for error handling
+- **Always `.trim()` environment variables used in URLs** to prevent trailing whitespace issues
 
 ### Components
 
