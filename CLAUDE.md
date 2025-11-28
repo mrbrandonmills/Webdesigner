@@ -181,9 +181,7 @@ npm run train-voice
 import Stripe from 'stripe'
 
 // This will FAIL during build when env vars aren't available
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 export async function POST(request: Request) {
   const session = await stripe.checkout.sessions.create({...})
@@ -208,9 +206,8 @@ function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('STRIPE_SECRET_KEY is not set')
   }
-  return new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2025-10-29.clover',
-  })
+  // Use default apiVersion (SDK handles this automatically)
+  return new Stripe(process.env.STRIPE_SECRET_KEY)
 }
 
 export async function POST(request: Request) {
