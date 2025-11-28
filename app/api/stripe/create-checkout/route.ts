@@ -58,7 +58,7 @@ export async function POST(request: NextRequest) {
     // Get base URL - prefer environment variable, fall back to request headers
     const protocol = request.headers.get('x-forwarded-proto') || 'https'
     const host = request.headers.get('host') || request.headers.get('x-forwarded-host') || 'www.brandonmills.com'
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
+    const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`).trim()
 
     const successUrl = `${baseUrl}/meditations/${slug}/success?session_id={CHECKOUT_SESSION_ID}`
     const cancelUrl = `${baseUrl}/meditations/${slug}`
