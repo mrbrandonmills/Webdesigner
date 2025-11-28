@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-10-29.clover',
-})
-
 interface CartItem {
   productId: number
   variantId: number
@@ -17,6 +13,11 @@ interface CartItem {
 
 export async function POST(request: NextRequest) {
   try {
+    // Initialize Stripe inside the handler to avoid build-time errors
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: '2025-10-29.clover',
+    })
+
     const body = await request.json()
     const { items } = body as { items: CartItem[] }
 

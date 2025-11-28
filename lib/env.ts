@@ -19,6 +19,10 @@ const envSchema = z.object({
     .string()
     .min(1, 'ADMIN_PASSWORD_HASH is required')
     .describe('Bcrypt hashed admin password'),
+  JWT_SECRET: z
+    .string()
+    .min(32, 'JWT_SECRET must be at least 32 characters')
+    .describe('JWT signing secret for session tokens'),
 
   // AI Services (REQUIRED for content generation)
   OPENAI_API_KEY: z

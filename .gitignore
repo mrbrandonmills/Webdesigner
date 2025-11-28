@@ -60,6 +60,14 @@ public/books/*.pdf
 logs/
 data/automation-state.json
 
+# Backup directories and temp files (NEVER COMMIT!)
+*.backup/
+*.backup
+Webdesigner.backup/
+/tmp/
+temp/
+*.tmp
+
 # Pinterest test files (contain API tokens - NEVER COMMIT!)
 pinterest-*.js
 test-pinterest.js

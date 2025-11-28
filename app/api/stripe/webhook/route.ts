@@ -37,6 +37,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
     }
 
+    // Validate timestamp to prevent replay attacks (5-minute tolerance)
+    const eventTimestamp = event.created // Unix timestamp in seconds
+    const currentTimestamp = Math.floor(Date.now() / 1000)
+    const timestampDifference = currentTimestamp - eventTimestamp
+    const TIMESTAMP_TOLERANCE_SECONDS = 300 // 5 minutes
+
+    if (timestampDifference > TIMESTAMP_TOLERANCE_SECONDS) {
+      logger.warn('Webhook timestamp too old, rejecting to prevent replay attack', {
+        eventTimestamp,
+        currentTimestamp,
+        difference: timestampDifference,
+      })
+      return NextResponse.json({ error: 'Webhook timestamp too old' }, { status: 400 })
+    }
+
     // Handle the event
     switch (event.type) {
       case 'checkout.session.completed': {
