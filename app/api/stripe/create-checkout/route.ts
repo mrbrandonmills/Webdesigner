@@ -55,23 +55,22 @@ export async function POST(request: NextRequest) {
     // Create Stripe Checkout Session
     const stripe = getStripe()
 
-    // Log environment variables for debugging
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+    // Get base URL - prefer environment variable, fall back to request headers
+    const protocol = request.headers.get('x-forwarded-proto') || 'https'
+    const host = request.headers.get('host') || request.headers.get('x-forwarded-host') || 'www.brandonmills.com'
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || `${protocol}://${host}`
+
     const successUrl = `${baseUrl}/meditations/${slug}/success?session_id={CHECKOUT_SESSION_ID}`
     const cancelUrl = `${baseUrl}/meditations/${slug}`
 
     logger.info('Creating Stripe checkout session', {
+      envBaseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+      protocol,
+      host,
       baseUrl,
       successUrl,
       cancelUrl,
-      hasBaseUrl: !!baseUrl,
-      baseUrlLength: baseUrl?.length || 0,
     })
-
-    if (!baseUrl || baseUrl.trim() === '') {
-      logger.error('NEXT_PUBLIC_BASE_URL is missing or empty')
-      throw new Error('NEXT_PUBLIC_BASE_URL is not configured')
-    }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
