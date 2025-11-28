@@ -3,10 +3,9 @@ import { headers } from 'next/headers'
 import Stripe from 'stripe'
 import { writeFile, readFile, mkdir } from 'fs/promises'
 import path from 'path'
-import { printfulClient } from '@/lib/printful-client'
 import { sendOrderConfirmation, sendAdminNotification, sendMeditationPurchaseConfirmation } from '@/lib/email'
 import { getMeditationBySlug } from '@/lib/meditations-data'
-import { LocalOrder, CartItem, StripeShippingAddress, PrintfulOrderItem } from '@/types/common'
+import { LocalOrder, CartItem, StripeShippingAddress } from '@/types/common'
 import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
@@ -161,7 +160,6 @@ async function createOrder(session: Stripe.Checkout.Session) {
       totalAmount: session.amount_total ? session.amount_total / 100 : 0, // Convert from cents
       currency: session.currency || 'usd',
       status: 'paid',
-      printfulStatus: 'pending', // Will be updated when sent to Printful
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
@@ -194,15 +192,6 @@ async function createOrder(session: Stripe.Checkout.Session) {
     await writeFile(indexFile, JSON.stringify(orders, null, 2))
 
     logger.info('Order created', { orderId: order.id })
-
-    // Send order to Printful for fulfillment
-    try {
-      await fulfillOrder(order)
-      logger.info('Order sent to Printful for fulfillment')
-    } catch (fulfillError) {
-      logger.error('Failed to send order to Printful', fulfillError)
-      // Don't throw - order is still saved, we can retry fulfillment manually
-    }
 
     // Send confirmation emails
     try {
@@ -237,77 +226,3 @@ async function createOrder(session: Stripe.Checkout.Session) {
   }
 }
 
-async function fulfillOrder(order: LocalOrder) {
-  try {
-    logger.info('Preparing Printful order', { orderId: order.id })
-
-    // Parse address from Stripe format to Printful format
-    const shippingAddress = order.shippingAddress
-    if (!shippingAddress) {
-      throw new Error('No shipping address provided')
-    }
-
-    // Build Printful order items from cart items
-    const orderItems: PrintfulOrderItem[] = order.items.map((item: CartItem) => {
-      // For catalog products (no custom designs), we just need variant ID
-      // If you add custom designs later, you'll need to include file URLs
-      return {
-        source: 'catalog' as const,
-        catalog_variant_id: item.variantId,
-        quantity: item.quantity,
-        retail_price: item.price,
-        // If you have designs for this item, add placements:
-        // placements: [{
-        //   placement: 'default',
-        //   technique: 'SUBLIMATION',
-        //   layers: [{ type: 'file', url: item.designUrl }]
-        // }]
-      }
-    })
-
-    // Create Printful order
-    const printfulOrder = await printfulClient.createOrder({
-      external_id: order.id,
-      shipping: 'STANDARD', // or get from order metadata
-      recipient: {
-        name: order.customerName || 'Customer',
-        address1: shippingAddress.line1 || '',
-        city: shippingAddress.city || '',
-        state_code: shippingAddress.state || undefined,
-        country_code: shippingAddress.country || 'US',
-        zip: shippingAddress.postal_code || '',
-        email: order.customerEmail,
-        phone: shippingAddress.phone || undefined,
-      },
-      order_items: orderItems as any,
-      retail_costs: {
-        currency: order.currency.toUpperCase(),
-        subtotal: order.totalAmount.toFixed(2),
-        shipping: '0.00', // Already included in Stripe
-        tax: '0.00',
-        total: order.totalAmount.toFixed(2),
-      },
-    })
-
-    logger.info('Printful order created', { printfulOrderId: printfulOrder.id })
-
-    // Confirm the order for fulfillment (this sends it to production)
-    const confirmedOrder = await printfulClient.confirmOrder(printfulOrder.id)
-    logger.info('Printful order confirmed for fulfillment', { confirmedOrderId: confirmedOrder.id })
-
-    // Update our local order with Printful ID
-    order.printfulOrderId = printfulOrder.id
-    order.printfulStatus = confirmedOrder.status
-    order.updatedAt = new Date().toISOString()
-
-    // Save updated order
-    const ordersDir = path.join(process.cwd(), 'data', 'orders')
-    const orderFile = path.join(ordersDir, `${order.id}.json`)
-    await writeFile(orderFile, JSON.stringify(order, null, 2))
-
-    return printfulOrder
-  } catch (error) {
-    logger.error('Printful fulfillment failed', error)
-    throw error
-  }
-}

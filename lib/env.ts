@@ -54,16 +54,6 @@ const envSchema = z.object({
     .regex(/^whsec_/, 'STRIPE_WEBHOOK_SECRET must start with whsec_')
     .describe('Stripe webhook signing secret'),
 
-  // Printful (REQUIRED for e-commerce)
-  PRINTFUL_API_KEY: z
-    .string()
-    .min(1, 'PRINTFUL_API_KEY is required')
-    .describe('Printful API key for product fulfillment'),
-  PRINTFUL_STORE_ID: z
-    .string()
-    .min(1, 'PRINTFUL_STORE_ID is required')
-    .describe('Printful store identifier'),
-
   // Database URLs (OPTIONAL - can use filesystem fallback)
   POSTGRES_URL: z.string().optional().describe('PostgreSQL connection URL'),
   POSTGRES_PRISMA_URL: z.string().optional().describe('PostgreSQL Prisma URL'),
