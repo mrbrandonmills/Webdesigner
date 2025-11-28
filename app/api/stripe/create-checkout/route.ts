@@ -5,15 +5,16 @@ import { getMeditationBySlug } from '@/lib/meditations-data'
 import { logger } from '@/lib/logger'
 import { CreateCheckoutSchema, formatZodErrors } from '@/lib/validations'
 
+export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 function getStripe() {
   if (!process.env.STRIPE_SECRET_KEY) {
     throw new Error('STRIPE_SECRET_KEY is not set')
   }
-  // Using the default API version from the Stripe package
-  // The package types expect '2025-10-29.clover' but we use the stable version
-  return new Stripe(process.env.STRIPE_SECRET_KEY)
+  return new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-10-29.clover',
+  })
 }
 
 export async function POST(request: NextRequest) {
