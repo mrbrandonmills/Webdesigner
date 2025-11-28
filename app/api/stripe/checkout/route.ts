@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
   try {
     // Initialize Stripe inside the handler to avoid build-time errors
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: '2025-10-29.clover',
+      apiVersion: '2024-10-28.acacia',
     })
 
     const body = await request.json()
