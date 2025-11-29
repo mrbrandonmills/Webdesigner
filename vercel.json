@@ -20,13 +20,13 @@
       "maxDuration": 60
     },
     "app/api/gemini/analyze/route.ts": {
-      "maxDuration": 60
+      "maxDuration": 90
     },
     "app/api/gemini/dream/route.ts": {
-      "maxDuration": 60
+      "maxDuration": 90
     },
     "app/api/gemini/lifepath/route.ts": {
-      "maxDuration": 60
+      "maxDuration": 90
     }
   },
   "crons": [
